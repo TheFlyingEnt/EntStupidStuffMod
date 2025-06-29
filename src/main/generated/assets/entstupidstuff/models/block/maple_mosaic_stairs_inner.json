@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "entstupidstuff:block/maple_mosaic",
+    "side": "entstupidstuff:block/maple_mosaic",
+    "top": "entstupidstuff:block/maple_mosaic"
+  }
+}

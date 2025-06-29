@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "ancient_debris",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:ancient_debris_nugget"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:ancient_debris"
+  }
+}

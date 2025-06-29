@@ -1,0 +1,12 @@
+{
+    "sources": [
+      {
+        "type": "single",
+        "resource": "entstupidstuff:entity/diamond_shield_base"
+      },
+      {
+        "type": "single",
+        "resource": "entstupidstuff:entity/diamond_shield_base_nopattern"
+      }
+    ]
+  }

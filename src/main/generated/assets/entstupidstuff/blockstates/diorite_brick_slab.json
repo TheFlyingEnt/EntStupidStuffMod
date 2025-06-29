@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/diorite_brick_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/diorite_bricks"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/diorite_brick_slab_top"
+    }
+  }
+}

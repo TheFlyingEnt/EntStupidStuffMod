@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_marshmellow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:raw_marshmellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:toasted_marshmellow"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_marshmellow"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:toasted_marshmellow"
+    ]
+  }
+}

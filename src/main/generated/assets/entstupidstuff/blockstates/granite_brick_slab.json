@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/granite_brick_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/granite_bricks"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/granite_brick_slab_top"
+    }
+  }
+}

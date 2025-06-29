@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_button",
+  "ingredients": [
+    {
+      "item": "entstupidstuff:fungal_planks_lime"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_button_lime"
+  }
+}

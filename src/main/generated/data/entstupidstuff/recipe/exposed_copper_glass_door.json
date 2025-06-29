@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "glass_door",
+  "ingredients": [
+    {
+      "item": "minecraft:exposed_copper_door"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:exposed_copper_glass_door"
+  }
+}

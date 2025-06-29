@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "colored_planks",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:fungal_planks"
+    },
+    "D": {
+      "item": "minecraft:gray_dye"
+    }
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "entstupidstuff:fungal_planks_gray"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "entstupidstuff:block/acacia_mosaic"
+  }
+}

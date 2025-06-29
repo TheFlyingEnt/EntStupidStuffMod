@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_redwood_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:redwood_door"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:redwood_glass_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_redwood_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:redwood_glass_door"
+    ]
+  }
+}

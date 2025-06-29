@@ -1,0 +1,17 @@
+{
+    "sources": [
+        {
+            "type": "single",
+            "resource": "minecraft:entity/diamond_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "minecraft:entity/diamond_shield_base_nopattern"
+        },
+        {
+            "type": "directory",
+            "source": "minecraft:entity/shield",
+            "prefix": "minecraft:entity/shield/"
+        }
+    ]
+}

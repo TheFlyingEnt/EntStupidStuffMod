@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fungal_planks_yellow": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fungal_planks_yellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fungal_trapdoor_yellow"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fungal_planks_yellow"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fungal_trapdoor_yellow"
+    ]
+  }
+}

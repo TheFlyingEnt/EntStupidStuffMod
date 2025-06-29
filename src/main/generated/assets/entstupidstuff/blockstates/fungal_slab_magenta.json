@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/fungal_slab_magenta"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/fungal_planks_magenta"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/fungal_slab_magenta_top"
+    }
+  }
+}

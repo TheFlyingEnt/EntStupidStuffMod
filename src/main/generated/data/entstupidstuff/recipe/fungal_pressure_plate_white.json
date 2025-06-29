@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "wooden_pressure_plate",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:fungal_planks_white"
+    }
+  },
+  "pattern": [
+    "##"
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_pressure_plate_white"
+  }
+}

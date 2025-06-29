@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_honey_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:honey_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_stick": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:stick"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_sugar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sugar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:raw_marshmellow"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_stick",
+      "has_honey_block",
+      "has_sugar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:raw_marshmellow"
+    ]
+  }
+}

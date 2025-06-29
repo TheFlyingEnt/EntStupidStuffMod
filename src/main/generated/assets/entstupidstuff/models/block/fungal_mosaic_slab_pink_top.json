@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "entstupidstuff:block/fungal_mosaic_pink",
+    "side": "entstupidstuff:block/fungal_mosaic_pink",
+    "top": "entstupidstuff:block/fungal_mosaic_pink"
+  }
+}

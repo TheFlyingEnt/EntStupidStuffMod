@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button_pressed",
+  "textures": {
+    "texture": "entstupidstuff:block/fungal_planks_light_gray"
+  }
+}

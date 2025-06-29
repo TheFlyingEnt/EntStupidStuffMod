@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "wooden_slab",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:fungal_planks_red"
+    }
+  },
+  "pattern": [
+    "###"
+  ],
+  "result": {
+    "count": 6,
+    "id": "entstupidstuff:fungal_mosaic_slab_red"
+  }
+}

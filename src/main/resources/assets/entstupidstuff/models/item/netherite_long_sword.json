@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:item/long_sword",
+  "textures": {
+    "layer0": "entstupidstuff:item/netherite_long_sword"
+  }
+}

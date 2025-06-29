@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_glass_trapdoor",
+  "ingredients": [
+    {
+      "item": "entstupidstuff:fungal_trapdoor_gray"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_glass_trapdoor_gray"
+  }
+}

@@ -1,0 +1,330 @@
+package net.ent.entstupidstuff.mixin;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.ent.entstupidstuff.client.render.entity.model.PlayerTestAnimation;
+import net.ent.entstupidstuff.item.itemType.HammerItem;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.MathHelper;
+
+@Mixin(BipedEntityModel.class)
+public abstract class BipedEntityModelMixin<T extends LivingEntity> {
+
+    /*
+     * Hammer:
+     * - Has Two Attacks:
+     * - Left Click: Big Knockback
+     * - Right Click: Create an AOE Attack
+     * 
+     * If the person has an item on the off Hand, Right Click Attack is Disabled
+     * 
+     * 
+     */
+
+    @Shadow
+    private ModelPart leftArm;
+    @Shadow
+    private ModelPart rightArm;
+    @Shadow
+    private ModelPart head;
+    @Shadow
+    private ModelPart body;
+    // @Shadow public float handSwingProgress;\
+    @Shadow
+    public float leaningPitch;
+
+    // The following below works
+    @Inject(method = "animateArms", at = @At("HEAD"), cancellable = true)
+    private void modifyHammerSwing(T entity, float animationProgress, CallbackInfo ci) {
+        ItemStack mainHandItem = entity.getStackInHand(Hand.MAIN_HAND);
+        ItemStack offHandItem = entity.getStackInHand(Hand.OFF_HAND);
+
+        // Ent Comment: If the player has an empty hand: This runs (First Person)
+        // If the player has a item , this runs (Third Person)
+
+        if (!(entity.handSwingProgress <= 0.0F)) {
+            // System.out.println("Hand Animation Ran");
+        }
+
+        if (!(entity.handSwingProgress <= 0.0F)) {
+            if (!mainHandItem.isEmpty() && !offHandItem.isEmpty()) {
+
+                /*
+                 * if (animationProgress < 0.25F) {
+                 * // Body rotation
+                 * this.body.pitch = this.lerpAngle2(animationProgress, this.body.pitch, 0.0F);
+                 * // Initial position
+                 * this.body.yaw = this.lerpAngle2(animationProgress, this.body.yaw, 0.0F);
+                 * this.body.roll = this.lerpAngle2(animationProgress, this.body.roll, 0.0F);
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * 0.0F);
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * } else if (animationProgress >= 0.25F && animationProgress < 0.50F) {
+                 * // Body rotation
+                 * this.body.pitch = this.lerpAngle2(animationProgress, this.body.pitch,
+                 * -20.0F); // Rotation at 0.25
+                 * this.body.yaw = this.lerpAngle2(animationProgress, this.body.yaw, 0.0F);
+                 * this.body.roll = this.lerpAngle2(animationProgress, this.body.roll, 0.0F);
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -205.0F); // Rotation at 0.25
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * } else if (animationProgress >= 0.50F && animationProgress < 0.85F) {
+                 * // Body rotation
+                 * this.body.pitch = this.lerpAngle2(animationProgress, this.body.pitch, 87.5F);
+                 * // Rotation at 0.5 and 0.85
+                 * this.body.yaw = this.lerpAngle2(animationProgress, this.body.yaw, 0.0F);
+                 * this.body.roll = this.lerpAngle2(animationProgress, this.body.roll, 0.0F);
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -162.5F); // Rotation at 0.5 and 0.85
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * } else if (animationProgress >= 0.85F && animationProgress < 1.00F) {
+                 * // Body rotation
+                 * this.body.pitch = this.lerpAngle2(animationProgress, this.body.pitch, 87.5F);
+                 * // Rotation at 0.85
+                 * this.body.yaw = this.lerpAngle2(animationProgress, this.body.yaw, 0.0F);
+                 * this.body.roll = this.lerpAngle2(animationProgress, this.body.roll, 0.0F);
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -162.5F); // Rotation at 0.85
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * } else if (animationProgress >= 1.00F) {
+                 * // Body rotation (back to initial position)
+                 * this.body.pitch = this.lerpAngle2(animationProgress, this.body.pitch, 0.0F);
+                 * // Rotation at 1.0
+                 * this.body.yaw = this.lerpAngle2(animationProgress, this.body.yaw, 0.0F);
+                 * this.body.roll = this.lerpAngle2(animationProgress, this.body.roll, 0.0F);
+                 * 
+                 * // Left arm rotation (back to initial position)
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * 0.0F); // Rotation at 1.0
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * }
+                 */
+
+                // Body rotation
+
+                /*
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * 0.0F);
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * 
+                 * // Body rotation
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -205.0F); // Rotation at 0.25
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * 
+                 * // Body rotation
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -162.5F); // Rotation at 0.5 and 0.85
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * 
+                 * // Body rotation
+                 * 
+                 * // Left arm rotation
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * -162.5F); // Rotation at 0.85
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 * 
+                 * 
+                 * // Left arm rotation (back to initial position)
+                 * this.leftArm.pitch = this.lerpAngle2(animationProgress, this.leftArm.pitch,
+                 * 0.0F); // Rotation at 1.0
+                 * this.leftArm.yaw = this.lerpAngle2(animationProgress, this.leftArm.yaw,
+                 * 0.0F);
+                 * this.leftArm.roll = this.lerpAngle2(animationProgress, this.leftArm.roll,
+                 * 0.0F);
+                 */
+
+                // Assume both hands should hold the item at the center first
+                /*
+                 * float centerPositionY = 0.5F; // Y position when hands are centered in front
+                 * of the body
+                 * float downwardPositionY = -0.5F; // Y position when hands are moved downwards
+                 * (item touches the floor)
+                 * 
+                 * // Interpolate both arms downward
+                 * float currentY = MathHelper.lerp(animationProgress, centerPositionY,
+                 * downwardPositionY);
+                 * 
+                 * // Adjust pitch and yaw to keep the hands in front of the entity while moving
+                 * down
+                 * this.leftArm.pitch = MathHelper.lerp(animationProgress, 0.0F, (float) Math.PI
+                 * / 2); // Move left arm downward
+                 * this.rightArm.pitch = MathHelper.lerp(animationProgress, 0.0F, (float)
+                 * Math.PI / 2); // Move right arm downward
+                 * 
+                 * this.leftArm.yaw = MathHelper.lerp(animationProgress, 0.0F, 0.0F); // Keep
+                 * the yaw steady (arms in front)
+                 * this.rightArm.yaw = MathHelper.lerp(animationProgress, 0.0F, 0.0F); // Keep
+                 * the yaw steady (arms in front)
+                 * 
+                 * // You can also adjust the roll to simulate natural arm rotation during
+                 * movement
+                 * this.leftArm.roll = MathHelper.lerp(animationProgress, 0.0F, 0.0F); // Keep
+                 * the roll neutral
+                 * this.rightArm.roll = MathHelper.lerp(animationProgress, 0.0F, 0.0F); // Keep
+                 * the roll neutral
+                 * 
+                 * // Cancel the default arm animation, as we are handling the arm movement
+                 * manually
+                 * ci.cancel();
+                 */
+            }
+        }
+
+        /*
+         * if (isHammer(mainHandItem)) {
+         * BipedEntityModel<T> model = (BipedEntityModel<T>) (Object) this;
+         * 
+         * // Hammer strike animation: Arms swing down
+         * model.rightArm.pitch = (float) Math.toRadians(90);
+         * model.rightArm.yaw = 0;
+         * model.rightArm.roll = 0;
+         * 
+         * model.leftArm.pitch = (float) Math.toRadians(90);
+         * model.leftArm.yaw = 0;
+         * model.leftArm.roll = 0;
+         * 
+         * //ci.cancel(); // Prevent normal animation from applying
+         * }
+         */
+
+        // System.out.println("Hand Animation Ran");
+    }
+
+    private float lerp(float progress, float startValue, float endValue, float keyframeTime) {
+        // Interpolate linearly between startValue and endValue based on progress
+        return MathHelper.lerp(progress, startValue, endValue);
+    }
+
+    protected float lerpAngle2(float angleOne, float angleTwo, float magnitude) {
+        float f = (magnitude - angleTwo) % (float) (Math.PI * 2);
+        if (f < (float) -Math.PI) {
+            f += (float) (Math.PI * 2);
+        }
+
+        if (f >= (float) Math.PI) {
+            f -= (float) (Math.PI * 2);
+        }
+
+        return angleTwo + angleOne * f;
+    }
+
+    private boolean isHammer(ItemStack stack) {
+        // Replace with your custom hammer item check
+        return stack.isOf(Items.IRON_AXE); // Example: Replace with actual hammer item
+    }
+
+    // @Shadow private ModelPart leftArm;
+    // @Shadow private ModelPart rightArm;
+    // @Shadow private ModelPart head;
+
+    @Inject(method = "setAngles", at = @At("HEAD"))
+    private void customAttackAnimation(T entity, float f, float g, float h, float i, float j, CallbackInfo ci) {
+        /*
+         * (T entity, float limbAngle, float limbDistance, float animationProgress,
+         * float headYaw, float headPitch, CallbackInfo ci)
+         */ {
+            if (entity instanceof PlayerEntity player) {
+                // Check if the player is holding the Hammer and performing an attack
+
+                ItemStack heldItem = player.getMainHandStack();
+                if (heldItem.getItem() instanceof HammerItem && player.isUsingItem()) {
+
+                }
+
+                // Trigger the custom attack animation only if the player is using the hammer
+                // for an attack
+                // this.leftArm.yaw = MathHelper.cos(animationProgress * 0.2F) * 2.0F; //
+                // Adjust left arm rotation during the attack
+                // this.rightArm.yaw = -MathHelper.cos(animationProgress * 0.2F) * 2.0F; //
+                // Adjust right arm rotation during the attack
+
+                // System.out.println("Hand Animation Ran 2");
+
+                // The swing angle will be based on the animation progress
+                /*
+                 * float swingProgress = MathHelper.cos(animationProgress * 0.5F) * 0.5F; //
+                 * //Adjust for more/less swing intensity
+                 * this.leftArm.pitch = MathHelper.clamp(swingProgress, -1.5F, 0.0F); // Swing
+                 * //the left arm downward
+                 * this.rightArm.pitch = MathHelper.clamp(swingProgress, -1.5F, 0.0F); // Swing
+                 * //the right arm downward
+                 * 
+                 * // Optionally, you can adjust the rotation for more dynamic animations
+                 * this.leftArm.yaw = MathHelper.cos(animationProgress * 0.2F) * 2.0F;
+                 * this.rightArm.yaw = -MathHelper.cos(animationProgress * 0.2F) * 2.0F;
+                 * 
+                 * this.rightArm.yaw = -0.1F + this.head.yaw;
+                 * this.leftArm.yaw = 0.1F + this.head.yaw + 0.4F;
+                 * this.rightArm.pitch = (float) (-Math.PI / 2) + this.head.pitch;
+                 * this.leftArm.pitch = (float) (-Math.PI / 2) + this.head.pitch;
+                 * 
+                 * // You can customize further by modifying other body parts if needed, such as
+                 * //the body, head, etc.
+                 * // Example: Trigger different animation states based on player’s action.
+                 * } else {
+                 * // Ensure default animations are kept when not using the Hammer
+                 * //this.leftArm.yaw = 0.0F;
+                 * //this.rightArm.yaw = 0.0F;
+                 * 
+                 * this.leftArm.pitch = 0.0F;
+                 * this.rightArm.pitch = 0.0F;
+                 * this.leftArm.yaw = 0.0F;
+                 * this.rightArm.yaw = 0.0F;
+                 */
+            }
+        }
+    }
+
+}

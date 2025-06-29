@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/phantom_mosaic_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/phantom_mosaic"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/phantom_mosaic_slab_top"
+    }
+  }
+}

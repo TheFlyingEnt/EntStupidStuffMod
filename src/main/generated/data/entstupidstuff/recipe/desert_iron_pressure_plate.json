@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "wooden_pressure_plate",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:desert_iron_planks"
+    }
+  },
+  "pattern": [
+    "##"
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:desert_iron_pressure_plate"
+  }
+}

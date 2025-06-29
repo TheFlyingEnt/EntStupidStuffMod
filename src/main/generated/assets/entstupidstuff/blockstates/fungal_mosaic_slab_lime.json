@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/fungal_mosaic_slab_lime"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/fungal_mosaic_lime"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/fungal_mosaic_slab_lime_top"
+    }
+  }
+}

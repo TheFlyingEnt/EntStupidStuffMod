@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "entstupidstuff:block/fungal_pressure_plate_blue"
+    },
+    "powered=true": {
+      "model": "entstupidstuff:block/fungal_pressure_plate_blue_down"
+    }
+  }
+}

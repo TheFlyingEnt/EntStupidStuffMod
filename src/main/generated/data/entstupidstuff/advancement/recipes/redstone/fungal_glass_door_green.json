@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fungal_door_green": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fungal_door_green"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fungal_glass_door_green"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fungal_door_green"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fungal_glass_door_green"
+    ]
+  }
+}

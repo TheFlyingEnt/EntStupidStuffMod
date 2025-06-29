@@ -1,0 +1,13 @@
+{
+    "name": "frostbite",
+    "max_level": 2,
+    "rarity": "rare",
+    "targets": ["sword"],
+    "effects": [
+      {
+        "type": "entstupidstuff:frostbite",
+        "duration": 100,
+        "amplifier": 1
+      }
+    ]
+  }

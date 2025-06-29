@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:item/dagger",
+  "textures": {
+    "layer0": "entstupidstuff:item/wood_dagger"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fungal_slab_cyan": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fungal_slab_cyan"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fungal_mosaic_cyan"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fungal_slab_cyan"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fungal_mosaic_cyan"
+    ]
+  }
+}

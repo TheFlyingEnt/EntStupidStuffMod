@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_glass_trapdoor",
+  "ingredients": [
+    {
+      "item": "minecraft:spruce_trapdoor"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:spruce_glass_trapdoor"
+  }
+}

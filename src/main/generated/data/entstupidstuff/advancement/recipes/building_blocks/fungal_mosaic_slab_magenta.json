@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fungal_mosaic_magenta": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fungal_mosaic_magenta"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fungal_mosaic_slab_magenta"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fungal_mosaic_magenta"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fungal_mosaic_slab_magenta"
+    ]
+  }
+}

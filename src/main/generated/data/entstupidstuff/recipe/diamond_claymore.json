@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:diamond"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    " # ",
+    "###",
+    "#S#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:diamond_claymore"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "entstupidstuff:block/stripped_desert_iron_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "entstupidstuff:block/stripped_desert_iron_wood"
+    },
+    "axis=z": {
+      "model": "entstupidstuff:block/stripped_desert_iron_wood",
+      "x": 90
+    }
+  }
+}

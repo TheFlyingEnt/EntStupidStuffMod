@@ -1,0 +1,343 @@
+
+- Launch Items Confirmed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LAUNCH CHECK LIST:
+Welcome to Stupidity - Launch 1.0
+=================================
+[Items]
+- Hammers
+- Marshmellow
+- Toasted Marshmellow
+- Baguette
+
+[Mobs]
+- Sunken Skeletons
+- Lobber Zombie
+
+
+
+
+
+
+
+
+
+
+
+
+
+Claymore/Broad Sword
+- 1. Mending, Unbreaking, Effeciency, Curse of Vanishing, Fire Aspect, Looting, (No Sweeping Edge as built in)
+- Slow Attack, but can Block Damage
+
+Battle Axe
+- Spin Move
+- Mending, Unbreaking, Effeciency, Curse of Vanishing, Looting?
+
+
+Cutlass
+- Mending, Unbreaking, Effeciency, Curse of Vanishing
+
+Daggers/ Soul Knife
+- Mending, Unbreaking, Effeciency, Curse of Vanishing, (No Sweeping Edge)
+
+
+Glaive
+- Long Reach
+- Mending, Unbreaking, Effeciency, Curse of Vanishing, Reach (New Enchantment)
+
+Hammers
+- Splash Damage
+- Gravity Enchantment, Lighting Enchantment
+- Mending, Unbreaking, Effeciency, Curse of Vanishing, Wind Burst
+- Impact I and II: More Damage to the AoE (Slash Damage)
+- Gravity Enchantment: #% change of Giveing Mobs Levitation
+- Lighting Enchantment #% chance of Spawning Lighting 
+
+Katana
+- Smieth
+- Mending, Unbreaking, Effeciency, Curse of Vanishing, Smite, Sharpness, BoA
+
+Heavy Shield
+- Protects against knockback
+
+
+=========================
+
+Melee Enchantments:
+Committed
+Deal increased damage against already wounded mobs.
+
+CriticalHit
+Gives a chance to inflict critical hits dealing triple damage.
+
+Echo
+Some attacks can be followed up by another attack in quick succession
+
+Freezing
+Slows mobs after hit for three seconds.
+
+GravityMelee
+This effect pulls mobs in range towards the weapon's impact point.
+
+BaneOfIllagers
+Attacks deal extra damage to Illagers.
+
+Leeching
+Defeating a mob heals the hero by a small portion of the mob's max health.
+
+Rampaging
+After defeating a mob, there is a 10% chance to increase attack speed by +50% for a short time
+
+Shockwave
+The last attack in a combo launches a shockwave, damaging enemies.
+
+Swirling
+The last attack in a combo performs a swirling attack, damaging nearby enemies.
+
+Thundering
+Has a 30% chance to summon a lightning strike that damages nearby enemies.
+
+Stunning
+Chance to temporarily stun enemies.
+
+VoidTouchedMelee
+Attacking a target applies a damage multiplier that rises steadily to a max level, then is removed.
+
+Ranged:
+
+BonusShot
+Firing a shot also fires a second shot at a nearby enemy. The second shot has reduced damage.
+
+MultiCharge
+Continue to hold the ranged attack button to double, triple, or quadruple charge a bow, increasing its damage each time.
+
+RapidFire
+Increases attack speed.
+
+Ricochet
+Small chance for arrows to ricochet off mobs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Ungroup all the weapon, keepat secrete
+# Boats for All Wood types
+# Fix Long Sword Recoipe - Check Plex ✅
+# LongSword GUI  - Check Plex ✅
+
+
+
+
+
+
+Ideas - ##
+=======================
+[Blocks]
+- String Bars, Burnable
+- String Gate
+- Moose
+- Redwood set
+- Desert Iron set
+- Log Block Family???
+
+- Katana
+- Hammer
+  - Slow Wind-up
+  - Main Attack
+    - AOT Attack (knocks back at a 45 Degree angle)
+    - Disables Shields
+
+
+- Daggers
+- Long Sword
+  - Long Reach
+  - Main Attack
+    - Attack Mobs in a set Area???
+
+- Battle Axe
+  - Works like Axe
+  - Mid Reach
+  - Main Attack
+
+
+
+
+Long Sword 
+- Right Click: Will now have AOT (circle) Attack which will push enemy a block back. This attack will so in a circle
+
+Hammer 
+- Right Click: Will do AOT (circle) attack (which the ground particle coming up off the ground). This will launch a player 2 blocks up at a 45 degree angle.
+- Left Click: Will attack normally but if the attack target has a shield, It will disale the targets shield (give target long cool down)
+
+Katana 
+- Left Click: If the attack hits first, do double damage. In addiation give it the ability to parry (like pre 1.9)
+
+Dagger
+- Right Click: If the attacker is holding two dagger, increase attack speed
+- Left Click: Normal Attack
+
+Battle Axe
+- Right Click: Will now have Charge Attack (make the player "charge") which Deal massive Damage when it hit a target. 
+- Left Click: Normal Attack
+- Works like an Axe
+
+
+
+
+
+
+
+
+Welcome to Stupidity - Launch 1.0
+=================================
+[Items]
+- Marshmellow ✅
+- Toasted Marshmellow ✅
+- Noodle Bow
+- Baguette ✅
+- Apple Pie ✅
+
+[Blocks]
+- Quillted Wool (For all Colors)
+- Fungal Planks (+ Family) ✅
+- Colored Fungal Planks (+ Family)✅
+- Diorite Bricks (+ varients)
+- Andersite Bricks (+ varients)
+- Granite Bricks (+ varients)
+- Redwood Planks (+ Family) ✅
+- Redwood Log (+ Family) ✅
+
+[Mobs]
+- Lobber Zombie
+- Armored Pillagers
+- Armored Vindicator
+- Redstone Golem [Mini Boss]
+- Glass Doors (+ varients)
+- Iron Gates/Bars
+
+
+
+
+
+Flames of the Hunt - Updated 1.1
+================================
+[Items]
+- Wither Bone
+- Scorched Flesh
+- Ancient Debris Nugget
+- Long Swords
+- Daggers
+- Hammers
+- Battle Axe
+- Long Bow
+- Heavy Crossbow
+
+[Blocks]
+- Ashy Bone Block
+
+[Mobs]
+- Piglin Warrior
+- Piglin Fungal Thrower
+- Blazing Inferno
+- Soul Skeletons
+- Fire Foxs
+- Skeleton Wolfs
+
+
+
+Tales of a Sea - Updated 1.2
+============================
+[Items]
+- Rum
+- Cannon Ball
+- Cannon
+- Flint Lock Bow
+- Crab Gem
+- Prismerine Arrows
+
+[Blocks]
+- Ghost Planks [+ Varients]
+- Ocean Stone (Sea Stone, Dark Sea Stone (Abyss))
+
+[Mobs]
+- Sunken Skeletons
+  - They hold Crossbows
+- Phantoms [Raid]
+  - Phantom Captain
+  - Phantom [Sword]
+  - Phantom [Gunner]
+- Pillager Pirates
+- Ashen Skeletons
+- Copper Skeletons
+- Sunken Drowns
+- Ancient Drown
+- Giant Crabs
+- Larger Ship [Maybe]
+
+[Effects]
+- Sunken
+  - Makes player fall faster while underwater
+- Curse Fire
+
+- Peral Sword - Mineung underwater fast room roomo
+
+[Dev]
+- Phantom Cannon Skin
+- Phantom Cutlass
+
+Upon a Mountain Top - Updated 1.X
+=================================
+[Mobs]
+- Mountaineer Pillagers
+- Mountaineer Illagers
+- Snow Creepers
+- Iceologers
+
+
+Caves Update - Updated 1.X
+==========================
+
+
+
+
+
+

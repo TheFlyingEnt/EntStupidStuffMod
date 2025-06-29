@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "textured_wool",
+  "key": {
+    "#": {
+      "item": "minecraft:green_wool"
+    }
+  },
+  "pattern": [
+    " ##",
+    " ##",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:textured_wool_green"
+  }
+}

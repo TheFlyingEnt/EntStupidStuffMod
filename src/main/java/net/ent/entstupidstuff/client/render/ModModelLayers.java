@@ -1,0 +1,208 @@
+package net.ent.entstupidstuff.client.render;
+
+import net.ent.entstupidstuff.client.render.entity.ArmoredPillagerEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.ButterflyRenderer;
+import net.ent.entstupidstuff.client.render.entity.CannonballEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.HoveringInfernoRenderer;
+import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
+import net.ent.entstupidstuff.client.render.entity.PrismerineArrowRenderer;
+import net.ent.entstupidstuff.client.render.entity.RedStoneGolemRenderer;
+import net.ent.entstupidstuff.client.render.entity.ScorchedEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.SkeletonGoldRenderer;
+import net.ent.entstupidstuff.client.render.entity.SkeletonPirateCaptainEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.SoulSkeletonEntityRender;
+import net.ent.entstupidstuff.client.render.entity.SunkenSkeletonEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
+import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
+import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
+import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
+import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
+import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
+import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
+import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
+import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
+import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
+import net.ent.entstupidstuff.client.render.entity.model.SunkenSkeletonModel;
+import net.ent.entstupidstuff.registry.EntityFactory;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.render.entity.BoatEntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.ChestBoatEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.ShieldEntityModel;
+import net.minecraft.util.Identifier;
+
+public class ModModelLayers {
+
+    public static final EntityModelLayer LOBBER_ZOMBIE =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "lobber_zombie"), "main");
+
+    public static final EntityModelLayer ZOMBIE_SCORCHED =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "zombie_scorched"), "main");
+
+    public static final EntityModelLayer ZOMBIE_DEEPCRAWLE =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "zombie_deepcrawle"), "main");
+
+    public static final EntityModelLayer ZOMBIE_ROTSPAWN =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "zombie_rotspawn"), "main");
+
+    public static final EntityModelLayer PILLAGER_ARMORED =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "pillager_armored"), "main");
+
+    public static final EntityModelLayer RSGolem =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "redstone_golem"), "main");
+
+    // Fires of the Hunt Update:
+
+    public static final EntityModelLayer PIGLIN_WARRIOR =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "piglin_warrior"), "main");
+
+    public static final EntityModelLayer HOVERING_INFERNO =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "hovering_inferno"), "main");
+
+    // Tale of the Seas Update:
+
+    public static final EntityModelLayer SUNKEN_SKELTON =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "sunken_skeleton"), "main");
+
+    public static final EntityModelLayer CANNON_BALL =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "cannon_ball"), "main");
+
+    public static final EntityModelLayer SKELETON_PIRATE_CAPTAIN =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "skeleton_pirate_captain"), "main");
+
+    public static final EntityModelLayer SUNKEN_SKELETON_CROSSBOW =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "sunken_skeleton_crossbow"), "main");
+
+    public static final EntityModelLayer GOLD_SKELETON =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "gold_skeleton"), "main");
+
+    public static final EntityModelLayer PHANTOM_SKELETON =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "phantom_skeleton"), "main");
+
+    // Butterfly
+
+    public static final EntityModelLayer BUTTERFLY =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "butterfly"), "main");
+
+    public static final EntityModelLayer CUSTOMBOAT =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "customboat"), "main");
+
+    public static final EntityModelLayer WOODEN_OAK_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_oak_shield"), "main");
+    public static final EntityModelLayer WOODEN_SPRUCE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_spruce_shield"), "main");
+    public static final EntityModelLayer WOODEN_BIRCH_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_birch_shield"), "main");
+    public static final EntityModelLayer WOODEN_JUNGLE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_jungle_shield"), "main");
+    public static final EntityModelLayer WOODEN_ACACIA_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_acacia_shield"), "main");
+    public static final EntityModelLayer WOODEN_DARK_OAK_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_dark_oak_shield"), "main");
+    public static final EntityModelLayer WOODEN_MANGROVE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_mangrove_shield"), "main");
+    public static final EntityModelLayer WOODEN_CHERRY_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_cherry_shield"), "main");
+    public static final EntityModelLayer WOODEN_BAMBOO_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "wooden_bamboo_shield"), "main");
+
+    public static final EntityModelLayer STONE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "stone_shield"), "main");
+    public static final EntityModelLayer STONE_DEEPSLATE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "stone_deepslate_shield"), "main");
+    public static final EntityModelLayer STONE_BLACKSTONE_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "stone_blackstone_shield"), "main");
+
+    public static final EntityModelLayer GOLDEN_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "golden_shield"), "main");
+    
+    public static final EntityModelLayer DIAMOND_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "diamond_shield"), "main");
+
+
+
+
+    public static void onInitialize() {
+        
+        EntityRendererRegistry.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context, ModModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.LOBBER_ZOMBIE, LobberModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context, ModModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_SCORCHED, ScorchedModel::getTexturedModelData);
+
+        //EntityRendererRegistry.register(EntityFactory.ARMORED_PILLAGER, (EntityRendererFactory.Context context) -> new ArmoredPillagerEntityRenderer(context));
+        //EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PILLAGER_ARMORED, ScorchedModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.ARMORED_PILLAGER, (EntityRendererFactory.Context context) -> new ArmoredPillagerEntityRenderer(context));
+        
+        EntityRendererRegistry.register(EntityFactory.SOUL_SKELETON, (EntityRendererFactory.Context context) -> new SoulSkeletonEntityRender(context));
+        EntityRendererRegistry.register(EntityFactory.SOUL_SKELETON, (EntityRendererFactory.Context context) -> new SoulSkeletonEntityRender(context, EntityModelLayers.SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+
+        EntityRendererRegistry.register(EntityFactory.RSGolem, (EntityRendererFactory.Context context) -> new RedStoneGolemRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.RSGolem, RedStoneGolemModel::getTexturedModelData);
+
+        //The Fire of the Hunt Update
+        EntityRendererRegistry.register(EntityFactory.PIGLIN_WARRIOR, (EntityRendererFactory.Context context) -> new PiglinExtraRenderer(context, EntityModelLayers.PIGLIN_BRUTE, EntityModelLayers.PIGLIN_BRUTE_INNER_ARMOR, EntityModelLayers.PIGLIN_BRUTE_OUTER_ARMOR, false));
+        EntityRendererRegistry.register(EntityFactory.PIGLIN_FUNGAL, (EntityRendererFactory.Context context) -> new PiglinExtraRenderer(context, EntityModelLayers.PIGLIN_BRUTE, EntityModelLayers.PIGLIN_BRUTE_INNER_ARMOR, EntityModelLayers.PIGLIN_BRUTE_OUTER_ARMOR, false));
+
+        EntityRendererRegistry.register(EntityFactory.HOVERING_INFERNO, (EntityRendererFactory.Context context) -> new HoveringInfernoRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.HOVERING_INFERNO, HoveringInfernoModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModModelLayers.SUNKEN_SKELTON /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SUNKEN_SKELTON, SunkenSkeletonModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.CANNON_BALL, (EntityRendererFactory.Context context) -> new CannonballEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CANNON_BALL, CannonballModel::getTexturedModelData);
+
+        //EntityRendererRegistry.register(EntityFactory.CANNONBALL, (EntityRendererFactory.Context context) -> new CannonballEntityRenderer(context)); 
+        
+        EntityRendererRegistry.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context, ModModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SKELETON_PIRATE_CAPTAIN, SkeletonPirateCaptainModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModModelLayers.SUNKEN_SKELETON_CROSSBOW /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SUNKEN_SKELETON_CROSSBOW, SunkenSkeletonModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.BUTTERFLY, (EntityRendererFactory.Context context) -> new ButterflyRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.BUTTERFLY, ButterflyModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.UARROW, (EntityRendererFactory.Context context) -> new PrismerineArrowRenderer(context));
+
+        EntityRendererRegistry.register(EntityFactory.GOLD_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.GOLD_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context, ModModelLayers.GOLD_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.GOLD_SKELETON, SkeletonGoldModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context, ModModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PHANTOM_SKELETON, SkeletonGoldModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.CUSTOMBOAT, (EntityRendererFactory.Context context) -> new CustomBoatEntityRenderer(context, false));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CUSTOMBOAT, CustomBoatModel::getTexturedModelData);
+
+
+
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_OAK_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_SPRUCE_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_BIRCH_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_JUNGLE_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_ACACIA_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_DARK_OAK_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_MANGROVE_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_CHERRY_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WOODEN_BAMBOO_SHIELD, ShieldEntityModel::getTexturedModelData);
+
+        EntityModelLayerRegistry.registerModelLayer(STONE_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(STONE_DEEPSLATE_SHIELD, ShieldEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(STONE_BLACKSTONE_SHIELD, ShieldEntityModel::getTexturedModelData);
+
+        EntityModelLayerRegistry.registerModelLayer(GOLDEN_SHIELD, StrongShieldEntityModel::getTexturedModelData);
+
+        EntityModelLayerRegistry.registerModelLayer(DIAMOND_SHIELD, StrongShieldEntityModel::getTexturedModelData);
+        
+
+        //ShieldEntityModel modelFabricShield = new ShieldEntityModel(this.entityModelLoader.getModelPart(ModModelLayers.DIAMONDSHIELD));
+
+        
+
+    }
+
+    /*public static TexturedModelData getPiglinTexturedModelData(){
+        return TexturedModelData.of(PiglinEntityModel.getModelData(Dilation.NONE), 64, 64);
+    }*/
+
+
+}

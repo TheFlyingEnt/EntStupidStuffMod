@@ -1,0 +1,61 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "colored_planks",
+  "ingredients": [
+    [
+      {
+        "item": "entstupidstuff:fungal_planks_white"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_light_gray"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_gray"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_black"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_brown"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_red"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_orange"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_yellow"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_lime"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_green"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_cyan"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_light_blue"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_blue"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_purple"
+      },
+      {
+        "item": "entstupidstuff:fungal_planks_magenta"
+      }
+    ],
+    {
+      "item": "minecraft:pink_dye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_planks_pink"
+  }
+}

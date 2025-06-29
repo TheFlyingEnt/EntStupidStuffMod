@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fungal_slab_green": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fungal_slab_green"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fungal_mosaic_green"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fungal_slab_green"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fungal_mosaic_green"
+    ]
+  }
+}

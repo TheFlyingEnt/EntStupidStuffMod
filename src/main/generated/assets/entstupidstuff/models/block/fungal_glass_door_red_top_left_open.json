@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left_open",
+  "textures": {
+    "bottom": "entstupidstuff:block/fungal_glass_door_red_bottom",
+    "top": "entstupidstuff:block/fungal_glass_door_red_top"
+  }
+}

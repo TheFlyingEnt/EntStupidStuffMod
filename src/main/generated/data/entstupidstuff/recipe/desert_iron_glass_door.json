@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_glass_door",
+  "ingredients": [
+    {
+      "item": "entstupidstuff:desert_iron_door"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:desert_iron_glass_door"
+  }
+}

@@ -1,0 +1,62 @@
+{
+    "parent":"item/generated",
+    "textures": {
+        "layer0": "entstupidstuff:item/butterfly_jar_empty"
+    },
+    "overrides": [
+    {
+      "predicate": {
+        "variant": 0
+      },
+      "model": "entstupidstuff:item/butterfly_jar_birch"
+    },
+    {
+      "predicate": {
+        "variant": 1
+      },
+      "model": "entstupidstuff:item/butterfly_jar_emperor"
+    },
+    {
+      "predicate": {
+        "variant": 2
+      },
+      "model": "entstupidstuff:item/butterfly_jar_monarch"
+    },
+    {
+      "predicate": {
+        "variant": 3
+      },
+      "model": "entstupidstuff:item/butterfly_jar_yellow"
+    },
+    {
+      "predicate": {
+        "variant": 4
+      },
+      "model": "entstupidstuff:item/butterfly_jar_luminous"
+    },
+    {
+      "predicate": {
+        "variant": 5
+      },
+      "model": "entstupidstuff:item/butterfly_jar_redwood"
+    },
+    {
+      "predicate": {
+        "variant": 6
+      },
+      "model": "entstupidstuff:item/butterfly_jar_blue"
+    },
+    {
+      "predicate": {
+        "variant": 7
+      },
+      "model": "entstupidstuff:item/butterfly_jar_seele"
+    },
+    {
+      "predicate": {
+        "variant": 8
+      },
+      "model": "entstupidstuff:item/butterfly_jar_creeper"
+    }
+  ]
+}

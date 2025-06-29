@@ -1,0 +1,46 @@
+////////////// //////////////////////////
+
+    /*
+    public CannonItem(Settings settings) {
+        super(settings);
+    }
+    
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        player.setCurrentHand(hand);
+        return TypedActionResult.consume(player.getStackInHand(hand));
+    }
+
+    @Override
+    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        if (user instanceof PlayerEntity player) {
+            ItemStack projectile = findAmmo(player);
+            if (!projectile.isEmpty()) {
+                // Create and shoot the cannonball
+                shoot(world, player, stack, projectile);
+                // Push the player back
+                player.addVelocity(-player.getRotationVec(1.0F).x * 2, 0, -player.getRotationVec(1.0F).z * 2);
+                // Set cooldown
+                player.getItemCooldownManager().set(this, 140); // 7 seconds
+            }
+        }
+    }
+
+    private void shoot(World world, PlayerEntity player, ItemStack cannon, ItemStack projectile) {
+        if (!world.isClient) {
+            CannonballEntity cannonball = new CannonballEntity(world, player);
+            cannonball.setItem(projectile);
+            cannonball.setProperties(player, player.getPitch(), player.getYaw(), 0.0F, 3.0F, 1.0F);
+            world.spawnEntity(cannonball);
+        }
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack) {
+        return 140; // 7 seconds
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.CROSSBOW;
+    }*/

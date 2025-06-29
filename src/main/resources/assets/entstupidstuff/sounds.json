@@ -1,0 +1,60 @@
+{
+  "entity.metal_skeleton.ambient": {
+    "sounds": [
+      "entstupidstuff:metal_skeleton/say1",
+      "entstupidstuff:metal_skeleton/say2",
+      "entstupidstuff:metal_skeleton/say3"
+    ],
+    "subtitle": "subtitles.ent.entity.metal_skeleton.ambient"
+  },
+  "entity.metal_skeleton.converted_to_stray": {
+    "sounds": [
+      "mob/stray/convert1",
+      "mob/stray/convert2",
+      "mob/stray/convert3"
+    ],
+    "subtitle": "subtitles.ent.entity.metal_skeleton.converted_to_stray"
+  },
+  "entity.metal_skeleton.death": {
+    "sounds": [
+      "entstupidstuff:metal_skeleton/death"
+    ],
+    "subtitle": "subtitles.ent.entity.metal_skeleton.death"
+  },
+  "entity.metal_skeleton.hurt": {
+    "sounds": [
+      "entstupidstuff:metal_skeleton/hurt1",
+      "entstupidstuff:metal_skeleton/hurt2",
+      "entstupidstuff:metal_skeleton/hurt3",
+      "entstupidstuff:metal_skeleton/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.metal_skeleton.hurt"
+  },
+  "entity.metal_skeleton.shoot": {
+    "sounds": [
+      "minecraft:random/bow"
+    ],
+    "subtitle": "subtitles.ent.entity.metal_skeleton.shoot"
+  },
+  "entity.metal_skeleton.step": {
+    "sounds": [
+      "entstupidstuff:metal_skeleton/step1",
+      "entstupidstuff:metal_skeleton/step2",
+      "entstupidstuff:metal_skeleton/step3",
+      "entstupidstuff:metal_skeleton/step4"
+    ],
+    "subtitle": "subtitles.block.generic.footsteps"
+  },
+  "combat.hammer.ground": {
+    "sounds": [
+      "entstupidstuff:hammer_ground"
+    ],
+    "subtitle": "subtitles.ent.combat.hammer.ground"
+  },
+  "combat.cannon.fire": {
+    "sounds": [
+      "entstupidstuff:cannon_fire"
+    ],
+    "subtitle": "subtitles.ent.combat.cannon.fire"
+  }
+}

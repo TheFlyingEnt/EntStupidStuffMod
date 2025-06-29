@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "entstupidstuff:block/diorite_bricks",
+    "side": "entstupidstuff:block/diorite_bricks",
+    "top": "entstupidstuff:block/diorite_bricks"
+  }
+}

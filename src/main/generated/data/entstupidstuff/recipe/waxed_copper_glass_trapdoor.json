@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "glass_trapdoor",
+  "ingredients": [
+    {
+      "item": "minecraft:waxed_copper_trapdoor"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:waxed_copper_glass_trapdoor"
+  }
+}

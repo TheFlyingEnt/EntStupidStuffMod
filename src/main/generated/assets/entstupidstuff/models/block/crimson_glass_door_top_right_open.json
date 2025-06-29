@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right_open",
+  "textures": {
+    "bottom": "entstupidstuff:block/crimson_glass_door_bottom",
+    "top": "entstupidstuff:block/crimson_glass_door_top"
+  }
+}

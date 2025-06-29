@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_button",
+  "ingredients": [
+    {
+      "item": "entstupidstuff:desert_iron_planks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:desert_iron_button"
+  }
+}

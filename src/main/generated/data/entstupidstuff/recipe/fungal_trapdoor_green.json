@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "wooden_trapdoor",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:fungal_planks_green"
+    }
+  },
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 2,
+    "id": "entstupidstuff:fungal_trapdoor_green"
+  }
+}

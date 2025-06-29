@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "entstupidstuff:granite_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:granite_brick_stairs"
+  }
+}

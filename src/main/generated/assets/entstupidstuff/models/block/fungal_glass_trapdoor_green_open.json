@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_trapdoor_open",
+  "textures": {
+    "texture": "entstupidstuff:block/fungal_glass_trapdoor_green"
+  }
+}

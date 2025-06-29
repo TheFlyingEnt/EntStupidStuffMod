@@ -1,0 +1,97 @@
+{
+    "sources": [
+        {
+            "type": "single",
+            "resource": "entity/shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entity/shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/diamond_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/diamond_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/golden_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/golden_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_oak_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_oak_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_spruce_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_spruce_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_jungle_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_jungle_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_acacia_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_acacia_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_dark_oak_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_dark_oak_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_mangrove_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_margrove_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_cherry_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_cherry_shield_base_nopattern"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_bamboo_shield_base"
+        },
+        {
+            "type": "single",
+            "resource": "entstupidstuff:entity/shield/wooden_bamboo_shield_base_nopattern"
+        },
+        {
+            "type": "directory",
+            "source": "entity/shield",
+            "prefix": "entity/shield/"
+        }
+    ]
+}

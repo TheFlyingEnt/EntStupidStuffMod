@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_phantom_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:phantom_door"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:phantom_glass_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_phantom_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:phantom_glass_door"
+    ]
+  }
+}

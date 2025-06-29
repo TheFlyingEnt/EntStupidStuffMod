@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/redwood_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/redwood_planks"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/redwood_slab_top"
+    }
+  }
+}

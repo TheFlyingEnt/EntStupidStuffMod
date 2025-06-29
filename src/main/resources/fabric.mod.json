@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "entstupidstuff",
+	"version": "${version}",
+	"name": "EntStupidStuff",
+	"description": "A Mod with Stupid Stuff Made by Ent",
+	"authors": [
+		"TheFlyingEnt"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/entstupidstuff/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.ent.entstupidstuff.EntStupidStuff"
+		],
+		"client": [
+			"net.ent.entstupidstuff.EntStupidStuffClient"
+		],
+		"fabric-datagen": [
+			"net.ent.entstupidstuff.EntStupidStuffDataGenerator"
+		]
+	},
+	"mixins": [
+		"entstupidstuff.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

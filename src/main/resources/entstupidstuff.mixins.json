@@ -1,0 +1,18 @@
+{
+	"required": true,
+	"package": "net.ent.entstupidstuff.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"RaidMixin",
+		"ItemRendererAccessor",
+		"ItemRendererMixin",
+		"LivingEntityAttackMixin",
+		"PlayerEntityRendererMixin",
+		"PlayerEntityMixin",
+		"BipedEntityModelMixin",
+		"BuiltinModelItemRendererMixin"
+  	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

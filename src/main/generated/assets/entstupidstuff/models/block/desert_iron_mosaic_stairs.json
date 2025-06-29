@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "entstupidstuff:block/desert_iron_mosaic",
+    "side": "entstupidstuff:block/desert_iron_mosaic",
+    "top": "entstupidstuff:block/desert_iron_mosaic"
+  }
+}

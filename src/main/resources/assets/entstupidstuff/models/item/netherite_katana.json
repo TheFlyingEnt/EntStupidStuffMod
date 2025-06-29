@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:item/katana",
+  "textures": {
+    "layer0": "entstupidstuff:item/netherite_katana"
+  }
+}

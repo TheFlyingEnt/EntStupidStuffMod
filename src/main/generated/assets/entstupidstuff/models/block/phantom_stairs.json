@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "entstupidstuff:block/phantom_planks",
+    "side": "entstupidstuff:block/phantom_planks",
+    "top": "entstupidstuff:block/phantom_planks"
+  }
+}

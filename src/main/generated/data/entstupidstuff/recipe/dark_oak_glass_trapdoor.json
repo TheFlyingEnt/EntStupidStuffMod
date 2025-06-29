@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_glass_trapdoor",
+  "ingredients": [
+    {
+      "item": "minecraft:dark_oak_trapdoor"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:dark_oak_glass_trapdoor"
+  }
+}

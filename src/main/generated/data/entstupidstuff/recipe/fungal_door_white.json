@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "wooden_door",
+  "key": {
+    "#": {
+      "item": "entstupidstuff:fungal_planks_white"
+    }
+  },
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 3,
+    "id": "entstupidstuff:fungal_door_white"
+  }
+}
