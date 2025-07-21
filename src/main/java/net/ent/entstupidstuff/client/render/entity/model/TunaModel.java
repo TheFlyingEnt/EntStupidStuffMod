@@ -45,3 +45,4 @@ public class TunaModel <T extends Entity> extends SinglePartEntityModel<T> {
       this.tailFin.yaw = -f * 0.45F * MathHelper.sin(0.6F * animationProgress);
    }
 }
+

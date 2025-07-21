@@ -23,7 +23,6 @@ import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponents;
 import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.EntityBucketItem;
 import net.minecraft.item.Item;
@@ -91,14 +90,16 @@ public class ItemFactory {
 
     public static final Item ZEBRA_FISH_BUCKET = new EntityBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item ALLIGATOR_GAR_BUCKET = new EntityBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
-    public static final Item TUNA_BUCKET = null;
+    public static final Item MACKEREL_BUCKET = new EntityBucketItem(EntityFactory.MACKEREL, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
 
     public static final Item ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COD));
-    public static final Item COOKED_ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    //public static final Item COOKED_ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+
     public static final Item ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
-    //public static final Item TUNA = new Item((new Item.Settings()).food(FoodComponents.COD));
-    //public static final Item COOKED_TUNA = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+
+    public static final Item MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item COOKED_MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
 
 
@@ -299,12 +300,16 @@ public class ItemFactory {
 
         registerItems("zebra_fish_bucket", ZEBRA_FISH_BUCKET);
         registerItems("alligator_gar_bucket", ALLIGATOR_GAR_BUCKET);
+        registerItems("mackerel_bucket", MACKEREL_BUCKET);
 
         registerItems("zebra_fish", ZEBRA_FISH);
         //registerItems("cooked_zebra_fish", COOKED_ZEBRA_FISH);
 
         registerItems("alligator_gar", ALLIGATOR_GAR);
         registerItems("cooked_alligator_gar", COOKED_ALLIGATOR_GAR);
+
+        registerItems("mackerel", MACKEREL);
+        registerItems("cooked_mackerel", COOKED_MACKEREL);
 
 
         //Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, "noodle_bowl"), NOODEL_BOWL);
@@ -422,6 +427,9 @@ public class ItemFactory {
         Registry.register(Registries.ITEM, id, item);
 
         ModGroup.addToDefault(name);
+
+        if (name == null || item == null)
+            System.out.println("Error");
         
         return item;
     }

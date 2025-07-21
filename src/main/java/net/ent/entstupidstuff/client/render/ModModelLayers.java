@@ -7,6 +7,7 @@ import net.ent.entstupidstuff.client.render.entity.CannonballEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.FrostbittenZombieEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.HoveringInfernoRenderer;
 import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.MackerelRenderer;
 import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
 import net.ent.entstupidstuff.client.render.entity.PrismerineArrowRenderer;
 import net.ent.entstupidstuff.client.render.entity.RedStoneGolemRenderer;
@@ -23,6 +24,7 @@ import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
+import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
@@ -105,6 +107,9 @@ public class ModModelLayers {
 
     public static final EntityModelLayer ALLIGATOR_GAR =
     new EntityModelLayer(Identifier.of("entstupidstuff", "alligator_gar"), "main");
+
+    public static final EntityModelLayer MACKEREL =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "mackerel"), "main");
 
     public static final EntityModelLayer CUSTOMBOAT =
     new EntityModelLayer(Identifier.of("entstupidstuff", "customboat"), "main");
@@ -200,6 +205,9 @@ public class ModModelLayers {
         
         EntityRendererRegistry.register(EntityFactory.ZEBRA_FISH, (EntityRendererFactory.Context context) -> new ZebraFishRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZEBRA_FISH, ZebraFishModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.MACKEREL, (EntityRendererFactory.Context context) -> new MackerelRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.MACKEREL, MackerelModel::getTexturedModelData);
 
 
         EntityModelLayerRegistry.registerModelLayer(WOODEN_OAK_SHIELD, ShieldEntityModel::getTexturedModelData);

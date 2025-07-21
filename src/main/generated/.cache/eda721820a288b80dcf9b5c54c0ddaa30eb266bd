@@ -1,3 +1,4 @@
-// 1.21	2025-07-16T14:37:35.4794039	EntStupidStuff/minecraft:entity Loot Table
+// 1.21	2025-07-21T01:46:07.9815657	EntStupidStuff/minecraft:entity Loot Table
+436a59408bf2a8530976d88e72bb15cde0374495 data\entstupidstuff\loot_table\entities\zombie_frostbitten.json
 caad7d47db46db9571894fc9a657c5138f93cff4 data\entstupidstuff\loot_table\entities\zombie_scorched.json
-ab44e7882c66892b9cdba4e57fef8ecb7da8f30f data\entstupidstuff\loot_table\entities\gold_skeleton.json
+81b951ba659e83585b5a4c07b79b412220530f70 data\entstupidstuff\loot_table\entities\metal_skeleton.json

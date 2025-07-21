@@ -45,22 +45,22 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.hurt", "Zebra Fish hurts ");
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.flop", "Zebra Fish Flops");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish", "Zebra Fish");
-        translationBuilder.add("item.entstupidstuff." + "cooked_zebra_fish", "Cooked Zebra Fish");
+        //translationBuilder.add("item.entstupidstuff." + "cooked_zebra_fish", "Cooked Zebra Fish");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish_bucket", "Bucket of Zebra Fish");
 
-        translationBuilder.add("subtitles.ent.entity." + "tuna.death", "Tuna Dies");
-        translationBuilder.add("subtitles.ent.entity." + "tuna.hurt", "Tuna hurts ");
-        translationBuilder.add("subtitles.ent.entity." + "tuna.flop", "Tuna Flops");
-        translationBuilder.add("item.entstupidstuff." + "tuna", "Tuna");
-        translationBuilder.add("item.entstupidstuff." + "cooked_tuna", "Cooked Tuna");
-        translationBuilder.add("item.entstupidstuff." + "tuna_bucket", "Bucket of Tuna");
+        //translationBuilder.add("subtitles.ent.entity." + "tuna.death", "Tuna Dies");
+        //translationBuilder.add("subtitles.ent.entity." + "tuna.hurt", "Tuna hurts ");
+        //translationBuilder.add("subtitles.ent.entity." + "tuna.flop", "Tuna Flops");
+        //translationBuilder.add("item.entstupidstuff." + "tuna", "Tuna");
+        //translationBuilder.add("item.entstupidstuff." + "cooked_tuna", "Cooked Tuna");
+        //translationBuilder.add("item.entstupidstuff." + "tuna_bucket", "Bucket of Tuna");
 
-        translationBuilder.add("subtitles.ent.entity." + "sword_fish.death", "Sword Fish Dies");
-        translationBuilder.add("subtitles.ent.entity." + "sword_fish.hurt", "Sword Fish hurts ");
-        translationBuilder.add("subtitles.ent.entity." + "sword_fish.flop", "Sword Fish Flops");
-        translationBuilder.add("item.entstupidstuff." + "sword_fish", "Sword Fish");
-        translationBuilder.add("item.entstupidstuff." + "cooked_sword_fish", "Cooked Sword Fish");
-        translationBuilder.add("item.entstupidstuff." + "sword_fish_bucket", "Bucket of Sword Fish");
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.death", "Sword Fish Dies");
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.hurt", "Sword Fish hurts ");
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.flop", "Sword Fish Flops");
+        //translationBuilder.add("item.entstupidstuff." + "sword_fish", "Sword Fish");
+        //translationBuilder.add("item.entstupidstuff." + "cooked_sword_fish", "Cooked Sword Fish");
+        //translationBuilder.add("item.entstupidstuff." + "sword_fish_bucket", "Bucket of Sword Fish");
         
         translationBuilder.add("item.entstupidstuff." + "string_gate", "String Gate");
         translationBuilder.add("item.entstupidstuff." + "string_block", "String Block");

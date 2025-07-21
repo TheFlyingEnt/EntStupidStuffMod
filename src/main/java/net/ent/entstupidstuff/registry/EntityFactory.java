@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
+import net.ent.entstupidstuff.entity.mob.MackerelEntity;
 import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PiglinFungalEntity;
@@ -127,6 +128,15 @@ public class EntityFactory {
     public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "zebra_fish"),
         EntityType.Builder.create(ZebraFishEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F).maxTrackingRange(4)
+        .maxTrackingRange(8)
+        .build()
+    );
+
+    public static final EntityType<MackerelEntity> MACKEREL = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "mackerel"),
+        EntityType.Builder.create(MackerelEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
@@ -280,6 +290,7 @@ public class EntityFactory {
 
         FabricDefaultAttributeRegistry.register(ALLIGATOR_GAR, AlligatorGarEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(ZEBRA_FISH, ZebraFishEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(MACKEREL, MackerelEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
         
