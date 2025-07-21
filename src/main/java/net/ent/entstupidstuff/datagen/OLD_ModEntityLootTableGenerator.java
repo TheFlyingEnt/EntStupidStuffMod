@@ -44,7 +44,7 @@ public class OLD_ModEntityLootTableGenerator extends EntityLootTableGenerator{
 		);
 
         this.register(
-			EntityFactory.GOLD_SKELETON,
+			EntityFactory.METAL_SKELETON,
 			LootTable.builder()
 				.pool(
 					LootPool.builder()

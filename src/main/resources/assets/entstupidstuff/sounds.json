@@ -56,5 +56,134 @@
       "entstupidstuff:cannon_fire"
     ],
     "subtitle": "subtitles.ent.combat.cannon.fire"
+  },
+  "entity.tuna.ambient": {
+    "sounds": [
+      "minecraft:entity/fish/ambient"
+    ],
+    "subtitle": "subtitles.ent.entity.tuna.ambient"
+  },
+  "entity.tuna.death": {
+    "sounds": [
+      "minecraft:entity/fish/death1",
+      "minecraft:entity/fish/death2",
+      "minecraft:entity/fish/death3",
+      "minecraft:entity/fish/death4"
+    ],
+    "subtitle": "subtitles.ent.entity.tuna.death"
+  },
+  "entity.tuna.hurt": {
+    "sounds": [
+      "minecraft:entity/fish/hurt1",
+      "minecraft:entity/fish/hurt2",
+      "minecraft:entity/fish/hurt3",
+      "minecraft:entity/fish/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.tuna.hurt"
+  },
+  "entity.tuna.flop": {
+    "sounds": [
+      "minecraft:entity/fish/flop1",
+      "minecraft:entity/fish/flop2",
+      "minecraft:entity/fish/flop3"
+    ],
+    "subtitle": "subtitles.ent.entity.tuna.flop"
+  },
+  "entity.zebra_fish.ambient": {
+    "sounds": [
+      "minecraft:entity/fish/ambient"
+    ],
+    "subtitle": "subtitles.ent.entity.zebra_fish.ambient"
+  },
+  "entity.zebra_fish.death": {
+    "sounds": [
+      "minecraft:entity/fish/death1",
+      "minecraft:entity/fish/death2",
+      "minecraft:entity/fish/death3",
+      "minecraft:entity/fish/death4"
+    ],
+    "subtitle": "subtitles.ent.entity.zebra_fish.death"
+  },
+  "entity.zebra_fish.hurt": {
+    "sounds": [
+      "minecraft:entity/fish/hurt1",
+      "minecraft:entity/fish/hurt2",
+      "minecraft:entity/fish/hurt3",
+      "minecraft:entity/fish/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.zebra_fish.hurt"
+  },
+  "entity.zebra_fish.flop": {
+    "sounds": [
+      "minecraft:entity/fish/flop1",
+      "minecraft:entity/fish/flop2",
+      "minecraft:entity/fish/flop3"
+    ],
+    "subtitle": "subtitles.ent.entity.zebra_fish.flop"
+  },
+  "entity.alligator_gar.ambient": {
+    "sounds": [
+      "minecraft:entity/fish/ambient"
+    ],
+    "subtitle": "subtitles.ent.entity.alligator_gar.ambient"
+  },
+  "entity.alligator_gar.death": {
+    "sounds": [
+      "minecraft:entity/fish/death1",
+      "minecraft:entity/fish/death2",
+      "minecraft:entity/fish/death3",
+      "minecraft:entity/fish/death4"
+    ],
+    "subtitle": "subtitles.ent.entity.alligator_gar.death"
+  },
+  "entity.alligator_gar.hurt": {
+    "sounds": [
+      "minecraft:entity/fish/hurt1",
+      "minecraft:entity/fish/hurt2",
+      "minecraft:entity/fish/hurt3",
+      "minecraft:entity/fish/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.alligator_gar.hurt"
+  },
+  "entity.alligator_gar.flop": {
+    "sounds": [
+      "minecraft:entity/fish/flop1",
+      "minecraft:entity/fish/flop2",
+      "minecraft:entity/fish/flop3"
+    ],
+    "subtitle": "subtitles.ent.entity.alligator_gar.flop"
+  }
+  ,
+  "entity.sword_fish.ambient": {
+    "sounds": [
+      "minecraft:entity/fish/ambient"
+    ],
+    "subtitle": "subtitles.ent.entity.sword_fish.ambient"
+  },
+  "entity.sword_fish.death": {
+    "sounds": [
+      "minecraft:entity/fish/death1",
+      "minecraft:entity/fish/death2",
+      "minecraft:entity/fish/death3",
+      "minecraft:entity/fish/death4"
+    ],
+    "subtitle": "subtitles.ent.entity.sword_fish.death"
+  },
+  "entity.sword_fish.hurt": {
+    "sounds": [
+      "minecraft:entity/fish/hurt1",
+      "minecraft:entity/fish/hurt2",
+      "minecraft:entity/fish/hurt3",
+      "minecraft:entity/fish/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.sword_fish.hurt"
+  },
+  "entity.sword_fish.flop": {
+    "sounds": [
+      "minecraft:entity/fish/flop1",
+      "minecraft:entity/fish/flop2",
+      "minecraft:entity/fish/flop3"
+    ],
+    "subtitle": "subtitles.ent.entity.sword_fish.flop"
   }
 }

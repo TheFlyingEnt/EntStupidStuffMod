@@ -1,18 +1,18 @@
-// 1.21	2025-05-19T00:01:48.6530879	EntStupidStuff/Tags for minecraft:item
-0507700b8b9543900c76926b94db9f27845fd25c data\entstupidstuff\tags\item\dagger.json
-e2d799c1dd86dccd6d0f8eb7a7ea00042eb53b8f data\minecraft\tags\item\wooden_fences.json
-9f3f8da60bbd4982cf1f37bcb5082943a5b83f82 data\minecraft\tags\item\logs_that_burn.json
+// 1.21	2025-07-16T14:37:35.4494308	EntStupidStuff/Tags for minecraft:item
 dae73e5646e1b9e6f840034f67a9157bc036307f data\minecraft\tags\item\planks.json
-dc1c54c0e85f5865290069f7949a140d4e2b5dca data\minecraft\tags\item\wooden_pressure_plates.json
 4a45ab25a737c735059989f95eaa9d4ff8834fb5 data\minecraft\tags\item\wooden_slabs.json
+b0bbdbe86f0352d4d52377f1bfa4f892f8b54a2a data\minecraft\tags\item\wooden_trapdoors.json
 3544f09dd11fcf87c52b3f19b05420f29603b5a8 data\minecraft\tags\item\enchantable\weapon.json
-0ca5b8503380829e575d33ac167d1b58a21e4926 data\minecraft\tags\item\enchantable\fire_aspect.json
-7665051f00ef08f441c78275c155df3a197e1efc data\minecraft\tags\item\wool.json
+e2d799c1dd86dccd6d0f8eb7a7ea00042eb53b8f data\minecraft\tags\item\wooden_fences.json
 379ceb801b5b0a9ecef66307667f32bc64836b5f data\minecraft\tags\item\wooden_buttons.json
+0507700b8b9543900c76926b94db9f27845fd25c data\entstupidstuff\tags\item\dagger.json
 49cd5395b7caed35b0f740cb7dcc2a952610d1aa data\entstupidstuff\tags\item\long_sword.json
+9f3f8da60bbd4982cf1f37bcb5082943a5b83f82 data\minecraft\tags\item\logs_that_burn.json
+dc1c54c0e85f5865290069f7949a140d4e2b5dca data\minecraft\tags\item\wooden_pressure_plates.json
+0ca5b8503380829e575d33ac167d1b58a21e4926 data\minecraft\tags\item\enchantable\sword.json
+b7b7277ea7e48f1382cccf4d37cb6fcffd019d25 data\minecraft\tags\item\wooden_doors.json
+7665051f00ef08f441c78275c155df3a197e1efc data\minecraft\tags\item\wool.json
+0ca5b8503380829e575d33ac167d1b58a21e4926 data\minecraft\tags\item\enchantable\fire_aspect.json
 bc4766a3df675b25a32aeb0747574d272daa08d3 data\minecraft\tags\item\wooden_stairs.json
 2294e546aaa39a9d44738aa4816cb26f63db97a5 data\entstupidstuff\tags\item\hammer.json
 9f3f8da60bbd4982cf1f37bcb5082943a5b83f82 data\minecraft\tags\item\logs.json
-0ca5b8503380829e575d33ac167d1b58a21e4926 data\minecraft\tags\item\enchantable\sword.json
-b0bbdbe86f0352d4d52377f1bfa4f892f8b54a2a data\minecraft\tags\item\wooden_trapdoors.json
-b7b7277ea7e48f1382cccf4d37cb6fcffd019d25 data\minecraft\tags\item\wooden_doors.json

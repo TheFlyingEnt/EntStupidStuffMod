@@ -15,7 +15,6 @@ import net.ent.entstupidstuff.item.base.WeaponGlaiveItem;
 import net.ent.entstupidstuff.item.base.WeaponHammerItem;
 import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.ent.entstupidstuff.item.itemType.DaggerItem;
-import net.ent.entstupidstuff.item.itemType.HammerItem;
 import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -23,6 +22,10 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponents;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.EntityType;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.EntityBucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
@@ -32,6 +35,7 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 public class ItemFactory {
@@ -46,8 +50,6 @@ public class ItemFactory {
      * 
      */
 
-    
-
     public static final Map<Identifier, Item> ItemList = new LinkedHashMap<>();
     public static final Map<Identifier, Item> ModelList = new LinkedHashMap<>();
 
@@ -57,13 +59,6 @@ public class ItemFactory {
     public static final Item BAGGUETTE = new Item(new Item.Settings().maxCount(16).food(FoodComponents.BREAD).attributeModifiers(WeaponItem.createAttributeModifiers(ToolMaterials.WOOD, 1  + ToolMaterials.WOOD.getAttackDamage(), 2.6f, 1, 0, 0)));
     public static final Item NOODEL_BOWL = new Item(new Item.Settings().maxCount(1).food(FoodComponents.RABBIT_STEW));
     public static final Item APPLE_PIE = new Item(new Item.Settings().food(FoodComponents.PUMPKIN_PIE));
-
-    /*public static final Item BUTTERFLY_JAR = new EntityBucketItem(
-			EntityFactory.BUTTERFLY,
-			null,
-			SoundEvents.ITEM_BUCKET_EMPTY_AXOLOTL,
-			new Item.Settings().maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)
-	);*/
 
     public static final Item BUTTERFLY_JAR =  new ButterflyJarItem(new Item.Settings().maxCount(16));
 
@@ -77,7 +72,6 @@ public class ItemFactory {
 
     public static final Item ZOMBIE_LOBBER_SPAWN_EGG = new SpawnEggItem(EntityFactory.LOBBER_ZOMBIE, /*0x9CAE86, 0x39574B*/ 0x39574b, 0x748365, new Item.Settings()); //39574b and 748365
     public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SCORCHED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
-
 
 
     //Launch - Welcome to Stupidity
@@ -95,6 +89,17 @@ public class ItemFactory {
     public static final Item BEETLE_BOMB_SPAWN = null;
     public static final Item HOVREING_INFERNO = null;
 
+    public static final Item ZEBRA_FISH_BUCKET = new EntityBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item ALLIGATOR_GAR_BUCKET = new EntityBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item TUNA_BUCKET = null;
+
+    public static final Item ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item COOKED_ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    public static final Item ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item COOKED_ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    //public static final Item TUNA = new Item((new Item.Settings()).food(FoodComponents.COD));
+    //public static final Item COOKED_TUNA = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    
 
 
     //The Sea of Dead (Pirate Life) - On Stranger Tides
@@ -110,7 +115,7 @@ public class ItemFactory {
     public static final Item SUNKEN_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.SUNKEN_SKELETON, 0xC1C1C1, 0x51A03E, new Item.Settings());
     public static final Item SUNKEN_SKELETON2_SPAWN = new SpawnEggItem(EntityFactory.SUNKEN_SKELETON_CROSSBOW, 0xC1C1C1, 0x7EBF6E, new Item.Settings());
     public static final Item SKELETON_PIRATE_CAPTAIN_SPAWN = new SpawnEggItem(EntityFactory.SKELETON_PIRATE_CAPTAIN, 0x455A4D, 0x412220, new Item.Settings());
-    public static final Item METAL_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.GOLD_SKELETON, 0xFFFFFF, 0xFFFFFF, new Item.Settings());
+    public static final Item METAL_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.METAL_SKELETON, 0xFFFFFF, 0xFFFFFF, new Item.Settings());
     public static final Item ASHEN_SKELETON_SPAWN = null;
 
     public static final Item SUNKEN_DROWN_SPAWN = null;
@@ -155,7 +160,6 @@ public class ItemFactory {
     private static final Item WOODEN_ARROW = null;
 
     //Testing
-    public static final Item HammerTest = new HammerItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
     public static final Item BattleAxeTest = new WeaponBattleAxeItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
     public static final Item GlaiveTest = new WeaponGlaiveItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
     //public static final Item ClaymoreTest = new WeaponClaymoreItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
@@ -195,7 +199,6 @@ public class ItemFactory {
 
     public static void onInitialize() {
 
-        registerItems("hammer_test", HammerTest);
         registerItems("battle_test", BattleAxeTest);
         registerItems("glaive_test", GlaiveTest);
         registerItems("butterfly_jar", BUTTERFLY_JAR);
@@ -293,6 +296,15 @@ public class ItemFactory {
         registerItems("noodle_bowl", NOODEL_BOWL);
         registerItems("apple_pie", APPLE_PIE);
         registerItems("butterfly_spawn_egg", BUTTERFLY_SPAWN_EGG);
+
+        registerItems("zebra_fish_bucket", ZEBRA_FISH_BUCKET);
+        registerItems("alligator_gar_bucket", ALLIGATOR_GAR_BUCKET);
+
+        registerItems("zebra_fish", ZEBRA_FISH);
+        //registerItems("cooked_zebra_fish", COOKED_ZEBRA_FISH);
+
+        registerItems("alligator_gar", ALLIGATOR_GAR);
+        registerItems("cooked_alligator_gar", COOKED_ALLIGATOR_GAR);
 
 
         //Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, "noodle_bowl"), NOODEL_BOWL);

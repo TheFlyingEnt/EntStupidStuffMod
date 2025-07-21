@@ -38,3 +38,11 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# added by Ent
+*.zip
+*.html
+.oldcode/
+.devEnt/
+#src/main/generated/.cache/
+

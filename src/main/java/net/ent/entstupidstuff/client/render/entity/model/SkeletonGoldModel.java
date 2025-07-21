@@ -66,14 +66,7 @@ public class SkeletonGoldModel <T extends SkeletonPirateCaptainEntity> extends S
 		    .uv(48, 30).mirrored().cuboid(-1.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F)).mirrored(false), ModelTransform.pivot(2.0F, 12.0F, 0.0F)
         );
 		
-
-
         return TexturedModelData.of(modelData, 64, 64);
 
-    }
-
-    /*public Identifier getTexture(T entity) {
-		return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/gold_skeleton/metal_skeleton_03.png");
-	}*/
-    
+    }    
 }

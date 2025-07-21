@@ -1,9 +1,8 @@
 package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
-
-import net.ent.entstupidstuff.api.weaponTrait.TwoHandTrait;
 import net.ent.entstupidstuff.sound.SoundFactory;
+import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -14,14 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -51,16 +49,14 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(itemStack, context, tooltip, type);
-
-        tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
-
+        //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
         //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
         //tooltip.add(Text.translatable("item.entstupidstuff.blunt.tooltip").formatted(Formatting.GRAY));
     }
 
 
-    @SuppressWarnings("unused")
-    @Override
+
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker.getWorld() instanceof ServerWorld serverWorld) {
             // Apply Slash Damage - target.damage(new DamageSources(serverWorld).create(ModDamageTypes.SLASH_DAMAGE), getAttackDamage());
@@ -70,10 +66,10 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             /*double knockbackStrength = 1.5;
             Vec3d knockback = target.getPos().subtract(attacker.getPos()).normalize().multiply(knockbackStrength);
             target.addVelocity(knockback.x, 0.4, knockback.z);
-            target.velocityModified = true; // Ensure movement applies*/
+            target.velocityModified = true; // Ensure movement applies*
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
@@ -82,14 +78,19 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
 
         if (!world.isClient && player != null) {
 
-            if (player.isCreative() == true) {
-                player.getItemCooldownManager().set(this, 3);
-            } else {
-                player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
+            // Checking if Player has a Second Item in Off Hand:
+            if (!player.getOffHandStack().isEmpty()) {
+                System.out.println("Hammer Used, Item in Off Hand");
+                return ActionResult.PASS;
             }
+
+            player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
 
             BlockPos pos = context.getBlockPos();
             Vec3d attackPos = pos.toCenterPos();
+
+            world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundCategory.PLAYERS, 1.0f, 1.0f);
+             
 
             float radius = 3.0f;
             List<LivingEntity> entities = world.getEntitiesByClass(
@@ -99,28 +100,23 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             );
 
             for (LivingEntity entity : entities) {
+                System.out.println("Player isUsingTwoHand = false");
 
-                if (TwoHandTrait.isUsingTwoHands(player)) {
-                    System.out.println("Player isUsingTwoHand = True");
-                    player.sendMessage(Text.literal("Holding Two Items"));
-                    world.addParticle(ParticleTypes.SMOKE, pos.getX(), pos.getY() + 1.0, pos.getZ(), 0.0, 0.0, 0.0);
-                }
-                else {
-                    System.out.println("Player isUsingTwoHand = false");
+                System.out.print("Weapon Hammer: AoE Attack Done!");
+                entity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
+                entity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
 
-                    System.out.print("Weapon Hammer: AoE Attack Done!");
-                    entity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
-                    entity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
+                Vec3d knockback = entity.getPos().subtract(attackPos).normalize().multiply(0.5);
+                entity.addVelocity(knockback.x, 0.3, knockback.z);
+                entity.velocityModified = true;
 
-                    Vec3d knockback = entity.getPos().subtract(attackPos).normalize().multiply(0.5);
-                    entity.addVelocity(knockback.x, 0.3, knockback.z);
-                    entity.velocityModified = true;
+                world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                BlockState blockState = world.getBlockState(context.getBlockPos());
 
-                    world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                    world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundCategory.PLAYERS, 1.0f, 1.0f); 
-                    world.addParticle(ParticleTypes.SONIC_BOOM, pos.getX(), pos.getY() + 1.0, pos.getZ(), 0.0, 0.0, 0.0);
-
-                }   
+                world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
+                    attackPos.x, attackPos.y + 3, attackPos.z,
+                    0.0, 3.0, 0.0);
+                 
             }
         }
         return ActionResult.SUCCESS;

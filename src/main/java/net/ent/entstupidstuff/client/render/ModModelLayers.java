@@ -1,8 +1,10 @@
 package net.ent.entstupidstuff.client.render;
 
+import net.ent.entstupidstuff.client.render.entity.AlligatorGarRenderer;
 import net.ent.entstupidstuff.client.render.entity.ArmoredPillagerEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.ButterflyRenderer;
 import net.ent.entstupidstuff.client.render.entity.CannonballEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.FrostbittenZombieEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.HoveringInfernoRenderer;
 import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
@@ -13,6 +15,8 @@ import net.ent.entstupidstuff.client.render.entity.SkeletonGoldRenderer;
 import net.ent.entstupidstuff.client.render.entity.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.SoulSkeletonEntityRender;
 import net.ent.entstupidstuff.client.render.entity.SunkenSkeletonEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.ZebraFishRenderer;
+import net.ent.entstupidstuff.client.render.entity.model.AlligatorGarModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
@@ -24,12 +28,15 @@ import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SunkenSkeletonModel;
+import net.ent.entstupidstuff.client.render.entity.model.ZebraFishModel;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.model.Dilation;
 import net.minecraft.client.render.entity.BoatEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.ChestBoatEntityModel;
+import net.minecraft.client.render.entity.model.DrownedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.ShieldEntityModel;
@@ -55,6 +62,11 @@ public class ModModelLayers {
     public static final EntityModelLayer RSGolem =
     new EntityModelLayer(Identifier.of("entstupidstuff", "redstone_golem"), "main");
 
+    public static final EntityModelLayer ZOMBIE_FROSTBITTEN =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "zombie_frostbitten"), "main");
+
+    
+
     // Fires of the Hunt Update:
 
     public static final EntityModelLayer PIGLIN_WARRIOR =
@@ -77,8 +89,8 @@ public class ModModelLayers {
     public static final EntityModelLayer SUNKEN_SKELETON_CROSSBOW =
     new EntityModelLayer(Identifier.of("entstupidstuff", "sunken_skeleton_crossbow"), "main");
 
-    public static final EntityModelLayer GOLD_SKELETON =
-    new EntityModelLayer(Identifier.of("entstupidstuff", "gold_skeleton"), "main");
+    public static final EntityModelLayer METAL_SKELETON =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "metal_skeleton"), "main");
 
     public static final EntityModelLayer PHANTOM_SKELETON =
     new EntityModelLayer(Identifier.of("entstupidstuff", "phantom_skeleton"), "main");
@@ -87,6 +99,12 @@ public class ModModelLayers {
 
     public static final EntityModelLayer BUTTERFLY =
     new EntityModelLayer(Identifier.of("entstupidstuff", "butterfly"), "main");
+
+    public static final EntityModelLayer ZEBRA_FISH =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "zebra_fish"), "main");
+
+    public static final EntityModelLayer ALLIGATOR_GAR =
+    new EntityModelLayer(Identifier.of("entstupidstuff", "alligator_gar"), "main");
 
     public static final EntityModelLayer CUSTOMBOAT =
     new EntityModelLayer(Identifier.of("entstupidstuff", "customboat"), "main");
@@ -121,6 +139,10 @@ public class ModModelLayers {
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context));
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context, ModModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_SCORCHED, ScorchedModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context, ModModelLayers.ZOMBIE_FROSTBITTEN, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_FROSTBITTEN, () -> DrownedEntityModel.getTexturedModelData(Dilation.NONE));
 
         //EntityRendererRegistry.register(EntityFactory.ARMORED_PILLAGER, (EntityRendererFactory.Context context) -> new ArmoredPillagerEntityRenderer(context));
         //EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PILLAGER_ARMORED, ScorchedModel::getTexturedModelData);
@@ -162,9 +184,9 @@ public class ModModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.UARROW, (EntityRendererFactory.Context context) -> new PrismerineArrowRenderer(context));
 
-        EntityRendererRegistry.register(EntityFactory.GOLD_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.GOLD_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context, ModModelLayers.GOLD_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.GOLD_SKELETON, SkeletonGoldModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context));
+        EntityRendererRegistry.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context, ModModelLayers.METAL_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.METAL_SKELETON, SkeletonGoldModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context));
         EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context, ModModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
@@ -172,7 +194,12 @@ public class ModModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.CUSTOMBOAT, (EntityRendererFactory.Context context) -> new CustomBoatEntityRenderer(context, false));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CUSTOMBOAT, CustomBoatModel::getTexturedModelData);
-
+        
+        EntityRendererRegistry.register(EntityFactory.ALLIGATOR_GAR, (EntityRendererFactory.Context context) -> new AlligatorGarRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALLIGATOR_GAR, AlligatorGarModel::getTexturedModelData);
+        
+        EntityRendererRegistry.register(EntityFactory.ZEBRA_FISH, (EntityRendererFactory.Context context) -> new ZebraFishRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZEBRA_FISH, ZebraFishModel::getTexturedModelData);
 
 
         EntityModelLayerRegistry.registerModelLayer(WOODEN_OAK_SHIELD, ShieldEntityModel::getTexturedModelData);

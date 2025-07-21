@@ -33,7 +33,10 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
     }
 
     public static final RegistryKey<LootTable> ZOMBIE_SCORCHED = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/zombie_scorched"));
-	public static final RegistryKey<LootTable> GOLD_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/gold_skeleton"));
+	public static final RegistryKey<LootTable> METAL_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/metal_skeleton"));
+	public static final RegistryKey<LootTable> ZOMBIE_FROSTBITTEN = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/zombie_frostbitten"));
+
+
 
     @Override
     public void accept(BiConsumer<RegistryKey<LootTable>, Builder> lootTableBiConsumer) {
@@ -57,13 +60,13 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(GOLD_SKELETON, 
+		lootTableBiConsumer.accept(METAL_SKELETON, 
 		LootTable.builder()
 				.pool(
 					LootPool.builder()
 						.rolls(ConstantLootNumberProvider.create(1.0F))
 						.with(
-							ItemEntry.builder(Items.ROTTEN_FLESH)
+							ItemEntry.builder(Items.BONE)
 								.apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(0.0F, 2.0F)))
 								.apply(EnchantedCountIncreaseLootFunction.builder(this.registryLookup.join(), UniformLootNumberProvider.create(0.0F, 1.0F)))
 						)
@@ -80,10 +83,25 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 				)
 		);
 
+		lootTableBiConsumer.accept(ZOMBIE_FROSTBITTEN, LootTable.builder()
+            .pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(
+						ItemEntry.builder(Items.ROTTEN_FLESH)
+							.apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(0.0F, 2.0F)))
+							.apply(EnchantedCountIncreaseLootFunction.builder(this.registryLookup.join(), UniformLootNumberProvider.create(0.0F, 1.0F)))
+					)
+			)
+			.pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.SNOWBALL))
+					.conditionally(KilledByPlayerLootCondition.builder())
+					.conditionally(RandomChanceWithEnchantedBonusLootCondition.builder(this.registryLookup.join(), 0.025F, 0.01F))
+			)
+        );
+
     }
-
-	public void register(RegistryKey<LootTable> t, Builder u) {
-
-	}
     
 }

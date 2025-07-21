@@ -1,7 +1,9 @@
 package net.ent.entstupidstuff.registry;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
+import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
 import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity;
@@ -14,6 +16,7 @@ import net.ent.entstupidstuff.entity.mob.SkeletonCrossbowEntity;
 import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
 import net.ent.entstupidstuff.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
+import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
 import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
@@ -22,7 +25,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.vehicle.ChestMinecartEntity;
+import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -44,6 +47,17 @@ public class EntityFactory {
     public static final EntityType<ScorchedZombieEntity> ZOMBIE_SCORCHED = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched"),
         EntityType.Builder.create(ScorchedZombieEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.95F)
+		.eyeHeight(1.74F)
+		.passengerAttachments(2.0125F)
+		.vehicleAttachment(-0.7F)
+		.maxTrackingRange(8)
+        .build()
+    );
+
+    public static final EntityType<FrostbittenZombieEntity> ZOMBIE_FROSTBITTEN = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten"),
+        EntityType.Builder.create(FrostbittenZombieEntity::new, SpawnGroup.MONSTER)
         .dimensions(0.6F, 1.95F)
 		.eyeHeight(1.74F)
 		.passengerAttachments(2.0125F)
@@ -101,6 +115,24 @@ public class EntityFactory {
 		.maxTrackingRange(8)
         .build()
     );
+
+    public static final EntityType<AlligatorGarEntity> ALLIGATOR_GAR = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "alligator_gar"),
+        EntityType.Builder.create(AlligatorGarEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F).maxTrackingRange(4)
+        .build()
+    );
+
+    public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "zebra_fish"),
+        EntityType.Builder.create(ZebraFishEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F).maxTrackingRange(4)
+        .maxTrackingRange(8)
+        .build()
+    );
+
 
 
     /*
@@ -196,8 +228,8 @@ public class EntityFactory {
         .build()
     );
 
-    public static final EntityType<MetalSkeletonEntity> GOLD_SKELETON = Registry.register(Registries.ENTITY_TYPE,
-        Identifier.of(EntStupidStuff.MOD_ID, "gold_skeleton"),
+    public static final EntityType<MetalSkeletonEntity> METAL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "metal_skeleton"),
         EntityType.Builder.create(MetalSkeletonEntity::new, SpawnGroup.MONSTER)
         .dimensions(0.6F, 1.99F)
         .eyeHeight(1.74F)
@@ -227,6 +259,7 @@ public class EntityFactory {
         
         FabricDefaultAttributeRegistry.register(LOBBER_ZOMBIE, LobberZombieEntity.createLobberZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SCORCHED, ScorchedZombieEntity.createScorchedZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes()/*createPillagerAttributes*/);
@@ -245,10 +278,13 @@ public class EntityFactory {
 
         FabricDefaultAttributeRegistry.register(BUTTERFLY, ButterflyEntity.createButterflyAttributes());
 
+        FabricDefaultAttributeRegistry.register(ALLIGATOR_GAR, AlligatorGarEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(ZEBRA_FISH, ZebraFishEntity.createFishAttributes());
+
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
         
 
-        FabricDefaultAttributeRegistry.register(GOLD_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
+        FabricDefaultAttributeRegistry.register(METAL_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
         FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
         
 

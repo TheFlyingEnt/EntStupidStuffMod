@@ -12,9 +12,9 @@ import net.minecraft.util.Identifier;
 
 public class SkeletonGoldRenderer extends SkeletonEntityRenderer<MetalSkeletonEntity>{
 
-    private static final Identifier TEXTURE3 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/gold_skeleton/metal_skeleton_03.png");
-	private static final Identifier TEXTURE2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/gold_skeleton/metal_skeleton_02.png");
-	private static final Identifier TEXTURE1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/gold_skeleton/metal_skeleton_01.png");
+    private static final Identifier TEXTURE3 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_03.png");
+	private static final Identifier TEXTURE2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_02.png");
+	private static final Identifier TEXTURE1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_01.png");
     
     public SkeletonGoldRenderer(EntityRendererFactory.Context context) {
 		super(context, ModModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
