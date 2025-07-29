@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.mixin;
 
+import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,8 +10,11 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.PiglinBruteEntity;
+import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -92,7 +96,7 @@ public abstract class ItemRendererMixin {
     public void onGetModel(ItemStack stack, @Nullable World world, @Nullable LivingEntity entity, int seed, CallbackInfoReturnable<BakedModel> cir) {
         if (entity != null) {
 
-            if (entity instanceof PiglinWarriorEntity || entity instanceof ZombifiedPiglinEntity) {
+            if (entity instanceof PiglinWarriorEntity || entity instanceof ZombifiedPiglinEntity || entity instanceof PiglinBruteEntity || entity instanceof PiglinEntity) {
 
                 if (stack.isOf(ItemFactory.callItem("golden_hammer"))) {
                     BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "golden_hammer_model_piglin"), "inventory"));
@@ -103,6 +107,18 @@ public abstract class ItemRendererMixin {
                     cir.setReturnValue(customModel);
                 }
                
+            }
+            else if (entity instanceof PhantomSkeletonEntity) {
+
+                if (stack.isOf(Items.BOW)) {
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "phantom_bow"), "inventory"));
+                    cir.setReturnValue(customModel);
+                }
+                else if (stack.isOf(Items.IRON_SWORD)) {
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "phantom_cutlass"), "inventory"));
+                    cir.setReturnValue(customModel);
+                }
+
             }
 
             /*else if (entity instanceof SeaPhantomEntity) {

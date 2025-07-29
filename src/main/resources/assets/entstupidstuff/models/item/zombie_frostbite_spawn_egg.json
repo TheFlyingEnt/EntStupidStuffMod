@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "entstupidstuff:item/zombie_lobber_spawn_egg"
+    "layer0": "entstupidstuff:item/zombie_frostbite_spawn_egg"
   }
 }

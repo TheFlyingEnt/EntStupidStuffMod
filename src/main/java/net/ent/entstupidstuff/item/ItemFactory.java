@@ -24,6 +24,7 @@ import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponents;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BowItem;
 import net.minecraft.item.EntityBucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -71,6 +72,7 @@ public class ItemFactory {
 
     public static final Item ZOMBIE_LOBBER_SPAWN_EGG = new SpawnEggItem(EntityFactory.LOBBER_ZOMBIE, /*0x9CAE86, 0x39574B*/ 0x39574b, 0x748365, new Item.Settings()); //39574b and 748365
     public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SCORCHED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
+    public static final Item ZOMBIE_FROSTBITE_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_FROSTBITTEN, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
 
 
     //Launch - Welcome to Stupidity
@@ -101,7 +103,7 @@ public class ItemFactory {
     public static final Item MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
-
+    public static final Item ARMORED_PILLAGER_SPAWN_EGG = new SpawnEggItem(EntityFactory.ARMORED_PILLAGER, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
 
     //The Sea of Dead (Pirate Life) - On Stranger Tides
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());
@@ -264,6 +266,9 @@ public class ItemFactory {
         registerModel("netherite_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
         registerModel("golden_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
 
+        registerModel("phantom_bow", new BowItem(new Item.Settings()));
+        registerModel("phantom_cutlass", new ToolItem(ToolMaterials.IRON, new Item.Settings())); 
+
         //registerItems("test_hammer_type", new KatanaItem(ToolMaterials.IRON, new Item.Settings()));
 
         registerItems("wooden_oak_shield", WOODEN_OAK_SHIELD);
@@ -320,6 +325,8 @@ public class ItemFactory {
         //Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched_spawn_egg"), ZOMBIE_SCORCHED_SPAWN_EGG);
         registerItems("zombie_lobber_spawn_egg", ZOMBIE_LOBBER_SPAWN_EGG);
         registerItems("zombie_scorched_spawn_egg", ZOMBIE_SCORCHED_SPAWN_EGG);
+        registerItems("zombie_frostbite_spawn_egg", ZOMBIE_FROSTBITE_SPAWN_EGG);
+        registerItems("armored_pillager_spawn_egg", ARMORED_PILLAGER_SPAWN_EGG);
 
 
 

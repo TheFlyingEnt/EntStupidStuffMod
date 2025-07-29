@@ -83,6 +83,9 @@ public class ModelProvider extends FabricModelProvider{
         //blockStateModelGenerator.registerCubeAllModelTexturePool(BlockFactoryUpt.callBlock("string_block"));
         blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
 
+        blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
+        blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"),BlockFactoryUpt.callBlock("phantom_wall_torch"));
+
 
 
         /*

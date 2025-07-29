@@ -19,7 +19,8 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 
 public class CustomBoatEntityRenderer extends EntityRenderer<CustomBoatEntity> {
-	private static final Identifier TEXTURE = Identifier.of("entstupidstuff", "textures/entity/customboat_3.png");
+	//private static final Identifier TEXTURE = Identifier.of("entstupidstuff", "textures/entity/customboat_3.png");
+	private static final Identifier TEXTURE = Identifier.of("entstupidstuff", "textures/entity/ccustomboat_3.png");
 	private final CustomBoatModel model;
 
 	public CustomBoatEntityRenderer(EntityRendererFactory.Context ctx, boolean chest) {

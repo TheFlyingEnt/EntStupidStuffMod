@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:item/phantom_bow_bow",
+  "textures": {
+    "layer0": "entstupidstuff:item/phantom_bow_pulling_0"
+  }
+}

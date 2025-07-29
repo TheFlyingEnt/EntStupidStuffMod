@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.ent.entstupidstuff.client.render.entity.model.BoatPartEntity;
+import net.ent.entstupidstuff.client.render.entity.model.CustomBoatPart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.entity.EntityType;
@@ -35,15 +35,15 @@ public class CustomBoatEntity extends BoatEntity implements RideableInventory, V
 	@Nullable private RegistryKey<LootTable> lootTable;
 	private long lootTableSeed;
 
-	private final BoatPartEntity[] parts;
+	private final CustomBoatPart[] parts;
 
 	public CustomBoatEntity(EntityType<? extends BoatEntity> entityType, World world) {
 		super(entityType, world);
-		this.parts = new BoatPartEntity[]{
-			new BoatPartEntity(this, "front", 1.0f, 0.6f),
-			new BoatPartEntity(this, "back", 1.0f, 0.6f),
-			new BoatPartEntity(this, "left", 0.5f, 0.6f),
-			new BoatPartEntity(this, "right", 0.5f, 0.6f)
+		this.parts = new CustomBoatPart[]{
+			new CustomBoatPart(this, "front", 1.0f, 100f),
+			new CustomBoatPart(this, "back", 1.0f, 100f),
+			new CustomBoatPart(this, "left", 0.5f, 100f),
+			new CustomBoatPart(this, "right", 0.5f, 100f)
 		};
 	}
 
@@ -72,7 +72,7 @@ public class CustomBoatEntity extends BoatEntity implements RideableInventory, V
 		this.parts[3].refreshPositionAndAngles(basePos.add(left.multiply(1.0)), this.getYaw(), 0); // Right
 	}
 
-	public boolean damagePart(BoatPartEntity part, net.minecraft.entity.damage.DamageSource source, float amount) {
+	public boolean damagePart(CustomBoatPart part, net.minecraft.entity.damage.DamageSource source, float amount) {
 		return this.damage(source, amount);
 	}
 

@@ -43,10 +43,10 @@ public class BoatPartEntity extends Entity {
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public boolean damage(DamageSource source, float amount) {
 		return this.isInvulnerableTo(source) ? false : this.owner.damagePart(this, source, amount);
-	}
+	}*/
 
 	public boolean damagePart(BoatPartEntity part, DamageSource source, float amount) {
 		return this.damage(source, amount);

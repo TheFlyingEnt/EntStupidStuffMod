@@ -17,6 +17,7 @@ import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Oxidizable;
@@ -28,15 +29,19 @@ import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.WallBlock;
+import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.WoodType;
 import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.data.family.BlockFamilies;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -470,9 +475,21 @@ public class BlockFactoryUpt {
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
 
+        Block PHANTOM_LANTERN = register((String)"phantom_lantern", new LanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.IRON_GRAY).solid().requiresTool().strength(3.5F).sounds(BlockSoundGroup.LANTERN).luminance((state) -> {
+            return 10;
+        }).nonOpaque().pistonBehavior(PistonBehavior.DESTROY)));
+
+        /*Block PHANTOM_TORCH = register((String)"phantom_torch", new TorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.create().noCollision().breakInstantly().luminance((state) -> {
+            return 14;
+        }).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)));
+
+        Block PHANTOM_WALL_TORCH = register((String)"phantom_wall_torch", new WallTorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.create().noCollision().breakInstantly().luminance((state) -> {
+            return 14;
+        }).sounds(BlockSoundGroup.WOOD).dropsLike(PHANTOM_TORCH).pistonBehavior(PistonBehavior.DESTROY)));*/
+
     }
 
-    @SuppressWarnings("unused")
+
     public static void MosicFamily(String blockName, String varient, Block baseBlock){
 
         /*if (varient == null) {varient = "";}
@@ -496,7 +513,7 @@ public class BlockFactoryUpt {
         ModGroup.addToDeco(blockName + "_mosaic_slab" + varient);
     }
 
-    @SuppressWarnings("unused")
+
     public static void MosicFamily(String blockName, String varient, Block baseBlock, Boolean ent){
 
         /*if (varient == null) {varient = "";}

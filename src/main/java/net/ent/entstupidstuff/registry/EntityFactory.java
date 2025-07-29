@@ -25,8 +25,10 @@ import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.passive.CodEntity;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -55,6 +57,27 @@ public class EntityFactory {
 		.maxTrackingRange(8)
         .build()
     );
+
+    public static final EntityType<DrownedEntity> ANCIENT_DROWNED = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned"),
+        EntityType.Builder.create(DrownedEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.95F)
+		.eyeHeight(1.74F)
+		.passengerAttachments(2.0125F)
+		.vehicleAttachment(-0.7F)
+		.maxTrackingRange(8)
+        .build()
+    );
+
+    public static final EntityType<TridentEntity> ANCIENT_TRIDENT = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"),
+		EntityType.Builder.create((EntityType<TridentEntity> type, World world) -> new TridentEntity(type, world), SpawnGroup.MISC)
+		    .dimensions(0.5F, 0.5F)
+			.eyeHeight(0.13F)
+			.maxTrackingRange(4)
+			.trackingTickInterval(20)
+            .build()
+	);
 
     public static final EntityType<FrostbittenZombieEntity> ZOMBIE_FROSTBITTEN = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten"),
@@ -111,7 +134,7 @@ public class EntityFactory {
         Identifier.of(EntStupidStuff.MOD_ID, "customboat"),
         EntityType.Builder.<CustomBoatEntity>create(CustomBoatEntity::new, SpawnGroup.MISC)
         //.dimensions(0.98F, 0.7F)
-        .dimensions(5.5F, 0.7F)
+        .dimensions(3.5F, 0.7F)
 		.passengerAttachments(0.1875F)
 		.maxTrackingRange(8)
         .build()
@@ -270,6 +293,7 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(LOBBER_ZOMBIE, LobberZombieEntity.createLobberZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SCORCHED, ScorchedZombieEntity.createScorchedZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, DrownedEntity.createDrownedAttributes());
         FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes()/*createPillagerAttributes*/);
