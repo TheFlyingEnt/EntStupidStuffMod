@@ -27,6 +27,7 @@ public class ModelPredicateFactory {
         registerShield(ItemFactory.GOLDEN_SHIELD);
 
         registerShield(ItemFactory.DIAMOND_SHIELD);
+        
 
     }
 

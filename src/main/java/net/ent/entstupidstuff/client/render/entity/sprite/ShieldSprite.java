@@ -1,13 +1,8 @@
 package net.ent.entstupidstuff.client.render.entity.sprite;
 
-import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
 public class ShieldSprite {
 
-    public static final SpriteIdentifier DIAMOND_SHIELD_BASE = new SpriteIdentifier(
+    /*public static final SpriteIdentifier DIAMOND_SHIELD_BASE = new SpriteIdentifier(
 		TexturedRenderLayers.SHIELD_PATTERNS_ATLAS_TEXTURE, Identifier.of(EntStupidStuff.MOD_ID, "entity/shield/diamond_shield_base")
 	);
 
@@ -117,7 +112,7 @@ public class ShieldSprite {
 
     public static final SpriteIdentifier GOLDEN_BASE_NO_PATTERN_1 = new SpriteIdentifier(
 		TexturedRenderLayers.SHIELD_PATTERNS_ATLAS_TEXTURE, Identifier.of(EntStupidStuff.MOD_ID, "entity/shield/golden_shield_base_nopattern")
-	);
+	);*/
     
     public static void onInitialize() {
         

@@ -10,7 +10,7 @@
 		"PlayerEntityRendererMixin",
 		"PlayerEntityMixin",
 		"BipedEntityModelMixin",
-		"BuiltinModelItemRendererMixin"
+		"ModelLoaderMixin"
   	],
 	"injectors": {
 		"defaultRequire": 1

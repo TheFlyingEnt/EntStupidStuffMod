@@ -9,9 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
-import net.ent.entstupidstuff.client.render.entity.sprite.ShieldSprite;
-import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
@@ -28,6 +27,9 @@ import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.DyeColor;
+
+
+
 
 @Mixin(BuiltinModelItemRenderer.class)
 public class BuiltinModelItemRendererMixin {
@@ -51,6 +53,8 @@ public class BuiltinModelItemRendererMixin {
     private ShieldEntityModel STONE_BLACKSTONE_SHIELD_MODEL;
 
     private StrongShieldEntityModel GOLDEN_SHIELD_MODEL;
+
+    private AncientTridentModel modelAncientTrident;
 
     public BuiltinModelItemRendererMixin(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
 		this.blockEntityRenderDispatcher = blockEntityRenderDispatcher;
@@ -77,6 +81,9 @@ public class BuiltinModelItemRendererMixin {
         this.GOLDEN_SHIELD_MODEL = new StrongShieldEntityModel(this.entityModelLoader.getModelPart(ModModelLayers.GOLDEN_SHIELD));
         this.DIAMOND_SHIELD_MODEL = new StrongShieldEntityModel(this.entityModelLoader.getModelPart(ModModelLayers.DIAMOND_SHIELD));
 
+        this.modelAncientTrident = new AncientTridentModel(this.entityModelLoader.getModelPart(ModModelLayers.ANCIENT_TRIDENT));
+
+
 	}
 
 
@@ -87,7 +94,7 @@ public class BuiltinModelItemRendererMixin {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
 
-        if (stack.isOf(ItemFactory.DIAMOND_SHIELD)) {
+        /*if (stack.isOf(ItemFactory.DIAMOND_SHIELD)) {
             //EntStupidStuffClient.renderBanner(stack, matrices, vertexConsumers, light, overlay, DIAMOND_SHIELD_MODEL, EntStupidStuffClient.SHIELD_BASE_1, EntStupidStuffClient.BASE_NO_PATTERN_1););
 
             SpriteIdentifier base = ShieldSprite.DIAMOND_SHIELD_BASE;
@@ -149,8 +156,8 @@ public class BuiltinModelItemRendererMixin {
             createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, STONE_DEEPSLATE_SHIELD_MODEL, ShieldSprite.STONE_DEEPSLATE_SHIELD_BASE, ShieldSprite.STONE_DEEPSLATE_BASE_NO_PATTERN_1);
         } else if (stack.isOf(ItemFactory.STONE_BLACKSTONE_SHIELD)) {
             createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, STONE_BLACKSTONE_SHIELD_MODEL, ShieldSprite.STONE_BLACKSTONE_SHIELD_BASE, ShieldSprite.STONE_BLACKSTONE_BASE_NO_PATTERN_1);
-        } else if (stack.isOf(ItemFactory.GOLDEN_SHIELD)) {
-
+        } /*else if (stack.isOf(ItemFactory.GOLDEN_SHIELD)) {
+            System.out.println("Shield Rest");
             SpriteIdentifier base = ShieldSprite.GOLDEN_SHIELD_BASE;
             SpriteIdentifier base_nopattern = ShieldSprite.GOLDEN_BASE_NO_PATTERN_1;
             StrongShieldEntityModel model = GOLDEN_SHIELD_MODEL;
@@ -184,7 +191,28 @@ public class BuiltinModelItemRendererMixin {
             }
 
             matrices.pop();
-        } else {}
+        } /*else if (stack.isOf(ItemFactory.ANCIENT_TRIDENT)) {
+            System.out.println("Trident - BuildInItemModel"); //This sould call (but Works) but is not
+            AncientTridentModel model = modelAncientTrident;
+
+
+            matrices.push();
+            matrices.scale(1.0F, -1.0F, -1.0F);
+            VertexConsumer vertexConsumer2 = ItemRenderer.getDirectItemGlintConsumer(vertexConsumers, model.getLayer(AncientTridentModel.TEXTURE), false, stack.hasGlint());
+            model.render(matrices, vertexConsumer2, light, overlay);
+            matrices.pop();
+        } else if (stack.isOf(Items.TRIDENT)) { //This Worked
+            System.out.println("Trident Rest - Alt");
+            AncientTridentModel model = modelAncientTrident;
+
+
+            matrices.push();
+            matrices.scale(1.0F, -1.0F, -1.0F);
+            VertexConsumer vertexConsumer2 = ItemRenderer.getDirectItemGlintConsumer(vertexConsumers, model.getLayer(AncientTridentModel.TEXTURE), false, stack.hasGlint());
+            model.render(matrices, vertexConsumer2, light, overlay);
+            matrices.pop();
+        } */
+        //else {}
     }
 
     public void createDefaultShield(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ShieldEntityModel model, SpriteIdentifier base, SpriteIdentifier base_nopattern){

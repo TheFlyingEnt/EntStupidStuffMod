@@ -2,8 +2,8 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.item.ModelPredicateFactory;
+import net.ent.entstupidstuff.client.render.BuiltInModelItemRenderer;
 import net.ent.entstupidstuff.client.render.ModModelLayers;
-import net.ent.entstupidstuff.client.render.entity.sprite.ShieldSprite;
 import net.ent.entstupidstuff.item.ModModelPredicateReg;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
@@ -16,10 +16,11 @@ public class EntStupidStuffClient implements ClientModInitializer {
         ModModelLayers.onInitialize();
         ModRenderLayers.onInitializeClient();
         ModModelPredicateReg.onInitialize();
-        ShieldSprite.onInitialize();
+        //ShieldSprite.onInitialize();     // No Longer in Use
         ModelPredicateFactory.onInitialize();
+        BuiltInModelItemRenderer.onInitialize();
         //UpdatedEnchantmentEffects.registerEnchantmentEffects();
-
+        
     }
 
     @SuppressWarnings("unused")

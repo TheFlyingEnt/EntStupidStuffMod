@@ -76,8 +76,8 @@ public class ModModelLayers {
     public static final EntityModelLayer ANCIENT_DROWNED_OUTER  =
     new EntityModelLayer(Identifier.of("entstupidstuff", "ancient_drowned"), "outer");
 
-    public static final EntityModelLayer ANCIENT_TRIDENT =
-    new EntityModelLayer(Identifier.of("entstupidstuff", "ancient_trident"), "main");
+    //public static final EntityModelLayer ANCIENT_TRIDENT =
+    //new EntityModelLayer(Identifier.of("entstupidstuff", "ancient_trident"), "main");
 
     //public static final EntityModelLayer ANCIENT_DROWNED_INNER_ARMOR =
     //new EntityModelLayer(Identifier.of("entstupidstuff", "ancient_drowned"), "main");
@@ -149,6 +149,8 @@ public class ModModelLayers {
     
     public static final EntityModelLayer DIAMOND_SHIELD = new EntityModelLayer(Identifier.of("entstupidstuff", "diamond_shield"), "main");
 
+    public static final EntityModelLayer ANCIENT_TRIDENT = new EntityModelLayer(Identifier.of("entstupidstuff", "ancient_trident"), "main");
+
 
 
 
@@ -166,9 +168,6 @@ public class ModModelLayers {
         //EntityRendererRegistry.register(EntityFactory.ANCIENT_DROWNED, (EntityRendererFactory.Context context) -> new AncientDrownedRenderer(context, ModModelLayers.ANCIENT_DROWNED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_DROWNED, () -> AncientDrownedModel.getTexturedModelData(Dilation.NONE));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_DROWNED_OUTER, () -> AncientDrownedModel.getTexturedModelData(new Dilation(0.5F)));
-
-        EntityRendererRegistry.register(EntityFactory.ANCIENT_TRIDENT, (EntityRendererFactory.Context context) -> new AncientTridentRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_TRIDENT, AncientTridentModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context));
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context, ModModelLayers.ZOMBIE_FROSTBITTEN, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
@@ -252,6 +251,10 @@ public class ModModelLayers {
         EntityModelLayerRegistry.registerModelLayer(GOLDEN_SHIELD, StrongShieldEntityModel::getTexturedModelData);
 
         EntityModelLayerRegistry.registerModelLayer(DIAMOND_SHIELD, StrongShieldEntityModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.ANCIENT_TRIDENT, (EntityRendererFactory.Context context) -> new AncientTridentRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_TRIDENT, AncientTridentModel::getTexturedModelData);
+        
         
 
         //ShieldEntityModel modelFabricShield = new ShieldEntityModel(this.entityModelLoader.getModelPart(ModModelLayers.DIAMONDSHIELD));

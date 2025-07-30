@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.item.base.AncientTridentItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
 import net.ent.entstupidstuff.item.base.CannonBallItem;
@@ -17,6 +18,7 @@ import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.ent.entstupidstuff.item.itemType.DaggerItem;
 import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BannerPatternsComponent;
@@ -37,6 +39,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 
 public class ItemFactory {
 
@@ -123,6 +126,7 @@ public class ItemFactory {
 
     public static final Item SUNKEN_DROWN_SPAWN = null;
     public static final Item ANCIENT_DROWN_SPAWN = null;
+    public static final Item ANCIENT_TRIDENT = new AncientTridentItem((new Item.Settings()).rarity(Rarity.EPIC).maxDamage(250).attributeModifiers(AncientTridentItem.createAttributeModifiers()).component(DataComponentTypes.TOOL, AncientTridentItem.createToolComponent()));
 
     public static final Item PHANTOM_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.PHANTOM_SKELETON, 0xFFFFFF, 0xFFFFFF, new Item.Settings());
     public static final Item PHANTOM_SPAWN = null;
@@ -256,18 +260,20 @@ public class ItemFactory {
         registerItems("diamond_long_sword", new LongSwordItem(ToolMaterials.DIAMOND, new Item.Settings()));
         registerItems("netherite_long_sword", new LongSwordItem(ToolMaterials.NETHERITE, new Item.Settings().fireproof()));
 
-        registerModel("wooden_hammer_model", new ToolItem(ToolMaterials.WOOD, new Item.Settings()));
-        registerModel("stone_hammer_model", new ToolItem(ToolMaterials.STONE, new Item.Settings()));
-        registerModel("golden_hammer_model", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
-        registerModel("iron_hammer_model", new ToolItem(ToolMaterials.IRON, new Item.Settings()));
-        registerModel("diamond_hammer_model", new ToolItem(ToolMaterials.DIAMOND, new Item.Settings()));
-        registerModel("netherite_hammer_model", new ToolItem(ToolMaterials.NETHERITE, new Item.Settings().fireproof()));
+        //registerModel("wooden_hammer_model", new ToolItem(ToolMaterials.WOOD, new Item.Settings()));
+        //registerModel("stone_hammer_model", new ToolItem(ToolMaterials.STONE, new Item.Settings()));
+        //registerModel("golden_hammer_model", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
+        //registerModel("iron_hammer_model", new ToolItem(ToolMaterials.IRON, new Item.Settings()));
+        //registerModel("diamond_hammer_model", new ToolItem(ToolMaterials.DIAMOND, new Item.Settings()));
+        //registerModel("netherite_hammer_model", new ToolItem(ToolMaterials.NETHERITE, new Item.Settings().fireproof()));
 
-        registerModel("netherite_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
-        registerModel("golden_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
+        //registerModel("netherite_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
+        //registerModel("golden_hammer_model_piglin", new ToolItem(ToolMaterials.GOLD, new Item.Settings()));
 
-        registerModel("phantom_bow", new BowItem(new Item.Settings()));
-        registerModel("phantom_cutlass", new ToolItem(ToolMaterials.IRON, new Item.Settings())); 
+        //registerModel("phantom_bow", new BowItem(new Item.Settings()));
+        //registerModel("phantom_cutlass", new ToolItem(ToolMaterials.IRON, new Item.Settings())); 
+
+        //registerModel("ancient_trident_in_hand", new ToolItem(ToolMaterials.IRON, new Item.Settings()));
 
         //registerItems("test_hammer_type", new KatanaItem(ToolMaterials.IRON, new Item.Settings()));
 
@@ -327,6 +333,7 @@ public class ItemFactory {
         registerItems("zombie_scorched_spawn_egg", ZOMBIE_SCORCHED_SPAWN_EGG);
         registerItems("zombie_frostbite_spawn_egg", ZOMBIE_FROSTBITE_SPAWN_EGG);
         registerItems("armored_pillager_spawn_egg", ARMORED_PILLAGER_SPAWN_EGG);
+        registerItems("ancient_trident", ANCIENT_TRIDENT);
 
 
 
@@ -385,6 +392,14 @@ public class ItemFactory {
 
         onInitializeMobEggs();
 
+        /*ModelLoadingPlugin.register(pluginContext -> {
+            pluginContext.addModels(Identifier.of(EntStupidStuff.MOD_ID, "item/ancient_trident_in_hand"));
+        });
+
+        ModelLoadingPlugin.register(pluginContext -> {
+            pluginContext.addModels(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"));
+        });*/
+
 
 
         // Register Block Models with Default Items and add to ItemList
@@ -435,9 +450,10 @@ public class ItemFactory {
 
         ModGroup.addToDefault(name);
 
-        if (name == null || item == null)
-            System.out.println("Error");
-        
+        if (name == null || item == null) {
+            System.out.println("[ITEM-ERROR]: " + name + " with id " + item);
+        }
+
         return item;
     }
 

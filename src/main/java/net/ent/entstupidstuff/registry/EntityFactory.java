@@ -20,6 +20,7 @@ import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
+import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
 import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
 import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -27,8 +28,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.passive.CodEntity;
-import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -69,9 +68,9 @@ public class EntityFactory {
         .build()
     );
 
-    public static final EntityType<TridentEntity> ANCIENT_TRIDENT = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<AncientTridentEntity> ANCIENT_TRIDENT = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"),
-		EntityType.Builder.create((EntityType<TridentEntity> type, World world) -> new TridentEntity(type, world), SpawnGroup.MISC)
+		EntityType.Builder.create((EntityType<AncientTridentEntity> type, World world) -> new AncientTridentEntity(type, world), SpawnGroup.MISC)
 		    .dimensions(0.5F, 0.5F)
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
