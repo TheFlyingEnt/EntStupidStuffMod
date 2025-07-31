@@ -5,7 +5,6 @@ import java.util.Objects;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
-import net.ent.entstupidstuff.client.render.entity.sprite.ShieldSprite;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -143,7 +142,7 @@ public class BuiltInModelItemRenderer {
         BuiltinItemRendererRegistry.INSTANCE.register(
             ItemFactory.ANCIENT_TRIDENT,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
-                System.out.println("Trident - Clint Code");
+                //System.out.println("Trident - Clint Code");
 
                 AncientTridentModel model = new AncientTridentModel(
                     MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.ANCIENT_TRIDENT)

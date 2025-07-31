@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
+import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
@@ -49,6 +50,12 @@ public class AncientDrownedModel<T extends ZombieEntity> extends ZombieEntityMod
       this.leftArmPose = ArmPose.EMPTY;
       ItemStack itemStack = zombieEntity.getStackInHand(Hand.MAIN_HAND);
       if (itemStack.isOf(Items.TRIDENT) && zombieEntity.isAttacking()) {
+         if (zombieEntity.getMainArm() == Arm.RIGHT) {
+            this.rightArmPose = ArmPose.THROW_SPEAR;
+         } else {
+            this.leftArmPose = ArmPose.THROW_SPEAR;
+         }
+      } else if (itemStack.isOf(ItemFactory.ANCIENT_TRIDENT) && zombieEntity.isAttacking()) {
          if (zombieEntity.getMainArm() == Arm.RIGHT) {
             this.rightArmPose = ArmPose.THROW_SPEAR;
          } else {

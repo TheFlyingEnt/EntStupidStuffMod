@@ -44,5 +44,5 @@ replay_*.log
 *.html
 .oldcode/
 .devEnt/
-#src/main/generated/.cache/
+src/main/generated/.cache/
 

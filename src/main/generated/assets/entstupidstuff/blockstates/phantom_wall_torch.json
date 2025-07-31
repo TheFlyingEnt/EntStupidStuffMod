@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "entstupidstuff:block/phantom_wall_torch"
+    },
+    "facing=north": {
+      "model": "entstupidstuff:block/phantom_wall_torch",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "entstupidstuff:block/phantom_wall_torch",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "entstupidstuff:block/phantom_wall_torch",
+      "y": 180
+    }
+  }
+}

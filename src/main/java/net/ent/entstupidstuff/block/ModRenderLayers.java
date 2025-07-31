@@ -108,6 +108,11 @@ public class ModRenderLayers {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_block"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_gate"), RenderLayer.getCutoutMipped());
 
+        //Torch
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom_torch"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom_wall_torch"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom_lantern"), RenderLayer.getCutout());
+
 
 
 

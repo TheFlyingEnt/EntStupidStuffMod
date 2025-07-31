@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "entstupidstuff:block/phantom_lantern"
+    },
+    "hanging=true": {
+      "model": "entstupidstuff:block/phantom_lantern_hanging"
+    }
+  }
+}

@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.registry;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
+import net.ent.entstupidstuff.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
@@ -57,9 +58,9 @@ public class EntityFactory {
         .build()
     );
 
-    public static final EntityType<DrownedEntity> ANCIENT_DROWNED = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<AncientDrownedEntity> ANCIENT_DROWNED = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned"),
-        EntityType.Builder.create(DrownedEntity::new, SpawnGroup.MONSTER)
+        EntityType.Builder.create(AncientDrownedEntity::new, SpawnGroup.MONSTER)
         .dimensions(0.6F, 1.95F)
 		.eyeHeight(1.74F)
 		.passengerAttachments(2.0125F)
@@ -292,7 +293,7 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(LOBBER_ZOMBIE, LobberZombieEntity.createLobberZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SCORCHED, ScorchedZombieEntity.createScorchedZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());
-        FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, DrownedEntity.createDrownedAttributes());
+        FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, AncientDrownedEntity.createDrownedAttributes());
         FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes()/*createPillagerAttributes*/);

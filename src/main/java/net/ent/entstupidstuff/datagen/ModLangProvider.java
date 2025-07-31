@@ -24,15 +24,41 @@ public class ModLangProvider extends FabricLanguageProvider  {
     @Override
     public void generateTranslations(WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 
+        //Launch - Welcome to Stupidity
+
         translationBuilder.add("item.entstupidstuff." + "raw_marshmellow", "Marshmellow on a Stick");
         translationBuilder.add("item.entstupidstuff." + "toasted_marshmellow", "Toasted Marshmellow on a Stick");
         translationBuilder.add("item.entstupidstuff." + "butterfly_jar", "Butterfly in a Jar");
-        translationBuilder.add("item.entstupidstuff." + "Baguette", "La Baguette");
+        translationBuilder.add("item.entstupidstuff." + "baguette", "La Baguette");
         translationBuilder.add("item.entstupidstuff." + "noodle_bowl", "Bowl of Noodles");
         translationBuilder.add("item.entstupidstuff." + "apple_pie", "Apple Pie");
+
+        translationBuilder.add("item.entstupidstuff." + "butterfly_spawn_egg", "Butterfly Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "zombie_lobber_spawn_egg", "Lobber Spawn Egg");
+
+        translationBuilder.add("item.entstupidstuff." + "string_gate", "String Gate");
+        translationBuilder.add("item.entstupidstuff." + "string_block", "String Block");
+
+        //The Fire of the Hunt Update:
+
         translationBuilder.add("item.entstupidstuff." + "wither_bone", "Wither Bone");
         translationBuilder.add("item.entstupidstuff." + "ancient_debris_nugget", "Ancient Debris Nugget");
+
+        translationBuilder.add("item.entstupidstuff." + "zombie_scorched_spawn_egg", "Scorched Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "piglin_warrior_spawn_egg", "Piglin Warrior Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "blazing_inferno_spawn_egg", "Blazing Inferno Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "soul_skeleton_spawn_egg", "Soul Skeleton Spawn Egg");
+        
+
+        // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
+
         translationBuilder.add("item.entstupidstuff." + "bottle_of_rum", "Bottle of Rum");
+        translationBuilder.add("block.entstupidstuff." + "phantom_torch", "Phantom Torch");
+        translationBuilder.add("block.entstupidstuff." + "phantom_lantern", "Phantom Lantern");
+        translationBuilder.add("item.entstupidstuff." + "ancient_trident", "Ancient Trident");
+        translationBuilder.add("item.entstupidstuff." + "cannon", "Cannon");
+        translationBuilder.add("item.entstupidstuff." + "cannon_ball", "Cannon ball");
+        translationBuilder.add("item.entstupidstuff." + "prismerine_arrow", "Prismerine Arrow");
 
         translationBuilder.add("subtitles.ent.entity." + "alligator_gar.death", "Alligator Gar Dies");
         translationBuilder.add("subtitles.ent.entity." + "alligator_gar.hurt", "Alligator Gar hurts ");
@@ -45,26 +71,22 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.hurt", "Zebra Fish hurts ");
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.flop", "Zebra Fish Flops");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish", "Zebra Fish");
-        //translationBuilder.add("item.entstupidstuff." + "cooked_zebra_fish", "Cooked Zebra Fish");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish_bucket", "Bucket of Zebra Fish");
 
-        //translationBuilder.add("subtitles.ent.entity." + "tuna.death", "Tuna Dies");
-        //translationBuilder.add("subtitles.ent.entity." + "tuna.hurt", "Tuna hurts ");
-        //translationBuilder.add("subtitles.ent.entity." + "tuna.flop", "Tuna Flops");
-        //translationBuilder.add("item.entstupidstuff." + "tuna", "Tuna");
-        //translationBuilder.add("item.entstupidstuff." + "cooked_tuna", "Cooked Tuna");
-        //translationBuilder.add("item.entstupidstuff." + "tuna_bucket", "Bucket of Tuna");
+        translationBuilder.add("subtitles.ent.entity." + "mackerel.death", "Mackerel Dies");
+        translationBuilder.add("subtitles.ent.entity." + "mackerel.hurt", "Mackerel hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "mackerel.flop", "Mackerel Flops");
+        translationBuilder.add("item.entstupidstuff." + "mackerel", "Mackerel");
+        translationBuilder.add("item.entstupidstuff." + "cooked_mackerel", "Cooked Mackerel");
+        translationBuilder.add("item.entstupidstuff." + "mackerel_bucket", "Bucket of Mackerel");
 
-        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.death", "Sword Fish Dies");
-        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.hurt", "Sword Fish hurts ");
-        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.flop", "Sword Fish Flops");
-        //translationBuilder.add("item.entstupidstuff." + "sword_fish", "Sword Fish");
-        //translationBuilder.add("item.entstupidstuff." + "cooked_sword_fish", "Cooked Sword Fish");
-        //translationBuilder.add("item.entstupidstuff." + "sword_fish_bucket", "Bucket of Sword Fish");
-        
-        translationBuilder.add("item.entstupidstuff." + "string_gate", "String Gate");
-        translationBuilder.add("item.entstupidstuff." + "string_block", "String Block");
-        
+        translationBuilder.add("item.entstupidstuff." + "sunken_skeleton_spawn_egg", "Sunken Skeleton (Bow) Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "sunken_skeleton2_spawn_egg", "Sunken Skeleton (Crossbow) Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "skeleton_metal" + "_spawn_egg", "Metal Skeleton Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "skeleton_phantom" + "_spawn_egg", "Phantom Skeleton Spawn Egg");
+
+        // Weapons
+
         translationBuilder.add(ItemFactory.callItem("wooden_claymore"), "Wooden Claymore");
         translationBuilder.add(ItemFactory.callItem("stone_claymore"), "Stone Claymore");
         translationBuilder.add(ItemFactory.callItem("iron_claymore"), "Iron Claymore");
@@ -93,72 +115,66 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.callItem("diamond_hammer"), "Diamond Hammer");
         translationBuilder.add(ItemFactory.callItem("netherite_hammer"), "Netherite Hammer");
 
-        //translationBuilder.add(ItemFactory.callItem("wooden_battleaxe"), "Wooden Battle Axe");
-        //translationBuilder.add(ItemFactory.callItem("stone_battleaxe"), "Stone Battle Axe");
-        //translationBuilder.add(ItemFactory.callItem("iron_battleaxe"), "Iron Battle Axe");
-        //translationBuilder.add(ItemFactory.callItem("golden_battleaxe"), "Golden Battle Axe");
-        //translationBuilder.add(ItemFactory.callItem("diamond_battleaxe"), "Diamond Battle Axe");
-        //translationBuilder.add(ItemFactory.callItem("netherite_battleaxe"), "Netherite Battle Axe");
+        // Shields
 
-        
+        addShield("wooden_oak", "Wooden Oak ", translationBuilder);
+        addShield("wooden_spruce", "Wooden Spruce ", translationBuilder);
+        addShield("wooden_birch", "Wooden Birch ", translationBuilder);
+        addShield("wooden_jungle", "Wooden Jungle ", translationBuilder);
+        addShield("wooden_acacia", "Wooden Acacia", translationBuilder);
+        addShield("wooden_dark_oak", "Wooden Dark Oak", translationBuilder);
+        addShield("wooden_mangrove", "Wooden Mangrove", translationBuilder);
+        addShield("wooden_cherry", "Wooden Cherry", translationBuilder);
+        addShield("wooden_bamboo", "Wooden Bamboo", translationBuilder);
 
-
-        translationBuilder.add("item.entstupidstuff." + "skeleton_metal" + "_spawn_egg", "Metal Skeleton Spawn Egg");
-        translationBuilder.add("item.entstupidstuff." + "skeleton_phantom" + "_spawn_egg", "Phantom Skeleton Spawn Egg");
-        
-        translationBuilder.add("item.entstupidstuff.zombie_scorched_spawn_egg", "Scorched Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.piglin_warrior_spawn_egg", "Piglin Warrior Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.blazing_inferno_spawn_egg", "Blazing Inferno Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.soul_skeleton_spawn_egg", "Soul Skeleton Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.sunken_skeleton_spawn_egg", "Sunken Skeleton (Bow) Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.sunken_skeleton2_spawn_egg", "Sunken Skeleton (Crossbow) Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.butterfly_spawn_egg", "Butterfly Spawn Egg");
-        translationBuilder.add("item.entstupidstuff.zombie_lobber_spawn_egg", "Lobber Spawn Egg");
+        addShield("stone", "Stone", translationBuilder);
+        addShield("stone_deepslate", "Deepslate", translationBuilder);
+        addShield("stone_blackstone", "Blackstone", translationBuilder);
+        addShield("golden", "Golden", translationBuilder);
+        addShield("diamond", "Diamond", translationBuilder);
 
 
+        // Wood, Planks, ETC
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic"), "Oak" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic"), "Oak" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic_stairs"), "Oak" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic_slab"), "Oak" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic"), "Spruce" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic"), "Spruce" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic_stairs"), "Spruce" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic_slab"), "Spruce" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic"), "Jungle" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic"), "Jungle" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic_stairs"), "Jungle" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic_slab"), "Jungle" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic"), "Birch" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic"), "Birch" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic_stairs"), "Birch" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic_slab"), "Birch" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic"), "Dark Oak" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic"), "Dark Oak" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic_stairs"), "Dark Oak" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic_slab"), "Dark Oak" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic"), "Acacia" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic"), "Acacia" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic_stairs"), "Acacia" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic_slab"), "Acacia" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic"), "Mangrove" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic"), "Mangrove" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic_stairs"), "Mangrove" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic_slab"), "Mangrove" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic"), "Cherry" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic"), "Cherry" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic_stairs"), "Cherry" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic_slab"), "Cherry" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic"), "Crimson" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic"), "Crimson" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic_stairs"), "Crimson" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic_slab"), "Crimson" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic"), "Warped" + "Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic"), "Warped" + " Mosaic");
         translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic_stairs"), "Warped" + "Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic_slab"), "Warped" + "Mosaic Slab");
-
-
-
 
         translationBuilder.add(BlockFactoryUpt.callBlock("fungal_planks"), "Fungal Planks");
         translationBuilder.add(BlockFactoryUpt.callBlock("fungal_stairs"), "Fungal Stairs");
@@ -172,53 +188,48 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_door"), "Fungal Glass Door");
         translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_trapdoor"), "Fungal Glass Trapdoor");
 
+        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic"), "Fungal Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_stairs"), "Fungal Mosaic Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_slab"), "Fungal Mosaic Slab");
 
         for (String color : BlockFactoryUpt.COLORS){
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_planks_" + color), formatString(color) + "Fungal Planks");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_stairs_" + color), formatString(color) + "Fungal Stairs");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_slab_" + color), formatString(color) + "Fungal Slab");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_" + color), formatString(color) + "Fungal Fence");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_gate_" + color), formatString(color) + "Fungal Fence Gate");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_door_" + color), formatString(color) + "Fungal Door");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_trapdoor_" + color), formatString(color) + "Fungal Trapdoor");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_pressure_plate_" + color), formatString(color) + "Fungal Pressure Plate");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_button_" + color), formatString(color) + "Fungal Button");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_door_" + color), formatString(color) + "Fungal Glass Door");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_trapdoor_" + color), formatString(color) + "Fungal Glass Trapdoor");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_planks_" + color), formatString(color) + " Fungal Planks");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_stairs_" + color), formatString(color) + " Fungal Stairs");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_slab_" + color), formatString(color) + " Fungal Slab");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_" + color), formatString(color) + " Fungal Fence");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_gate_" + color), formatString(color) + " Fungal Fence Gate");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_door_" + color), formatString(color) + " Fungal Door");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_trapdoor_" + color), formatString(color) + " Fungal Trapdoor");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_pressure_plate_" + color), formatString(color) + " Fungal Pressure Plate");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_button_" + color), formatString(color) + " Fungal Button");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_door_" + color), formatString(color) + " Fungal Glass Door");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_trapdoor_" + color), formatString(color) + " Fungal Glass Trapdoor");
+
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_" + color), formatString(color) + " Fungal Mosaic");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_stairs_" + color), formatString(color) + " Fungal Mosaic Stairs");
+            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_slab_" + color), formatString(color) + " Fungal Mosaic Slab");
         
-            translationBuilder.add(BlockFactoryUpt.callBlock("textured_wool_" + color), formatString(color) + "Quillted Wool");
-        }
-
-        for (String varient : ModBlocks.COPPER_VARIENTS){ //Copper Glass Door
-            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + "Glass Door");
-        }
-
-        for (String varient : ModBlocks.V_WOOD_VARIENTS){ //Vanilla Wooden Glass Door
-            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + "Glass Door");
+            translationBuilder.add(BlockFactoryUpt.callBlock("textured_wool_" + color), formatString(color) + " Quillted Wool");
         }
 
         translationBuilder.add(BlockFactoryUpt.callBlock("iron_glass_door"),"Iron Glass Door");
 
-        /*translationBuilder.add(ItemFactory.callItem("wooden_dagger"), "Wooden Dagger");
-        translationBuilder.add(ItemFactory.callItem("stone_dagger"), "Stone Dagger");
-        translationBuilder.add(ItemFactory.callItem("iron_dagger"), "Iron Dagger");
-        translationBuilder.add(ItemFactory.callItem("golden_dagger"), "Golden Dagger");
-        translationBuilder.add(ItemFactory.callItem("diamond_dagger"), "Diamond Dagger");
-        translationBuilder.add(ItemFactory.callItem("netherite_dagger"), "Netherite Dagger");
-        */
+        for (String varient : ModBlocks.COPPER_VARIENTS){ //Copper Glass Door
+            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
+        }
 
-        translationBuilder.add("item.entstupidstuff.cannon", "Cannon");
-        translationBuilder.add("item.entstupidstuff.cannon_ball", "Cannon ball");
-        translationBuilder.add("item.entstupidstuff.prismerine_arrow", "Prismerine Arrow");
+        for (String varient : ModBlocks.V_WOOD_VARIENTS){ //Vanilla Wooden Glass Door
+            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
+        }
 
-        translationBuilder.add("item.entstupidstuff.double_hand.tooltip", "Double Handed");
-        translationBuilder.add("item.entstupidstuff.blunt.tooltip", "Blunt");
-        translationBuilder.add("item.entstupidstuff.bleeding.tooltip", "Bleed");
+        //Group (Item Group)
+        
+        translationBuilder.add("item.entstupidstuff." + "deco_group", "Decoration");
+        translationBuilder.add("item.entstupidstuff." + "combat_group", "Modded Combat");
+        translationBuilder.add("item.entstupidstuff." + "default_group", "Default (Everything)");
+        translationBuilder.add("item.entstupidstuff." + "natural_group", "Natural");
 
-        translationBuilder.add("item.entstupidstuff.deco_group", "Decoration");
-        translationBuilder.add("item.entstupidstuff.combat_group", "Modded Combat");
-        translationBuilder.add("item.entstupidstuff.default_group", "Default (Everything)");
-        translationBuilder.add("item.entstupidstuff.natural_group", "Natural");
+        //Stone Varient
 
         translationBuilder.add(BlockFactoryUpt.callBlock("diorite_bricks"), "Diorite Bricks");
         translationBuilder.add(BlockFactoryUpt.callBlock("diorite_brick_slab"), "Diorite Brick Slab");
@@ -238,9 +249,88 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_wall"), "Granite Brick Wall");
         translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_chiseled"), "Chiseled Granite Brick");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_diorite_wall"), "Polished  Diorite Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_andesite_wall"), "Polished  Andesite Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_granite_wall"), "Polished  Granite Wall");
+        translationBuilder.add(BlockFactoryUpt.callBlock("polished_diorite_wall"), "Polished Diorite Wall");
+        translationBuilder.add(BlockFactoryUpt.callBlock("polished_andesite_wall"), "Polished Andesite Wall");
+        translationBuilder.add(BlockFactoryUpt.callBlock("polished_granite_wall"), "Polished Granite Wall");
+
+
+        
+
+
+
+       
+
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.death", "Sword Fish Dies");
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.hurt", "Sword Fish hurts ");
+        //translationBuilder.add("subtitles.ent.entity." + "sword_fish.flop", "Sword Fish Flops");
+        //translationBuilder.add("item.entstupidstuff." + "sword_fish", "Sword Fish");
+        //translationBuilder.add("item.entstupidstuff." + "cooked_sword_fish", "Cooked Sword Fish");
+        //translationBuilder.add("item.entstupidstuff." + "sword_fish_bucket", "Bucket of Sword Fish");
+        
+        
+        
+        
+
+
+        
+        
+        
+        
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+
+        
+
+        /*translationBuilder.add(ItemFactory.callItem("wooden_dagger"), "Wooden Dagger");
+        translationBuilder.add(ItemFactory.callItem("stone_dagger"), "Stone Dagger");
+        translationBuilder.add(ItemFactory.callItem("iron_dagger"), "Iron Dagger");
+        translationBuilder.add(ItemFactory.callItem("golden_dagger"), "Golden Dagger");
+        translationBuilder.add(ItemFactory.callItem("diamond_dagger"), "Diamond Dagger");
+        translationBuilder.add(ItemFactory.callItem("netherite_dagger"), "Netherite Dagger");
+        */
+
+        
+
+        translationBuilder.add("item.entstupidstuff.double_hand.tooltip", "Double Handed");
+        translationBuilder.add("item.entstupidstuff.blunt.tooltip", "Blunt");
+        translationBuilder.add("item.entstupidstuff.bleeding.tooltip", "Bleed");
+
+        //Trapdoor
+        translationBuilder.add("block.entstupidstuff." + "oak" + "_glass_trapdoor", "Oak" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "spruce" + "_glass_trapdoor", "Spruce" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "jungle" + "_glass_trapdoor", "Jungle" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "birch" + "_glass_trapdoor", "Birch" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "dark_oak" + "_glass_trapdoor", "Dark Oak" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "acacia" + "_glass_trapdoor", "Acacia" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "mangrove" + "_glass_trapdoor", "Mangrove" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "cherry" + "_glass_trapdoor", "Cherry" + " Glass Trapdoor"); 
+        translationBuilder.add("block.entstupidstuff." + "bamboo" + "_glass_trapdoor", "Bamboo" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "crimson" + "_glass_trapdoor", "Crimson" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "warped" + "_glass_trapdoor", "Warped" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "copper" + "_glass_trapdoor", "Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "exposed_copper" + "_glass_trapdoor", "Exposed Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "oxidized_copper" + "_glass_trapdoor", "Oxidized Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "weathered_copper" + "_glass_trapdoor", "Weathered Copper" + " Glass Trapdoor");
+
+        translationBuilder.add("block.entstupidstuff." + "waxed_copper" + "_glass_trapdoor", "Waxed Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "waxed_exposed_copper" + "_glass_trapdoor", "Waxed Exposed Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "waxed_oxidized_copper" + "_glass_trapdoor", "Waxed Oxidized Copper" + " Glass Trapdoor");
+        translationBuilder.add("block.entstupidstuff." + "waxed_weathered_copper" + "_glass_trapdoor", "Waxed Weathered Copper" + " Glass Trapdoor");
+
+
+
+
 
         //Redwood
 
@@ -260,6 +350,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("redwood_button"), "Redwood Button");
         translationBuilder.add(BlockFactoryUpt.callBlock("redwood_glass_door"), "Redwood Glass Door");
         translationBuilder.add(BlockFactoryUpt.callBlock("redwood_glass_trapdoor"), "Redwood Glass trapdoor");
+        
+        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic"), "Redwood Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic_stairs"), "Redwood Mosaic Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic_slab"), "Redwood Mosaic Slab");
 
         // Desert Iron
 
@@ -280,6 +374,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_glass_door"), "Desert Iron Glass Door");
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_glass_trapdoor"), "Desert Iron Glass Trapdoor");
 
+        //translationBuilder.add(BlockFactoryUpt.callBlock("desert_mosaic"), "Desert Mosaic");
+        //translationBuilder.add(BlockFactoryUpt.callBlock("desert_mosaic_stairs"), "Desert Mosaic Stairs");
+        //translationBuilder.add(BlockFactoryUpt.callBlock("desert_mosaic_slab"), "Desert Mosaic Slab");
+
         // Maple
 
         translationBuilder.add(BlockFactoryUpt.callBlock("maple_log"), "Maple Log");
@@ -298,6 +396,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("maple_button"), "Maple Button");
         translationBuilder.add(BlockFactoryUpt.callBlock("maple_glass_door"), "Maple Glass Door");
         translationBuilder.add(BlockFactoryUpt.callBlock("maple_glass_trapdoor"), "Maple Glass trapdoor");
+
+        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic"), "Maple Mosaic Planks");
+        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic_stairs"), "Maple Mosaic Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic_slab"), "Maple Mosaic Slab");
 
         //Phantom
 
@@ -318,23 +420,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("phantom_glass_door"), "Phantom Glass Door");
         translationBuilder.add(BlockFactoryUpt.callBlock("phantom_glass_trapdoor"), "Phantom Glass trapdoor");
 
-        //Shields
-
-        addShield("wooden_oak", "Wooden Oak", translationBuilder);
-        addShield("wooden_spruce", "Wooden Spruce", translationBuilder);
-        addShield("wooden_birch", "Wooden Birch", translationBuilder);
-        addShield("wooden_jungle", "Wooden Jungle", translationBuilder);
-        addShield("wooden_acacia", "Wooden Acacia", translationBuilder);
-        addShield("wooden_dark_oak", "Wooden Dark Oak", translationBuilder);
-        addShield("wooden_mangrove", "Wooden Mangrove", translationBuilder);
-        addShield("wooden_cherry", "Wooden Cherry", translationBuilder);
-        addShield("wooden_bamboo", "Wooden Bamboo", translationBuilder);
-
-        addShield("stone", "Stone", translationBuilder);
-        addShield("stone_deepslate", "Deepslate", translationBuilder);
-        addShield("stone_blackstone", "Blackstone", translationBuilder);
-        addShield("golden", "Golden", translationBuilder);
-        addShield("diamond", "Diamond", translationBuilder);
+        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic"), "Phantom Mosaic Planks");
+        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_stairs"), "Phantom Mosaic Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_slab"), "Phantom Mosaic Slab");
 
         /*translationBuilder.add(SIMPLE_ITEM, "Simple Item");
         translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
@@ -350,24 +438,23 @@ public class ModLangProvider extends FabricLanguageProvider  {
     }
 
     public static String formatString(String input) {
-        String withSpaces = input.replace("_", "");
-        String[] words = withSpaces.split("");
-        
-        StringBuilder formattedString = new StringBuilder();
-        for (String word : words) {
-            if (word.length() > 0) {
-                formattedString.append(Character.toUpperCase(word.charAt(0)))
-                               .append(word.substring(1).toLowerCase())
-                               .append("");
-            }
+    String[] parts = input.split("_");
+    StringBuilder result = new StringBuilder();
+
+    for (String part : parts) {
+        if (!part.isEmpty()) {
+            result.append(Character.toUpperCase(part.charAt(0)));
+            result.append(part.substring(1).toLowerCase());
+            result.append(" ");
         }
-        
-        return formattedString.toString().trim();
     }
+
+    return result.toString().trim();
+}
 
     public void addShield(String item, String FullName, TranslationBuilder translationBuilder) {
         
-        translationBuilder.add("item.entstupidstuff." + item + "_shield", FullName + "Shield");
+        translationBuilder.add("item.entstupidstuff." + item + "_shield", FullName + " Shield");
 
         translationBuilder.add("item.entstupidstuff." + item + "_shield" + ".white", "White " + FullName + "Shield");
         translationBuilder.add("item.entstupidstuff." + item + "_shield" + ".light_gray", "Light Gray " + FullName + "Shield");

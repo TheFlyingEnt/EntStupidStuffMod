@@ -83,8 +83,8 @@ public class EntStupidStuff implements ModInitializer {
 		ModEffects.registerEffects();
 		ModEntitySpawns.addSpawns();
 
-		ItemFactory.onInitialize();
 		BlockFactoryUpt.onInitialize();
+		ItemFactory.onInitialize();
 		
 		ModGroup.onInitialize();
 		SoundFactory.registerSounds();

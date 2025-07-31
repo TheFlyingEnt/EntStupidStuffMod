@@ -111,7 +111,7 @@ public abstract class ItemRendererMixin {
             boolean bl = renderMode == ModelTransformationMode.GUI || renderMode == ModelTransformationMode.GROUND || renderMode == ModelTransformationMode.FIXED;  //////////////////////////////////////
 
             if (!bl && stack.isOf(ItemFactory.ANCIENT_TRIDENT)) { //This is the HotBar Model
-                System.out.println("Trident - renderItem");
+                //System.out.println("Trident - renderItem");
                 matrices.push();
                 model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
                 model.getTransformation().getTransformation(renderMode).apply(leftHanded, matrices);

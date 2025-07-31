@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_torch",
+  "textures": {
+    "torch": "entstupidstuff:block/phantom_torch"
+  }
+}

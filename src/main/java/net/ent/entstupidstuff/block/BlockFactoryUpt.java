@@ -44,6 +44,8 @@ import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -278,6 +280,15 @@ public class BlockFactoryUpt {
         return Registry.register(Registries.BLOCK, id, block);
 	}
 
+    private static Block registerBlock(String name, Block block) {
+        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
+        BlockList.put(id, block);
+        
+        System.out.println(id.toString());
+        return Registry.register(Registries.BLOCK, id, block);
+    }
+
+
     public static Block registerNonReg(String name, Block block) {
 
         Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
@@ -286,9 +297,14 @@ public class BlockFactoryUpt {
 	}
 
     public static Block callBlock(String blockID) {
+        try {
+            Identifier id = Identifier.of(EntStupidStuff.MOD_ID, blockID);
+            return BlockList.get(id);
+        } catch(Exception e) {
+            System.out.println("An Error was called in callBlock()");
+            return null;
+        }
 
-        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, blockID);
-        return BlockList.get(id);
     }
 
     /* Support */
@@ -475,17 +491,6 @@ public class BlockFactoryUpt {
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
 
-        Block PHANTOM_LANTERN = register((String)"phantom_lantern", new LanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.IRON_GRAY).solid().requiresTool().strength(3.5F).sounds(BlockSoundGroup.LANTERN).luminance((state) -> {
-            return 10;
-        }).nonOpaque().pistonBehavior(PistonBehavior.DESTROY)));
-
-        /*Block PHANTOM_TORCH = register((String)"phantom_torch", new TorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.create().noCollision().breakInstantly().luminance((state) -> {
-            return 14;
-        }).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)));
-
-        Block PHANTOM_WALL_TORCH = register((String)"phantom_wall_torch", new WallTorchBlock(ParticleTypes.FLAME, AbstractBlock.Settings.create().noCollision().breakInstantly().luminance((state) -> {
-            return 14;
-        }).sounds(BlockSoundGroup.WOOD).dropsLike(PHANTOM_TORCH).pistonBehavior(PistonBehavior.DESTROY)));*/
 
     }
 
@@ -737,9 +742,34 @@ public class BlockFactoryUpt {
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
 
-        
+        Block PHANTOM_LANTERN = register((String)"phantom_lantern", new LanternBlock(AbstractBlock.Settings.create().mapColor(MapColor.IRON_GRAY).solid().requiresTool().strength(3.5F).sounds(BlockSoundGroup.LANTERN).luminance((state) -> {
+            return 10;
+        }).nonOpaque().pistonBehavior(PistonBehavior.DESTROY)));
+
 
     }
+
+    public static final Block PHANTOM_TORCH = registerBlock(
+            "phantom_torch",
+            new TorchBlock(
+                ParticleTypes.GLOW,
+                AbstractBlock.Settings.create().noCollision().breakInstantly().luminance(state -> 10).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)
+            )
+        );
+
+    public static final Block PHANTOM_WALL_TORCH = registerBlock(
+            "phantom_wall_torch",
+            new WallTorchBlock(
+                ParticleTypes.GLOW,
+                AbstractBlock.Settings.create()
+                    .noCollision()
+                    .breakInstantly()
+                    .luminance(state -> 10)
+                    .sounds(BlockSoundGroup.WOOD)
+                    .dropsLike(PHANTOM_TORCH)
+                    .pistonBehavior(PistonBehavior.DESTROY)
+            )
+        );
 
 
 
