@@ -55,6 +55,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     Boolean enableRedwood = true;
 
     Boolean enableAdditionalStone = true;
+    Boolean enableLimestoneRecipes = true;
 
     Boolean enableGlassDoor = true;
     Boolean enableGlassTrapDoor = true;
@@ -281,6 +282,10 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         
         if (enableAdditionalStone) {
             createStoneVarient();
+        }
+
+        if (enableLimestoneRecipes) {
+            createLimestoneVarients();
         }
 
 
@@ -1240,6 +1245,87 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 			.offerTo(exporter);
     }
 
+    public static void createLimestoneVarients() {
+
+        Block LIMESTONE = BlockFactoryUpt.callBlock("limestone");
+        Block POLISHED_LIMESTONE = BlockFactoryUpt.callBlock("polished_limestone");
+        Block POLISHED_LIMESTONE_BRICKS = BlockFactoryUpt.callBlock("polished_limestone_bricks");
+
+
+        //Limestone (Stonecutter)
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+
+        //Limestone (Crafting Table)
+
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "slab").asItem(), 
+            Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
+        .offerTo(exporter);
+
+        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("limestone_" + "stairs").asItem(), 
+            Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
+        .offerTo(exporter);
+
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+
+        //Polished Limestone (Stonecutter)
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone").asItem(), LIMESTONE);
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);;
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+
+        //Polished Limestone (Crafting Table)
+
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), 
+            Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
+        .offerTo(exporter);
+
+        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), 
+            Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
+        .offerTo(exporter);
+
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        
+
+        // Limestone Bricks
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), LIMESTONE.asItem());
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE_BRICKS.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), LIMESTONE.asItem());
+
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), LIMESTONE.asItem());
+
+        /*CookingRecipeJsonBuilder.createSmelting(
+			Ingredient.ofItems(POLISHED_LIMESTONE_BRICKS.asItem()), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_polished_limestone_brick").asItem(), 0.1F, 200
+		)
+		.criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()))
+		.offerTo(exporter, "smelted_" + "cracked_polished_limestone_brick");*/
+
+        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_chiseled"), Ingredient.ofItems(BlockFactoryUpt.callBlock("polished_limestone_brick_slab")))
+        .criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem()))
+        .offerTo(exporter);
+
+
+    }
+
     public static void createStoneVarient() {
 
         Block ANDERSITE_BRICKS = BlockFactoryUpt.callBlock("andesite_bricks");
@@ -1388,8 +1474,6 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 			.criterion(hasItem(Blocks.POLISHED_GRANITE), conditionsFromItem(Blocks.POLISHED_GRANITE))
 			.offerTo(exporter);
             
-
-
     }
 
 

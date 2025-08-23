@@ -3,10 +3,6 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -19,7 +15,7 @@ import net.minecraft.util.math.RotationAxis;
 
 public class AncientDrownedRenderer extends ZombieBaseEntityRenderer<DrownedEntity, AncientDrownedModel<DrownedEntity>>{
    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned.png");
-   private static final Identifier GLOW_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_e.png");
+   //private static final Identifier GLOW_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_e.png");
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public AncientDrownedRenderer(EntityRendererFactory.Context context) {

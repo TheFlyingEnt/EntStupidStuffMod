@@ -1,12 +1,14 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.ModRenderLayers;
+import net.ent.entstupidstuff.client.ParticlesClient;
 import net.ent.entstupidstuff.client.item.ModelPredicateFactory;
 import net.ent.entstupidstuff.client.render.BuiltInModelItemRenderer;
 import net.ent.entstupidstuff.client.render.ModModelLayers;
 import net.ent.entstupidstuff.item.ModModelPredicateReg;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
+
 
 public class EntStupidStuffClient implements ClientModInitializer {
 
@@ -20,6 +22,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
         ModelPredicateFactory.onInitialize();
         BuiltInModelItemRenderer.onInitialize();
         //UpdatedEnchantmentEffects.registerEnchantmentEffects();
+
+        ParticlesClient.initalize();
         
     }
 

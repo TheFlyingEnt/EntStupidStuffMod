@@ -6,7 +6,6 @@ import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.DrownedEntity;
@@ -16,6 +15,7 @@ public class AncientDrownedOverlayFeatureRenderer <T extends DrownedEntity> exte
    private static final Identifier SKIN = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_outer_layer.png");
    private final AncientDrownedModel<T> model;
 
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    public AncientDrownedOverlayFeatureRenderer(FeatureRendererContext<T, AncientDrownedModel<T>> context, EntityModelLoader loader) {
       super(context);
       this.model = new AncientDrownedModel(loader.getModelPart(ModModelLayers.ANCIENT_DROWNED_OUTER));

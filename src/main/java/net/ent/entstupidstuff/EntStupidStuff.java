@@ -10,6 +10,7 @@ import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.recipe.RecipeSerializer;
@@ -88,6 +89,8 @@ public class EntStupidStuff implements ModInitializer {
 		
 		ModGroup.onInitialize();
 		SoundFactory.registerSounds();
+
+		ParticleTypesFactory.initalizer();
 		
 
 		DispenserBlock.registerProjectileBehavior(ItemFactory.PRISMERINE_ARROW);

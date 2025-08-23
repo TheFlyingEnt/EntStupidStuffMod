@@ -24,10 +24,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+
+/*
+* This is based on Mojangs SwordItem Class but has been give much more Freedom and Customizablity
+*/
 public class WeaponItem extends ToolItem{
 
-	// Code Clean Up 1
-	// This is based on Mojangs SwordItem Class but has been give much more Freedom and Customizablity
 
 	ToolMaterial arcToolMat;
 	//private List<ITrait> traits;

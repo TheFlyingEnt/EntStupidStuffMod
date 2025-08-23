@@ -44,8 +44,6 @@ import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -107,14 +105,47 @@ public class BlockFactoryUpt {
 
     //Start of Code
 
+    public static void onInitializeNew() {
+
+        Block REDWOOD_PLANKS = register("redwood" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.DULL_RED))));
+        BlockFactoryHelper.BaseFamily("redwood", "", REDWOOD_PLANKS, true);
+        BlockFactoryHelper.NatureFamily("redwood" , "", MapColor.DARK_RED, MapColor.SPRUCE_BROWN, true, true);
+        BlockFactoryHelper.MosicFamily("redwood" , "", REDWOOD_PLANKS, true);
+        //register("maple_sapling", new SaplingBlock(SaplingGeneratorFactory.MAPLE, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+
+        Block FIR_PLANKS = register("fir" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
+        BlockFactoryHelper.BaseFamily("fir", "", FIR_PLANKS, true);
+        BlockFactoryHelper.NatureFamily("fir" , "", MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN, true, true);
+        BlockFactoryHelper.MosicFamily("fir" , "", FIR_PLANKS, true);
+        register("fir" + "_sapling", new SaplingBlock(SaplingGeneratorFactory.FIR, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+
+        Block MAPLE_PLANKS = register("maple" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.SPRUCE_BROWN))));
+        BlockFactoryHelper.BaseFamily("maple", "", MAPLE_PLANKS, true);
+        BlockFactoryHelper.NatureFamily("maple" , "", MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN, true, true);
+        BlockFactoryHelper.MosicFamily("maple" , "", MAPLE_PLANKS, true);
+        register("maple" + "_sapling", new SaplingBlock(SaplingGeneratorFactory.MAPLE, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+
+
+    }
+
+
+
+
     public static void onInitialize() {
 
         WoodSystem("redwood", null, MapColor.DULL_RED, true); //Redwood Wood
         WoodSystem("maple", null, MapColor.DULL_RED, true); //Maple Wood
         WoodSystem("desert_iron", null, MapColor.TERRACOTTA_BROWN, true);
+        WoodSystem("fir", null, MapColor.TERRACOTTA_GRAY, true);
         CustomPhantomWoodSystem(); //WoodSystem("phantom", null, MapColor.LICHEN_GREEN, false);
 
+        Block FIR_LEAVES = register("fir_leaves", new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+        Block REDWOOD_LEAVES = register("redwood_leaves", new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+        Block MAPLE_LEAVES = register("maple_leaves", new MapleLeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+
         register("maple_sapling", new SaplingBlock(SaplingGeneratorFactory.MAPLE, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+        //register("redwood_sapling", new SaplingBlock(SaplingGeneratorFactory.MAPLE, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+        register("fir_sapling", new SaplingBlock(SaplingGeneratorFactory.FIR, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
 
         WoodSystem("fungal", null, MapColor.OFF_WHITE, false);
 
@@ -256,6 +287,14 @@ public class BlockFactoryUpt {
 				.suffocates(Blocks::never)
 		.blockVision(Blocks::never)));
 
+        Block LIMESTONE = register("limestone", new Block(AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA)));
+        Block POLISHED_LIMESTONE = register("polished_limestone", new Block(AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA)));
+
+        StoneSystem("limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, LIMESTONE);
+        StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, POLISHED_LIMESTONE);
+        StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, true, POLISHED_LIMESTONE);
+
+
         //BlockSystem(Blocks.OAK_WOOD, "oak_wood", null, MapColor.OAK_TAN);
 
         //ItemFactory.BlockItem();
@@ -363,7 +402,7 @@ public class BlockFactoryUpt {
 
     }
     
-    @SuppressWarnings("unused")
+
     public static void WoodSystem(String blockName, String suffix, MapColor mapColor, Boolean isNatural) {
 
         if (suffix == null) {suffix = "";}
@@ -382,7 +421,7 @@ public class BlockFactoryUpt {
             Block STRIPPED_WOOD = register("stripped_" + blockName + "_wood" + suffix, 
                 new PillarBlock(AbstractBlock.Settings.create().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable()));
 
-            Block LEAVES = register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+            //Block LEAVES = register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
 
             ModGroup.addToNatural(blockName + "_log" + suffix);
             ModGroup.addToNatural("stripped_" + blockName + "_log" + suffix);
@@ -584,21 +623,25 @@ public class BlockFactoryUpt {
 
     }
 
-    @SuppressWarnings("unused")
-    public static void StoneSystem(String blockName, MapColor mapColor, Boolean isVanilla, Block familyBlock) { 
 
-        if (isVanilla) {
+    public static void StoneSystem(String blockName, MapColor mapColor, Boolean isBricksOnly, Block familyBlock) { 
+        
+
+        if (isBricksOnly) {
             Block Bricks = register(blockName + "_bricks", new Block(AbstractBlock.Settings.copy(familyBlock)));
             Block Stairs = register(blockName + "_brick_stairs", new StairsBlock(Bricks.getDefaultState(), AbstractBlock.Settings.copy(familyBlock))); 
             Block Slab = register(blockName + "_brick_slab", new SlabBlock(AbstractBlock.Settings.copy(familyBlock)));
             Block Wall = register(blockName + "_brick_wall", new WallBlock(AbstractBlock.Settings.copy(familyBlock)));
             Block Chizeled = register(blockName + "_brick_chiseled", new Block(AbstractBlock.Settings.copy(familyBlock)));
             Block Cracked = register("cracked_" + blockName + "_bricks", new Block(AbstractBlock.Settings.copy(familyBlock)));
+        } else {  
+            Block Normal_Stairs = register(blockName + "_stairs", new StairsBlock(familyBlock.getDefaultState(), AbstractBlock.Settings.copy(familyBlock))); 
+            Block Normal_Slab = register(blockName + "_slab", new SlabBlock(AbstractBlock.Settings.copy(familyBlock)));
+            Block Normal_Wall = register(blockName + "_wall", new WallBlock(AbstractBlock.Settings.copy(familyBlock)));
         }
 
     }
 
-    @SuppressWarnings("unused")
     public static void CustomPhantomWoodSystem() {
 
         String blockName = "phantom";
@@ -750,26 +793,43 @@ public class BlockFactoryUpt {
     }
 
     public static final Block PHANTOM_TORCH = registerBlock(
-            "phantom_torch",
-            new TorchBlock(
-                ParticleTypes.GLOW,
-                AbstractBlock.Settings.create().noCollision().breakInstantly().luminance(state -> 10).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)
-            )
-        );
+        "phantom_torch",
+        new TorchBlock(
+            ParticleTypes.GLOW,
+            AbstractBlock.Settings.create().noCollision().breakInstantly().luminance(state -> 10).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)
+        )
+    );
 
     public static final Block PHANTOM_WALL_TORCH = registerBlock(
-            "phantom_wall_torch",
-            new WallTorchBlock(
-                ParticleTypes.GLOW,
-                AbstractBlock.Settings.create()
-                    .noCollision()
-                    .breakInstantly()
-                    .luminance(state -> 10)
-                    .sounds(BlockSoundGroup.WOOD)
-                    .dropsLike(PHANTOM_TORCH)
-                    .pistonBehavior(PistonBehavior.DESTROY)
-            )
-        );
+        "phantom_wall_torch",
+        new WallTorchBlock(
+            ParticleTypes.GLOW,
+            AbstractBlock.Settings.create()
+                .noCollision()
+                .breakInstantly()
+                .luminance(state -> 10)
+                .sounds(BlockSoundGroup.WOOD)
+                .dropsLike(PHANTOM_TORCH)
+            .pistonBehavior(PistonBehavior.DESTROY)
+        )
+    );
+
+    public static final Block POINTED_ICE = register(
+		"pointed_ice",
+		new PointedIceBlock(
+			AbstractBlock.Settings.create()
+				.mapColor(MapColor.PALE_PURPLE)
+				.solid()
+				.nonOpaque()
+				.sounds(BlockSoundGroup.GLASS)
+				.ticksRandomly()
+				.strength(1.5F, 3.0F)
+				.dynamicBounds()
+				.offset(AbstractBlock.OffsetType.XZ)
+				.pistonBehavior(PistonBehavior.DESTROY)
+			.solidBlock(Blocks::never)
+		)
+	);
 
 
 

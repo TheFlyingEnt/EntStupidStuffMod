@@ -19,11 +19,12 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
     protected void configure(WrapperLookup wrapperLookup) {
 
         //Fungal Planks
-        addWoodFamily("fungal", null, false, true);
+        addWoodFamily("fungal", null, false, false);
         addWoodFamily("redwood", null, true, true);
-        addWoodFamily("desert_iron", null, true, true);
+        addWoodFamily("desert_iron", null, true, false);
         addWoodFamily("maple", null, true, true);
         addWoodFamily("phantom", null, true, false);
+        addWoodFamily("fir", null, true, true);
 
         // Fungal (Colored) Wood    
         for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false, false);}
@@ -34,11 +35,14 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
         addVanillaStoneFamily("granite_brick");
         addVanillaStoneFamily("diorite_brick");
         addVanillaStoneFamily("andesite_brick");
+        
 
         getOrCreateTagBuilder(BlockTags.WALLS)
         .add((BlockFactoryUpt.callBlock("polished_andesite" + "_wall")))
         .add((BlockFactoryUpt.callBlock("polished_diorite" + "_wall")))
         .add((BlockFactoryUpt.callBlock("polished_granite" + "_wall")));
+
+        addLimestoneStoneFamily();
 
         // Vanilla Wood
         addVanillaGlassDoor("oak");
@@ -118,7 +122,8 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
 
             if (alsoLeaves) {
                 getOrCreateTagBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactoryUpt.callBlock(FamilyBase + "_leaves" + varient)));
-                getOrCreateTagBuilder(BlockTags.HOE_MINEABLE).add((BlockFactoryUpt.callBlock(FamilyBase + "_leaves" + varient)));
+                getOrCreateTagBuilder(BlockTags.HOE_MINEABLE).add((BlockFactoryUpt.callBlock(FamilyBase + "_leaves" + varient))); 
+                getOrCreateTagBuilder(BlockTags.LEAVES).add((BlockFactoryUpt.callBlock(FamilyBase + "_leaves" + varient))); 
             }
 
         }
@@ -267,6 +272,67 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
             .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
         getOrCreateTagBuilder(BlockTags.WALLS)
             .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "s")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock("cracked_" + FamilyBase + "s")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_chiseled")));
+    }
+
+    public void addLimestoneStoneFamily() {
+
+        String FamilyBase = "limestone";
+
+        getOrCreateTagBuilder(BlockTags.STAIRS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.SLABS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.WALLS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+        FamilyBase = "polished_limestone";
+
+        getOrCreateTagBuilder(BlockTags.STAIRS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.SLABS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.WALLS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+        FamilyBase = "polished_limestone_brick";
+
+        getOrCreateTagBuilder(BlockTags.STONE_BRICKS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "s")));
+        getOrCreateTagBuilder(BlockTags.STAIRS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
+        getOrCreateTagBuilder(BlockTags.SLABS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
+        getOrCreateTagBuilder(BlockTags.WALLS)
+            .add((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
+
+
 
         getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
             .add((BlockFactoryUpt.callBlock(FamilyBase + "s")));

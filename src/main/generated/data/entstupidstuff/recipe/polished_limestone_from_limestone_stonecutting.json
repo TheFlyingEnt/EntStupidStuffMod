@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "entstupidstuff:limestone"
+  },
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:polished_limestone"
+  }
+}

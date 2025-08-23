@@ -5,10 +5,19 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.enums.Thickness;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.BlockStateModelGenerator.BlockTexturePool;
+import net.minecraft.data.client.BlockStateVariant;
+import net.minecraft.data.client.BlockStateVariantMap;
 import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.Models;
+import net.minecraft.data.client.TextureMap;
 import net.minecraft.data.client.TexturedModel;
+import net.minecraft.data.client.VariantSettings;
+import net.minecraft.data.client.VariantsBlockStateSupplier;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.Direction;
 
 public class ModelProvider extends FabricModelProvider{
 
@@ -17,6 +26,8 @@ public class ModelProvider extends FabricModelProvider{
     }
     
     BlockStateModelGenerator blockStateModelGenerator;
+
+    
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator2) {
@@ -34,6 +45,7 @@ public class ModelProvider extends FabricModelProvider{
         addWoodFamily("redwood", null, true, true);
         addWoodFamily("desert_iron", null, false, true);
         addWoodFamily("maple", null, true, true);
+        addWoodFamily("fir", null, true, true);
 
         createMosaic("oak", "");
         createMosaic("spruce", "");
@@ -71,9 +83,9 @@ public class ModelProvider extends FabricModelProvider{
         //createVanillaGlassDoor("waxed_weathered_copper");
 
         // Vanilla Stone
-        addStoneAlt("andesite");
-        addStoneAlt("diorite");
-        addStoneAlt("granite");
+        addStoneAlt("andesite", true);
+        addStoneAlt("diorite", true);
+        addStoneAlt("granite", true);
 
         blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
         blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
@@ -85,6 +97,12 @@ public class ModelProvider extends FabricModelProvider{
 
         blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
         blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
+
+        registerPointedIce();
+
+        addStoneAlt("limestone", false);
+        addStoneAlt("polished_limestone", false);
+        addStoneAlt("polished_limestone", true);
 
         /*
 
@@ -118,7 +136,7 @@ public class ModelProvider extends FabricModelProvider{
         //addBlockFamily(Blocks.OAK_WOOD, "oak_wood", null);
 
 
-
+        
 
 
 
@@ -142,6 +160,31 @@ public class ModelProvider extends FabricModelProvider{
         for (String inputC : MBlockFactoryUpt.COLORS) { createWoodTexG("fungal", blockStateModelGenerator, "_" + inputC);}
         for (String inputC : MBlockFactoryUpt.COLORS) { createColorT("textured_wool_" + inputC, blockStateModelGenerator);}*/
 	}
+
+
+	private void registerPointedIce() {
+		blockStateModelGenerator.excludeFromSimpleItemModelGeneration(BlockFactoryUpt.callBlock("pointed_ice"));
+		BlockStateVariantMap.DoubleProperty<Direction, Thickness> doubleProperty = BlockStateVariantMap.create(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
+
+		for (Thickness thickness : Thickness.values()) {
+			doubleProperty.register(Direction.UP, thickness, this.getDripstoneVariant(Direction.UP, thickness));
+		}
+
+		for (Thickness thickness : Thickness.values()) {
+			doubleProperty.register(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
+		}
+
+		blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BlockFactoryUpt.callBlock("pointed_ice")).coordinate(doubleProperty));
+	}
+
+    public final BlockStateVariant getDripstoneVariant(Direction direction, Thickness thickness) {
+		String string = "_" + direction.asString() + "_" + thickness.asString();
+		TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(BlockFactoryUpt.callBlock("pointed_ice"), string));
+		return BlockStateVariant.create()
+			.put(VariantSettings.MODEL, Models.POINTED_DRIPSTONE.upload(BlockFactoryUpt.callBlock("pointed_ice"), string, textureMap, blockStateModelGenerator.modelCollector));
+	}
+
+
 
     public void createMosaic(String Familybase, String varient) {
 
@@ -221,17 +264,31 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(FamilyBase + "_" + color));
     }
 
-    public void addStoneAlt(String FamilyBase) {
-        Block MainTexture = BlockFactoryUpt.callBlock(FamilyBase + "_bricks");
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+    public void addStoneAlt(String FamilyBase, Boolean isBricksOnly) {
 
-        blockPool
-            .stairs(BlockFactoryUpt.callBlock(FamilyBase + "_brick_stairs"))
-            .slab(BlockFactoryUpt.callBlock(FamilyBase + "_brick_slab"))
-            .wall(BlockFactoryUpt.callBlock(FamilyBase + "_brick_wall"));
+        if (isBricksOnly) {
+            Block MainTexture = BlockFactoryUpt.callBlock(FamilyBase + "_bricks");
+            BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock("cracked_" + FamilyBase + "_bricks"));
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(FamilyBase + "_brick_chiseled"));
+            blockPool
+                .stairs(BlockFactoryUpt.callBlock(FamilyBase + "_brick_stairs"))
+                .slab(BlockFactoryUpt.callBlock(FamilyBase + "_brick_slab"))
+                .wall(BlockFactoryUpt.callBlock(FamilyBase + "_brick_wall"));
+
+            blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock("cracked_" + FamilyBase + "_bricks"));
+            blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(FamilyBase + "_brick_chiseled"));
+
+        } else {
+            Block MainTexture = BlockFactoryUpt.callBlock(FamilyBase);
+            BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+
+            blockPool
+                .stairs(BlockFactoryUpt.callBlock(FamilyBase + "_stairs"))
+                .slab(BlockFactoryUpt.callBlock(FamilyBase + "_slab"))
+                .wall(BlockFactoryUpt.callBlock(FamilyBase + "_wall"));
+
+        }
+        
 
     }
 

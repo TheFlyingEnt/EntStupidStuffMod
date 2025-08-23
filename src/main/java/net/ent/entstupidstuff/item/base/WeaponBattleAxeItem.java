@@ -65,6 +65,19 @@ public class WeaponBattleAxeItem extends SwordItem {
         ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
     }
 
+	@Override
+	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		if (target.isBlocking() && attacker instanceof PlayerEntity player) {
+			// simulate shield disable similar to vanilla axe bonus
+			target.timeUntilRegen = 0;
+			// brief high damage impulse
+			target.damage(player.getDamageSources().playerAttack(player), 1.0F);
+			// optional: tiny exhaustion to suggest "break"
+			target.getWorld().playSound(null, target.getBlockPos(), SoundEvents.ITEM_SHIELD_BREAK, SoundCategory.PLAYERS, 0.8f, 1.0f);
+		}
+		return super.postHit(stack, target, attacker);
+	}
+
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 

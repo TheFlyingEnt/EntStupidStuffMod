@@ -27,6 +27,7 @@ public class FrostbittenZombieEntity extends ZombieEntity{
 
     private static final TrackedData<Integer> VARIANT = DataTracker.registerData(FrostbittenZombieEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
+    @SuppressWarnings("unused")
     private Variant variant;
 
     public enum Variant {

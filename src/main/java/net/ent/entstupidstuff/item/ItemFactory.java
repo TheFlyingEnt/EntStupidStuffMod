@@ -16,6 +16,13 @@ import net.ent.entstupidstuff.item.base.WeaponClaymoreItem;
 import net.ent.entstupidstuff.item.base.WeaponGlaiveItem;
 import net.ent.entstupidstuff.item.base.WeaponHammerItem;
 import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponGlaiveItem22;
+import net.ent.entstupidstuff.item.base.weapons.WeaponGreatSwordItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponHalberdItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponRapierItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponScytheItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponTwinDaggerItem;
+import net.ent.entstupidstuff.item.base.weapons.WeaponWarhammerItem;
 import net.ent.entstupidstuff.item.itemType.DaggerItem;
 import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
@@ -80,6 +87,7 @@ public class ItemFactory {
     public static final Item ZOMBIE_LOBBER_SPAWN_EGG = new SpawnEggItem(EntityFactory.LOBBER_ZOMBIE, /*0x9CAE86, 0x39574B*/ 0x39574b, 0x748365, new Item.Settings()); //39574b and 748365
     public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SCORCHED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
     public static final Item ZOMBIE_FROSTBITE_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_FROSTBITTEN, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
+    public static final Item ZOMBIE_SLIMED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SLIMED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
     public static final Item ARMORED_PILLAGER_SPAWN_EGG = new SpawnEggItem(EntityFactory.ARMORED_PILLAGER, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
 
     //The Fire of the Hunt Update:
@@ -169,6 +177,13 @@ public class ItemFactory {
     
     public static final Item BattleAxeTest = new WeaponBattleAxeItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
     public static final Item GlaiveTest = new WeaponGlaiveItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item RapierTest = new WeaponRapierItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item WarHammerTest = new WeaponWarhammerItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item ScytheTest = new WeaponScytheItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item HalberdTest = new WeaponHalberdItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item TwinDaggersTest = new WeaponTwinDaggerItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item GlaiveTest2 = new WeaponGlaiveItem22(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
+    public static final Item GreatSwrodTest = new WeaponGreatSwordItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
     //public static final Item ClaymoreTest = new WeaponClaymoreItem(ToolMaterials.IRON, new Item.Settings().maxDamage(336));
 
 
@@ -210,6 +225,13 @@ public class ItemFactory {
 
         registerItems("battle_test", BattleAxeTest);
         registerItems("glaive_test", GlaiveTest);
+        registerItems("rapier_test", RapierTest);
+        registerItems("warhammer_test", WarHammerTest);
+        registerItems("scythe_test", ScytheTest);
+        registerItems("halberd_test", HalberdTest);
+        registerItems("twindaggers_test", TwinDaggersTest);
+        registerItems("glaive_test22", GlaiveTest2);
+        registerItems("greatsword_test", GreatSwrodTest);
 
         // Weapon & Combat
 
@@ -266,6 +288,7 @@ public class ItemFactory {
         registerItems("zombie_lobber_spawn_egg", ZOMBIE_LOBBER_SPAWN_EGG);
         registerItems("zombie_scorched_spawn_egg", ZOMBIE_SCORCHED_SPAWN_EGG);
         registerItems("zombie_frostbite_spawn_egg", ZOMBIE_FROSTBITE_SPAWN_EGG);
+        registerItems("zombie_slimed_spawn_egg", ZOMBIE_SLIMED_SPAWN_EGG);
         registerItems("armored_pillager_spawn_egg", ARMORED_PILLAGER_SPAWN_EGG);
 
         //The Fire of the Hunt Update:

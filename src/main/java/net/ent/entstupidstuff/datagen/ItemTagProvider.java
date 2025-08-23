@@ -50,6 +50,11 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
         addWoodFamily("redwood", null, true);
         addWoodFamily("desert_iron", null, true);
         addWoodFamily("maple", null, true);
+        addWoodFamily("fir", null, true);
+        addWoodFamily("phantom", null, true);
+
+        getOrCreateTagBuilder(ItemTags.LEAVES)
+            .add((BlockFactoryUpt.callBlock("maple" + "_leaves").asItem()));
 
 
 

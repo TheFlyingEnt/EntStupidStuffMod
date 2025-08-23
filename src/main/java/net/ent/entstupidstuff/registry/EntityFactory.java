@@ -16,6 +16,7 @@ import net.ent.entstupidstuff.entity.mob.RedStoneGolemEntity;
 import net.ent.entstupidstuff.entity.mob.ScorchedZombieEntity;
 import net.ent.entstupidstuff.entity.mob.SkeletonCrossbowEntity;
 import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
+import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
@@ -27,7 +28,6 @@ import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -50,6 +50,17 @@ public class EntityFactory {
     public static final EntityType<ScorchedZombieEntity> ZOMBIE_SCORCHED = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched"),
         EntityType.Builder.create(ScorchedZombieEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.95F)
+		.eyeHeight(1.74F)
+		.passengerAttachments(2.0125F)
+		.vehicleAttachment(-0.7F)
+		.maxTrackingRange(8)
+        .build()
+    );
+
+    public static final EntityType<SlimedZombieEntity> ZOMBIE_SLIMED = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "zombie_slimed"),
+        EntityType.Builder.create(SlimedZombieEntity::new, SpawnGroup.MONSTER)
         .dimensions(0.6F, 1.95F)
 		.eyeHeight(1.74F)
 		.passengerAttachments(2.0125F)
@@ -292,6 +303,7 @@ public class EntityFactory {
         
         FabricDefaultAttributeRegistry.register(LOBBER_ZOMBIE, LobberZombieEntity.createLobberZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SCORCHED, ScorchedZombieEntity.createScorchedZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ZOMBIE_SLIMED, SlimedZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, AncientDrownedEntity.createDrownedAttributes());
         FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());

@@ -39,7 +39,6 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -132,6 +131,7 @@ public class AncientDrownedEntity extends DrownedEntity{
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean isValidSpawnDepth(WorldAccess world, BlockPos pos) {
 		return pos.getY() < world.getSeaLevel() - 5;
 	}

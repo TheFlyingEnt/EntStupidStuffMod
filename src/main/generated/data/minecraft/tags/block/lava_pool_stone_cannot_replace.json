@@ -9,7 +9,6 @@
     "entstupidstuff:desert_iron_wood",
     "entstupidstuff:stripped_desert_iron_log",
     "entstupidstuff:stripped_desert_iron_wood",
-    "entstupidstuff:desert_iron_leaves",
     "entstupidstuff:maple_log",
     "entstupidstuff:maple_wood",
     "entstupidstuff:stripped_maple_log",
@@ -18,6 +17,11 @@
     "entstupidstuff:phantom_log",
     "entstupidstuff:phantom_wood",
     "entstupidstuff:stripped_phantom_log",
-    "entstupidstuff:stripped_phantom_wood"
+    "entstupidstuff:stripped_phantom_wood",
+    "entstupidstuff:fir_log",
+    "entstupidstuff:fir_wood",
+    "entstupidstuff:stripped_fir_log",
+    "entstupidstuff:stripped_fir_wood",
+    "entstupidstuff:fir_leaves"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "entstupidstuff:item/skeleton_phantom_spawn_egg"
+    "layer0": "entstupidstuff:item/phantom_skeleton_spawn_egg"
   }
 }

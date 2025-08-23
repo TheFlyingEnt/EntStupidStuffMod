@@ -2,6 +2,9 @@
   "values": [
     "entstupidstuff:granite_brick_stairs",
     "entstupidstuff:diorite_brick_stairs",
-    "entstupidstuff:andesite_brick_stairs"
+    "entstupidstuff:andesite_brick_stairs",
+    "entstupidstuff:limestone_stairs",
+    "entstupidstuff:polished_limestone_stairs",
+    "entstupidstuff:polished_limestone_brick_stairs"
   ]
 }

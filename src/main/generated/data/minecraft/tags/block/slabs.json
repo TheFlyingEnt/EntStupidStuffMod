@@ -2,6 +2,9 @@
   "values": [
     "entstupidstuff:granite_brick_slab",
     "entstupidstuff:diorite_brick_slab",
-    "entstupidstuff:andesite_brick_slab"
+    "entstupidstuff:andesite_brick_slab",
+    "entstupidstuff:limestone_slab",
+    "entstupidstuff:polished_limestone_slab",
+    "entstupidstuff:polished_limestone_brick_slab"
   ]
 }

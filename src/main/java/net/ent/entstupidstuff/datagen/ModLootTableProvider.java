@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.block.BlockFactoryUpt;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryWrapper;
 
 public class ModLootTableProvider extends FabricBlockLootTableProvider  {
@@ -26,6 +27,10 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         generateWoodType("desert_iron", null, true);
         generateWoodType("phantom", null, true);
         generateWoodType("maple", null, true);
+        generateWoodType("fir", null, true);
+
+        addDrop(BlockFactoryUpt.callBlock("maple_leaves"), block -> this.oakLeavesDrops(block, BlockFactoryUpt.callBlock("maple_sapling"), SAPLING_DROP_CHANCE));
+        addDrop(BlockFactoryUpt.callBlock("fir_leaves"), block -> this.oakLeavesDrops(block, BlockFactoryUpt.callBlock("fir_sapling"), SAPLING_DROP_CHANCE));
 
         generateStone("andesite_brick");
         generateStone("diorite_brick");

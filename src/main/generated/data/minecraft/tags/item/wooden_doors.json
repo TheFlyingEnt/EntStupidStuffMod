@@ -59,6 +59,10 @@
     "entstupidstuff:desert_iron_door",
     "entstupidstuff:desert_iron_glass_door",
     "entstupidstuff:maple_door",
-    "entstupidstuff:maple_glass_door"
+    "entstupidstuff:maple_glass_door",
+    "entstupidstuff:fir_door",
+    "entstupidstuff:fir_glass_door",
+    "entstupidstuff:phantom_door",
+    "entstupidstuff:phantom_glass_door"
   ]
 }

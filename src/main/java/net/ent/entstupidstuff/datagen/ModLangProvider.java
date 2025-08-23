@@ -424,6 +424,28 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_stairs"), "Phantom Mosaic Stairs");
         translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_slab"), "Phantom Mosaic Slab");
 
+        //Fir
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_log"), "Fir Log");
+        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_fir_log"), "Stripped Fir Log");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_wood"), "Fir Wood");
+        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_fir_wood"), "Stripped Fir Wood");
+
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_planks"), "Fir Planks");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_stairs"), "Fir Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_slab"), "Fir Slab");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_fence"), "Fir Fence");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_fence_gate"), "Fir Fence Gate");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_door"), "Fir Door");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_trapdoor"), "Fir Trapdoor");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_pressure_plate"), "Fir Pressure Plate");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_button"), "Fir Button");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_glass_door"), "Fir Glass Door");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_glass_trapdoor"), "Fir Glass trapdoor");
+        
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic"), "Fir Mosaic");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic_stairs"), "Fir Mosaic Stairs");
+        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic_slab"), "Fir Mosaic Slab");
+
         /*translationBuilder.add(SIMPLE_ITEM, "Simple Item");
         translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
         translationBuilder.add(SIMPLE_ITEM_GROUP, "Simple Item Group");*/
