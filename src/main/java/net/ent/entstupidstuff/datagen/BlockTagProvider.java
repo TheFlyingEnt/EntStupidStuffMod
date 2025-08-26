@@ -21,7 +21,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
         //Fungal Planks
         addWoodFamily("fungal", null, false, false);
         addWoodFamily("redwood", null, true, true);
-        addWoodFamily("desert_iron", null, true, false);
+        //addWoodFamily("desert_iron", null, true, false);
         addWoodFamily("maple", null, true, true);
         addWoodFamily("phantom", null, true, false);
         addWoodFamily("fir", null, true, true);

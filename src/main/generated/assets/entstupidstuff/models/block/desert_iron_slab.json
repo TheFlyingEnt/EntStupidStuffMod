@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "entstupidstuff:block/desert_iron_planks",
-    "side": "entstupidstuff:block/desert_iron_planks",
-    "top": "entstupidstuff:block/desert_iron_planks"
-  }
-}

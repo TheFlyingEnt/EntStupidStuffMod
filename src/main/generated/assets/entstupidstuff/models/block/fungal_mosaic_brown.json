@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "entstupidstuff:block/fungal_mosaic_brown"
-  }
-}

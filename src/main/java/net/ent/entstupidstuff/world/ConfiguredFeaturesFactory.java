@@ -9,6 +9,7 @@ import net.ent.entstupidstuff.world.tree.FirFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.block;
 
 import net.ent.entstupidstuff.item.ModGroup;
+import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -14,13 +15,14 @@ import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.PressurePlateBlock;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.SaplingGenerator;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.WoodType;
 import net.minecraft.block.enums.NoteBlockInstrument;
-import net.minecraft.data.family.BlockFamilies;
 import net.minecraft.sound.BlockSoundGroup;
 
 public class BlockFactoryHelper {
@@ -41,26 +43,29 @@ public class BlockFactoryHelper {
 
         if (withLeaves) {
             Block LEAVES = BlockFactoryUpt.register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+            ModGroup.addToNatural(blockName + "_leaves" + suffix);
+            ModGroup.addToDeco(blockName + "_leaves" + suffix);
         }
 
         ModGroup.addToNatural(blockName + "_log" + suffix);
         ModGroup.addToNatural("stripped_" + blockName + "_log" + suffix);
         ModGroup.addToNatural(blockName + "_wood" + suffix);
         ModGroup.addToNatural("stripped_" + blockName + "_wood" + suffix);
-        ModGroup.addToNatural(blockName + "_leaves" + suffix);
-
+        
         ModGroup.addToDeco(blockName + "_log" + suffix);
         ModGroup.addToDeco("stripped_" + blockName + "_log" + suffix);
         ModGroup.addToDeco(blockName + "_wood" + suffix);
-        ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);
-        ModGroup.addToDeco(blockName + "_leaves" + suffix);
+        ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);        
 
         if (flamable) {
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_log" + suffix)), 5, 5);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_wood" + suffix)), 5, 5);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+
+            if (withLeaves) {
+                FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+            }
         }
         
         
@@ -75,10 +80,12 @@ public class BlockFactoryHelper {
             new SlabBlock(AbstractBlock.Settings.copy(baseBlock)));
 
         if (flamable) {
+            FlammableBlockRegistry.getDefaultInstance().add(baseBlock, 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add(STAIRS, 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add(SLAB, 5, 20);
         }
 
+        ModGroup.addToDeco(blockName + "_planks" + varient);
         ModGroup.addToDeco(blockName + "_stairs" + varient);
         ModGroup.addToDeco(blockName + "_slab" + varient);
     }
@@ -131,9 +138,6 @@ public class BlockFactoryHelper {
         Block BUTTON = BlockFactoryUpt.register(blockName + "_button" + suffix, 
             new ButtonBlock(BlockSetType.OAK, 30, AbstractBlock.Settings.copy(Blocks.OAK_BUTTON).mapColor((mapColor)))); 
 
-        ModGroup.addToDeco(blockName + "_planks" + suffix);
-        ModGroup.addToDeco(blockName + "_stairs" + suffix);
-        ModGroup.addToDeco(blockName + "_slab" + suffix);
         ModGroup.addToDeco(blockName + "_fence" + suffix);
         ModGroup.addToDeco(blockName + "_fence_gate" + suffix);
         ModGroup.addToDeco(blockName + "_door" + suffix);
@@ -144,9 +148,6 @@ public class BlockFactoryHelper {
         ModGroup.addToDeco(blockName + "_button" + suffix);
 
         if (flamable) {
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_planks" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_slab" + suffix)), 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_door" + suffix)), 5, 20);
@@ -155,34 +156,6 @@ public class BlockFactoryHelper {
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_planks" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_slab" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_door" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
-
-        }
-
-        if (IsWooden) {
-            BlockFamilies.register(baseBlock)
-                .button(BUTTON)
-                .fence(FENCE)
-                .fenceGate(FENCE_GATE)
-                .pressurePlate(P_PLATE)
-                .slab(BlockFactoryUpt.callBlock(blockName + "_slab" + suffix))
-                .stairs(BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix))
-                .trapdoor(TRAP_DOOR).trapdoor(GLASS_TRAP_DOOR)
-                //.sign(SIGN, WALL_SIGN)
-                .door(DOOR).door(GLASS_DOOR)
-            .group("wooden")
-            .unlockCriterionName("has_planks")
-            .build();
         }
     }
 
@@ -204,4 +177,8 @@ public class BlockFactoryHelper {
 
     }
 
+    public static void addSaplings(String blockName, SaplingGenerator generator) {
+        Block SAPLING = BlockFactoryUpt.register(blockName + "_sapling", new SaplingBlock(generator, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+        BlockFactoryUpt.register("potted_" + blockName + "_sapling", Blocks.createFlowerPotBlock(SAPLING));
+    }
 }

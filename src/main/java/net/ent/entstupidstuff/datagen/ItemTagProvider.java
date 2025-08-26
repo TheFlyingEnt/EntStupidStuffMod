@@ -48,7 +48,7 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
         addCombatFamily("netherite");
 
         addWoodFamily("redwood", null, true);
-        addWoodFamily("desert_iron", null, true);
+        //addWoodFamily("desert_iron", null, true);
         addWoodFamily("maple", null, true);
         addWoodFamily("fir", null, true);
         addWoodFamily("phantom", null, true);

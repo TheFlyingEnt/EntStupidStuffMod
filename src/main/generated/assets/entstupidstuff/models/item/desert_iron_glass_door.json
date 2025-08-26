@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "entstupidstuff:item/desert_iron_glass_door"
-  }
-}

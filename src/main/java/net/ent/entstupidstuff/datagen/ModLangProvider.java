@@ -357,7 +357,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         // Desert Iron
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_log"), "Desert Iron Log");
+        /*translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_log"), "Desert Iron Log");
         translationBuilder.add(BlockFactoryUpt.callBlock("stripped_desert_iron_log"), "Stripped Desert Iron Log");
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_wood"), "Desert Iron Wood");
         translationBuilder.add(BlockFactoryUpt.callBlock("stripped_desert_iron_wood"), "Stripped Desert Iron Log");
@@ -372,7 +372,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_pressure_plate"), "Desert Iron Pressure Plate");
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_button"), "Desert Iron Button");
         translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_glass_door"), "Desert Iron Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_glass_trapdoor"), "Desert Iron Glass Trapdoor");
+        translationBuilder.add(BlockFactoryUpt.callBlock("desert_iron_glass_trapdoor"), "Desert Iron Glass Trapdoor");*/
 
         //translationBuilder.add(BlockFactoryUpt.callBlock("desert_mosaic"), "Desert Mosaic");
         //translationBuilder.add(BlockFactoryUpt.callBlock("desert_mosaic_stairs"), "Desert Mosaic Stairs");

@@ -51,7 +51,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     Boolean enableFungal = true;
     Boolean enableMaple = true;
     Boolean enablePhantom = true;
-    Boolean enableDesertIron = true;
+    Boolean enableDesertIron = false;
     Boolean enableRedwood = true;
 
     Boolean enableAdditionalStone = true;

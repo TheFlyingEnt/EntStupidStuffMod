@@ -2,9 +2,11 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.datagen.BlockTagProvider;
 import net.ent.entstupidstuff.datagen.ItemTagProvider;
+import net.ent.entstupidstuff.datagen.ModBiomes;
 import net.ent.entstupidstuff.datagen.ModLangProvider;
 import net.ent.entstupidstuff.datagen.ModEntityLootTableGenerator;
 import net.ent.entstupidstuff.datagen.ModLootTableProvider;
+import net.ent.entstupidstuff.datagen.ModPlacedFeatures;
 import net.ent.entstupidstuff.datagen.ModRecipeProvider;
 import net.ent.entstupidstuff.datagen.ModRegistryDataGenerator;
 import net.ent.entstupidstuff.datagen.ModelProvider;
@@ -41,6 +43,8 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_MATERIAL, ModTrimMaterials::bootstrap);
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_PATTERN, ModTrimPatterns::bootstrap);
 		registryBuilder.addRegistry(RegistryKeys.ENCHANTMENT, UpdatedEnchantmentFactory::bootstrap);
+		registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModPlacedFeatures::bootstrap);
+		registryBuilder.addRegistry(RegistryKeys.BIOME, ModBiomes::bootstrap);
 
 		//registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ConfiguredFeaturesFactory::bootstrap);
 		registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ConfiguredFeaturesFactory::bootstrap);

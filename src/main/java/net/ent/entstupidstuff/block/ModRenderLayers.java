@@ -30,10 +30,20 @@ public class ModRenderLayers {
         // Modded Wood
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood" + "_door"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood" + "_trapdoor"), RenderLayer.getCutout());
+
+
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood" + "_glass_door"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood" + "_glass_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("maple" + "_glass_door"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("maple" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("desert_iron" + "_glass_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fir" + "_glass_door"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fir" + "_glass_trapdoor"), RenderLayer.getCutout());
+        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("desert_iron" + "_glass_trapdoor"), RenderLayer.getCutout());
+
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("potted_" + "maple" + "_sapling"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("maple" + "_sapling"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("potted_" + "fir" + "_sapling"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fir" + "_sapling"), RenderLayer.getCutout());
 
         // Phantom Wood
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom" + "_planks"), RenderLayer.getTranslucent());

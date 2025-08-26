@@ -550,7 +550,13 @@ public class ItemFactory {
 
 
     public static Item callItem(String name) {
-        return ItemList.get(Identifier.of(EntStupidStuff.MOD_ID, name));
+        //return ItemList.get(Identifier.of(EntStupidStuff.MOD_ID, name));
+        try {
+            return ItemList.get(Identifier.of(EntStupidStuff.MOD_ID, name));
+        } catch(Exception e) {
+            System.out.println("An Error was called in callItem()... Tried to call: " + name);
+            return null;
+        }
     }
     
     public static Item registerRaw(BlockItem item) {

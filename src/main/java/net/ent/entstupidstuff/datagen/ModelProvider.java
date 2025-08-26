@@ -28,81 +28,165 @@ public class ModelProvider extends FabricModelProvider{
     BlockStateModelGenerator blockStateModelGenerator;
 
     
+    
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator2) {
 
         this.blockStateModelGenerator = blockStateModelGenerator2;
 
+        //Fungal Wood Type
+
+        generateGroupFungalFamilty("fungal", "");
+        generateGroupFungalFamilty("fungal", "white");
+        generateGroupFungalFamilty("fungal", "light_gray");
+        generateGroupFungalFamilty("fungal", "gray");
+        generateGroupFungalFamilty("fungal", "black");
+        generateGroupFungalFamilty("fungal", "red");
+        generateGroupFungalFamilty("fungal", "orange");
+        generateGroupFungalFamilty("fungal", "yellow");
+        generateGroupFungalFamilty("fungal", "lime");
+        generateGroupFungalFamilty("fungal", "green");
+        generateGroupFungalFamilty("fungal", "cyan");
+        generateGroupFungalFamilty("fungal", "light_blue");
+        generateGroupFungalFamilty("fungal", "blue");
+        generateGroupFungalFamilty("fungal", "purple");
+        generateGroupFungalFamilty("fungal", "magenta");
+        generateGroupFungalFamilty("fungal", "pink");
+        
+        //Phantom Wood Type
+
+        generateGroupWoodFamilty("phantom", "", true);
+        
+        //Redwood Wood Type
+        
+        generateGroupWoodFamilty("redwood", "", true);
+        
+        //Maple Wood Type
+
+        generateGroupWoodFamilty("maple", "", true);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactoryUpt.callBlock("maple_sapling"), BlockFactoryUpt.callBlock("potted_maple_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        
+        //Fir Wood Type
+
+        generateGroupWoodFamilty("fir", "", true);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactoryUpt.callBlock("fir_sapling"), BlockFactoryUpt.callBlock("potted_fir_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        
+        //Vanilla Wood Type
+
+        generateGroupVanillaAddition("oak");
+        generateGroupVanillaAddition("spruce");
+        generateGroupVanillaAddition("jungle");
+        generateGroupVanillaAddition("birch");
+        generateGroupVanillaAddition("dark_oak");
+        generateGroupVanillaAddition("acacia");
+        generateGroupVanillaAddition("mangrove");
+        generateGroupVanillaAddition("cherry");
+        generateGroupVanillaAddition("warped");
+        generateGroupVanillaAddition("crimson");
+
+        // Vanilla Addition for Glass TD and Door
+
+        generateGlassIntercation("iron", "");
+        generateGlassIntercation("copper", "");
+        generateGlassIntercation("exposed_copper", "");
+        generateGlassIntercation("oxidized_copper", "");
+        generateGlassIntercation("weathered_copper", "");
+
+        generateGroupBricksFamilty("andesite", "");
+        generateGroupBricksFamilty("diorite", "");
+        generateGroupBricksFamilty("granite", "");
+
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactoryUpt.callBlock("polished_" + "granite" + "_wall"));
+        
+        registerPointedIce();
+
+        generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactoryUpt.callBlock("limestone"));
+        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactoryUpt.callBlock("polished_limestone"));
+        generateGroupBricksFamilty("polished_limestone", "");
+
+        blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
+        blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
+        blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
+
+
+        //addStoneAlt("andesite", true);
+        //generateBaseAndIntercationFamily("andesite_brick", "", false, true, BlockFactoryUpt.callBlock("andesite_bricks"));
+
+
         // Fungal Wood
-        addWoodFamily("fungal", null, false, false);
+        //addWoodFamily("fungal", null, false, false);
 
         // Fungal (Colored) Wood
-        for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false, false);}
+        //for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false, false);}
 
         // Modded Wood
-        addWoodFamily("phantom", null, false, true);
-        addWoodFamily("redwood", null, true, true);
-        addWoodFamily("desert_iron", null, false, true);
-        addWoodFamily("maple", null, true, true);
-        addWoodFamily("fir", null, true, true);
+        //addWoodFamily("phantom", null, false, true);
+        //addWoodFamily("redwood", null, true, true);
+        //addWoodFamily("desert_iron", null, false, true);
+        //addWoodFamily("maple", null, true, true);
+        //addWoodFamily("fir", null, true, true);
 
-        createMosaic("oak", "");
-        createMosaic("spruce", "");
-        createMosaic("jungle", "");
-        createMosaic("birch", "");
-        createMosaic("dark_oak", "");
-        createMosaic("acacia", "");
-        createMosaic("mangrove", "");
-        createMosaic("cherry", "");
-        createMosaic("warped", "");
-        createMosaic("crimson", "");
+        
+
+        //createMosaic("oak", "");
+        //createMosaic("spruce", "");
+        //createMosaic("jungle", "");
+        //createMosaic("birch", "");
+        //createMosaic("dark_oak", "");
+        //createMosaic("acacia", "");
+        //createMosaic("mangrove", "");
+        //createMosaic("cherry", "");
+        //createMosaic("warped", "");
+        //createMosaic("crimson", "");
 
         // Vanilla Wood
-        createVanillaGlassDoor("oak");
-        createVanillaGlassDoor("spruce");
-        createVanillaGlassDoor("jungle");
-        createVanillaGlassDoor("birch");
-        createVanillaGlassDoor("dark_oak");
-        createVanillaGlassDoor("acacia");
-        createVanillaGlassDoor("mangrove");
-        createVanillaGlassDoor("cherry");
-        createVanillaGlassDoor("bamboo");
-        createVanillaGlassDoor("warped");
-        createVanillaGlassDoor("crimson");
+        //createVanillaGlassDoor("oak");
+        //createVanillaGlassDoor("spruce");
+        //createVanillaGlassDoor("jungle");
+        //createVanillaGlassDoor("birch");
+        //createVanillaGlassDoor("dark_oak");
+        //createVanillaGlassDoor("acacia");
+        //createVanillaGlassDoor("mangrove");
+        //createVanillaGlassDoor("cherry");
+        //createVanillaGlassDoor("bamboo");
+        //createVanillaGlassDoor("warped");
+        //createVanillaGlassDoor("crimson");
         //createVanillaGlassDoor("pale_oak"); //FUTURE UPDATE
 
-        createVanillaGlassDoor("iron");
-        createVanillaGlassDoor("copper");
-        createVanillaGlassDoor("exposed_copper");
-        createVanillaGlassDoor("oxidized_copper");
-        createVanillaGlassDoor("weathered_copper");
+        //createVanillaGlassDoor("iron");
+        //createVanillaGlassDoor("copper");
+        //createVanillaGlassDoor("exposed_copper");
+        //createVanillaGlassDoor("oxidized_copper");
+        //createVanillaGlassDoor("weathered_copper");
         //createVanillaGlassDoor("waxed_copper"); - These ware Manually Created :)
         //createVanillaGlassDoor("waxed_exposed_copper");
         //createVanillaGlassDoor("waxed_oxidized_copper");
         //createVanillaGlassDoor("waxed_weathered_copper");
 
         // Vanilla Stone
-        addStoneAlt("andesite", true);
-        addStoneAlt("diorite", true);
-        addStoneAlt("granite", true);
+        //addStoneAlt("andesite", true);
+        //addStoneAlt("diorite", true);
+        //addStoneAlt("granite", true);
 
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactoryUpt.callBlock("polished_" + "granite" + "_wall"));
+        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
+        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
+        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactoryUpt.callBlock("polished_" + "granite" + "_wall"));
 
         //String
         //blockStateModelGenerator.registerCubeAllModelTexturePool(BlockFactoryUpt.callBlock("string_block"));
-        blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
+        //blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
 
-        blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
-        blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
+        //blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
+        //blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
 
-        registerPointedIce();
+        //registerPointedIce();
 
-        addStoneAlt("limestone", false);
-        addStoneAlt("polished_limestone", false);
-        addStoneAlt("polished_limestone", true);
+        //addStoneAlt("limestone", false);
+        //addStoneAlt("polished_limestone", false);
+        //addStoneAlt("polished_limestone", true);
 
         /*
 
@@ -161,6 +245,113 @@ public class ModelProvider extends FabricModelProvider{
         for (String inputC : MBlockFactoryUpt.COLORS) { createColorT("textured_wool_" + inputC, blockStateModelGenerator);}*/
 	}
 
+    public void generateGroupWoodFamilty(String blockName, String suffix, Boolean withLeaves) {
+        if (suffix == null) {suffix = "";}
+        else if (suffix == "") {suffix = "";}
+        else if (suffix == "_") {suffix = "";}
+        else {suffix = "_" + suffix;}
+
+        Block MainTexture = BlockFactoryUpt.callBlock(blockName + "_planks" + suffix);
+        Block MosicTexture = BlockFactoryUpt.callBlock(blockName + "_mosaic" + suffix);
+        generateBaseAndIntercationFamily(blockName, suffix, true, false, MainTexture);
+        generateBaseAndIntercationFamily(blockName + "_mosaic", suffix, false, false, MosicTexture);
+        generateNatureFamily(blockName, suffix, withLeaves);
+
+    }
+
+    public void generateGroupFungalFamilty(String blockName, String suffix) {
+        if (suffix == null) {suffix = "";}
+        else if (suffix == "") {suffix = "";}
+        else if (suffix == "_") {suffix = "";}
+        else {suffix = "_" + suffix;}
+
+        
+
+        Block MainTexture = BlockFactoryUpt.callBlock(blockName + "_planks" + suffix);
+        Block MosicTexture = BlockFactoryUpt.callBlock(blockName + "_mosaic" + suffix);
+        generateBaseAndIntercationFamily(blockName, suffix, true, false, MainTexture);
+        generateBaseAndIntercationFamily(blockName + "_mosaic", suffix, false, false, MosicTexture);
+
+    }
+
+    public void generateGroupBricksFamilty(String blockName, String suffix) {
+        if (suffix == null) {suffix = "";}
+        else if (suffix == "") {suffix = "";}
+        else if (suffix == "_") {suffix = "";}
+        else {suffix = "_" + suffix;}
+
+        Block BricksTexture = BlockFactoryUpt.callBlock(blockName + "_bricks" + suffix);
+        generateBaseAndIntercationFamily(blockName + "_brick", suffix, false, true, BricksTexture);
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock("cracked_" + blockName + "_bricks" + suffix));
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(blockName + "_brick_chiseled" + suffix));
+    }
+
+    public void generateGroupVanillaAddition(String blockName) {
+        generateBaseAndIntercationFamily(blockName + "_mosaic", "", false, false, BlockFactoryUpt.callBlock(blockName + "_mosaic"));
+        generateGlassIntercation(blockName, "");
+    }
+
+    public void generateNatureFamily(String blockName, String suffix, Boolean withLeaves) {
+        if (suffix == null) {suffix = "";}
+        else if (suffix == "") {suffix = "";}
+        else if (suffix == "_") {suffix = "";}
+
+        if (withLeaves) {
+            blockStateModelGenerator.registerSingleton(BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
+            
+        }
+        
+        blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock(blockName + "_log" + suffix)).log(BlockFactoryUpt.callBlock(blockName + "_log" + suffix)).wood(BlockFactoryUpt.callBlock(blockName + "_wood" + suffix));
+        blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix));  
+    }
+
+    public void generateBaseAndIntercationFamily(String blockName, String suffix, Boolean generateWoodBase, Boolean generateStoneBase, Block MainTexture) {
+
+        if (suffix == null) {suffix = "";}
+        else if (suffix == "") {suffix = "";}
+        else if (suffix == "_") {suffix = "";}
+
+        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+
+        blockPool
+            .stairs(BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix))
+        .slab(BlockFactoryUpt.callBlock(blockName + "_slab" + suffix));
+
+        if (generateWoodBase) {
+            blockPool
+                .button(BlockFactoryUpt.callBlock(blockName + "_button" + suffix))
+                .pressurePlate(BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix))
+                .fence(BlockFactoryUpt.callBlock(blockName + "_fence" + suffix))
+            .fenceGate(BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix));
+
+            blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix));
+            blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(blockName + "_door" + suffix));
+            generateGlassIntercation(blockName, suffix);
+        }
+        else if (generateStoneBase) {
+            blockPool
+                .wall(BlockFactoryUpt.callBlock(blockName + "_wall"));
+        }
+
+
+    }
+
+    public void generateGlassIntercation(String blockName, String suffix) {
+        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix));
+        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix));
+    }
+
+    
+
+
+
+
+
+
+
+
+    /* OLD */
+
 
 	private void registerPointedIce() {
 		blockStateModelGenerator.excludeFromSimpleItemModelGeneration(BlockFactoryUpt.callBlock("pointed_ice"));
@@ -185,7 +376,7 @@ public class ModelProvider extends FabricModelProvider{
 	}
 
 
-
+    @Deprecated
     public void createMosaic(String Familybase, String varient) {
 
         Block MainTexture = BlockFactoryUpt.callBlock(Familybase + "_mosaic" + varient);
@@ -212,6 +403,7 @@ public class ModelProvider extends FabricModelProvider{
         );
     }
 
+    @Deprecated
     public void addWoodFamily(String Familybase, String varient, Boolean isNatural, Boolean enableLogs) {
 
         if (varient == null) {varient = "";}
@@ -245,6 +437,7 @@ public class ModelProvider extends FabricModelProvider{
         createMosaic(Familybase, varient);
     }
 
+    @Deprecated
     public void createVanillaGlassDoor(String Familybase) {
 
         blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(Familybase + "_glass_door"));
@@ -309,7 +502,7 @@ public class ModelProvider extends FabricModelProvider{
      * 
      */
 
-     @Deprecated
+    @Deprecated
     public void createColorT(String name, BlockStateModelGenerator blockStateModelGenerator) {
         blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(name));
     }

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "entstupidstuff:block/fungal_mosaic_brown",
-    "side": "entstupidstuff:block/fungal_mosaic_brown",
-    "top": "entstupidstuff:block/fungal_mosaic_brown"
-  }
-}

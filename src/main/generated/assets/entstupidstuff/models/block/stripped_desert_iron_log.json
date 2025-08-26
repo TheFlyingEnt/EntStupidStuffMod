@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "entstupidstuff:block/stripped_desert_iron_log_top",
-    "side": "entstupidstuff:block/stripped_desert_iron_log"
-  }
-}

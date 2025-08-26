@@ -24,7 +24,7 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         attachVanillaGlassDoor();
 
         generateWoodType("redwood", null, true);
-        generateWoodType("desert_iron", null, true);
+        //generateWoodType("desert_iron", null, true);
         generateWoodType("phantom", null, true);
         generateWoodType("maple", null, true);
         generateWoodType("fir", null, true);
