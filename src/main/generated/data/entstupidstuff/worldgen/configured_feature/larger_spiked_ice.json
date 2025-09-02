@@ -1,5 +1,5 @@
 {
-  "type": "entstupidstuff:large_pointed_ice",
+  "type": "entstupidstuff:large_spiked_ice",
   "config": {
     "column_radius": {
       "type": "minecraft:uniform",

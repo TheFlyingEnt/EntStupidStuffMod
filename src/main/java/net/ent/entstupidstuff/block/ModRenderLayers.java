@@ -118,6 +118,11 @@ public class ModRenderLayers {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_block"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_gate"), RenderLayer.getCutoutMipped());
 
+        //Iron Gates
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("iron_grate"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("iron_grate_slab"), RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("iron_grate_stairs"), RenderLayer.getCutout());
+
         //Torch
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom_torch"), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("phantom_wall_torch"), RenderLayer.getCutout());

@@ -39,6 +39,10 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         addDrop((BlockFactoryUpt.callBlock("polished_diorite" + "_wall")));
         addDrop((BlockFactoryUpt.callBlock("polished_granite" + "_wall")));
 
+        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "")));
+        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "_slab")));
+        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "_stairs")));
+
         //Minecraft Mobs
         
 

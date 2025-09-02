@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fir_mosaic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fir_mosaic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fir_mosaic_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fir_mosaic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fir_mosaic_slab"
+    ]
+  }
+}

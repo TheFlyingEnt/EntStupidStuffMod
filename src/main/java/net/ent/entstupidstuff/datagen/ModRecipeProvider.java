@@ -51,7 +51,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     Boolean enableFungal = true;
     Boolean enableMaple = true;
     Boolean enablePhantom = true;
-    Boolean enableDesertIron = false;
+    Boolean enableFir = true;
     Boolean enableRedwood = true;
 
     Boolean enableAdditionalStone = true;
@@ -163,8 +163,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
             generateWoodFamily("fungal", null);
         if (enableRedwood)
             generateWoodFamily("redwood", null);
-        if (enableDesertIron)
-            generateWoodFamily("desert_iron", null);
+        if (enableFir)
+            generateWoodFamily("fir", null);
         if (enableMaple)
             generateWoodFamily("maple", null);
         if (enablePhantom) {
@@ -250,13 +250,13 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 		    .offerTo(exporter);
         }
 
-        if (enableDesertIron) {
-            Item DESERT_IRON_PLANK = BlockFactoryUpt.callBlock("desert_iron_planks").asItem();
-            Block DESERT_IRON_LOG = BlockFactoryUpt.callBlock("desert_iron_log");
-            ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, DESERT_IRON_PLANK, 4)
-                .input(DESERT_IRON_LOG.asItem())
+        if (enableFir) {
+            Item FIR_PLANK = BlockFactoryUpt.callBlock("fir_planks").asItem();
+            Block FIR_LOG = BlockFactoryUpt.callBlock("fir_log");
+            ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, FIR_PLANK, 4)
+                .input(FIR_LOG.asItem())
                 .group("planks")
-                .criterion(hasItem(DESERT_IRON_LOG), conditionsFromItem(DESERT_IRON_LOG))
+                .criterion(hasItem(FIR_LOG), conditionsFromItem(FIR_LOG))
             .offerTo(exporter);
         }
 
@@ -375,12 +375,29 @@ public class ModRecipeProvider extends FabricRecipeProvider{
             .criterion(hasItem(Items.SUGAR), conditionsFromItem(Items.SUGAR))
         .offerTo(exporter);
 
-
         Item ANCIENT_DEBRIS_NUGGET = ItemFactory.callItem("ancient_debris_nugget");
 
         offerReversibleCompactingRecipesWithCompactingRecipeGroup(
 			exporter, RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
 		);
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.ALLIGATOR_GAR), RecipeCategory.FOOD, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F, 200)
+			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.ALLIGATOR_GAR))
+		.offerTo(exporter);
+
+        //offerReversibleCompactingRecipesWithCompactingRecipeGroup(
+		//	exporter, RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
+		//);
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MACKEREL), RecipeCategory.FOOD, ItemFactory.COOKED_MACKEREL, 0.35F, 200)
+			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.MACKEREL))
+		.offerTo(exporter);
 
         
         //Shields
@@ -509,18 +526,18 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 			.criterion(hasItem(REDWOOD_LOG), conditionsFromItem(REDWOOD_LOG))
 		.offerTo(exporter);
 
-        Item DESERT_IRON_PLANK = BlockFactoryUpt.callBlock("desert_iron_planks").asItem();
-        Block DESERT_IRON_LOG = BlockFactoryUpt.callBlock("desert_iron_log");
-        ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, DESERT_IRON_PLANK, 4)
-            .input(DESERT_IRON_LOG.asItem())
+        Item FIR_PLANK = BlockFactoryUpt.callBlock("fir_planks").asItem();
+        Block FIR_LOG = BlockFactoryUpt.callBlock("fir_log");
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, FIR_PLANK, 4)
+            .input(FIR_LOG.asItem())
             .group("planks")
-            .criterion(hasItem(DESERT_IRON_LOG), conditionsFromItem(DESERT_IRON_LOG))
+            .criterion(hasItem(FIR_LOG), conditionsFromItem(FIR_LOG))
         .offerTo(exporter);
          */
 
         /* 
         generateWoodFamily("redwood", null);
-        generateWoodFamily("desert_iron", null);
+        generateWoodFamily("fir", null);
 
         createStoneVarient();
 
@@ -556,10 +573,10 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         //createStoneVarient();
 
         //generateWoodFamily("redwood", null);
-        //generateWoodFamily("desert_iron", null);
+        //generateWoodFamily("fir", null);
 
         //createPlanks(BlockFactoryUpt.callBlock("redwood_planks"), Ingredient.ofItems(BlockFactoryUpt.callBlock("redwood_log")));
-        //createPlanks(BlockFactoryUpt.callBlock("desert_iron_planks"), Ingredient.ofItems(BlockFactoryUpt.callBlock("desert_iron_log")));
+        //createPlanks(BlockFactoryUpt.callBlock("fir_planks"), Ingredient.ofItems(BlockFactoryUpt.callBlock("fir_log")));
 
 
 

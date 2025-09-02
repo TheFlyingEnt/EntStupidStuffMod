@@ -4,7 +4,7 @@
     "features": [
       {
         "feature": {
-          "type": "entstupidstuff:pointed_ice",
+          "type": "entstupidstuff:spiked_ice",
           "config": {
             "chance_of_directional_spread": 0.7,
             "chance_of_spread_radius2": 0.5,

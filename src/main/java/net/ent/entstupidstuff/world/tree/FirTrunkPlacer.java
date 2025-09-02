@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.ent.entstupidstuff.world.ConfiguredFeaturesFactory;
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -28,7 +28,7 @@ public class FirTrunkPlacer  extends TrunkPlacer {
 
     @Override
     protected TrunkPlacerType<?> getType() {
-        return ConfiguredFeaturesFactory.FIR_TRUNK_PLACER;
+        return ModConfiguredFeatures.FIR_TRUNK_PLACER;
     }
 
     @Override

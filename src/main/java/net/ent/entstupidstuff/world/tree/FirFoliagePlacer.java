@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.ent.entstupidstuff.world.ConfiguredFeaturesFactory;
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.random.Random;
@@ -25,7 +25,7 @@ public class FirFoliagePlacer  extends FoliagePlacer {
 
     @Override
     protected FoliagePlacerType<?> getType() {
-        return ConfiguredFeaturesFactory.FIR_FOLIAGE_PLACER;
+        return ModConfiguredFeatures.FIR_FOLIAGE_PLACER;
     }
 
     @Override

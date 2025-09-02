@@ -17,8 +17,9 @@ import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.FlowerbedBlock;
+import net.minecraft.block.GrateBlock;
 import net.minecraft.block.LanternBlock;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.OxidizableDoorBlock;
@@ -118,7 +119,10 @@ public class BlockFactoryUpt {
         Block MAPLE_PLANKS = register("maple" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.SPRUCE_BROWN))));
         groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT_BROWN, MapColor.SPRUCE_BROWN);
         BlockFactoryHelper.addSaplings("maple", SaplingGeneratorFactory.MAPLE);
-
+        register("orange_petals", new FlowerbedBlock(
+			AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().sounds(BlockSoundGroup.PINK_PETALS).pistonBehavior(PistonBehavior.DESTROY)
+		));
+        
         Block PHANTOM_PLANKS = register("phantom" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.LICHEN_GREEN)).nonOpaque()));
         groupWoodFamilty("phantom", "", PHANTOM_PLANKS, true, MapColor.LICHEN_GREEN, MapColor.DARK_GREEN);
 
@@ -218,6 +222,8 @@ public class BlockFactoryUpt {
     public static void groupFungalFamily(String Varient, MapColor MainColor) {
 
         Block FUNGAL_PLANKS = register("fungal" + "_planks" + Varient, new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MainColor))));
+        ModGroup.addToDeco("fungal" + "_planks" + Varient);
+        
         BlockFactoryHelper.BaseFamily("fungal", Varient, FUNGAL_PLANKS, true);
         BlockFactoryHelper.InteractionFamily("fungal", Varient, FUNGAL_PLANKS, MainColor, true, true);
         BlockFactoryHelper.MosicFamily("fungal" , Varient, FUNGAL_PLANKS, true);
@@ -242,6 +248,7 @@ public class BlockFactoryUpt {
 
     public static void groupWoodFamilty(String MainName, String Varient, Block MainBlock, Boolean flamable, MapColor MainColor, MapColor SecondColor) {
         
+        ModGroup.addToDeco(MainName + "_planks" + Varient);
         BlockFactoryHelper.BaseFamily(MainName, Varient, MainBlock, flamable);
         BlockFactoryHelper.InteractionFamily(MainName, Varient, MainBlock, MainColor, flamable, true);
         BlockFactoryHelper.NatureFamily(MainName , Varient, MainColor, SecondColor, flamable, true);
@@ -442,6 +449,18 @@ public class BlockFactoryUpt {
         StoneSystem("limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, LIMESTONE);
         StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, POLISHED_LIMESTONE);
         StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, true, POLISHED_LIMESTONE);
+
+        Block IRON_GRATE = register("iron_grate", new GrateBlock(AbstractBlock.Settings.create().requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()));
+        Block STAIRS = BlockFactoryUpt.register("iron_grate" + "_stairs" + "", 
+            new GrateStairsBlock(IRON_GRATE.getDefaultState(), AbstractBlock.Settings.copy(IRON_GRATE))); 
+
+        Block SLAB = BlockFactoryUpt.register("iron_grate" + "_slab" + "", 
+            new GrateSlabBlock(AbstractBlock.Settings.copy(IRON_GRATE)));
+
+        
+        
+        //BlockFactoryHelper.BaseFamily("iron_grate", "", IRON_GRATE, false);
+
 
 
         //BlockSystem(Blocks.OAK_WOOD, "oak_wood", null, MapColor.OAK_TAN);

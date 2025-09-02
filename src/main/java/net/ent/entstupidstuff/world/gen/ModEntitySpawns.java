@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.world.gen;
 
+import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
+import net.ent.entstupidstuff.entity.mob.MackerelEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -34,7 +36,7 @@ public class ModEntitySpawns  {
             BiomeKeys.THE_VOID, BiomeKeys.DEEP_DARK),
             SpawnGroup.MONSTER, EntityFactory.ZOMBIE_SCORCHED, 500, 2, 3); //50, 2, 3
         SpawnRestriction.register(EntityFactory.ZOMBIE_SCORCHED, SpawnLocationTypes.IN_LAVA,
-            Heightmap.Type.MOTION_BLOCKING, HostileEntity::canSpawnInDark);
+            Heightmap.Type.MOTION_BLOCKING, HostileEntity::canSpawnIgnoreLightLevel);
 
         //SOUL SKELETON
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.SOUL_SAND_VALLEY),
@@ -46,6 +48,17 @@ public class ModEntitySpawns  {
         SpawnRestriction.register(EntityFactory.ARMORED_PILLAGER, SpawnLocationTypes.ON_GROUND, 
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PatrolEntity::canSpawn);
 
+        // ALLIGATOR GAR
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.MANGROVE_SWAMP, BiomeKeys.SWAMP),
+            SpawnGroup.AMBIENT, EntityFactory.ALLIGATOR_GAR, 30, 8, 8); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.ALLIGATOR_GAR, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, AlligatorGarEntity::canMobSpawn);
+
+        // MACKEREL
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.LUKEWARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN),
+            SpawnGroup.AMBIENT, EntityFactory.MACKEREL, 10, 4, 7); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.MACKEREL, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, MackerelEntity::canMobSpawn);
 
         // Add Lobber Zombie
         // Add Fire Zombie

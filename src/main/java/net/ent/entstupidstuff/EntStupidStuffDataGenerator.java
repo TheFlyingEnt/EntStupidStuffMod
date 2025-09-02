@@ -2,16 +2,17 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.datagen.BlockTagProvider;
 import net.ent.entstupidstuff.datagen.ItemTagProvider;
-import net.ent.entstupidstuff.datagen.ModBiomes;
 import net.ent.entstupidstuff.datagen.ModLangProvider;
 import net.ent.entstupidstuff.datagen.ModEntityLootTableGenerator;
 import net.ent.entstupidstuff.datagen.ModLootTableProvider;
-import net.ent.entstupidstuff.datagen.ModPlacedFeatures;
 import net.ent.entstupidstuff.datagen.ModRecipeProvider;
 import net.ent.entstupidstuff.datagen.ModRegistryDataGenerator;
+import net.ent.entstupidstuff.datagen.ModWorldGenerator;
 import net.ent.entstupidstuff.datagen.ModelProvider;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
-import net.ent.entstupidstuff.world.ConfiguredFeaturesFactory;
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
+import net.ent.entstupidstuff.world.ModPlacedFeatures;
+import net.ent.entstupidstuff.world.biome.ModBiomes;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.registry.RegistryBuilder;
@@ -25,6 +26,7 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		pack.addProvider(ModEntityLootTableGenerator::new);
+		//pack.addProvider(ModFishingLootTableGenerator::new);
 
 
 		pack.addProvider(ModelProvider::new);
@@ -34,6 +36,7 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(ItemTagProvider::new);
 		pack.addProvider(ModLangProvider::new);
 		pack.addProvider(ModRegistryDataGenerator::new);
+		pack.addProvider(ModWorldGenerator::new);
 
 		
 	}
@@ -43,11 +46,8 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_MATERIAL, ModTrimMaterials::bootstrap);
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_PATTERN, ModTrimPatterns::bootstrap);
 		registryBuilder.addRegistry(RegistryKeys.ENCHANTMENT, UpdatedEnchantmentFactory::bootstrap);
+		registryBuilder.addRegistry(RegistryKeys.BIOME, ModBiomes::boostrap);
+		registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap);
 		registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModPlacedFeatures::bootstrap);
-		registryBuilder.addRegistry(RegistryKeys.BIOME, ModBiomes::bootstrap);
-
-		//registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ConfiguredFeaturesFactory::bootstrap);
-		registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ConfiguredFeaturesFactory::bootstrap);
-		//registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModPlacedFeatures::bootstrap);
 	}
 }

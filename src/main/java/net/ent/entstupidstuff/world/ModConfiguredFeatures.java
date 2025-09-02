@@ -1,7 +1,10 @@
 package net.ent.entstupidstuff.world;
 
+import java.util.List;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;
@@ -16,6 +19,10 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.structure.rule.BlockMatchRuleTest;
+import net.minecraft.structure.rule.RuleTest;
+import net.minecraft.structure.rule.TagMatchRuleTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.Direction;
@@ -36,36 +43,39 @@ import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.trunk.CherryTrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
-public class ConfiguredFeaturesFactory {
+public class ModConfiguredFeatures {
 
-    // Reg
-    public static final TrunkPlacerType<ThreexThreeTrunkPlacer> THREE_BY_THREE_TRUNK =
-        Registry.register(Registries.TRUNK_PLACER_TYPE,
-            Identifier.of("entstupidstuff", "three_by_three_trunk"),
-            new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
+	//Registry for Placers
+
+	public static final TrunkPlacerType<ThreexThreeTrunkPlacer> THREE_BY_THREE_TRUNK =
+        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of("entstupidstuff", "three_by_three_trunk"), new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
 
     public static final FoliagePlacerType<RedwoodFoliagePlacer> REDWOOD_FOLIAGE_PLACER =
-    Registry.register(Registries.FOLIAGE_PLACER_TYPE,
-        Identifier.of("entstupidstuff", "redwood_foliage"),
-        new FoliagePlacerType<>(RedwoodFoliagePlacer.CODEC));
+    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of("entstupidstuff", "redwood_foliage"), new FoliagePlacerType<>(RedwoodFoliagePlacer.CODEC));
 
     public static final FoliagePlacerType<FirFoliagePlacer> FIR_FOLIAGE_PLACER =
-    Registry.register(Registries.FOLIAGE_PLACER_TYPE,
-        Identifier.of("entstupidstuff", "fir_foliage"),
-        new FoliagePlacerType<>(FirFoliagePlacer.CODEC));
+    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of("entstupidstuff", "fir_foliage"), new FoliagePlacerType<>(FirFoliagePlacer.CODEC));
 
     public static final TrunkPlacerType<FirTrunkPlacer> FIR_TRUNK_PLACER =
-        Registry.register(Registries.TRUNK_PLACER_TYPE,
-            Identifier.of("entstupidstuff", "fir_trunk"),
-            new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
-
-    // Registry for Config Feature
+        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of("entstupidstuff", "fir_trunk"), new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
+		
+    // Registry for ConfiguredFeatures
 
     public static final RegistryKey<ConfiguredFeature<?, ?>> MAPLE_KEY = registerKey("maple");
-    public static final RegistryKey<ConfiguredFeature<?, ?>> SPIKED_ICE_CLUSTER = registerKey("spiked_ice_cluster");
-    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_pointed_ice");
-    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("pointed_ice");
-    public static final RegistryKey<ConfiguredFeature<?, ?>> FIR_KEY = registerKey("fir");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> FIR_KEY = registerKey("fir");
+
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_LIMESTONE = registerKey("ore_limestone");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_LIMESTONE_LOWER = registerKey("ore_limestone_lower");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_LIMESTONE_UPPER = registerKey("ore_limestone_upper");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_PACKED_ICE = registerKey("ore_packed_ice");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_PACKED_ICE_LOWER = registerKey("ore_packed_ice_lower");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_SNOW = registerKey("ore_snow");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_SNOW_UPPER = registerKey("ore_snow_upper");
+
+	public static final RegistryKey<ConfiguredFeature<?, ?>> SPIKED_ICE_CLUSTER = registerKey("spiked_ice_cluster");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_spiked_ice");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
+
 
     // Registry for Features
 
@@ -79,14 +89,14 @@ public class ConfiguredFeaturesFactory {
     public static final Feature<LargeDripstoneFeatureConfig> LARGER_SPIKED_ICE_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of("entstupidstuff", "large_pointed_ice"),
+            Identifier.of("entstupidstuff", "large_spiked_ice"),
             new LargerSpikedIceFeature(LargeDripstoneFeatureConfig.CODEC)
         );
 
     public static final Feature<SmallDripstoneFeatureConfig> SMALL_SPIKED_ICE_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of("entstupidstuff", "pointed_ice"),
+            Identifier.of("entstupidstuff", "spiked_ice"),
             new SmallSpikedIceFeature(SmallDripstoneFeatureConfig.CODEC)
         );
 
@@ -122,6 +132,24 @@ public class ConfiguredFeaturesFactory {
     
             new TwoLayersFeatureSize(1, 1, 2)).build()
         );*/
+
+		RuleTest stoneReplacables = new TagMatchRuleTest(BlockTags.STONE_ORE_REPLACEABLES);
+        RuleTest deepslateReplacables = new TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        RuleTest netherReplacables = new TagMatchRuleTest(BlockTags.BASE_STONE_NETHER);
+        RuleTest endReplacables = new BlockMatchRuleTest(Blocks.END_STONE);
+
+		ConfiguredFeatures.register(context, ORE_LIMESTONE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_LIMESTONE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_LIMESTONE_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_PACKED_ICE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.PACKED_ICE.getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_PACKED_ICE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.PACKED_ICE.getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_SNOW, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_SNOW_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
+
+
+
+		//List.of(OreFeatureConfig.createTarget(, BlockFactoryUpt.callBlock("limestone").getDefaultState()))
+		
 
 		ConfiguredFeatures.register(
 			context,
@@ -185,7 +213,7 @@ public class ConfiguredFeaturesFactory {
 			.build()
 		);*/
 
-        register(
+        ConfiguredFeatures.register(
 			context,
 			SPIKED_ICE_CLUSTER,
 			SPIKED_ICE_CLUSTER_FEATURE,
@@ -204,7 +232,7 @@ public class ConfiguredFeaturesFactory {
 			)
 		);
 
-        register(
+        ConfiguredFeatures.register(
 			context,
 			LARGE_SPIKED_ICE,
 			LARGER_SPIKED_ICE_FEATURE,
@@ -221,7 +249,7 @@ public class ConfiguredFeaturesFactory {
 			)
 		);
 
-        register(
+        ConfiguredFeatures.register(
 			context,
 			SMALL_SPIKED_ICE,
 			Feature.SIMPLE_RANDOM_SELECTOR,

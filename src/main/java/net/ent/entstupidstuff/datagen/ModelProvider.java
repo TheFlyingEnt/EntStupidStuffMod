@@ -27,9 +27,6 @@ public class ModelProvider extends FabricModelProvider{
     
     BlockStateModelGenerator blockStateModelGenerator;
 
-    
-    
-
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator2) {
 
@@ -111,138 +108,9 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
         blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
 
+        // Iron Grate
+        generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactoryUpt.callBlock("iron_grate"));
 
-        //addStoneAlt("andesite", true);
-        //generateBaseAndIntercationFamily("andesite_brick", "", false, true, BlockFactoryUpt.callBlock("andesite_bricks"));
-
-
-        // Fungal Wood
-        //addWoodFamily("fungal", null, false, false);
-
-        // Fungal (Colored) Wood
-        //for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false, false);}
-
-        // Modded Wood
-        //addWoodFamily("phantom", null, false, true);
-        //addWoodFamily("redwood", null, true, true);
-        //addWoodFamily("desert_iron", null, false, true);
-        //addWoodFamily("maple", null, true, true);
-        //addWoodFamily("fir", null, true, true);
-
-        
-
-        //createMosaic("oak", "");
-        //createMosaic("spruce", "");
-        //createMosaic("jungle", "");
-        //createMosaic("birch", "");
-        //createMosaic("dark_oak", "");
-        //createMosaic("acacia", "");
-        //createMosaic("mangrove", "");
-        //createMosaic("cherry", "");
-        //createMosaic("warped", "");
-        //createMosaic("crimson", "");
-
-        // Vanilla Wood
-        //createVanillaGlassDoor("oak");
-        //createVanillaGlassDoor("spruce");
-        //createVanillaGlassDoor("jungle");
-        //createVanillaGlassDoor("birch");
-        //createVanillaGlassDoor("dark_oak");
-        //createVanillaGlassDoor("acacia");
-        //createVanillaGlassDoor("mangrove");
-        //createVanillaGlassDoor("cherry");
-        //createVanillaGlassDoor("bamboo");
-        //createVanillaGlassDoor("warped");
-        //createVanillaGlassDoor("crimson");
-        //createVanillaGlassDoor("pale_oak"); //FUTURE UPDATE
-
-        //createVanillaGlassDoor("iron");
-        //createVanillaGlassDoor("copper");
-        //createVanillaGlassDoor("exposed_copper");
-        //createVanillaGlassDoor("oxidized_copper");
-        //createVanillaGlassDoor("weathered_copper");
-        //createVanillaGlassDoor("waxed_copper"); - These ware Manually Created :)
-        //createVanillaGlassDoor("waxed_exposed_copper");
-        //createVanillaGlassDoor("waxed_oxidized_copper");
-        //createVanillaGlassDoor("waxed_weathered_copper");
-
-        // Vanilla Stone
-        //addStoneAlt("andesite", true);
-        //addStoneAlt("diorite", true);
-        //addStoneAlt("granite", true);
-
-        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
-        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
-        //blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactoryUpt.callBlock("polished_" + "granite" + "_wall"));
-
-        //String
-        //blockStateModelGenerator.registerCubeAllModelTexturePool(BlockFactoryUpt.callBlock("string_block"));
-        //blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
-
-        //blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
-        //blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
-
-        //registerPointedIce();
-
-        //addStoneAlt("limestone", false);
-        //addStoneAlt("polished_limestone", false);
-        //addStoneAlt("polished_limestone", true);
-
-        /*
-
-
-        addWoodFamily("fungal", null, false); //Normal Fungal Wood
-        for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false);} //Fungal Wood
-        for (String color : BlockFactoryUpt.COLORS) {addWoolFamily("textured_wool", color);} //Textured Wool
-
-        //Vanilla Doors:
-        createVanillaGlassDoor("iron");
-        for (String base : ModBlocks.V_WOOD_VARIENTS) {createVanillaGlassDoor(base);} //Vanilla Doors
-        for (String c : ModBlocks.COPPER_VARIENTS) {createVanillaGlassDoor(c);}
-
-        //Stone Bricks
-        addStoneAlt("polished_andesite");
-        addStoneAlt("polished_diorite");
-        addStoneAlt("polished_granite");
-        
-        //Modded Wood
-        addWoodFamily("redwood", null, true);
-        addWoodFamily("desert_iron", null, false);
-        addWoodFamily("maple", null, true);
-
-        blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
-
-        //blockStateModelGenerator.registerHangingSign(BlockFactoryUpt.callBlock("stripped_redwood_wood"), BlockFactoryUpt.callBlock("redwood_hanging_sign"), BlockFactoryUpt.callBlock("redwood_wall_hanging_sign"));
-
-        //blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock("redwood_log")).log(BlockFactoryUpt.callBlock("redwood_log")).wood(BlockFactoryUpt.callBlock("redwood_wood"));
-        //blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock("stripped_redwood_log")).log(BlockFactoryUpt.callBlock("stripped_redwood_log")).wood(BlockFactoryUpt.callBlock("stripped_redwood_wood"));
-
-        //addBlockFamily(Blocks.OAK_WOOD, "oak_wood", null);
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		/*for (Block inputB : MBlockFactory.FULLBLOCKS.values()) {
-			blockStateModelGenerator.registerSimpleCubeAll(inputB);  
-		}*/
-        
-        /*createWoodTexG("fungal", blockStateModelGenerator, "");
-        for (String inputC : MBlockFactoryUpt.COLORS) { createWoodTexG("fungal", blockStateModelGenerator, "_" + inputC);}
-        for (String inputC : MBlockFactoryUpt.COLORS) { createColorT("textured_wool_" + inputC, blockStateModelGenerator);}*/
 	}
 
     public void generateGroupWoodFamilty(String blockName, String suffix, Boolean withLeaves) {

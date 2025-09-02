@@ -13,6 +13,7 @@ import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.MackerelRenderer;
 import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
 import net.ent.entstupidstuff.client.render.entity.PrismerineArrowRenderer;
+import net.ent.entstupidstuff.client.render.entity.RedPandaRenderer;
 import net.ent.entstupidstuff.client.render.entity.RedStoneGolemRenderer;
 import net.ent.entstupidstuff.client.render.entity.ScorchedEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.SkeletonGoldRenderer;
@@ -31,6 +32,7 @@ import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
+import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
@@ -132,6 +134,9 @@ public class ModModelLayers {
     public static final EntityModelLayer MACKEREL =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "mackerel"), "main");
 
+    public static final EntityModelLayer RED_PANDA =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "red_panda"), "main");
+
     // Work in Progress
 
     public static final EntityModelLayer CUSTOMBOAT =
@@ -183,6 +188,9 @@ public class ModModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.RSGolem, (EntityRendererFactory.Context context) -> new RedStoneGolemRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.RSGolem, RedStoneGolemModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.RED_PANDA, (EntityRendererFactory.Context context) -> new RedPandaRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.RED_PANDA, RedPandaModel::getTexturedModelData);
 
         //The Fire of the Hunt Update
 

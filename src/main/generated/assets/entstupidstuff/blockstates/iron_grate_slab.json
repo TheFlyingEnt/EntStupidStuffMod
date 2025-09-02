@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/iron_grate_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/iron_grate"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/iron_grate_slab_top"
+    }
+  }
+}

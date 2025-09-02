@@ -22,6 +22,7 @@ import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
+import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
 import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
 import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
 import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
@@ -44,7 +45,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build()
+        .build("zombie_lobber")
     );
 
     public static final EntityType<ScorchedZombieEntity> ZOMBIE_SCORCHED = Registry.register(Registries.ENTITY_TYPE,
@@ -55,7 +56,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build()
+        .build("zombie_scorched")
     );
 
     public static final EntityType<SlimedZombieEntity> ZOMBIE_SLIMED = Registry.register(Registries.ENTITY_TYPE,
@@ -66,7 +67,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build()
+        .build("zombie_slimed")
     );
 
     public static final EntityType<AncientDrownedEntity> ANCIENT_DROWNED = Registry.register(Registries.ENTITY_TYPE,
@@ -77,7 +78,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build()
+        .build("ancient_drowned")
     );
 
     public static final EntityType<AncientTridentEntity> ANCIENT_TRIDENT = Registry.register(Registries.ENTITY_TYPE,
@@ -87,7 +88,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build()
+            .build("ancient_trident")
 	);
 
     public static final EntityType<FrostbittenZombieEntity> ZOMBIE_FROSTBITTEN = Registry.register(Registries.ENTITY_TYPE,
@@ -98,7 +99,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build()
+        .build("zombie_frostbitten")
     );
 
     public static final EntityType<ArmoredPillagerEntity> ARMORED_PILLAGER = Registry.register(Registries.ENTITY_TYPE,
@@ -109,7 +110,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0F)
 		.vehicleAttachment(-0.6F)
 		.maxTrackingRange(8)
-        .build()
+        .build("armored_pillager")
     );
 
     public static final EntityType<SoulSkeletonEntity> SOUL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -119,7 +120,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("soul_skeleton")
     );
 
     public static final EntityType<RedStoneGolemEntity> RSGolem = Registry.register(Registries.ENTITY_TYPE,
@@ -129,7 +130,7 @@ public class EntityFactory {
         .eyeHeight(2.60F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("redstone_golem")
     );
 
     public static final EntityType<ButterflyEntity> BUTTERFLY = Registry.register(Registries.ENTITY_TYPE,
@@ -138,7 +139,7 @@ public class EntityFactory {
         .dimensions(0.5f, 0.5F)
         .eyeHeight(0.25F)
         .maxTrackingRange(8)
-        .build()
+        .build("butterfly")
     );
 
     public static final EntityType<CustomBoatEntity> CUSTOMBOAT = Registry.register(Registries.ENTITY_TYPE,
@@ -148,7 +149,7 @@ public class EntityFactory {
         .dimensions(3.5F, 0.7F)
 		.passengerAttachments(0.1875F)
 		.maxTrackingRange(8)
-        .build()
+        .build("customboat")
     );
 
     public static final EntityType<AlligatorGarEntity> ALLIGATOR_GAR = Registry.register(Registries.ENTITY_TYPE,
@@ -156,7 +157,7 @@ public class EntityFactory {
         EntityType.Builder.create(AlligatorGarEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
-        .build()
+        .build("alligator_gar")
     );
 
     public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE,
@@ -165,7 +166,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
-        .build()
+        .build("zebra_fish")
     );
 
     public static final EntityType<MackerelEntity> MACKEREL = Registry.register(Registries.ENTITY_TYPE,
@@ -174,9 +175,17 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
-        .build()
+        .build("mackerel")
     );
 
+    public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "red_panda"),
+        EntityType.Builder.create(RedPandaEntity::new, SpawnGroup.AMBIENT)
+        .dimensions(0.5f, 0.5F)
+        .eyeHeight(0.25F)
+        .maxTrackingRange(8)
+        .build("red_panda")
+    );
 
 
     /*
@@ -195,7 +204,7 @@ public class EntityFactory {
         .passengerAttachments(2.0125F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("piglin_warrior")
     );
 
     public static final EntityType<PiglinFungalEntity> PIGLIN_FUNGAL = Registry.register(Registries.ENTITY_TYPE,
@@ -206,7 +215,7 @@ public class EntityFactory {
         .passengerAttachments(2.0125F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-    .build()
+    .build("piglin_fungal")
     );
 
     public static final EntityType<HoveringInfernoEntity> HOVERING_INFERNO = Registry.register(Registries.ENTITY_TYPE,
@@ -215,7 +224,7 @@ public class EntityFactory {
         .makeFireImmune()
         .dimensions(0.6F, 1.8F)
         .maxTrackingRange(8)
-        .build()
+        .build("hovering_inferno")
     );
 
     /*
@@ -229,7 +238,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build()
+            .build("underwater_arrow")
 	);
 
     public static final EntityType<CannonBallEntity> CANNON_BALL = Registry.register(Registries.ENTITY_TYPE,
@@ -239,7 +248,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build()
+            .build("cannon_ball")
 	);
 
     public static final EntityType<SunkenSkeletonEntity> SUNKEN_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -249,7 +258,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("sunken_skeleton")
     );
 
     public static final EntityType<SkeletonPirateCaptainEntity> SKELETON_PIRATE_CAPTAIN = Registry.register(Registries.ENTITY_TYPE,
@@ -259,7 +268,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("skeleton_pirate_captain_concept")
     );
 
     public static final EntityType<SkeletonCrossbowEntity> SUNKEN_SKELETON_CROSSBOW = Registry.register(Registries.ENTITY_TYPE,
@@ -269,7 +278,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("sunken_skeleton_crossbow")
     );
 
     public static final EntityType<MetalSkeletonEntity> METAL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -279,7 +288,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("metal_skeleton")
     );
 
     public static final EntityType<PhantomSkeletonEntity> PHANTOM_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -289,7 +298,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build()
+        .build("phantom_skeleton")
     );
 
 
@@ -329,7 +338,8 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(MACKEREL, MackerelEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
-        
+        FabricDefaultAttributeRegistry.register(RED_PANDA, RedPandaEntity.createRedPandaAttributes());
+
 
         FabricDefaultAttributeRegistry.register(METAL_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
         FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());

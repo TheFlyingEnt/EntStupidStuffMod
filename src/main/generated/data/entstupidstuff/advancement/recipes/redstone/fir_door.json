@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fir_planks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:fir_planks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:fir_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fir_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:fir_door"
+    ]
+  }
+}

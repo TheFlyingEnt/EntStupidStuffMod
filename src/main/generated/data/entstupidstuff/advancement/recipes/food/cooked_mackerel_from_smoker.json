@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mackerel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:mackerel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:cooked_mackerel_from_smoker"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mackerel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:cooked_mackerel_from_smoker"
+    ]
+  }
+}

@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.world.tree;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.ent.entstupidstuff.world.ConfiguredFeaturesFactory;
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.intprovider.IntProvider;
@@ -29,7 +29,7 @@ public class RedwoodFoliagePlacer extends FoliagePlacer {
 
     @Override
     protected FoliagePlacerType<?> getType() {
-        return ConfiguredFeaturesFactory.REDWOOD_FOLIAGE_PLACER;
+        return ModConfiguredFeatures.REDWOOD_FOLIAGE_PLACER;
     }
 
    @Override

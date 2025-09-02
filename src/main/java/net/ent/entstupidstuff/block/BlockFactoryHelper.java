@@ -85,7 +85,7 @@ public class BlockFactoryHelper {
             FlammableBlockRegistry.getDefaultInstance().add(SLAB, 5, 20);
         }
 
-        ModGroup.addToDeco(blockName + "_planks" + varient);
+        //ModGroup.addToDeco(blockName + "_planks" + varient);
         ModGroup.addToDeco(blockName + "_stairs" + varient);
         ModGroup.addToDeco(blockName + "_slab" + varient);
     }

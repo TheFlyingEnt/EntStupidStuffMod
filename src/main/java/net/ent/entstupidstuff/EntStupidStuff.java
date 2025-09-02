@@ -7,6 +7,7 @@ import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
 import net.ent.entstupidstuff.event.WeaponEvent;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
+import net.ent.entstupidstuff.world.gen.ModBiomeFeatures;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
@@ -96,6 +97,8 @@ public class EntStupidStuff implements ModInitializer {
 		DispenserBlock.registerProjectileBehavior(ItemFactory.PRISMERINE_ARROW);
 
 		UpdatedEnchantmentEffects.registerEnchantmentEffects();
+
+		//ModBiomeFeatures.register();
 		
 
 		//AttackCallbackAll.EVENT.register(WeaponEvent::onEntityAttack);
