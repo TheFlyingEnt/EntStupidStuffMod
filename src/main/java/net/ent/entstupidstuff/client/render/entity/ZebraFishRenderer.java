@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.ZebraFishModel;
-import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
+import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ public class ZebraFishRenderer extends MobEntityRenderer<ZebraFishEntity, ZebraF
    private static final Identifier TEXTURE_BLUE_LEPORD  = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zebra_fish/zebra_fish_3_leopard.png");
 
    public ZebraFishRenderer(EntityRendererFactory.Context context) {
-      super(context, new ZebraFishModel(context.getPart(ModModelLayers.ZEBRA_FISH)), 0.3F);
+      super(context, new ZebraFishModel(context.getPart(ModEntityModelLayers.ZEBRA_FISH)), 0.3F);
    }
 
    public Identifier getTexture(ZebraFishEntity fishEntity) {

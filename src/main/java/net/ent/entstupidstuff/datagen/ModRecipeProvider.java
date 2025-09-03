@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.datagen;
 import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.item.ItemFactory;
@@ -230,7 +230,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
         // Modded: Logs -> Planks
         if (enableFungal) {
-            Item FUNGAL_PLANK = BlockFactoryUpt.callBlock("fungal_planks").asItem();
+            Item FUNGAL_PLANK = BlockFactory.callBlock("fungal_planks").asItem();
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, FUNGAL_PLANK, 4)
 			    .input(Ingredient.ofItems(Blocks.MUSHROOM_STEM, Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK))
 			    .group("planks")
@@ -241,8 +241,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         }
 
         if (enableRedwood) {
-            Item REDWOOD_PLANK = BlockFactoryUpt.callBlock("redwood_planks").asItem();
-            Block REDWOOD_LOG = BlockFactoryUpt.callBlock("redwood_log");
+            Item REDWOOD_PLANK = BlockFactory.callBlock("redwood_planks").asItem();
+            Block REDWOOD_LOG = BlockFactory.callBlock("redwood_log");
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, REDWOOD_PLANK, 4)
 			    .input(REDWOOD_LOG.asItem())
 			    .group("planks")
@@ -251,8 +251,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         }
 
         if (enableFir) {
-            Item FIR_PLANK = BlockFactoryUpt.callBlock("fir_planks").asItem();
-            Block FIR_LOG = BlockFactoryUpt.callBlock("fir_log");
+            Item FIR_PLANK = BlockFactory.callBlock("fir_planks").asItem();
+            Block FIR_LOG = BlockFactory.callBlock("fir_log");
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, FIR_PLANK, 4)
                 .input(FIR_LOG.asItem())
                 .group("planks")
@@ -261,8 +261,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         }
 
         if (enableMaple) {
-            Item MAPLE_PLANK = BlockFactoryUpt.callBlock("maple_planks").asItem();
-            Block MAPLE_LOG = BlockFactoryUpt.callBlock("maple_log");
+            Item MAPLE_PLANK = BlockFactory.callBlock("maple_planks").asItem();
+            Block MAPLE_LOG = BlockFactory.callBlock("maple_log");
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, MAPLE_PLANK, 4)
 			    .input(MAPLE_LOG.asItem())
 			    .group("planks")
@@ -271,8 +271,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         }
 
         if (enablePhantom) {
-            Item PHANTOM_PLANK = BlockFactoryUpt.callBlock("phantom_planks").asItem();
-            Block PHATOM_LOG = BlockFactoryUpt.callBlock("phantom_log");
+            Item PHANTOM_PLANK = BlockFactory.callBlock("phantom_planks").asItem();
+            Block PHATOM_LOG = BlockFactory.callBlock("phantom_log");
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, PHANTOM_PLANK, 4)
 			    .input(PHATOM_LOG.asItem())
 			    .group("planks")
@@ -292,28 +292,28 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
         //Vanilla GlassDoor
         if (enableVanillaGlassDoor) {
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("oak" + "_glass_door"), Blocks.OAK_DOOR, Blocks.OAK_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("spruce" + "_glass_door"), Blocks.SPRUCE_DOOR, Blocks.SPRUCE_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("jungle" + "_glass_door"), Blocks.JUNGLE_DOOR, Blocks.JUNGLE_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("birch" + "_glass_door"), Blocks.BIRCH_DOOR, Blocks.BIRCH_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("dark_oak" + "_glass_door"), Blocks.DARK_OAK_DOOR, Blocks.DARK_OAK_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("acacia" + "_glass_door"), Blocks.ACACIA_DOOR, Blocks.ACACIA_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("mangrove" + "_glass_door"), Blocks.MANGROVE_DOOR, Blocks.MANGROVE_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("cherry" + "_glass_door"), Blocks.CHERRY_DOOR, Blocks.CHERRY_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("bamboo" + "_glass_door"), Blocks.BAMBOO_DOOR, Blocks.BAMBOO_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("warped" + "_glass_door"), Blocks.WARPED_DOOR, Blocks.WARPED_PLANKS.asItem(), true);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("crimson" + "_glass_door"), Blocks.CRIMSON_DOOR, Blocks.CRIMSON_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("oak" + "_glass_door"), Blocks.OAK_DOOR, Blocks.OAK_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("spruce" + "_glass_door"), Blocks.SPRUCE_DOOR, Blocks.SPRUCE_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("jungle" + "_glass_door"), Blocks.JUNGLE_DOOR, Blocks.JUNGLE_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("birch" + "_glass_door"), Blocks.BIRCH_DOOR, Blocks.BIRCH_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("dark_oak" + "_glass_door"), Blocks.DARK_OAK_DOOR, Blocks.DARK_OAK_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("acacia" + "_glass_door"), Blocks.ACACIA_DOOR, Blocks.ACACIA_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("mangrove" + "_glass_door"), Blocks.MANGROVE_DOOR, Blocks.MANGROVE_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("cherry" + "_glass_door"), Blocks.CHERRY_DOOR, Blocks.CHERRY_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("bamboo" + "_glass_door"), Blocks.BAMBOO_DOOR, Blocks.BAMBOO_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("warped" + "_glass_door"), Blocks.WARPED_DOOR, Blocks.WARPED_PLANKS.asItem(), true);
+            createGlassDoorRecipe(BlockFactory.callBlock("crimson" + "_glass_door"), Blocks.CRIMSON_DOOR, Blocks.CRIMSON_PLANKS.asItem(), true);
             //createGlassDoorRecipe(BlockFactoryUpt.callBlock("pale_oak" + "_glass_door"), Blocks.PALE_OAK_DOOR, Blocks.PALE_OAK_PLANKS.asItem()); //FUTURE UPDATE
     
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("iron" + "_glass_door"), Blocks.IRON_DOOR, Items.IRON_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("copper" + "_glass_door"), Blocks.COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("exposed_copper" + "_glass_door"), Blocks.EXPOSED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("oxidized_copper" + "_glass_door"), Blocks.OXIDIZED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("weathered_copper" + "_glass_door"), Blocks.WEATHERED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("waxed_copper" + "_glass_door"), Blocks.WAXED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("waxed_exposed_copper" + "_glass_door"), Blocks.WAXED_EXPOSED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("waxed_oxidized_copper" + "_glass_door"), Blocks.WAXED_OXIDIZED_COPPER_DOOR, Items.COPPER_INGOT, false);
-            createGlassDoorRecipe(BlockFactoryUpt.callBlock("waxed_weathered_copper" + "_glass_door"), Blocks.WAXED_WEATHERED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("iron" + "_glass_door"), Blocks.IRON_DOOR, Items.IRON_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("copper" + "_glass_door"), Blocks.COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("exposed_copper" + "_glass_door"), Blocks.EXPOSED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("oxidized_copper" + "_glass_door"), Blocks.OXIDIZED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("weathered_copper" + "_glass_door"), Blocks.WEATHERED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("waxed_copper" + "_glass_door"), Blocks.WAXED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_door"), Blocks.WAXED_EXPOSED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_door"), Blocks.WAXED_OXIDIZED_COPPER_DOOR, Items.COPPER_INGOT, false);
+            createGlassDoorRecipe(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_door"), Blocks.WAXED_WEATHERED_COPPER_DOOR, Items.COPPER_INGOT, false);
 
         }
         
@@ -322,28 +322,28 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
         //Vanilla GlassTrapDoor
         if (enableVanillaGlassTrapDoor) {
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("oak" + "_glass_trapdoor"), Blocks.OAK_TRAPDOOR, Blocks.OAK_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("spruce" + "_glass_trapdoor"), Blocks.SPRUCE_TRAPDOOR, Blocks.SPRUCE_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("jungle" + "_glass_trapdoor"), Blocks.JUNGLE_TRAPDOOR, Blocks.JUNGLE_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("birch" + "_glass_trapdoor"), Blocks.BIRCH_TRAPDOOR, Blocks.BIRCH_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("dark_oak" + "_glass_trapdoor"), Blocks.DARK_OAK_TRAPDOOR, Blocks.DARK_OAK_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("acacia" + "_glass_trapdoor"), Blocks.ACACIA_TRAPDOOR, Blocks.ACACIA_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("mangrove" + "_glass_trapdoor"), Blocks.MANGROVE_TRAPDOOR, Blocks.MANGROVE_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("cherry" + "_glass_trapdoor"), Blocks.CHERRY_TRAPDOOR, Blocks.CHERRY_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("bamboo" + "_glass_trapdoor"), Blocks.BAMBOO_TRAPDOOR, Blocks.BAMBOO_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("warped" + "_glass_trapdoor"), Blocks.WARPED_TRAPDOOR, Blocks.WARPED_PLANKS.asItem(), true);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("crimson" + "_glass_trapdoor"), Blocks.CRIMSON_TRAPDOOR, Blocks.CRIMSON_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("oak" + "_glass_trapdoor"), Blocks.OAK_TRAPDOOR, Blocks.OAK_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("spruce" + "_glass_trapdoor"), Blocks.SPRUCE_TRAPDOOR, Blocks.SPRUCE_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("jungle" + "_glass_trapdoor"), Blocks.JUNGLE_TRAPDOOR, Blocks.JUNGLE_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("birch" + "_glass_trapdoor"), Blocks.BIRCH_TRAPDOOR, Blocks.BIRCH_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("dark_oak" + "_glass_trapdoor"), Blocks.DARK_OAK_TRAPDOOR, Blocks.DARK_OAK_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("acacia" + "_glass_trapdoor"), Blocks.ACACIA_TRAPDOOR, Blocks.ACACIA_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("mangrove" + "_glass_trapdoor"), Blocks.MANGROVE_TRAPDOOR, Blocks.MANGROVE_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("cherry" + "_glass_trapdoor"), Blocks.CHERRY_TRAPDOOR, Blocks.CHERRY_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("bamboo" + "_glass_trapdoor"), Blocks.BAMBOO_TRAPDOOR, Blocks.BAMBOO_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("warped" + "_glass_trapdoor"), Blocks.WARPED_TRAPDOOR, Blocks.WARPED_PLANKS.asItem(), true);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("crimson" + "_glass_trapdoor"), Blocks.CRIMSON_TRAPDOOR, Blocks.CRIMSON_PLANKS.asItem(), true);
             //createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("pale_oak" + "_glass_trapdoor"), Blocks.PALE_OAK_TRAPDOOR, Blocks.PALE_OAK_PLANKS.asItem()); //FUTURE UPDATE
     
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("iron" + "_glass_trapdoor"), Blocks.IRON_TRAPDOOR, Items.IRON_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("copper" + "_glass_trapdoor"), Blocks.COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("exposed_copper" + "_glass_trapdoor"), Blocks.EXPOSED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("oxidized_copper" + "_glass_trapdoor"), Blocks.OXIDIZED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("weathered_copper" + "_glass_trapdoor"), Blocks.WEATHERED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("waxed_copper" + "_glass_trapdoor"), Blocks.WAXED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("waxed_exposed_copper" + "_glass_trapdoor"), Blocks.WAXED_EXPOSED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("waxed_oxidized_copper" + "_glass_trapdoor"), Blocks.WAXED_OXIDIZED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
-            createGlassTrapDoorRecipe(BlockFactoryUpt.callBlock("waxed_weathered_copper" + "_glass_trapdoor"), Blocks.WAXED_WEATHERED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("iron" + "_glass_trapdoor"), Blocks.IRON_TRAPDOOR, Items.IRON_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("copper" + "_glass_trapdoor"), Blocks.COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("exposed_copper" + "_glass_trapdoor"), Blocks.EXPOSED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("oxidized_copper" + "_glass_trapdoor"), Blocks.OXIDIZED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("weathered_copper" + "_glass_trapdoor"), Blocks.WEATHERED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("waxed_copper" + "_glass_trapdoor"), Blocks.WAXED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_trapdoor"), Blocks.WAXED_EXPOSED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_trapdoor"), Blocks.WAXED_OXIDIZED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
+            createGlassTrapDoorRecipe(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_trapdoor"), Blocks.WAXED_WEATHERED_COPPER_TRAPDOOR, Items.COPPER_INGOT, false);
         }
         
 
@@ -998,18 +998,18 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     public static void generateMosaic(String FamilyBase, Block Blocks, Block BlockSlab) {
 
-        offerMosaicRecipe(exporter, RecipeCategory.DECORATIONS,  BlockFactoryUpt.callBlock(FamilyBase + "_mosaic"), BlockSlab);
+        offerMosaicRecipe(exporter, RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic"), BlockSlab);
         
         RecipeProvider
-            .createStairsRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic_stairs").asItem(), Ingredient.ofItems(Blocks))
+            .createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs").asItem(), Ingredient.ofItems(Blocks))
             .group("wooden_stairs")
-            .criterion(hasItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic")))
+            .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic")))
             .offerTo(exporter);
 
         RecipeProvider
-            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(FamilyBase + "_mosaic_slab").asItem(), Ingredient.ofItems(Blocks))
+            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab").asItem(), Ingredient.ofItems(Blocks))
             .group("wooden_slab")
-            .criterion(hasItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic")))
+            .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic")))
             .offerTo(exporter);
 
     }
@@ -1022,72 +1022,72 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         if (varient == null) {varient = "";}
         else {varient = "_" + varient;}
 
-        Item FamilyHead = BlockFactoryUpt.callBlock(FamilyBase + "_planks" + varient).asItem();
+        Item FamilyHead = BlockFactory.callBlock(FamilyBase + "_planks" + varient).asItem();
         Ingredient FamilyI = Ingredient.ofItems(FamilyHead);
 
         RecipeProvider
-            .createTrapdoorRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_trapdoor" + varient).asItem(), FamilyI)
+            .createTrapdoorRecipe(BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem(), FamilyI)
             .group("wooden_trapdoor")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
 
         RecipeProvider
-            .createFenceRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_fence" + varient).asItem(), FamilyI)
+            .createFenceRecipe(BlockFactory.callBlock(FamilyBase + "_fence" + varient).asItem(), FamilyI)
             .group("wooden_fence")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
         RecipeProvider
-            .createFenceGateRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_fence_gate" + varient).asItem(), FamilyI)
+            .createFenceGateRecipe(BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient).asItem(), FamilyI)
             .group("wooden_fence_gate")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
         RecipeProvider
-            .createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(FamilyBase + "_pressure_plate" + varient).asItem(), FamilyI)
+            .createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient).asItem(), FamilyI)
             .group("wooden_pressure_plate")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
         RecipeProvider
-            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient).asItem(), FamilyI)
+            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_slab" + varient).asItem(), FamilyI)
             .group("wooden_slab")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
         RecipeProvider
-            .createStairsRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_stairs" + varient).asItem(), FamilyI)
+            .createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_stairs" + varient).asItem(), FamilyI)
             .group("wooden_stairs")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
         RecipeProvider
-            .createTransmutationRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_button" + varient).asItem(), FamilyI)
+            .createTransmutationRecipe(BlockFactory.callBlock(FamilyBase + "_button" + varient).asItem(), FamilyI)
             .group("wooden_button")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
     
-        offerMosaicRecipe(exporter, RecipeCategory.DECORATIONS,  BlockFactoryUpt.callBlock(FamilyBase + "_mosaic" + varient), BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient));
+        offerMosaicRecipe(exporter, RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic" + varient), BlockFactory.callBlock(FamilyBase + "_slab" + varient));
         
         RecipeProvider
-            .createStairsRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic_stairs" + varient).asItem(), FamilyI)
+            .createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs" + varient).asItem(), FamilyI)
             .group("wooden_stairs")
-            .criterion(hasItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic" + varient)))
+            .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
             .offerTo(exporter);
 
         RecipeProvider
-            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(FamilyBase + "_mosaic_slab" + varient).asItem(), FamilyI)
+            .createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab" + varient).asItem(), FamilyI)
             .group("wooden_slab")
-            .criterion(hasItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactoryUpt.callBlock(FamilyBase + "_mosaic" + varient)))
+            .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
             .offerTo(exporter);
 
         //createGlassDoorRecipe(FamilyBase, varient, "wooden");
 
-        Item GLASS_DOOR = BlockFactoryUpt.callBlock(FamilyBase + "_glass_door" + varient).asItem();
-        Item DOOR = BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient).asItem();
+        Item GLASS_DOOR = BlockFactory.callBlock(FamilyBase + "_glass_door" + varient).asItem();
+        Item DOOR = BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem();
 
-        Item GLASS_TRAPDOOR = BlockFactoryUpt.callBlock(FamilyBase + "_glass_trapdoor" + varient).asItem();
-        Item TRAPDOOR = BlockFactoryUpt.callBlock(FamilyBase + "_trapdoor" + varient).asItem();
+        Item GLASS_TRAPDOOR = BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient).asItem();
+        Item TRAPDOOR = BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem();
 
         ShapelessRecipeJsonBuilder.create(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
             .input(DOOR,1)
@@ -1105,7 +1105,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
 
         RecipeProvider
-            .createDoorRecipe(BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient).asItem(), FamilyI)
+            .createDoorRecipe(BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem(), FamilyI)
             .group("wooden_door")
             .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
             .offerTo(exporter);
@@ -1121,9 +1121,9 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     public void generateColorPlank(String color){
 
-        Item result = BlockFactoryUpt.callBlock("fungal_planks_" + color).asItem();
-        Item MATERIAL = BlockFactoryUpt.callBlock("fungal_planks").asItem();
-        Item DYE = BlockFactoryUpt.getDye(color).asItem();
+        Item result = BlockFactory.callBlock("fungal_planks_" + color).asItem();
+        Item MATERIAL = BlockFactory.callBlock("fungal_planks").asItem();
+        Item DYE = BlockFactory.getDye(color).asItem();
 
         ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, result, 8)
         .input('#', MATERIAL)
@@ -1139,7 +1139,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         //Dyable Plank System
 
         ArrayList<Item> cplankGroup = new ArrayList<Item>();
-        for (String Icolor : BlockFactoryUpt.COLORS){cplankGroup.add(ModBlocks.COLOR_PLANK(Icolor, "planks").asItem());}
+        for (String Icolor : BlockFactory.COLORS){cplankGroup.add(ModBlocks.COLOR_PLANK(Icolor, "planks").asItem());}
     
         ArrayList<Item> plankFinal = new ArrayList<Item>();
         
@@ -1180,9 +1180,9 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     public void generateWoolFamily(String FamilyBase, String varient){
 
-        Item wool = BlockFactoryUpt.getWoolColor(varient).asItem();
+        Item wool = BlockFactory.getWoolColor(varient).asItem();
 
-        ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(FamilyBase + "_" + varient))
+        ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_" + varient))
             .input('#', wool)
             .pattern(" ##")
             .pattern(" ##")
@@ -1194,8 +1194,8 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     }
 
     public static void createGlassExtras(Block ModdedFam, Block PLANK, Block DOOR, Block TRAPDOOR, String GROUP) {
-        Item GLASS_DOOR = BlockFactoryUpt.callBlock(ModdedFam + "_glass_door").asItem();
-        Item GLASS_TRAPDOOR = BlockFactoryUpt.callBlock(ModdedFam + "_glass_trapdoor").asItem();
+        Item GLASS_DOOR = BlockFactory.callBlock(ModdedFam + "_glass_door").asItem();
+        Item GLASS_TRAPDOOR = BlockFactory.callBlock(ModdedFam + "_glass_trapdoor").asItem();
 
         ShapelessRecipeJsonBuilder.create(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
             .input(DOOR,1)
@@ -1264,53 +1264,53 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     public static void createLimestoneVarients() {
 
-        Block LIMESTONE = BlockFactoryUpt.callBlock("limestone");
-        Block POLISHED_LIMESTONE = BlockFactoryUpt.callBlock("polished_limestone");
-        Block POLISHED_LIMESTONE_BRICKS = BlockFactoryUpt.callBlock("polished_limestone_bricks");
+        Block LIMESTONE = BlockFactory.callBlock("limestone");
+        Block POLISHED_LIMESTONE = BlockFactory.callBlock("polished_limestone");
+        Block POLISHED_LIMESTONE_BRICKS = BlockFactory.callBlock("polished_limestone_bricks");
 
 
         //Limestone (Stonecutter)
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "stairs").asItem(), LIMESTONE.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
 
         //Limestone (Crafting Table)
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("limestone_" + "slab").asItem(), 
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), 
             Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
         .offerTo(exporter);
 
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("limestone_" + "stairs").asItem(), 
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock("limestone_" + "stairs").asItem(), 
             Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
         .offerTo(exporter);
 
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
 
         //Polished Limestone (Stonecutter)
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone").asItem(), LIMESTONE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone").asItem(), LIMESTONE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);;
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);;
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), LIMESTONE.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
 
         //Polished Limestone (Crafting Table)
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_" + "slab").asItem(), 
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), 
             Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
         .offerTo(exporter);
 
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("polished_limestone_" + "stairs").asItem(), 
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), 
             Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
         .offerTo(exporter);
 
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
         
 
         // Limestone Bricks
@@ -1318,17 +1318,17 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), POLISHED_LIMESTONE.asItem());
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), LIMESTONE.asItem());
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE_BRICKS.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE_BRICKS.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), LIMESTONE.asItem(), 2);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "stairs").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), LIMESTONE.asItem());
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_" + "wall").asItem(), LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), LIMESTONE.asItem());
 
         /*CookingRecipeJsonBuilder.createSmelting(
 			Ingredient.ofItems(POLISHED_LIMESTONE_BRICKS.asItem()), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_polished_limestone_brick").asItem(), 0.1F, 200
@@ -1336,7 +1336,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 		.criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()))
 		.offerTo(exporter, "smelted_" + "cracked_polished_limestone_brick");*/
 
-        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("polished_limestone_brick_chiseled"), Ingredient.ofItems(BlockFactoryUpt.callBlock("polished_limestone_brick_slab")))
+        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("polished_limestone_brick_slab")))
         .criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem()))
         .offerTo(exporter);
 
@@ -1345,43 +1345,43 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     public static void createStoneVarient() {
 
-        Block ANDERSITE_BRICKS = BlockFactoryUpt.callBlock("andesite_bricks");
-        Block DIORITE_BRICKS = BlockFactoryUpt.callBlock("diorite_bricks");
-        Block GRANITE_BRICKS = BlockFactoryUpt.callBlock("granite_bricks");
+        Block ANDERSITE_BRICKS = BlockFactory.callBlock("andesite_bricks");
+        Block DIORITE_BRICKS = BlockFactory.callBlock("diorite_bricks");
+        Block GRANITE_BRICKS = BlockFactory.callBlock("granite_bricks");
 
         //Andesite
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.ANDESITE);
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.POLISHED_ANDESITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_slab").asItem(), ANDERSITE_BRICKS.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_slab").asItem(), Blocks.ANDESITE, 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_slab").asItem(), Blocks.POLISHED_ANDESITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), ANDERSITE_BRICKS.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.ANDESITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.POLISHED_ANDESITE, 2);
 
-		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_stairs").asItem(), ANDERSITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_stairs").asItem(), Blocks.ANDESITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_stairs").asItem(), Blocks.POLISHED_ANDESITE);
+		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), ANDERSITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.POLISHED_ANDESITE);
 		
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_wall").asItem(), Blocks.ANDESITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_wall").asItem(), Blocks.POLISHED_ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.POLISHED_ANDESITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_chiseled").asItem(), ANDERSITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_chiseled").asItem(), Blocks.ANDESITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_chiseled").asItem(), Blocks.POLISHED_ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), ANDERSITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.POLISHED_ANDESITE);
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_slab").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
         .offerTo(exporter);
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("andesite_brick_stairs").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock("andesite_brick_stairs").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
         .offerTo(exporter);
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
 
         CookingRecipeJsonBuilder.createSmelting(
-			Ingredient.ofItems(ANDERSITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_andesite_bricks").asItem(), 0.1F, 200
+			Ingredient.ofItems(ANDERSITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_andesite_bricks").asItem(), 0.1F, 200
 		)
 		.criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
 		.offerTo(exporter, "smelted_" + "cracked_andesite_bricks");
 
-        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("andesite_brick_chiseled"), Ingredient.ofItems(BlockFactoryUpt.callBlock("andesite_brick_slab")))
+        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("andesite_brick_slab")))
         .criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS))
         .offerTo(exporter);
 
@@ -1390,35 +1390,35 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.GRANITE);
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.POLISHED_GRANITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_slab").asItem(), GRANITE_BRICKS.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_slab").asItem(), Blocks.GRANITE, 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_slab").asItem(), Blocks.POLISHED_GRANITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), GRANITE_BRICKS.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.GRANITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.POLISHED_GRANITE, 2);
 
-		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_stairs").asItem(), GRANITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_stairs").asItem(), Blocks.GRANITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_stairs").asItem(), Blocks.POLISHED_GRANITE);
+		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), GRANITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.POLISHED_GRANITE);
 		
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_wall").asItem(), Blocks.GRANITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_wall").asItem(), Blocks.POLISHED_GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.POLISHED_GRANITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_chiseled").asItem(), GRANITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_chiseled").asItem(), Blocks.GRANITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_chiseled").asItem(), Blocks.POLISHED_GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), GRANITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.POLISHED_GRANITE);
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_slab").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
         .offerTo(exporter);
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("granite_brick_stairs").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock("granite_brick_stairs").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
         .offerTo(exporter);
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
 
         CookingRecipeJsonBuilder.createSmelting(
-			Ingredient.ofItems(GRANITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_granite_bricks").asItem(), 0.1F, 200
+			Ingredient.ofItems(GRANITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_granite_bricks").asItem(), 0.1F, 200
 		)
 		.criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
 		.offerTo(exporter, "smelted_" + "cracked_granite_bricks");
 
-        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("granite_brick_chiseled"), Ingredient.ofItems(BlockFactoryUpt.callBlock("granite_brick_slab")))
+        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("granite_brick_slab")))
         .criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS))
         .offerTo(exporter);
         
@@ -1427,46 +1427,46 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.DIORITE);
         offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.POLISHED_DIORITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_slab").asItem(), DIORITE_BRICKS.asItem(), 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_slab").asItem(), Blocks.DIORITE, 2);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_slab").asItem(), Blocks.POLISHED_DIORITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), DIORITE_BRICKS.asItem(), 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.DIORITE, 2);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.POLISHED_DIORITE, 2);
 
-		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_stairs").asItem(), DIORITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_stairs").asItem(), Blocks.DIORITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_stairs").asItem(), Blocks.POLISHED_DIORITE);
+		offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), DIORITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.POLISHED_DIORITE);
 		
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_wall").asItem(), Blocks.DIORITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_wall").asItem(), Blocks.POLISHED_DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.POLISHED_DIORITE);
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_chiseled").asItem(), DIORITE_BRICKS.asItem());
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_chiseled").asItem(), Blocks.DIORITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_chiseled").asItem(), Blocks.POLISHED_DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), DIORITE_BRICKS.asItem());
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.POLISHED_DIORITE);
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_slab").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
         .offerTo(exporter);
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock("diorite_brick_stairs").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock("diorite_brick_stairs").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
         .offerTo(exporter);
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
 
         CookingRecipeJsonBuilder.createSmelting(
-			Ingredient.ofItems(DIORITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_diorite_bricks").asItem(), 0.1F, 200
+			Ingredient.ofItems(DIORITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_diorite_bricks").asItem(), 0.1F, 200
 		)
 		.criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
 		.offerTo(exporter, "smelted_" + "cracked_diorite_bricks");
 
-        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("diorite_brick_chiseled"), Ingredient.ofItems(BlockFactoryUpt.callBlock("diorite_brick_slab")))
+        RecipeProvider.createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("diorite_brick_slab")))
 			.criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS))
 		.offerTo(exporter);
 
 
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE.asItem());
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE.asItem());
-        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE.asItem());
+        offerWallRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE.asItem());
 
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE);
-        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactoryUpt.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE);
+        offerStonecuttingRecipe(exporter, RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE);
 
 
 
@@ -1534,45 +1534,45 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     //Recipe Create for Wood Group
     @Deprecated
     public static void createWoodGroup(String baseItemName, String endTag){
-        Ingredient baseItemI = Ingredient.ofItems(BlockFactoryUpt.callBlock(baseItemName + "_planks" + endTag).asItem());
-        Item baseItem = (BlockFactoryUpt.callBlock(baseItemName + "_planks" + endTag).asItem());
+        Ingredient baseItemI = Ingredient.ofItems(BlockFactory.callBlock(baseItemName + "_planks" + endTag).asItem());
+        Item baseItem = (BlockFactory.callBlock(baseItemName + "_planks" + endTag).asItem());
 
-        RecipeProvider.createTrapdoorRecipe(BlockFactoryUpt.callBlock(baseItemName + "_trapdoor" + endTag).asItem(), baseItemI)
+        RecipeProvider.createTrapdoorRecipe(BlockFactory.callBlock(baseItemName + "_trapdoor" + endTag).asItem(), baseItemI)
         .group("wooden_trapdoor")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createFenceRecipe(BlockFactoryUpt.callBlock(baseItemName + "_fence" + endTag).asItem(), baseItemI)
+        RecipeProvider.createFenceRecipe(BlockFactory.callBlock(baseItemName + "_fence" + endTag).asItem(), baseItemI)
         .group("wooden_fence")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createFenceGateRecipe(BlockFactoryUpt.callBlock(baseItemName + "_fence_gate" + endTag).asItem(), baseItemI)
+        RecipeProvider.createFenceGateRecipe(BlockFactory.callBlock(baseItemName + "_fence_gate" + endTag).asItem(), baseItemI)
         .group("wooden_fence_gate")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(baseItemName + "_pressure_plate" + endTag).asItem(), baseItemI)
+        RecipeProvider.createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_pressure_plate" + endTag).asItem(), baseItemI)
         .group("wooden_pressure_plate")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock(baseItemName + "_slab" + endTag).asItem(), baseItemI)
+        RecipeProvider.createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_slab" + endTag).asItem(), baseItemI)
         .group("wooden_slab")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createStairsRecipe(BlockFactoryUpt.callBlock(baseItemName + "_stairs" + endTag).asItem(), baseItemI)
+        RecipeProvider.createStairsRecipe(BlockFactory.callBlock(baseItemName + "_stairs" + endTag).asItem(), baseItemI)
         .group("wooden_stairs")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createTransmutationRecipe(BlockFactoryUpt.callBlock(baseItemName + "_button" + endTag).asItem(), baseItemI)
+        RecipeProvider.createTransmutationRecipe(BlockFactory.callBlock(baseItemName + "_button" + endTag).asItem(), baseItemI)
         .group("wooden_button")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
 
-        RecipeProvider.createDoorRecipe(BlockFactoryUpt.callBlock(baseItemName + "_door" + endTag).asItem(), baseItemI)
+        RecipeProvider.createDoorRecipe(BlockFactory.callBlock(baseItemName + "_door" + endTag).asItem(), baseItemI)
         .group("wooden_door")
         .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
         .offerTo(exporter);
@@ -1583,13 +1583,13 @@ public class ModRecipeProvider extends FabricRecipeProvider{
     public static void createColorPlanks(Item dye, ItemConvertible output, String color) {
 
 		ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, output, 8)
-        .input('#', BlockFactoryUpt.callBlock("fungal_planks").asItem())
+        .input('#', BlockFactory.callBlock("fungal_planks").asItem())
         .input('D', dye)
         .pattern("###")
         .pattern("#D#")
         .pattern("###")
         .group("colored_planks")
-        .criterion(hasItem(BlockFactoryUpt.callBlock("fungal_planks").asItem()), conditionsFromItem(BlockFactoryUpt.callBlock("fungal_planks").asItem()))
+        .criterion(hasItem(BlockFactory.callBlock("fungal_planks").asItem()), conditionsFromItem(BlockFactory.callBlock("fungal_planks").asItem()))
         .criterion(hasItem(dye), conditionsFromItem(dye))
         .offerTo(exporter);
         

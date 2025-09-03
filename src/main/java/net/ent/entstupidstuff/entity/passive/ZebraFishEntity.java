@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.entity.mob;
+package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 

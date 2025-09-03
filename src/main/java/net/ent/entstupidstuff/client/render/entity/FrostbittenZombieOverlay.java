@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -19,7 +19,7 @@ public class FrostbittenZombieOverlay <T extends FrostbittenZombieEntity> extend
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public FrostbittenZombieOverlay(FeatureRendererContext<T, DrownedEntityModel<T>> context, EntityModelLoader loader) {
       super(context);
-      this.model = new DrownedEntityModel(loader.getModelPart(ModModelLayers.ZOMBIE_FROSTBITTEN_OUTER));
+      this.model = new DrownedEntityModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER));
    }
 
    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T drownedEntity, float f, float g, float h, float j, float k, float l) {

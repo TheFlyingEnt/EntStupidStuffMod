@@ -379,7 +379,7 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 	}
 
 	private static void place(WorldAccess world, BlockPos pos, Direction direction, Thickness thickness) {
-		BlockState blockState = BlockFactoryUpt.callBlock("pointed_ice")
+		BlockState blockState = BlockFactory.callBlock("pointed_ice")
 			.getDefaultState()
 			.with(VERTICAL_DIRECTION, direction)
 			.with(THICKNESS, thickness)
@@ -423,7 +423,7 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 			return pos;
 		} else {
 			Direction direction = state.get(VERTICAL_DIRECTION);
-			BiPredicate<BlockPos, BlockState> biPredicate = (posx, statex) -> statex.isOf(BlockFactoryUpt.callBlock("pointed_ice")) && statex.get(VERTICAL_DIRECTION) == direction;
+			BiPredicate<BlockPos, BlockState> biPredicate = (posx, statex) -> statex.isOf(BlockFactory.callBlock("pointed_ice")) && statex.get(VERTICAL_DIRECTION) == direction;
 			return (BlockPos)searchInDirection(world, pos, direction.getDirection(), biPredicate, statex -> isTip(statex, allowMerged), range).orElse(null);
 		}
 	}
@@ -479,8 +479,8 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 
 	private static Optional<BlockPos> getSupportingPos(World world, BlockPos pos, BlockState state, int range) {
 		Direction direction = state.get(VERTICAL_DIRECTION);
-		BiPredicate<BlockPos, BlockState> biPredicate = (posx, statex) -> statex.isOf(BlockFactoryUpt.callBlock("pointed_ice")) && statex.get(VERTICAL_DIRECTION) == direction;
-		return searchInDirection(world, pos, direction.getOpposite().getDirection(), biPredicate, statex -> !statex.isOf(BlockFactoryUpt.callBlock("pointed_ice")), range);
+		BiPredicate<BlockPos, BlockState> biPredicate = (posx, statex) -> statex.isOf(BlockFactory.callBlock("pointed_ice")) && statex.get(VERTICAL_DIRECTION) == direction;
+		return searchInDirection(world, pos, direction.getOpposite().getDirection(), biPredicate, statex -> !statex.isOf(BlockFactory.callBlock("pointed_ice")), range);
 	}
 
 	private static boolean canPlaceAtWithDirection(WorldView world, BlockPos pos, Direction direction) {
@@ -490,7 +490,7 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 	}
 
 	private static boolean isTip(BlockState state, boolean allowMerged) {
-		if (!state.isOf(BlockFactoryUpt.callBlock("pointed_ice"))) {
+		if (!state.isOf(BlockFactory.callBlock("pointed_ice"))) {
 			return false;
 		} else {
 			Thickness thickness = state.get(THICKNESS);
@@ -511,7 +511,7 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 	}
 
 	private static boolean isHeldByPointedDripstone(BlockState state, WorldView world, BlockPos pos) {
-		return isPointingDown(state) && !world.getBlockState(pos.up()).isOf(BlockFactoryUpt.callBlock("pointed_ice"));
+		return isPointingDown(state) && !world.getBlockState(pos.up()).isOf(BlockFactory.callBlock("pointed_ice"));
 	}
 
 	@Override
@@ -520,7 +520,7 @@ public class PointedIceBlock extends Block implements LandingBlock, Waterloggabl
 	}
 
 	private static boolean isPointedDripstoneFacingDirection(BlockState state, Direction direction) {
-		return state.isOf(BlockFactoryUpt.callBlock("pointed_ice")) && state.get(VERTICAL_DIRECTION) == direction;
+		return state.isOf(BlockFactory.callBlock("pointed_ice")) && state.get(VERTICAL_DIRECTION) == direction;
 	}
 
 	@Nullable

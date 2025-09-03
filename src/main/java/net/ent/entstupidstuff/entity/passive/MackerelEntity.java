@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.entity.mob;
+package net.ent.entstupidstuff.entity.passive;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;

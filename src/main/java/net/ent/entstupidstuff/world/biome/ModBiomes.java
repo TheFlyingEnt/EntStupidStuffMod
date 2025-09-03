@@ -164,7 +164,7 @@ public class ModBiomes {
         // Example of adding custom placed features (replace with your actual keys)
         biomeBuilder.feature(GenerationStep.Feature.LAKES, MiscPlacedFeatures.LAKE_LAVA_SURFACE);
         biomeBuilder.feature(GenerationStep.Feature.LOCAL_MODIFICATIONS, UndergroundPlacedFeatures.AMETHYST_GEODE);
-        //biomeBuilder.feature(GenerationStep.Feature.LOCAL_MODIFICATIONS, PlacedFeatures .createEntry(Identifier.of("entstupidstuff", "large_pointed_ice")));
+        //biomeBuilder.feature(GenerationStep.Feature.LOCAL_MODIFICATIONS, PlacedFeatures .createEntry(Identifier.of(EntStupidStuff.MOD_ID, "large_pointed_ice")));
 
         biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_STRUCTURES, UndergroundPlacedFeatures.MONSTER_ROOM);
         biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_STRUCTURES, UndergroundPlacedFeatures.MONSTER_ROOM_DEEP);
@@ -174,8 +174,8 @@ public class ModBiomes {
         //biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, PlacedFeatures.ORE_COAL_LOWER);
 
         // Spiked ice clusters
-        //biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, PlacedFeatures.createEntry(Identifier.of("entstupidstuff", "spiked_ice_cluster")));
-        //biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, PlacedFeatures.createEntry(Identifier.of("entstupidstuff", "pointed_ice")));
+        //biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, PlacedFeatures.createEntry(Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster")));
+        //biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, PlacedFeatures.createEntry(Identifier.of(EntStupidStuff.MOD_ID, "pointed_ice")));
 
         // Springs
         biomeBuilder.feature(GenerationStep.Feature.FLUID_SPRINGS, MiscPlacedFeatures.SPRING_WATER);

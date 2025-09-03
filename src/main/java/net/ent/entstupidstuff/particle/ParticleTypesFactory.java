@@ -12,6 +12,13 @@ public class ParticleTypesFactory {
     public static final SimpleParticleType MAPLE_LEAVES = FabricParticleTypes.simple();
     public static final SimpleParticleType PHANTOM_FLAME = FabricParticleTypes.simple();
 
+    public static final SimpleParticleType HAMMER_BOOM = Registry.register(
+            Registries.PARTICLE_TYPE,
+            Identifier.of(EntStupidStuff.MOD_ID, "hammer_boom"),
+            FabricParticleTypes.simple() // or: new SimpleParticleType(false)
+    );
+
+
     public static void initalizer() {
       register();
     }

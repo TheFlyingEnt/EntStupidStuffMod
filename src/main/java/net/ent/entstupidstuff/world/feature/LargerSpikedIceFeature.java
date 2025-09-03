@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.tag.BlockTags;

@@ -1,8 +1,8 @@
 package net.ent.entstupidstuff.world.gen;
 
-import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
-import net.ent.entstupidstuff.entity.mob.MackerelEntity;
+import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
+import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;

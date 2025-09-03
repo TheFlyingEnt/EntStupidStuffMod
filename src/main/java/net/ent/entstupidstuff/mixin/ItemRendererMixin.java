@@ -4,16 +4,13 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PiglinBruteEntity;
 import net.minecraft.entity.mob.PiglinEntity;
@@ -43,11 +40,11 @@ public abstract class ItemRendererMixin {
     public BakedModel modRenderItem(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 
 
-        /*if (stack.isOf(ItemFactory.callItem("stone_hammer")) && renderMode != ModelTransformationMode.GUI) { //Identifier.of("entstupidstuff")
-            return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "diamond_hammer"), "inventory"));
+        /*if (stack.isOf(ItemFactory.callItem("stone_hammer")) && renderMode != ModelTransformationMode.GUI) { //Identifier.of(EntStupidStuff.MOD_ID)
+            return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "diamond_hammer"), "inventory"));
         } 
-        else if (stack.isOf(ItemFactory.callItem("stone_hammer")) && renderMode != ModelTransformationMode.GROUND) { //Identifier.of("entstupidstuff")
-            return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "diamond_hammer"), "ground"));
+        else if (stack.isOf(ItemFactory.callItem("stone_hammer")) && renderMode != ModelTransformationMode.GROUND) { //Identifier.of(EntStupidStuff.MOD_ID)
+            return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "diamond_hammer"), "ground"));
         }*/
 
         //dropLoot
@@ -60,7 +57,7 @@ public abstract class ItemRendererMixin {
 
             if (entity instanceof PiglinEntity || entity instanceof PiglinWarriorEntity) {
                 if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                    return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "golden_hammer_model_piglin"), "inventory"));   
+                    return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "golden_hammer_model_piglin"), "inventory"));   
                 } 
 
             }
@@ -71,32 +68,32 @@ public abstract class ItemRendererMixin {
 
         if (stack.isOf(ItemFactory.callItem("wooden_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "wooden_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "wooden_hammer_model"), "inventory"));   
             } 
         }
         if (stack.isOf(ItemFactory.callItem("stone_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "stone_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "stone_hammer_model"), "inventory"));   
             } 
         }
         if (stack.isOf(ItemFactory.callItem("iron_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "iron_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "iron_hammer_model"), "inventory"));   
             } 
         }
         if (stack.isOf(ItemFactory.callItem("golden_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "golden_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "golden_hammer_model"), "inventory"));   
             } 
         }
         if (stack.isOf(ItemFactory.callItem("diamond_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "diamond_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "diamond_hammer_model"), "inventory"));   
             } 
         }
         if (stack.isOf(ItemFactory.callItem("netherite_hammer"))) {
             if (!renderMode.equals(ModelTransformationMode.GUI) && !renderMode.equals(ModelTransformationMode.GROUND)) {
-                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "netherite_hammer_model"), "inventory"));   
+                return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "netherite_hammer_model"), "inventory"));   
             } 
         }
         return value;
@@ -113,7 +110,7 @@ public abstract class ItemRendererMixin {
             if (!bl && stack.isOf(ItemFactory.ANCIENT_TRIDENT)) { //This is the HotBar Model
                 //System.out.println("Trident - renderItem");
                 matrices.push();
-                model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
+                model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"), "inventory"));
                 model.getTransformation().getTransformation(renderMode).apply(leftHanded, matrices);
                 matrices.translate(-0.5F, -0.5F, -0.5F);
                 //matrices.translate(5F, 5F, 5F);
@@ -123,7 +120,7 @@ public abstract class ItemRendererMixin {
                 ci.cancel();
             } /*else if (bl && stack.isOf(ItemFactory.ANCIENT_TRIDENT)) { //This is the HotBar Model
                 matrices.push();
-                //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident"), "inventory"));
+                //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"), "inventory"));
                 model.getTransformation().getTransformation(renderMode).apply(leftHanded, matrices);
                 matrices.translate(1F, 1F, 1F);
                 this.builtinModelItemRenderer.render(stack, renderMode, matrices, vertexConsumers, light, overlay);
@@ -137,9 +134,9 @@ public abstract class ItemRendererMixin {
             boolean bl = renderMode == ModelTransformationMode.GUI || renderMode == ModelTransformationMode.GROUND || renderMode == ModelTransformationMode.FIXED;
             if (bl && stack.isOf(ItemFactory.ANCIENT_TRIDENT)) { //This is the HotBar Model
             System.out.println("renderItem");
-            //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of("entstupidstuff", "ancient_trident")));
-            //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of("entstupidstuff", "ancient_trident")));
-            model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident"), "inventory"));
+            //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident")));
+            //model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident")));
+            model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"), "inventory"));
 
             matrices.push();
             model.getTransformation().getTransformation(renderMode).apply(leftHanded, matrices);
@@ -158,23 +155,23 @@ public abstract class ItemRendererMixin {
         if (entity != null) {
             if (entity instanceof PiglinWarriorEntity || entity instanceof ZombifiedPiglinEntity || entity instanceof PiglinBruteEntity || entity instanceof PiglinEntity) {
                 if (stack.isOf(ItemFactory.callItem("golden_hammer"))) {
-                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "golden_hammer_model_piglin"), "inventory"));
-                    //BakedModel customModel = this.models.getModelManager().getModel((ModelIdentifier.ofInventoryVariant(Identifier.of("entstupidstuff","golden_hammer_model_piglin"))));
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "golden_hammer_model_piglin"), "inventory"));
+                    //BakedModel customModel = this.models.getModelManager().getModel((ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID,"golden_hammer_model_piglin"))));
                     cir.setReturnValue(customModel);
                 }
                 else if (stack.isOf(ItemFactory.callItem("netherite_hammer"))) {
-                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "netherite_hammer_model_piglin"), "inventory"));
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "netherite_hammer_model_piglin"), "inventory"));
                     cir.setReturnValue(customModel);
                 }
                
             }
             else if (entity instanceof PhantomSkeletonEntity) {
                 if (stack.isOf(Items.BOW)) {
-                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "phantom_bow"), "inventory"));
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow"), "inventory"));
                     cir.setReturnValue(customModel);
                 }
                 else if (stack.isOf(Items.IRON_SWORD)) {
-                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "phantom_cutlass"), "inventory"));
+                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_cutlass"), "inventory"));
                     cir.setReturnValue(customModel);
                 }
 
@@ -184,13 +181,13 @@ public abstract class ItemRendererMixin {
                 BakedModel model;
                 /*if (entity != null && entity.isUsingItem()) {
                     // Optional: check if it's currently being used
-                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
+                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"), "inventory"));
                 } else if (entity != null && entity.getMainHandStack() == stack) {
                     // Held in main hand
-                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
+                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"), "inventory"));
                 } else {
                     // Default item model (inventory/GUI)
-                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident"), "inventory"));
+                    model = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"), "inventory"));
                 }*
 
                 cir.setReturnValue(model);
@@ -199,8 +196,8 @@ public abstract class ItemRendererMixin {
 
             /*else if (stack.isOf(ItemFactory.ANCIENT_TRIDENT)) { //When Item Held
                 System.out.println("Acient Trident - getModel");
-                //BakedModel BbakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of("entstupidstuff", "trident_in_hand")));
-                BakedModel BbakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
+                //BakedModel BbakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "trident_in_hand")));
+                BakedModel BbakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"), "inventory"));
                 ClientWorld clientWorld = world instanceof ClientWorld ? (ClientWorld)world : null;
                 BakedModel bakedModel2 = BbakedModel.getOverrides().apply(BbakedModel, stack, clientWorld, entity, seed);
                 cir.setReturnValue(bakedModel2 == null ? ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getMissingModel() : bakedModel2);
@@ -208,7 +205,7 @@ public abstract class ItemRendererMixin {
 
         
            /*if (stack.isOf(ItemFactory.callItem("ancient_trident"))) {
-                /*BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel((ModelIdentifier.ofInventoryVariant(Identifier.of("entstupidstuff","ancient_trident_in_hand"))));
+                /*BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel((ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID,"ancient_trident_in_hand"))));
                 ClientWorld clientWorld = world instanceof ClientWorld ? (ClientWorld)world : null;
                 BakedModel bakedModel2 = bakedModel.getOverrides().apply(bakedModel, stack, clientWorld, entity, seed);*
 
@@ -232,14 +229,14 @@ public abstract class ItemRendererMixin {
             // Replace this with your custom logic
             /*if (entity.isSneaking() && stack.isOf(ModFood.CANNON_ITEM)) {
                 // Example: change model if the entity is sneaking
-                BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "diamond_hammer_model"), "inventory"));
+                BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "diamond_hammer_model"), "inventory"));
                 cir.setReturnValue(customModel);
             }*/
         }
         
         /*if (stack.isOf(ItemFactory.callItem("ancient_trident"))) {
 
-            BakedModel bakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of("entstupidstuff", "ancient_trident_in_hand"), "inventory"));
+            BakedModel bakedModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident_in_hand"), "inventory"));
             System.out.println("TridentItremRender - Baked");
             System.out.println(bakedModel);
 

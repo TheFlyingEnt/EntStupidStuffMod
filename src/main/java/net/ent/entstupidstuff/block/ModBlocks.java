@@ -10,8 +10,8 @@ public class ModBlocks {
     */
 
     public static Block COLOR_PLANK(String color, String type){
-        if (BlockFactoryUpt.callBlock("fungal_" + type + "_" + color) != null){
-            return BlockFactoryUpt.callBlock("fungal_" + type + "_" + color);
+        if (BlockFactory.callBlock("fungal_" + type + "_" + color) != null){
+            return BlockFactory.callBlock("fungal_" + type + "_" + color);
         }
         return null;  
     }
@@ -20,7 +20,7 @@ public class ModBlocks {
         if (varient == null){varient = "";}
         else {varient = "_" + varient;}
 
-        return BlockFactoryUpt.callBlock(mat + "_door" + varient);
+        return BlockFactory.callBlock(mat + "_door" + varient);
     }
 
     public static String[] V_WOOD_VARIENTS = {"oak", "spruce", "jungle", "birch", "dark_oak", "acacia","mangrove", "cherry", "bamboo", "warped", "crimson"};
@@ -74,9 +74,9 @@ public class ModBlocks {
 
     //Stones
 
-    public static final Block POLISHED_ANDESITE_BRICKS = BlockFactoryUpt.callBlock("polished_andesite_bricks");
-    public static final Block POLISHED_ANDESITE_BRICKS_STAIRS = BlockFactoryUpt.callBlock("polished_andesite_bricks_stairs");
-    public static final Block POLISHED_ANDESITE_BRICKS_SLAB = BlockFactoryUpt.callBlock("polished_andesite_bricks_slab");
-    public static final Block POLISHED_ANDESITE_BRICKS_WALL = BlockFactoryUpt.callBlock("polished_andesite_bricks_wall");
+    public static final Block POLISHED_ANDESITE_BRICKS = BlockFactory.callBlock("polished_andesite_bricks");
+    public static final Block POLISHED_ANDESITE_BRICKS_STAIRS = BlockFactory.callBlock("polished_andesite_bricks_stairs");
+    public static final Block POLISHED_ANDESITE_BRICKS_SLAB = BlockFactory.callBlock("polished_andesite_bricks_slab");
+    public static final Block POLISHED_ANDESITE_BRICKS_WALL = BlockFactory.callBlock("polished_andesite_bricks_wall");
 
 }

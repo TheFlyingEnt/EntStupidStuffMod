@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.SunkenSkeletonModel;
 import net.ent.entstupidstuff.entity.generic.GenericSkeletonBow;
 import net.ent.entstupidstuff.entity.mob.SkeletonCrossbowEntity;
@@ -18,7 +18,7 @@ public class SunkenSkeletonEntityRenderer extends /*SkeletonEntityRenderer<Sunke
 
     public SunkenSkeletonEntityRenderer(EntityRendererFactory.Context context) {
 		//super(context, ModModelLayers.SUNKEN_SKELTON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
-        this(context, ModModelLayers.SUNKEN_SKELTON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
+        this(context, ModEntityModelLayers.SUNKEN_SKELTON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
 	}
 
 	public SunkenSkeletonEntityRenderer(EntityRendererFactory.Context ctx, EntityModelLayer layer, EntityModelLayer legArmorLayer, EntityModelLayer bodyArmorLayer) {

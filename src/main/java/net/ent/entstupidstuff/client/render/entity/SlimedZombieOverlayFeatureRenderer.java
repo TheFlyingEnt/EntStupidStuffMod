@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
 import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -19,7 +19,7 @@ public class SlimedZombieOverlayFeatureRenderer<T extends SlimedZombieEntity> ex
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public SlimedZombieOverlayFeatureRenderer(FeatureRendererContext<T, SlimedZombieModel<T>> context, EntityModelLoader loader) {
       super(context);
-      this.model = new SlimedZombieModel(loader.getModelPart(ModModelLayers.ZOMBIE_SLIMED_OUTER));
+      this.model = new SlimedZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER));
    }
 
    @Override

@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
@@ -19,7 +19,7 @@ public class AncientDrownedRenderer extends ZombieBaseEntityRenderer<DrownedEnti
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public AncientDrownedRenderer(EntityRendererFactory.Context context) {
-      super(context, new AncientDrownedModel(context.getPart(ModModelLayers.ANCIENT_DROWNED)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
+      super(context, new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
       this.addFeature(new AncientDrownedOverlayFeatureRenderer(this, context.getModelLoader()));
    }
 

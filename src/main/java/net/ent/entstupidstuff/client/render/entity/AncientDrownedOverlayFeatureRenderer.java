@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -18,7 +18,7 @@ public class AncientDrownedOverlayFeatureRenderer <T extends DrownedEntity> exte
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public AncientDrownedOverlayFeatureRenderer(FeatureRendererContext<T, AncientDrownedModel<T>> context, EntityModelLoader loader) {
       super(context);
-      this.model = new AncientDrownedModel(loader.getModelPart(ModModelLayers.ANCIENT_DROWNED_OUTER));
+      this.model = new AncientDrownedModel(loader.getModelPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER));
    }
 
    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T drownedEntity, float f, float g, float h, float j, float k, float l) {

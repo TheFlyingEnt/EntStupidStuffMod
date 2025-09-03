@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.enchantment.effects;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.enchantment.EnchantmentEffectContext;
 import net.minecraft.enchantment.EnchantmentLevelBasedValue;
 import net.minecraft.enchantment.effect.EnchantmentEntityEffect;
@@ -23,7 +24,7 @@ public record BerserkEnchantmentEffect (EnchantmentLevelBasedValue value) implem
         ).apply(instance, BerserkEnchantmentEffect::new)
 	);
 
-    private static final Identifier BERSERK_MODIFIER_ID = Identifier.of("entstupidstuff", "berserk_modifier");
+    private static final Identifier BERSERK_MODIFIER_ID = Identifier.of(EntStupidStuff.MOD_ID, "berserk_modifier");
 
     @Override
     public void apply(ServerWorld world, int level, EnchantmentEffectContext context, Entity user, Vec3d pos) {

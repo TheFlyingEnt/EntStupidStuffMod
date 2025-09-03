@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.datagen;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
@@ -39,6 +39,7 @@ public class ModelProvider extends FabricModelProvider{
         generateGroupFungalFamilty("fungal", "light_gray");
         generateGroupFungalFamilty("fungal", "gray");
         generateGroupFungalFamilty("fungal", "black");
+        generateGroupFungalFamilty("fungal", "brown");
         generateGroupFungalFamilty("fungal", "red");
         generateGroupFungalFamilty("fungal", "orange");
         generateGroupFungalFamilty("fungal", "yellow");
@@ -62,12 +63,12 @@ public class ModelProvider extends FabricModelProvider{
         //Maple Wood Type
 
         generateGroupWoodFamilty("maple", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactoryUpt.callBlock("maple_sapling"), BlockFactoryUpt.callBlock("potted_maple_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
         
         //Fir Wood Type
 
         generateGroupWoodFamilty("fir", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactoryUpt.callBlock("fir_sapling"), BlockFactoryUpt.callBlock("potted_fir_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
         
         //Vanilla Wood Type
 
@@ -94,22 +95,22 @@ public class ModelProvider extends FabricModelProvider{
         generateGroupBricksFamilty("diorite", "");
         generateGroupBricksFamilty("granite", "");
 
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactoryUpt.callBlock("polished_" + "andesite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactoryUpt.callBlock("polished_" + "diorite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactoryUpt.callBlock("polished_" + "granite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactory.callBlock("polished_" + "andesite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
         
         registerPointedIce();
 
-        generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactoryUpt.callBlock("limestone"));
-        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactoryUpt.callBlock("polished_limestone"));
+        generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactory.callBlock("limestone"));
+        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactory.callBlock("polished_limestone"));
         generateGroupBricksFamilty("polished_limestone", "");
 
-        blockStateModelGenerator.registerGlassPane(BlockFactoryUpt.callBlock("string_block"), BlockFactoryUpt.callBlock("string_gate"));
-        blockStateModelGenerator.registerLantern(BlockFactoryUpt.callBlock("phantom_lantern"));
-        blockStateModelGenerator.registerTorch(BlockFactoryUpt.callBlock("phantom_torch"), BlockFactoryUpt.callBlock("phantom_wall_torch"));
+        blockStateModelGenerator.registerGlassPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
+        blockStateModelGenerator.registerLantern(BlockFactory.callBlock("phantom_lantern"));
+        blockStateModelGenerator.registerTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
 
         // Iron Grate
-        generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactoryUpt.callBlock("iron_grate"));
+        generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactory.callBlock("iron_grate"));
 
 	}
 
@@ -119,8 +120,8 @@ public class ModelProvider extends FabricModelProvider{
         else if (suffix == "_") {suffix = "";}
         else {suffix = "_" + suffix;}
 
-        Block MainTexture = BlockFactoryUpt.callBlock(blockName + "_planks" + suffix);
-        Block MosicTexture = BlockFactoryUpt.callBlock(blockName + "_mosaic" + suffix);
+        Block MainTexture = BlockFactory.callBlock(blockName + "_planks" + suffix);
+        Block MosicTexture = BlockFactory.callBlock(blockName + "_mosaic" + suffix);
         generateBaseAndIntercationFamily(blockName, suffix, true, false, MainTexture);
         generateBaseAndIntercationFamily(blockName + "_mosaic", suffix, false, false, MosicTexture);
         generateNatureFamily(blockName, suffix, withLeaves);
@@ -135,8 +136,8 @@ public class ModelProvider extends FabricModelProvider{
 
         
 
-        Block MainTexture = BlockFactoryUpt.callBlock(blockName + "_planks" + suffix);
-        Block MosicTexture = BlockFactoryUpt.callBlock(blockName + "_mosaic" + suffix);
+        Block MainTexture = BlockFactory.callBlock(blockName + "_planks" + suffix);
+        Block MosicTexture = BlockFactory.callBlock(blockName + "_mosaic" + suffix);
         generateBaseAndIntercationFamily(blockName, suffix, true, false, MainTexture);
         generateBaseAndIntercationFamily(blockName + "_mosaic", suffix, false, false, MosicTexture);
 
@@ -148,14 +149,14 @@ public class ModelProvider extends FabricModelProvider{
         else if (suffix == "_") {suffix = "";}
         else {suffix = "_" + suffix;}
 
-        Block BricksTexture = BlockFactoryUpt.callBlock(blockName + "_bricks" + suffix);
+        Block BricksTexture = BlockFactory.callBlock(blockName + "_bricks" + suffix);
         generateBaseAndIntercationFamily(blockName + "_brick", suffix, false, true, BricksTexture);
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock("cracked_" + blockName + "_bricks" + suffix));
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(blockName + "_brick_chiseled" + suffix));
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("cracked_" + blockName + "_bricks" + suffix));
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(blockName + "_brick_chiseled" + suffix));
     }
 
     public void generateGroupVanillaAddition(String blockName) {
-        generateBaseAndIntercationFamily(blockName + "_mosaic", "", false, false, BlockFactoryUpt.callBlock(blockName + "_mosaic"));
+        generateBaseAndIntercationFamily(blockName + "_mosaic", "", false, false, BlockFactory.callBlock(blockName + "_mosaic"));
         generateGlassIntercation(blockName, "");
     }
 
@@ -165,12 +166,12 @@ public class ModelProvider extends FabricModelProvider{
         else if (suffix == "_") {suffix = "";}
 
         if (withLeaves) {
-            blockStateModelGenerator.registerSingleton(BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
+            blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
             
         }
         
-        blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock(blockName + "_log" + suffix)).log(BlockFactoryUpt.callBlock(blockName + "_log" + suffix)).wood(BlockFactoryUpt.callBlock(blockName + "_wood" + suffix));
-        blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix));  
+        blockStateModelGenerator.registerLog(BlockFactory.callBlock(blockName + "_log" + suffix)).log(BlockFactory.callBlock(blockName + "_log" + suffix)).wood(BlockFactory.callBlock(blockName + "_wood" + suffix));
+        blockStateModelGenerator.registerLog(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix));  
     }
 
     public void generateBaseAndIntercationFamily(String blockName, String suffix, Boolean generateWoodBase, Boolean generateStoneBase, Block MainTexture) {
@@ -182,31 +183,31 @@ public class ModelProvider extends FabricModelProvider{
         BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
         blockPool
-            .stairs(BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix))
-        .slab(BlockFactoryUpt.callBlock(blockName + "_slab" + suffix));
+            .stairs(BlockFactory.callBlock(blockName + "_stairs" + suffix))
+        .slab(BlockFactory.callBlock(blockName + "_slab" + suffix));
 
         if (generateWoodBase) {
             blockPool
-                .button(BlockFactoryUpt.callBlock(blockName + "_button" + suffix))
-                .pressurePlate(BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix))
-                .fence(BlockFactoryUpt.callBlock(blockName + "_fence" + suffix))
-            .fenceGate(BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix));
+                .button(BlockFactory.callBlock(blockName + "_button" + suffix))
+                .pressurePlate(BlockFactory.callBlock(blockName + "_pressure_plate" + suffix))
+                .fence(BlockFactory.callBlock(blockName + "_fence" + suffix))
+            .fenceGate(BlockFactory.callBlock(blockName + "_fence_gate" + suffix));
 
-            blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix));
-            blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(blockName + "_door" + suffix));
+            blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(blockName + "_trapdoor" + suffix));
+            blockStateModelGenerator.registerDoor(BlockFactory.callBlock(blockName + "_door" + suffix));
             generateGlassIntercation(blockName, suffix);
         }
         else if (generateStoneBase) {
             blockPool
-                .wall(BlockFactoryUpt.callBlock(blockName + "_wall"));
+                .wall(BlockFactory.callBlock(blockName + "_wall"));
         }
 
 
     }
 
     public void generateGlassIntercation(String blockName, String suffix) {
-        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix));
-        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix));
+        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix));
+        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(blockName + "_glass_door" + suffix));
     }
 
     
@@ -222,7 +223,7 @@ public class ModelProvider extends FabricModelProvider{
 
 
 	private void registerPointedIce() {
-		blockStateModelGenerator.excludeFromSimpleItemModelGeneration(BlockFactoryUpt.callBlock("pointed_ice"));
+		blockStateModelGenerator.excludeFromSimpleItemModelGeneration(BlockFactory.callBlock("pointed_ice"));
 		BlockStateVariantMap.DoubleProperty<Direction, Thickness> doubleProperty = BlockStateVariantMap.create(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
 
 		for (Thickness thickness : Thickness.values()) {
@@ -233,26 +234,26 @@ public class ModelProvider extends FabricModelProvider{
 			doubleProperty.register(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
 		}
 
-		blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BlockFactoryUpt.callBlock("pointed_ice")).coordinate(doubleProperty));
+		blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BlockFactory.callBlock("pointed_ice")).coordinate(doubleProperty));
 	}
 
     public final BlockStateVariant getDripstoneVariant(Direction direction, Thickness thickness) {
 		String string = "_" + direction.asString() + "_" + thickness.asString();
-		TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(BlockFactoryUpt.callBlock("pointed_ice"), string));
+		TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(BlockFactory.callBlock("pointed_ice"), string));
 		return BlockStateVariant.create()
-			.put(VariantSettings.MODEL, Models.POINTED_DRIPSTONE.upload(BlockFactoryUpt.callBlock("pointed_ice"), string, textureMap, blockStateModelGenerator.modelCollector));
+			.put(VariantSettings.MODEL, Models.POINTED_DRIPSTONE.upload(BlockFactory.callBlock("pointed_ice"), string, textureMap, blockStateModelGenerator.modelCollector));
 	}
 
 
     @Deprecated
     public void createMosaic(String Familybase, String varient) {
 
-        Block MainTexture = BlockFactoryUpt.callBlock(Familybase + "_mosaic" + varient);
+        Block MainTexture = BlockFactory.callBlock(Familybase + "_mosaic" + varient);
         BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
         blockPool
-            .stairs(BlockFactoryUpt.callBlock(Familybase + "_mosaic_stairs" + varient))
-            .slab(BlockFactoryUpt.callBlock(Familybase + "_mosaic_slab" + varient));
+            .stairs(BlockFactory.callBlock(Familybase + "_mosaic_stairs" + varient))
+            .slab(BlockFactory.callBlock(Familybase + "_mosaic_slab" + varient));
     }
     
     public void addBlockFamily(Block MainTexture, String Familybase, String varient) {
@@ -262,12 +263,12 @@ public class ModelProvider extends FabricModelProvider{
 
         BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
         blockPool
-            .stairs(BlockFactoryUpt.callBlock(Familybase + "_stairs" + varient))
-            .slab(BlockFactoryUpt.callBlock(Familybase + "_slab" + varient))
-            .button(BlockFactoryUpt.callBlock(Familybase + "_button" + varient))
-            .pressurePlate(BlockFactoryUpt.callBlock(Familybase + "_pressure_plate" + varient))
-            .fence(BlockFactoryUpt.callBlock(Familybase + "_fence" + varient))
-            .fenceGate(BlockFactoryUpt.callBlock(Familybase + "_fence_gate" + varient)
+            .stairs(BlockFactory.callBlock(Familybase + "_stairs" + varient))
+            .slab(BlockFactory.callBlock(Familybase + "_slab" + varient))
+            .button(BlockFactory.callBlock(Familybase + "_button" + varient))
+            .pressurePlate(BlockFactory.callBlock(Familybase + "_pressure_plate" + varient))
+            .fence(BlockFactory.callBlock(Familybase + "_fence" + varient))
+            .fenceGate(BlockFactory.callBlock(Familybase + "_fence_gate" + varient)
         );
     }
 
@@ -278,29 +279,29 @@ public class ModelProvider extends FabricModelProvider{
         else {varient = "_" + varient;}
 
         if (isNatural) {       
-            blockStateModelGenerator.registerSingleton(BlockFactoryUpt.callBlock(Familybase + "_leaves" + varient), TexturedModel.LEAVES);
+            blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(Familybase + "_leaves" + varient), TexturedModel.LEAVES);
         }
         if (enableLogs) {
-            blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock(Familybase + "_log" + varient)).log(BlockFactoryUpt.callBlock(Familybase + "_log" + varient)).wood(BlockFactoryUpt.callBlock(Familybase + "_wood" + varient));
-            blockStateModelGenerator.registerLog(BlockFactoryUpt.callBlock("stripped_" + Familybase + "_log" + varient)).log(BlockFactoryUpt.callBlock("stripped_" +Familybase + "_log" + varient)).wood(BlockFactoryUpt.callBlock("stripped_" +Familybase + "_wood" + varient));
+            blockStateModelGenerator.registerLog(BlockFactory.callBlock(Familybase + "_log" + varient)).log(BlockFactory.callBlock(Familybase + "_log" + varient)).wood(BlockFactory.callBlock(Familybase + "_wood" + varient));
+            blockStateModelGenerator.registerLog(BlockFactory.callBlock("stripped_" + Familybase + "_log" + varient)).log(BlockFactory.callBlock("stripped_" +Familybase + "_log" + varient)).wood(BlockFactory.callBlock("stripped_" +Familybase + "_wood" + varient));
         }
 
 
-        Block MainTexture = BlockFactoryUpt.callBlock(Familybase + "_planks" + varient);
+        Block MainTexture = BlockFactory.callBlock(Familybase + "_planks" + varient);
         BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
         blockPool
-            .stairs(BlockFactoryUpt.callBlock(Familybase + "_stairs" + varient))
-            .slab(BlockFactoryUpt.callBlock(Familybase + "_slab" + varient))
-            .button(BlockFactoryUpt.callBlock(Familybase + "_button" + varient))
-            .pressurePlate(BlockFactoryUpt.callBlock(Familybase + "_pressure_plate" + varient))
-            .fence(BlockFactoryUpt.callBlock(Familybase + "_fence" + varient))
-            .fenceGate(BlockFactoryUpt.callBlock(Familybase + "_fence_gate" + varient));
+            .stairs(BlockFactory.callBlock(Familybase + "_stairs" + varient))
+            .slab(BlockFactory.callBlock(Familybase + "_slab" + varient))
+            .button(BlockFactory.callBlock(Familybase + "_button" + varient))
+            .pressurePlate(BlockFactory.callBlock(Familybase + "_pressure_plate" + varient))
+            .fence(BlockFactory.callBlock(Familybase + "_fence" + varient))
+            .fenceGate(BlockFactory.callBlock(Familybase + "_fence_gate" + varient));
             
-        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(Familybase + "_trapdoor" + varient));
-        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(Familybase + "_glass_trapdoor" + varient));
-        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(Familybase + "_door" + varient));
-        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(Familybase + "_glass_door" + varient));
+        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_trapdoor" + varient));
+        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor" + varient));
+        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_door" + varient));
+        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_glass_door" + varient));
 
         createMosaic(Familybase, varient);
     }
@@ -308,8 +309,8 @@ public class ModelProvider extends FabricModelProvider{
     @Deprecated
     public void createVanillaGlassDoor(String Familybase) {
 
-        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(Familybase + "_glass_door"));
-        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(Familybase + "_glass_trapdoor"));
+        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_glass_door"));
+        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor"));
 
         /*if (Familybase == "waxed_copper") {}
         else if (Familybase == "waxed_exposed_copper") {} 
@@ -322,31 +323,31 @@ public class ModelProvider extends FabricModelProvider{
     }
 
     public void addWoolFamily(String FamilyBase, String color) {
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(FamilyBase + "_" + color));
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(FamilyBase + "_" + color));
     }
 
     public void addStoneAlt(String FamilyBase, Boolean isBricksOnly) {
 
         if (isBricksOnly) {
-            Block MainTexture = BlockFactoryUpt.callBlock(FamilyBase + "_bricks");
+            Block MainTexture = BlockFactory.callBlock(FamilyBase + "_bricks");
             BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
             blockPool
-                .stairs(BlockFactoryUpt.callBlock(FamilyBase + "_brick_stairs"))
-                .slab(BlockFactoryUpt.callBlock(FamilyBase + "_brick_slab"))
-                .wall(BlockFactoryUpt.callBlock(FamilyBase + "_brick_wall"));
+                .stairs(BlockFactory.callBlock(FamilyBase + "_brick_stairs"))
+                .slab(BlockFactory.callBlock(FamilyBase + "_brick_slab"))
+                .wall(BlockFactory.callBlock(FamilyBase + "_brick_wall"));
 
-            blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock("cracked_" + FamilyBase + "_bricks"));
-            blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(FamilyBase + "_brick_chiseled"));
+            blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("cracked_" + FamilyBase + "_bricks"));
+            blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(FamilyBase + "_brick_chiseled"));
 
         } else {
-            Block MainTexture = BlockFactoryUpt.callBlock(FamilyBase);
+            Block MainTexture = BlockFactory.callBlock(FamilyBase);
             BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
 
             blockPool
-                .stairs(BlockFactoryUpt.callBlock(FamilyBase + "_stairs"))
-                .slab(BlockFactoryUpt.callBlock(FamilyBase + "_slab"))
-                .wall(BlockFactoryUpt.callBlock(FamilyBase + "_wall"));
+                .stairs(BlockFactory.callBlock(FamilyBase + "_stairs"))
+                .slab(BlockFactory.callBlock(FamilyBase + "_slab"))
+                .wall(BlockFactory.callBlock(FamilyBase + "_wall"));
 
         }
         
@@ -372,24 +373,24 @@ public class ModelProvider extends FabricModelProvider{
 
     @Deprecated
     public void createColorT(String name, BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactoryUpt.callBlock(name));
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(name));
     }
 
     @Deprecated
     public void createWoodTexG(String name, BlockStateModelGenerator blockStateModelGenerator, String endTag) { //TODO: Sign, Hanging Sign
 
         System.out.println("Model: " + name + "_[Type]" + endTag);
-        Block block = BlockFactoryUpt.callBlock(name + "_planks" + endTag);
+        Block block = BlockFactory.callBlock(name + "_planks" + endTag);
         BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(block);
 
-        blockPool.stairs(BlockFactoryUpt.callBlock(name + "_stairs" + endTag));
-        blockPool.slab(BlockFactoryUpt.callBlock(name + "_slab" + endTag));
-        blockPool.button(BlockFactoryUpt.callBlock(name + "_button" + endTag));
-        blockPool.pressurePlate(BlockFactoryUpt.callBlock(name + "_pressure_plate" + endTag));
-        blockPool.fence(BlockFactoryUpt.callBlock(name + "_fence" + endTag));
-        blockPool.fenceGate(BlockFactoryUpt.callBlock(name + "_fence_gate" + endTag));
-        blockStateModelGenerator.registerTrapdoor(BlockFactoryUpt.callBlock(name + "_trapdoor" + endTag));
-        blockStateModelGenerator.registerDoor(BlockFactoryUpt.callBlock(name + "_door" + endTag));
+        blockPool.stairs(BlockFactory.callBlock(name + "_stairs" + endTag));
+        blockPool.slab(BlockFactory.callBlock(name + "_slab" + endTag));
+        blockPool.button(BlockFactory.callBlock(name + "_button" + endTag));
+        blockPool.pressurePlate(BlockFactory.callBlock(name + "_pressure_plate" + endTag));
+        blockPool.fence(BlockFactory.callBlock(name + "_fence" + endTag));
+        blockPool.fenceGate(BlockFactory.callBlock(name + "_fence_gate" + endTag));
+        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(name + "_trapdoor" + endTag));
+        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(name + "_door" + endTag));
         //blockPool.sign(block)
     }
 

@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
 import net.ent.entstupidstuff.entity.mob.ScorchedZombieEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,7 +15,7 @@ import net.minecraft.util.Identifier;
 public class ScorchedEntityRenderer extends ZombieBaseEntityRenderer<ScorchedZombieEntity, ScorchedModel<ScorchedZombieEntity>>{
 
     public ScorchedEntityRenderer(EntityRendererFactory.Context context) {
-        this(context, ModModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR);
+        this(context, ModEntityModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR);
         this.addFeature(new ScorchedGlowRenderer<>(this));
     }
 
@@ -30,7 +31,7 @@ public class ScorchedEntityRenderer extends ZombieBaseEntityRenderer<ScorchedZom
 
     @Override //Getting Texture of Mob
     public Identifier getTexture(ScorchedZombieEntity entity) {
-        return Identifier.of("entstupidstuff", "textures/entity/zombie_scorched.png"); // Path to your texture
+        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_scorched.png"); // Path to your texture
     }
 
 }

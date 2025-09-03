@@ -2,7 +2,8 @@ package net.ent.entstupidstuff.world;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -22,62 +23,62 @@ import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 public class ModPlacedFeatures {
     public static final RegistryKey<PlacedFeature> MAPLE_TREE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "maple_tree_placed")
+            Identifier.of(EntStupidStuff.MOD_ID, "maple_tree_placed")
     );
 
     public static final RegistryKey<PlacedFeature> FIR_TREE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "fir_tree_placed")
+            Identifier.of(EntStupidStuff.MOD_ID, "fir_tree_placed")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_limestone")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_LOWER_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_limestone_lower")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone_lower")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_UPPER_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_limestone_upper")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone_upper")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_PACKED_ICE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_packed_ice")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_packed_ice")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_PACKED_ICE_LOWER_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_packed_ice_lower")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_packed_ice_lower")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_SNOW_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_snow")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_snow")
     );
 
     public static final RegistryKey<PlacedFeature> ORE_SNOW_UPPER_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "ore_snow_upper")
+            Identifier.of(EntStupidStuff.MOD_ID, "ore_snow_upper")
     );
 
     public static final RegistryKey<PlacedFeature> SPIKED_ICE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "spiked_ice")
+            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice")
     );
 
     public static final RegistryKey<PlacedFeature> LARGE_SPIKED_ICE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "large_spiked_ice")
+            Identifier.of(EntStupidStuff.MOD_ID, "large_spiked_ice")
     );
 
     public static final RegistryKey<PlacedFeature> SPIKED_ICE_CLUSTER_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
-            Identifier.of("entstupidstuff", "spiked_ice_cluster")
+            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
     );
 
     public static void bootstrap(Registerable<PlacedFeature> context) {
@@ -85,7 +86,7 @@ public class ModPlacedFeatures {
                 context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_KEY),
                 VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
                         PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
-                        BlockFactoryUpt.callBlock("maple_sapling")
+                        BlockFactory.callBlock("maple_sapling")
                 )
         ));
 
@@ -93,7 +94,7 @@ public class ModPlacedFeatures {
                 context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.FIR_KEY),
                 VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
                         PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
-                        BlockFactoryUpt.callBlock("fir_sapling")
+                        BlockFactory.callBlock("fir_sapling")
                 )
         ));
 

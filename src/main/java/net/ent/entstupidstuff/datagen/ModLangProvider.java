@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -136,90 +136,90 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         // Wood, Planks, ETC
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic"), "Oak" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic_stairs"), "Oak" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("oak" + "_mosaic_slab"), "Oak" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic"), "Oak" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic_stairs"), "Oak" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic_slab"), "Oak" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic"), "Spruce" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic_stairs"), "Spruce" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("spruce" + "_mosaic_slab"), "Spruce" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic"), "Spruce" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic_stairs"), "Spruce" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic_slab"), "Spruce" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic"), "Jungle" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic_stairs"), "Jungle" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("jungle" + "_mosaic_slab"), "Jungle" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic"), "Jungle" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_stairs"), "Jungle" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_slab"), "Jungle" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic"), "Birch" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic_stairs"), "Birch" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("birch" + "_mosaic_slab"), "Birch" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic"), "Birch" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_stairs"), "Birch" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_slab"), "Birch" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic"), "Dark Oak" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic_stairs"), "Dark Oak" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("dark_oak" + "_mosaic_slab"), "Dark Oak" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic"), "Dark Oak" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic_stairs"), "Dark Oak" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic_slab"), "Dark Oak" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic"), "Acacia" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic_stairs"), "Acacia" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("acacia" + "_mosaic_slab"), "Acacia" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic"), "Acacia" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_stairs"), "Acacia" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_slab"), "Acacia" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic"), "Mangrove" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic_stairs"), "Mangrove" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("mangrove" + "_mosaic_slab"), "Mangrove" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic"), "Mangrove" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_stairs"), "Mangrove" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_slab"), "Mangrove" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic"), "Cherry" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic_stairs"), "Cherry" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("cherry" + "_mosaic_slab"), "Cherry" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic"), "Cherry" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic_stairs"), "Cherry" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic_slab"), "Cherry" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic"), "Crimson" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic_stairs"), "Crimson" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("crimson" + "_mosaic_slab"), "Crimson" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic"), "Crimson" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_stairs"), "Crimson" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_slab"), "Crimson" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic"), "Warped" + " Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic_stairs"), "Warped" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("warped" + "_mosaic_slab"), "Warped" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic"), "Warped" + " Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_stairs"), "Warped" + "Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_slab"), "Warped" + "Mosaic Slab");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_planks"), "Fungal Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_stairs"), "Fungal Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_slab"), "Fungal Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence"), "Fungal Fence");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_gate"), "Fungal Fence Gate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_door"), "Fungal Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_trapdoor"), "Fungal Trapdoor");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_pressure_plate"), "Fungal Pressure Plate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_button"), "Fungal Button");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_door"), "Fungal Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_trapdoor"), "Fungal Glass Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("fungal_planks"), "Fungal Planks");
+        translationBuilder.add(BlockFactory.callBlock("fungal_stairs"), "Fungal Stairs");
+        translationBuilder.add(BlockFactory.callBlock("fungal_slab"), "Fungal Slab");
+        translationBuilder.add(BlockFactory.callBlock("fungal_fence"), "Fungal Fence");
+        translationBuilder.add(BlockFactory.callBlock("fungal_fence_gate"), "Fungal Fence Gate");
+        translationBuilder.add(BlockFactory.callBlock("fungal_door"), "Fungal Door");
+        translationBuilder.add(BlockFactory.callBlock("fungal_trapdoor"), "Fungal Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("fungal_pressure_plate"), "Fungal Pressure Plate");
+        translationBuilder.add(BlockFactory.callBlock("fungal_button"), "Fungal Button");
+        translationBuilder.add(BlockFactory.callBlock("fungal_glass_door"), "Fungal Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("fungal_glass_trapdoor"), "Fungal Glass Trapdoor");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic"), "Fungal Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_stairs"), "Fungal Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_slab"), "Fungal Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("fungal_mosaic"), "Fungal Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("fungal_mosaic_stairs"), "Fungal Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("fungal_mosaic_slab"), "Fungal Mosaic Slab");
 
-        for (String color : BlockFactoryUpt.COLORS){
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_planks_" + color), formatString(color) + " Fungal Planks");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_stairs_" + color), formatString(color) + " Fungal Stairs");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_slab_" + color), formatString(color) + " Fungal Slab");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_" + color), formatString(color) + " Fungal Fence");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_fence_gate_" + color), formatString(color) + " Fungal Fence Gate");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_door_" + color), formatString(color) + " Fungal Door");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_trapdoor_" + color), formatString(color) + " Fungal Trapdoor");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_pressure_plate_" + color), formatString(color) + " Fungal Pressure Plate");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_button_" + color), formatString(color) + " Fungal Button");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_door_" + color), formatString(color) + " Fungal Glass Door");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_glass_trapdoor_" + color), formatString(color) + " Fungal Glass Trapdoor");
+        for (String color : BlockFactory.COLORS){
+            translationBuilder.add(BlockFactory.callBlock("fungal_planks_" + color), formatString(color) + " Fungal Planks");
+            translationBuilder.add(BlockFactory.callBlock("fungal_stairs_" + color), formatString(color) + " Fungal Stairs");
+            translationBuilder.add(BlockFactory.callBlock("fungal_slab_" + color), formatString(color) + " Fungal Slab");
+            translationBuilder.add(BlockFactory.callBlock("fungal_fence_" + color), formatString(color) + " Fungal Fence");
+            translationBuilder.add(BlockFactory.callBlock("fungal_fence_gate_" + color), formatString(color) + " Fungal Fence Gate");
+            translationBuilder.add(BlockFactory.callBlock("fungal_door_" + color), formatString(color) + " Fungal Door");
+            translationBuilder.add(BlockFactory.callBlock("fungal_trapdoor_" + color), formatString(color) + " Fungal Trapdoor");
+            translationBuilder.add(BlockFactory.callBlock("fungal_pressure_plate_" + color), formatString(color) + " Fungal Pressure Plate");
+            translationBuilder.add(BlockFactory.callBlock("fungal_button_" + color), formatString(color) + " Fungal Button");
+            translationBuilder.add(BlockFactory.callBlock("fungal_glass_door_" + color), formatString(color) + " Fungal Glass Door");
+            translationBuilder.add(BlockFactory.callBlock("fungal_glass_trapdoor_" + color), formatString(color) + " Fungal Glass Trapdoor");
 
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_" + color), formatString(color) + " Fungal Mosaic");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_stairs_" + color), formatString(color) + " Fungal Mosaic Stairs");
-            translationBuilder.add(BlockFactoryUpt.callBlock("fungal_mosaic_slab_" + color), formatString(color) + " Fungal Mosaic Slab");
+            translationBuilder.add(BlockFactory.callBlock("fungal_mosaic_" + color), formatString(color) + " Fungal Mosaic");
+            translationBuilder.add(BlockFactory.callBlock("fungal_mosaic_stairs_" + color), formatString(color) + " Fungal Mosaic Stairs");
+            translationBuilder.add(BlockFactory.callBlock("fungal_mosaic_slab_" + color), formatString(color) + " Fungal Mosaic Slab");
         
-            translationBuilder.add(BlockFactoryUpt.callBlock("textured_wool_" + color), formatString(color) + " Quillted Wool");
+            translationBuilder.add(BlockFactory.callBlock("textured_wool_" + color), formatString(color) + " Quillted Wool");
         }
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("iron_glass_door"),"Iron Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("iron_glass_door"),"Iron Glass Door");
 
         for (String varient : ModBlocks.COPPER_VARIENTS){ //Copper Glass Door
-            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
+            translationBuilder.add(BlockFactory.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
         }
 
         for (String varient : ModBlocks.V_WOOD_VARIENTS){ //Vanilla Wooden Glass Door
-            translationBuilder.add(BlockFactoryUpt.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
+            translationBuilder.add(BlockFactory.callBlock(varient + "_glass_door"), formatString(varient) + " Glass Door");
         }
 
         //Group (Item Group)
@@ -231,27 +231,27 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         //Stone Varient
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("diorite_bricks"), "Diorite Bricks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("diorite_brick_slab"), "Diorite Brick Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("diorite_brick_stairs"), "Diorite Brick Stair");
-        translationBuilder.add(BlockFactoryUpt.callBlock("diorite_brick_wall"), "Diorite Brick Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("diorite_brick_chiseled"), "Chiseled Diorite Brick");
+        translationBuilder.add(BlockFactory.callBlock("diorite_bricks"), "Diorite Bricks");
+        translationBuilder.add(BlockFactory.callBlock("diorite_brick_slab"), "Diorite Brick Slab");
+        translationBuilder.add(BlockFactory.callBlock("diorite_brick_stairs"), "Diorite Brick Stair");
+        translationBuilder.add(BlockFactory.callBlock("diorite_brick_wall"), "Diorite Brick Wall");
+        translationBuilder.add(BlockFactory.callBlock("diorite_brick_chiseled"), "Chiseled Diorite Brick");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("andesite_bricks"), "Andesite Bricks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("andesite_brick_slab"), "Andesite Brick Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("andesite_brick_stairs"), "Andesite Brick Stair");
-        translationBuilder.add(BlockFactoryUpt.callBlock("andesite_brick_wall"), "Andesite Brick Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("andesite_brick_chiseled"), "Chiseled Andesite Brick");
+        translationBuilder.add(BlockFactory.callBlock("andesite_bricks"), "Andesite Bricks");
+        translationBuilder.add(BlockFactory.callBlock("andesite_brick_slab"), "Andesite Brick Slab");
+        translationBuilder.add(BlockFactory.callBlock("andesite_brick_stairs"), "Andesite Brick Stair");
+        translationBuilder.add(BlockFactory.callBlock("andesite_brick_wall"), "Andesite Brick Wall");
+        translationBuilder.add(BlockFactory.callBlock("andesite_brick_chiseled"), "Chiseled Andesite Brick");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("granite_bricks"), "Granite Bricks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_slab"), "Granite Brick Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_stairs"), "Granite Brick Stair");
-        translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_wall"), "Granite Brick Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("granite_brick_chiseled"), "Chiseled Granite Brick");
+        translationBuilder.add(BlockFactory.callBlock("granite_bricks"), "Granite Bricks");
+        translationBuilder.add(BlockFactory.callBlock("granite_brick_slab"), "Granite Brick Slab");
+        translationBuilder.add(BlockFactory.callBlock("granite_brick_stairs"), "Granite Brick Stair");
+        translationBuilder.add(BlockFactory.callBlock("granite_brick_wall"), "Granite Brick Wall");
+        translationBuilder.add(BlockFactory.callBlock("granite_brick_chiseled"), "Chiseled Granite Brick");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_diorite_wall"), "Polished Diorite Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_andesite_wall"), "Polished Andesite Wall");
-        translationBuilder.add(BlockFactoryUpt.callBlock("polished_granite_wall"), "Polished Granite Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_diorite_wall"), "Polished Diorite Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_andesite_wall"), "Polished Andesite Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_granite_wall"), "Polished Granite Wall");
 
 
         
@@ -334,26 +334,26 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         //Redwood
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_log"), "Redwood Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_redwood_log"), "Stripped Redwood Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_wood"), "Redwood Wood");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_redwood_wood"), "Stripped Redwood Wood");
+        translationBuilder.add(BlockFactory.callBlock("redwood_log"), "Redwood Log");
+        translationBuilder.add(BlockFactory.callBlock("stripped_redwood_log"), "Stripped Redwood Log");
+        translationBuilder.add(BlockFactory.callBlock("redwood_wood"), "Redwood Wood");
+        translationBuilder.add(BlockFactory.callBlock("stripped_redwood_wood"), "Stripped Redwood Wood");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_planks"), "Redwood Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_stairs"), "Redwood Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_slab"), "Redwood Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_fence"), "Redwood Fence");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_fence_gate"), "Redwood Fence Gate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_door"), "Redwood Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_trapdoor"), "Redwood Trapdoor");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_pressure_plate"), "Redwood Pressure Plate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_button"), "Redwood Button");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_glass_door"), "Redwood Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_glass_trapdoor"), "Redwood Glass trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("redwood_planks"), "Redwood Planks");
+        translationBuilder.add(BlockFactory.callBlock("redwood_stairs"), "Redwood Stairs");
+        translationBuilder.add(BlockFactory.callBlock("redwood_slab"), "Redwood Slab");
+        translationBuilder.add(BlockFactory.callBlock("redwood_fence"), "Redwood Fence");
+        translationBuilder.add(BlockFactory.callBlock("redwood_fence_gate"), "Redwood Fence Gate");
+        translationBuilder.add(BlockFactory.callBlock("redwood_door"), "Redwood Door");
+        translationBuilder.add(BlockFactory.callBlock("redwood_trapdoor"), "Redwood Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("redwood_pressure_plate"), "Redwood Pressure Plate");
+        translationBuilder.add(BlockFactory.callBlock("redwood_button"), "Redwood Button");
+        translationBuilder.add(BlockFactory.callBlock("redwood_glass_door"), "Redwood Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("redwood_glass_trapdoor"), "Redwood Glass trapdoor");
         
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic"), "Redwood Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic_stairs"), "Redwood Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("redwood_mosaic_slab"), "Redwood Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("redwood_mosaic"), "Redwood Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("redwood_mosaic_stairs"), "Redwood Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("redwood_mosaic_slab"), "Redwood Mosaic Slab");
 
         // Desert Iron
 
@@ -380,71 +380,71 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         // Maple
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_log"), "Maple Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_maple_log"), "Stripped Maple Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_wood"), "Maple Wood");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_maple_wood"), "Stripped Maple Wood");
+        translationBuilder.add(BlockFactory.callBlock("maple_log"), "Maple Log");
+        translationBuilder.add(BlockFactory.callBlock("stripped_maple_log"), "Stripped Maple Log");
+        translationBuilder.add(BlockFactory.callBlock("maple_wood"), "Maple Wood");
+        translationBuilder.add(BlockFactory.callBlock("stripped_maple_wood"), "Stripped Maple Wood");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_planks"), "Maple Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_stairs"), "Maple Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_slab"), "Maple Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_fence"), "Maple Fence");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_fence_gate"), "Maple Fence Gate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_door"), "Maple Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_trapdoor"), "Maple Trapdoor");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_pressure_plate"), "Maple Pressure Plate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_button"), "Maple Button");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_glass_door"), "Maple Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_glass_trapdoor"), "Maple Glass trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("maple_planks"), "Maple Planks");
+        translationBuilder.add(BlockFactory.callBlock("maple_stairs"), "Maple Stairs");
+        translationBuilder.add(BlockFactory.callBlock("maple_slab"), "Maple Slab");
+        translationBuilder.add(BlockFactory.callBlock("maple_fence"), "Maple Fence");
+        translationBuilder.add(BlockFactory.callBlock("maple_fence_gate"), "Maple Fence Gate");
+        translationBuilder.add(BlockFactory.callBlock("maple_door"), "Maple Door");
+        translationBuilder.add(BlockFactory.callBlock("maple_trapdoor"), "Maple Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("maple_pressure_plate"), "Maple Pressure Plate");
+        translationBuilder.add(BlockFactory.callBlock("maple_button"), "Maple Button");
+        translationBuilder.add(BlockFactory.callBlock("maple_glass_door"), "Maple Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("maple_glass_trapdoor"), "Maple Glass trapdoor");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic"), "Maple Mosaic Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic_stairs"), "Maple Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("maple_mosaic_slab"), "Maple Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("maple_mosaic"), "Maple Mosaic Planks");
+        translationBuilder.add(BlockFactory.callBlock("maple_mosaic_stairs"), "Maple Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("maple_mosaic_slab"), "Maple Mosaic Slab");
 
         //Phantom
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_log"), "Phantom Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_phantom_log"), "Stripped Phantom Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_wood"), "Phantom Wood");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_phantom_wood"), "Stripped Phantom Wood");
+        translationBuilder.add(BlockFactory.callBlock("phantom_log"), "Phantom Log");
+        translationBuilder.add(BlockFactory.callBlock("stripped_phantom_log"), "Stripped Phantom Log");
+        translationBuilder.add(BlockFactory.callBlock("phantom_wood"), "Phantom Wood");
+        translationBuilder.add(BlockFactory.callBlock("stripped_phantom_wood"), "Stripped Phantom Wood");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_planks"), "Phantom Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_stairs"), "Phantom Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_slab"), "Phantom Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_fence"), "Phantom Fence");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_fence_gate"), "Phantom Fence Gate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_door"), "Phantom Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_trapdoor"), "Phantom Trapdoor");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_pressure_plate"), "Phantom Pressure Plate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_button"), "Phantom Button");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_glass_door"), "Phantom Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_glass_trapdoor"), "Phantom Glass trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("phantom_planks"), "Phantom Planks");
+        translationBuilder.add(BlockFactory.callBlock("phantom_stairs"), "Phantom Stairs");
+        translationBuilder.add(BlockFactory.callBlock("phantom_slab"), "Phantom Slab");
+        translationBuilder.add(BlockFactory.callBlock("phantom_fence"), "Phantom Fence");
+        translationBuilder.add(BlockFactory.callBlock("phantom_fence_gate"), "Phantom Fence Gate");
+        translationBuilder.add(BlockFactory.callBlock("phantom_door"), "Phantom Door");
+        translationBuilder.add(BlockFactory.callBlock("phantom_trapdoor"), "Phantom Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("phantom_pressure_plate"), "Phantom Pressure Plate");
+        translationBuilder.add(BlockFactory.callBlock("phantom_button"), "Phantom Button");
+        translationBuilder.add(BlockFactory.callBlock("phantom_glass_door"), "Phantom Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("phantom_glass_trapdoor"), "Phantom Glass trapdoor");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic"), "Phantom Mosaic Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_stairs"), "Phantom Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("phantom_mosaic_slab"), "Phantom Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("phantom_mosaic"), "Phantom Mosaic Planks");
+        translationBuilder.add(BlockFactory.callBlock("phantom_mosaic_stairs"), "Phantom Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("phantom_mosaic_slab"), "Phantom Mosaic Slab");
 
         //Fir
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_log"), "Fir Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_fir_log"), "Stripped Fir Log");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_wood"), "Fir Wood");
-        translationBuilder.add(BlockFactoryUpt.callBlock("stripped_fir_wood"), "Stripped Fir Wood");
+        translationBuilder.add(BlockFactory.callBlock("fir_log"), "Fir Log");
+        translationBuilder.add(BlockFactory.callBlock("stripped_fir_log"), "Stripped Fir Log");
+        translationBuilder.add(BlockFactory.callBlock("fir_wood"), "Fir Wood");
+        translationBuilder.add(BlockFactory.callBlock("stripped_fir_wood"), "Stripped Fir Wood");
 
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_planks"), "Fir Planks");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_stairs"), "Fir Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_slab"), "Fir Slab");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_fence"), "Fir Fence");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_fence_gate"), "Fir Fence Gate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_door"), "Fir Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_trapdoor"), "Fir Trapdoor");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_pressure_plate"), "Fir Pressure Plate");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_button"), "Fir Button");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_glass_door"), "Fir Glass Door");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_glass_trapdoor"), "Fir Glass trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("fir_planks"), "Fir Planks");
+        translationBuilder.add(BlockFactory.callBlock("fir_stairs"), "Fir Stairs");
+        translationBuilder.add(BlockFactory.callBlock("fir_slab"), "Fir Slab");
+        translationBuilder.add(BlockFactory.callBlock("fir_fence"), "Fir Fence");
+        translationBuilder.add(BlockFactory.callBlock("fir_fence_gate"), "Fir Fence Gate");
+        translationBuilder.add(BlockFactory.callBlock("fir_door"), "Fir Door");
+        translationBuilder.add(BlockFactory.callBlock("fir_trapdoor"), "Fir Trapdoor");
+        translationBuilder.add(BlockFactory.callBlock("fir_pressure_plate"), "Fir Pressure Plate");
+        translationBuilder.add(BlockFactory.callBlock("fir_button"), "Fir Button");
+        translationBuilder.add(BlockFactory.callBlock("fir_glass_door"), "Fir Glass Door");
+        translationBuilder.add(BlockFactory.callBlock("fir_glass_trapdoor"), "Fir Glass trapdoor");
         
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic"), "Fir Mosaic");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic_stairs"), "Fir Mosaic Stairs");
-        translationBuilder.add(BlockFactoryUpt.callBlock("fir_mosaic_slab"), "Fir Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("fir_mosaic"), "Fir Mosaic");
+        translationBuilder.add(BlockFactory.callBlock("fir_mosaic_stairs"), "Fir Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("fir_mosaic_slab"), "Fir Mosaic Slab");
 
         /*translationBuilder.add(SIMPLE_ITEM, "Simple Item");
         translationBuilder.add(SIMPLE_BLOCK, "Simple Block");

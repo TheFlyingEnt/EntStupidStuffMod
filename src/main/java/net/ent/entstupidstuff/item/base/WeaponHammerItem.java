@@ -1,6 +1,8 @@
 package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
+
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
@@ -54,27 +56,12 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         //tooltip.add(Text.translatable("item.entstupidstuff.blunt.tooltip").formatted(Formatting.GRAY));
     }
 
-
-
-    /*@Override
-    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (attacker.getWorld() instanceof ServerWorld serverWorld) {
-            // Apply Slash Damage - target.damage(new DamageSources(serverWorld).create(ModDamageTypes.SLASH_DAMAGE), getAttackDamage());
-            System.out.print("Main Attack Done!");
-
-            // Apply Knockback
-            /*double knockbackStrength = 1.5;
-            Vec3d knockback = target.getPos().subtract(attacker.getPos()).normalize().multiply(knockbackStrength);
-            target.addVelocity(knockback.x, 0.4, knockback.z);
-            target.velocityModified = true; // Ensure movement applies*
-        }
-        return super.postHit(stack, target, attacker);
-    }*/
-
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
+
         World world = context.getWorld();
         PlayerEntity player = context.getPlayer();
+        ItemStack stack = context.getStack();
 
         if (!world.isClient && player != null) {
 
@@ -84,14 +71,18 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                 return ActionResult.PASS;
             }
 
+            //Adding Cooldown & Durability Damage
             player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
+            stack.damage(2, player, EquipmentSlot.MAINHAND);
 
+            //Getting Attack Pos
             BlockPos pos = context.getBlockPos();
             Vec3d attackPos = pos.toCenterPos();
 
+            //Playing Sound
             world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundCategory.PLAYERS, 1.0f, 1.0f);
-             
-
+            
+            //AOE Attack
             float radius = 3.0f;
             List<LivingEntity> entities = world.getEntitiesByClass(
                 LivingEntity.class, 
@@ -99,26 +90,43 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                 e -> e != player
             );
 
-            for (LivingEntity entity : entities) {
-                System.out.println("Player isUsingTwoHand = false");
+            for (LivingEntity targetEntity : entities) {
+                targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
+                targetEntity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
 
-                System.out.print("Weapon Hammer: AoE Attack Done!");
-                entity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
-                entity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
-
-                Vec3d knockback = entity.getPos().subtract(attackPos).normalize().multiply(0.5);
-                entity.addVelocity(knockback.x, 0.3, knockback.z);
-                entity.velocityModified = true;
+                Vec3d knockback = targetEntity.getPos().subtract(attackPos).normalize().multiply(0.5);
+                targetEntity.addVelocity(knockback.x, 0.3, knockback.z);
+                targetEntity.velocityModified = true;
 
                 world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                BlockState blockState = world.getBlockState(context.getBlockPos());
-
-                world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
-                    attackPos.x, attackPos.y + 3, attackPos.z,
-                    0.0, 3.0, 0.0);
                  
             }
         }
+
+        //Effectd
+        BlockPos pos = context.getBlockPos();
+        BlockState blockState = world.getBlockState(context.getBlockPos());
+        int radius = 3;
+        System.out.println("Playing Particles in radius " + radius);
+        
+        world.addParticle(ParticleTypesFactory.HAMMER_BOOM, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                // check circle distance
+                if (dx * dx + dz * dz <= radius * radius) {
+                    double px = pos.getX() + 1 + dx;
+                    double py = pos.getY() + 1;
+                    double pz = pos.getZ() + 1 + dz;
+
+                    // Block-breaking particle
+                    world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
+                            px, py, pz,
+                            0.0, 0.5, 0.0);
+                }
+            }
+        }
+
         return ActionResult.SUCCESS;
     }
 

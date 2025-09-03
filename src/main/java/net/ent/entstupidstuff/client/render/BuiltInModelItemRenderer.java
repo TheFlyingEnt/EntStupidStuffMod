@@ -145,7 +145,7 @@ public class BuiltInModelItemRenderer {
                 //System.out.println("Trident - Clint Code");
 
                 AncientTridentModel model = new AncientTridentModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.ANCIENT_TRIDENT)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.ANCIENT_TRIDENT)
                 );
                 matrices.push();
                 matrices.scale(1.0F, -1.0F, -1.0F);
@@ -162,7 +162,7 @@ public class BuiltInModelItemRenderer {
             SpriteIdentifier base_nopattern = GOLDEN_BASE_NO_PATTERN_1;
 
             StrongShieldEntityModel GOLDEN_SHIELD_MODEL = new StrongShieldEntityModel(
-                MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.GOLDEN_SHIELD)
+                MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.GOLDEN_SHIELD)
             );
 
             StrongShieldEntityModel model = GOLDEN_SHIELD_MODEL;
@@ -203,7 +203,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_OAK_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_OAK_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_OAK_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_OAK_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_OAK_SHIELD_MODEL, WOODEN_OAK_SHIELD_BASE, WOODEN_OAK_BASE_NO_PATTERN_1);
             }
@@ -213,7 +213,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_BIRCH_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_BIRCH_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_BIRCH_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_BIRCH_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_BIRCH_SHIELD_MODEL, WOODEN_BIRCH_SHIELD_BASE, WOODEN_BIRCH_BASE_NO_PATTERN_1);
             }
@@ -223,7 +223,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_SPRUCE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_SPRUCE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_SPRUCE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_SPRUCE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_SPRUCE_SHIELD_MODEL, WOODEN_SPRUCE_SHIELD_BASE, WOODEN_SPRUCE_BASE_NO_PATTERN_1);
             }
@@ -233,7 +233,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_JUNGLE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_JUNGLE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_JUNGLE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_JUNGLE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_JUNGLE_SHIELD_MODEL, WOODEN_JUNGLE_SHIELD_BASE, WOODEN_JUNGLE_BASE_NO_PATTERN_1);
             }
@@ -243,7 +243,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_ACACIA_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_ACACIA_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_ACACIA_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_ACACIA_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_ACACIA_SHIELD_MODEL, WOODEN_ACACIA_SHIELD_BASE, WOODEN_ACACIA_BASE_NO_PATTERN_1);
             }
@@ -253,7 +253,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_DARK_OAK_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_DARK_OAK_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_DARK_OAK_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_DARK_OAK_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_DARK_OAK_SHIELD_MODEL, WOODEN_DARK_OAK_SHIELD_BASE, WOODEN_DARK_OAK_BASE_NO_PATTERN_1);
             }
@@ -263,7 +263,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_MANGROVE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_MANGROVE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_MANGROVE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_MANGROVE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_MANGROVE_SHIELD_MODEL, WOODEN_MANGROVE_SHIELD_BASE, WOODEN_MANGROVE_BASE_NO_PATTERN_1);
             }
@@ -273,7 +273,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_CHERRY_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_CHERRY_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_CHERRY_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_CHERRY_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_CHERRY_SHIELD_MODEL, WOODEN_CHERRY_SHIELD_BASE, WOODEN_CHERRY_BASE_NO_PATTERN_1);
             }
@@ -283,7 +283,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.WOODEN_BAMBOO_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel WOODEN_BAMBOO_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.WOODEN_BAMBOO_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.WOODEN_BAMBOO_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_BAMBOO_SHIELD_MODEL, WOODEN_BAMBOO_SHIELD_BASE, WOODEN_BAMBOO_BASE_NO_PATTERN_1);
             }
@@ -304,7 +304,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.STONE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel STONE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.STONE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.STONE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, STONE_SHIELD_MODEL, STONE_SHIELD_BASE, STONE_BASE_NO_PATTERN_1);
             }
@@ -314,7 +314,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.STONE_DEEPSLATE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel STONE_DEEPSLATE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.STONE_DEEPSLATE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.STONE_DEEPSLATE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, STONE_DEEPSLATE_SHIELD_MODEL, STONE_DEEPSLATE_SHIELD_BASE, STONE_DEEPSLATE_BASE_NO_PATTERN_1);
             }
@@ -324,7 +324,7 @@ public class BuiltInModelItemRenderer {
             ItemFactory.STONE_BLACKSTONE_SHIELD,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
                 ShieldEntityModel STONE_BLACKSTONE_SHIELD_MODEL = new ShieldEntityModel(
-                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.STONE_BLACKSTONE_SHIELD)
+                    MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.STONE_BLACKSTONE_SHIELD)
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, STONE_BLACKSTONE_SHIELD_MODEL, STONE_BLACKSTONE_SHIELD_BASE, STONE_BLACKSTONE_BASE_NO_PATTERN_1);
             }
@@ -337,7 +337,7 @@ public class BuiltInModelItemRenderer {
             SpriteIdentifier base_nopattern = DIAMOND_SHIELD_BASE_NO_PATTERN_1;
 
             StrongShieldEntityModel DIAMOND_SHIELD_MODEL = new StrongShieldEntityModel(
-                MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModModelLayers.DIAMOND_SHIELD)
+                MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.DIAMOND_SHIELD)
             );
 
             StrongShieldEntityModel model = DIAMOND_SHIELD_MODEL;

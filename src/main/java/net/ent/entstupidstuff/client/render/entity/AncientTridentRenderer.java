@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
 import net.fabricmc.api.EnvType;
@@ -26,7 +26,7 @@ public class AncientTridentRenderer extends EntityRenderer<AncientTridentEntity>
 
    public AncientTridentRenderer(EntityRendererFactory.Context context) {
       super(context);
-      this.model = new AncientTridentModel(context.getPart(ModModelLayers.ANCIENT_TRIDENT));
+      this.model = new AncientTridentModel(context.getPart(ModEntityModelLayers.ANCIENT_TRIDENT));
    }
 
    @Override

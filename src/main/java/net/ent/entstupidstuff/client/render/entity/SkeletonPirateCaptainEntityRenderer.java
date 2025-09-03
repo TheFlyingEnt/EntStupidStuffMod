@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.SkeletonEntityRenderer;
@@ -18,7 +18,7 @@ public class SkeletonPirateCaptainEntityRenderer extends SkeletonEntityRenderer<
 
 
     public SkeletonPirateCaptainEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, ModModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
+		super(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
 		//this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, context.getModelLoader(), ModModelLayers.SKELETON_PIRATE_CAPTAIN, OUTERLAYER));
 	}
 

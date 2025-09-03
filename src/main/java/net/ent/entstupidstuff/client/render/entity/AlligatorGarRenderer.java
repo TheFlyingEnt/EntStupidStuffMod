@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AlligatorGarModel;
-import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
+import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,7 @@ public class AlligatorGarRenderer extends MobEntityRenderer<AlligatorGarEntity, 
    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/alligator_gar.png");
 
    public AlligatorGarRenderer(EntityRendererFactory.Context context) {
-      super(context, new AlligatorGarModel(context.getPart(ModModelLayers.ALLIGATOR_GAR)), 0.3F);
+      super(context, new AlligatorGarModel(context.getPart(ModEntityModelLayers.ALLIGATOR_GAR)), 0.3F);
    }
 
    public Identifier getTexture(AlligatorGarEntity fishEntity) {

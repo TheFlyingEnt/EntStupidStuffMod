@@ -32,6 +32,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
+@SuppressWarnings("unused")
 public class GrateStairsBlock extends GrateBlock implements Waterloggable{
     public static final MapCodec<GrateStairsBlock> CODEC = RecordCodecBuilder.mapCodec(
 		instance -> instance.group(BlockState.CODEC.fieldOf("base_state").forGetter(block -> block.baseBlockState), createSettingsCodec())
@@ -194,6 +195,7 @@ public class GrateStairsBlock extends GrateBlock implements Waterloggable{
 		return state.with(FACING, rotation.rotate(state.get(FACING)));
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected BlockState mirror(BlockState state, BlockMirror mirror) {
 		Direction direction = state.get(FACING);

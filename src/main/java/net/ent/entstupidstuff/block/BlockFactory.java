@@ -49,7 +49,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-public class BlockFactoryUpt {
+public class BlockFactory {
 
     /*
      *  This is the Updated BlockFactory
@@ -229,17 +229,17 @@ public class BlockFactoryUpt {
         BlockFactoryHelper.MosicFamily("fungal" , Varient, FUNGAL_PLANKS, true);
 
         BlockFamilies.register(FUNGAL_PLANKS)
-            .button(BlockFactoryUpt.callBlock("fungal" + "_" + "button" + Varient))
-            .fence(BlockFactoryUpt.callBlock("fungal" + "_" + "fence" + Varient))
-            .fenceGate(BlockFactoryUpt.callBlock("fungal" + "_" + "fence_gate" + Varient))
-            .pressurePlate(BlockFactoryUpt.callBlock("fungal" + "_" + "button" + Varient))
-            .slab(BlockFactoryUpt.callBlock("fungal" + "_slab" + Varient))
-            .stairs(BlockFactoryUpt.callBlock("fungal" + "_stairs" + Varient))
-            .trapdoor(BlockFactoryUpt.callBlock("fungal" + "_" + "trapdoor" + Varient))
-            .trapdoor(BlockFactoryUpt.callBlock("fungal" + "_" + "glass_trapdoor" + Varient))
+            .button(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
+            .fence(BlockFactory.callBlock("fungal" + "_" + "fence" + Varient))
+            .fenceGate(BlockFactory.callBlock("fungal" + "_" + "fence_gate" + Varient))
+            .pressurePlate(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
+            .slab(BlockFactory.callBlock("fungal" + "_slab" + Varient))
+            .stairs(BlockFactory.callBlock("fungal" + "_stairs" + Varient))
+            .trapdoor(BlockFactory.callBlock("fungal" + "_" + "trapdoor" + Varient))
+            .trapdoor(BlockFactory.callBlock("fungal" + "_" + "glass_trapdoor" + Varient))
             //.sign(SIGN, WALL_SIGN)
-            .door(BlockFactoryUpt.callBlock("fungal" + "_" + "door" + Varient)) 
-            .door(BlockFactoryUpt.callBlock("fungal" + "_" + "glass_door" + Varient))
+            .door(BlockFactory.callBlock("fungal" + "_" + "door" + Varient)) 
+            .door(BlockFactory.callBlock("fungal" + "_" + "glass_door" + Varient))
         .group("wooden")
         .unlockCriterionName("has_planks")
         .build();
@@ -256,17 +256,17 @@ public class BlockFactoryUpt {
 
 
         BlockFamilies.register(MainBlock)
-            .button(BlockFactoryUpt.callBlock(MainName + "_" + "button" + Varient))
-            .fence(BlockFactoryUpt.callBlock(MainName + "_" + "fence" + Varient))
-            .fenceGate(BlockFactoryUpt.callBlock(MainName + "_" + "fence_gate" + Varient))
-            .pressurePlate(BlockFactoryUpt.callBlock(MainName + "_" + "button" + Varient))
-            .slab(BlockFactoryUpt.callBlock(MainName + "_slab" + Varient))
-            .stairs(BlockFactoryUpt.callBlock(MainName + "_stairs" + Varient))
-            .trapdoor(BlockFactoryUpt.callBlock(MainName + "_" + "trapdoor" + Varient))
-            .trapdoor(BlockFactoryUpt.callBlock(MainName + "_" + "glass_trapdoor" + Varient))
+            .button(BlockFactory.callBlock(MainName + "_" + "button" + Varient))
+            .fence(BlockFactory.callBlock(MainName + "_" + "fence" + Varient))
+            .fenceGate(BlockFactory.callBlock(MainName + "_" + "fence_gate" + Varient))
+            .pressurePlate(BlockFactory.callBlock(MainName + "_" + "button" + Varient))
+            .slab(BlockFactory.callBlock(MainName + "_slab" + Varient))
+            .stairs(BlockFactory.callBlock(MainName + "_stairs" + Varient))
+            .trapdoor(BlockFactory.callBlock(MainName + "_" + "trapdoor" + Varient))
+            .trapdoor(BlockFactory.callBlock(MainName + "_" + "glass_trapdoor" + Varient))
             //.sign(SIGN, WALL_SIGN)
-            .door(BlockFactoryUpt.callBlock(MainName + "_" + "door" + Varient)) 
-            .door(BlockFactoryUpt.callBlock(MainName + "_" + "glass_door" + Varient))
+            .door(BlockFactory.callBlock(MainName + "_" + "door" + Varient)) 
+            .door(BlockFactory.callBlock(MainName + "_" + "glass_door" + Varient))
         .group("wooden")
         .unlockCriterionName("has_planks")
         .build();
@@ -451,10 +451,10 @@ public class BlockFactoryUpt {
         StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, true, POLISHED_LIMESTONE);
 
         Block IRON_GRATE = register("iron_grate", new GrateBlock(AbstractBlock.Settings.create().requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()));
-        Block STAIRS = BlockFactoryUpt.register("iron_grate" + "_stairs" + "", 
+        Block STAIRS = BlockFactory.register("iron_grate" + "_stairs" + "", 
             new GrateStairsBlock(IRON_GRATE.getDefaultState(), AbstractBlock.Settings.copy(IRON_GRATE))); 
 
-        Block SLAB = BlockFactoryUpt.register("iron_grate" + "_slab" + "", 
+        Block SLAB = BlockFactory.register("iron_grate" + "_slab" + "", 
             new GrateSlabBlock(AbstractBlock.Settings.copy(IRON_GRATE)));
 
         
@@ -558,13 +558,13 @@ public class BlockFactoryUpt {
         ModGroup.addToDeco(blockName + "_button" + suffix);
 
 
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
 
         
 
@@ -601,11 +601,11 @@ public class BlockFactoryUpt {
             ModGroup.addToDeco(blockName + "_wood" + suffix);
             ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);
 
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
             
 
         }
@@ -686,17 +686,17 @@ public class BlockFactoryUpt {
         //ModGroup.addToDeco(blockName + "_sign" + suffix);
         //ModGroup.addToDeco(blockName + "_hanging_sign" + suffix);
 
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_door" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
 
 
     }
@@ -857,11 +857,11 @@ public class BlockFactoryUpt {
             ModGroup.addToDeco(blockName + "_wood" + suffix);
             ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);
 
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
             
 
         }
@@ -941,17 +941,17 @@ public class BlockFactoryUpt {
         ModGroup.addToDeco(blockName + "_mosaic_stairs" + suffix);
         ModGroup.addToDeco(blockName + "_mosaic_slab" + suffix);
 
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_door" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
 
     }
 

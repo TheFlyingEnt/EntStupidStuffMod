@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.entity.mob;
+package net.ent.entstupidstuff.entity.passive;
 
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;

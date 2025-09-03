@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.block;
 
 import net.ent.entstupidstuff.item.ModGroup;
-import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -29,20 +28,20 @@ public class BlockFactoryHelper {
 
     public static void NatureFamily(String blockName, String suffix, MapColor mapColor, MapColor mapColor2, Boolean flamable, Boolean withLeaves){
 
-        Block LOG = BlockFactoryUpt.register(blockName + "_log" + suffix, 
+        Block LOG = BlockFactory.register(blockName + "_log" + suffix, 
         Blocks.createLogBlock(mapColor, mapColor));
 
-        Block STRIPPED_LOG = BlockFactoryUpt.register("stripped_" + blockName + "_log" + suffix, 
+        Block STRIPPED_LOG = BlockFactory.register("stripped_" + blockName + "_log" + suffix, 
         Blocks.createLogBlock(mapColor, mapColor));
 
-        Block WOOD = BlockFactoryUpt.register(blockName + "_wood" + suffix, 
+        Block WOOD = BlockFactory.register(blockName + "_wood" + suffix, 
         new PillarBlock(AbstractBlock.Settings.create().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable()));
 
-        Block STRIPPED_WOOD = BlockFactoryUpt.register("stripped_" + blockName + "_wood" + suffix, 
+        Block STRIPPED_WOOD = BlockFactory.register("stripped_" + blockName + "_wood" + suffix, 
         new PillarBlock(AbstractBlock.Settings.create().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable()));
 
         if (withLeaves) {
-            Block LEAVES = BlockFactoryUpt.register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
+            Block LEAVES = BlockFactory.register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
             ModGroup.addToNatural(blockName + "_leaves" + suffix);
             ModGroup.addToDeco(blockName + "_leaves" + suffix);
         }
@@ -58,13 +57,13 @@ public class BlockFactoryHelper {
         ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);        
 
         if (flamable) {
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
 
             if (withLeaves) {
-                FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+                FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
             }
         }
         
@@ -73,10 +72,10 @@ public class BlockFactoryHelper {
 
     public static void BaseFamily(String blockName, String varient, Block baseBlock, Boolean flamable){
 
-        Block STAIRS = BlockFactoryUpt.register(blockName + "_stairs" + varient, 
+        Block STAIRS = BlockFactory.register(blockName + "_stairs" + varient, 
             new StairsBlock(baseBlock.getDefaultState(), AbstractBlock.Settings.copy(baseBlock))); 
 
-        Block SLAB = BlockFactoryUpt.register(blockName + "_slab" + varient, 
+        Block SLAB = BlockFactory.register(blockName + "_slab" + varient, 
             new SlabBlock(AbstractBlock.Settings.copy(baseBlock)));
 
         if (flamable) {
@@ -92,13 +91,13 @@ public class BlockFactoryHelper {
 
     public static void MosicFamily(String blockName, String varient, Block baseBlock, Boolean flamable){
 
-        Block MOSAIC  = BlockFactoryUpt.register(blockName + "_mosaic" + varient,
+        Block MOSAIC  = BlockFactory.register(blockName + "_mosaic" + varient,
             new Block(AbstractBlock.Settings.copy(baseBlock)));
 
-        Block MOSAIC_STAIRS = BlockFactoryUpt.register(blockName + "_mosaic_stairs" + varient, 
+        Block MOSAIC_STAIRS = BlockFactory.register(blockName + "_mosaic_stairs" + varient, 
             new StairsBlock(baseBlock.getDefaultState(), AbstractBlock.Settings.copy(baseBlock))); 
 
-        Block MOSAIC_SLAB = BlockFactoryUpt.register(blockName + "_mosaic_slab" + varient, 
+        Block MOSAIC_SLAB = BlockFactory.register(blockName + "_mosaic_slab" + varient, 
             new SlabBlock(AbstractBlock.Settings.copy(baseBlock)));
 
         if (flamable) {
@@ -114,28 +113,28 @@ public class BlockFactoryHelper {
     
     public static void InteractionFamily(String blockName, String suffix, Block baseBlock, MapColor mapColor, Boolean flamable, Boolean IsWooden){
 
-        Block FENCE = BlockFactoryUpt.register(blockName + "_fence" + suffix, 
+        Block FENCE = BlockFactory.register(blockName + "_fence" + suffix, 
             new FenceBlock(AbstractBlock.Settings.copy(Blocks.OAK_FENCE).mapColor((mapColor)))); 
 
-        Block FENCE_GATE = BlockFactoryUpt.register(blockName + "_fence_gate" + suffix, 
+        Block FENCE_GATE = BlockFactory.register(blockName + "_fence_gate" + suffix, 
             new FenceGateBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_FENCE_GATE).mapColor((mapColor)))); 
 
-        Block DOOR = BlockFactoryUpt.register(blockName + "_door" + suffix, 
+        Block DOOR = BlockFactory.register(blockName + "_door" + suffix, 
             new DoorBlock(BlockSetType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_DOOR).nonOpaque().mapColor((mapColor))));
 
-        Block GLASS_DOOR = BlockFactoryUpt.register(blockName + "_glass_door" + suffix, 
+        Block GLASS_DOOR = BlockFactory.register(blockName + "_glass_door" + suffix, 
             new DoorBlock(BlockSetType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_DOOR).nonOpaque().mapColor((mapColor)))); 
 
-        Block TRAP_DOOR = BlockFactoryUpt.register(blockName + "_trapdoor" + suffix, 
+        Block TRAP_DOOR = BlockFactory.register(blockName + "_trapdoor" + suffix, 
             new TrapdoorBlock(BlockSetType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
 
-        Block GLASS_TRAP_DOOR = BlockFactoryUpt.register(blockName + "_glass_trapdoor" + suffix, 
+        Block GLASS_TRAP_DOOR = BlockFactory.register(blockName + "_glass_trapdoor" + suffix, 
             new TrapdoorBlock(BlockSetType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
 
-        Block P_PLATE = BlockFactoryUpt.register(blockName + "_pressure_plate" + suffix, 
+        Block P_PLATE = BlockFactory.register(blockName + "_pressure_plate" + suffix, 
             new PressurePlateBlock(BlockSetType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_PRESSURE_PLATE).mapColor((mapColor)))); 
 
-        Block BUTTON = BlockFactoryUpt.register(blockName + "_button" + suffix, 
+        Block BUTTON = BlockFactory.register(blockName + "_button" + suffix, 
             new ButtonBlock(BlockSetType.OAK, 30, AbstractBlock.Settings.copy(Blocks.OAK_BUTTON).mapColor((mapColor)))); 
 
         ModGroup.addToDeco(blockName + "_fence" + suffix);
@@ -148,23 +147,23 @@ public class BlockFactoryHelper {
         ModGroup.addToDeco(blockName + "_button" + suffix);
 
         if (flamable) {
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_door" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactoryUpt.callBlock(blockName + "_button" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_door" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
         }
     }
 
     public static void StoneFamily(String blockName, String varient, Block baseBlock, Boolean onlyWall) {
 
-        Block Wall = BlockFactoryUpt.register(blockName + "_wall" + varient, new WallBlock(AbstractBlock.Settings.copy(baseBlock)));
+        Block Wall = BlockFactory.register(blockName + "_wall" + varient, new WallBlock(AbstractBlock.Settings.copy(baseBlock)));
             if (!onlyWall) {
-            Block Chizeled = BlockFactoryUpt.register(blockName + "chiseled" + varient, new Block(AbstractBlock.Settings.copy(baseBlock)));
-            Block Cracked = BlockFactoryUpt.register("cracked_" + blockName + "_" + varient, new Block(AbstractBlock.Settings.copy(baseBlock)));
+            Block Chizeled = BlockFactory.register(blockName + "chiseled" + varient, new Block(AbstractBlock.Settings.copy(baseBlock)));
+            Block Cracked = BlockFactory.register("cracked_" + blockName + "_" + varient, new Block(AbstractBlock.Settings.copy(baseBlock)));
         }
 
     }
@@ -172,13 +171,13 @@ public class BlockFactoryHelper {
     public static void VanillaAdditions_Wood(String blockName, Block baseBlock, BlockSetType bST, Block trapdoor, Block door, Boolean flamable){
 
         MosicFamily(blockName, "", baseBlock, flamable);
-        Block GLASS_TRAPDOOR = BlockFactoryUpt.register(blockName  + "_glass_trapdoor", new TrapdoorBlock(bST, AbstractBlock.Settings.copy(trapdoor)));
-        Block GLASS_DOOR = BlockFactoryUpt.register(blockName  + "_glass_trapdoor", new DoorBlock(bST, AbstractBlock.Settings.copy(door)));
+        Block GLASS_TRAPDOOR = BlockFactory.register(blockName  + "_glass_trapdoor", new TrapdoorBlock(bST, AbstractBlock.Settings.copy(trapdoor)));
+        Block GLASS_DOOR = BlockFactory.register(blockName  + "_glass_trapdoor", new DoorBlock(bST, AbstractBlock.Settings.copy(door)));
 
     }
 
     public static void addSaplings(String blockName, SaplingGenerator generator) {
-        Block SAPLING = BlockFactoryUpt.register(blockName + "_sapling", new SaplingBlock(generator, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
-        BlockFactoryUpt.register("potted_" + blockName + "_sapling", Blocks.createFlowerPotBlock(SAPLING));
+        Block SAPLING = BlockFactory.register(blockName + "_sapling", new SaplingBlock(generator, AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)));
+        BlockFactory.register("potted_" + blockName + "_sapling", Blocks.createFlowerPotBlock(SAPLING));
     }
 }

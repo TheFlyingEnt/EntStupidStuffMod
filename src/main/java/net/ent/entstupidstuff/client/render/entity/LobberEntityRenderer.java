@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,7 +15,7 @@ import net.minecraft.util.Identifier;
 public class LobberEntityRenderer extends ZombieBaseEntityRenderer<LobberZombieEntity, LobberModel<LobberZombieEntity>>{
 
     public LobberEntityRenderer(EntityRendererFactory.Context context) {
-        this(context, ModModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR);
+        this(context, ModEntityModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR);
     }
 
     public LobberEntityRenderer(EntityRendererFactory.Context ctx, EntityModelLayer layer, EntityModelLayer legsArmorLayer, EntityModelLayer bodyArmorLayer) {
@@ -29,7 +30,7 @@ public class LobberEntityRenderer extends ZombieBaseEntityRenderer<LobberZombieE
 
     @Override //Getting Texture of Mob
     public Identifier getTexture(LobberZombieEntity entity) {
-        return Identifier.of("entstupidstuff", "textures/entity/zombie_lobber.png"); // Path to your texture
+        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_lobber.png");
     }
 
 }

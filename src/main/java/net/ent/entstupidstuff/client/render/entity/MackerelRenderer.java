@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
-import net.ent.entstupidstuff.entity.mob.MackerelEntity;
+import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,7 @@ public class MackerelRenderer extends MobEntityRenderer<MackerelEntity, Mackerel
    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/mackerel.png");
 
    public MackerelRenderer(EntityRendererFactory.Context context) {
-      super(context, new MackerelModel(context.getPart(ModModelLayers.MACKEREL)), 0.3F);
+      super(context, new MackerelModel(context.getPart(ModEntityModelLayers.MACKEREL)), 0.3F);
    }
 
    public Identifier getTexture(MackerelEntity fishEntity) {

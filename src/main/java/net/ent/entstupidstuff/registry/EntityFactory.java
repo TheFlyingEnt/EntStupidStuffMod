@@ -1,13 +1,11 @@
 package net.ent.entstupidstuff.registry;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.entity.mob.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
-import net.ent.entstupidstuff.entity.mob.MackerelEntity;
 import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PiglinFungalEntity;
@@ -19,10 +17,12 @@ import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
 import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
-import net.ent.entstupidstuff.entity.mob.ZebraFishEntity;
+import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
+import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
+import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
 import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
 import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;

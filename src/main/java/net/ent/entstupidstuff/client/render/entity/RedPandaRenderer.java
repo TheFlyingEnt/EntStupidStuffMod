@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -14,7 +14,7 @@ public class RedPandaRenderer extends MobEntityRenderer<RedPandaEntity, RedPanda
     private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/red_panda.png");
 
     public RedPandaRenderer(EntityRendererFactory.Context context) {
-		super(context, new RedPandaModel<>(context.getPart(ModModelLayers.RED_PANDA)), 0.4F);
+		super(context, new RedPandaModel<>(context.getPart(ModEntityModelLayers.RED_PANDA)), 0.4F);
 		//this.addFeature(new FoxHeldItemFeatureRenderer(this, context.getHeldItemRenderer()));
 	}
 

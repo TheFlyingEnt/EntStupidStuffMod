@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
@@ -139,7 +139,7 @@ public class ItemFactory {
     public static final Item PHANTOM_PILLAGER_SPAWN = null;
     public static final Item PHANTOM_VINDICATOR_SPAWN = null;
 
-    public static final Item PHANTOM_TORCH_ITEM = registerRaw(new VerticallyAttachableBlockItem(BlockFactoryUpt.PHANTOM_TORCH, BlockFactoryUpt.PHANTOM_WALL_TORCH, new Item.Settings(), Direction.DOWN));
+    public static final Item PHANTOM_TORCH_ITEM = registerRaw(new VerticallyAttachableBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, new Item.Settings(), Direction.DOWN));
 
 
     public static final Item PIRATE_PILLAGER_SPAWN = null;

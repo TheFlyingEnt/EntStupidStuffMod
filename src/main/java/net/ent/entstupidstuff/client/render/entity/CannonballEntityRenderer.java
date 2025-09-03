@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
 import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -15,7 +15,7 @@ public class CannonballEntityRenderer extends EntityRenderer<CannonBallEntity>{
 
     public CannonballEntityRenderer(Context context) {
         super(context);
-        this.model = new CannonballModel(context.getPart(ModModelLayers.CANNON_BALL));
+        this.model = new CannonballModel(context.getPart(ModEntityModelLayers.CANNON_BALL));
     }
 
     private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball.png");

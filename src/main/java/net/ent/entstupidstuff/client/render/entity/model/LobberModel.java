@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.client.render.entity.model;
 
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.ZombieEntityModel;
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
@@ -25,7 +26,7 @@ public class LobberModel<T extends LobberZombieEntity> extends ZombieEntityModel
     }
 
     public Identifier getTexture(T entity) {
-        return Identifier.of("entstupidstuff", "textures/entity/zombie_lobber.png"); // Replace with your modid and texture path
+        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_lobber.png"); // Replace with your modid and texture path
     }
 
     public static TexturedModelData getTexturedModelData() {

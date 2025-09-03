@@ -47,7 +47,7 @@
   },
   "combat.hammer.ground": {
     "sounds": [
-      "entstupidstuff:hammer_ground"
+      "entstupidstuff:hammer_ground_updated"
     ],
     "subtitle": "subtitles.ent.combat.hammer.ground"
   },

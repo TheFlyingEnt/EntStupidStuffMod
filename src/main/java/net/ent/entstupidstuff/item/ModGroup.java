@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -30,12 +30,12 @@ public class ModGroup {
     public static void onInitialize() {
 
         Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
-        .icon(() -> new ItemStack(BlockFactoryUpt.callBlock("fungal_planks_cyan").asItem()))
+        .icon(() -> new ItemStack(BlockFactory.callBlock("fungal_planks_cyan").asItem()))
         .displayName(Text.translatable("item.entstupidstuff.deco_group"))
         .build());
 
         Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_NATURAL_GROUP, FabricItemGroup.builder()
-        .icon(() -> new ItemStack(BlockFactoryUpt.callBlock("redwood_log").asItem()))
+        .icon(() -> new ItemStack(BlockFactory.callBlock("redwood_log").asItem()))
         .displayName(Text.translatable("item.entstupidstuff.natural_group"))
         .build());
 

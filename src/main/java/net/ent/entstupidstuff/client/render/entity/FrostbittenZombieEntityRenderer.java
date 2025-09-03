@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
@@ -16,7 +16,7 @@ public class FrostbittenZombieEntityRenderer extends ZombieBaseEntityRenderer<Fr
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public FrostbittenZombieEntityRenderer(EntityRendererFactory.Context context) {
-      super(context, new DrownedEntityModel(context.getPart(ModModelLayers.ZOMBIE_FROSTBITTEN)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
+      super(context, new DrownedEntityModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
       this.addFeature(new FrostbittenZombieOverlay(this, context.getModelLoader()));
    }
 

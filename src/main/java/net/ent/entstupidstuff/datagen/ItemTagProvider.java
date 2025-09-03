@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.datagen;
 import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -32,8 +32,8 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
     protected void configure(WrapperLookup wrapperLookup) {
 
         addWoodFamily("fungal", null, false);
-        for (String color : BlockFactoryUpt.COLORS) {addWoodFamily("fungal", color, false);}
-        for (String color : BlockFactoryUpt.COLORS) {addWoolFamily("textured_wool", color);}
+        for (String color : BlockFactory.COLORS) {addWoodFamily("fungal", color, false);}
+        for (String color : BlockFactory.COLORS) {addWoolFamily("textured_wool", color);}
         /*for (String tm : MBlockFactory.TOOL_MATERIAL) {addCombatFamily("tm");}*/
         for (String wood : ModBlocks.V_WOOD_VARIENTS) {addVanillaGlassDoor(wood);}
         addVanillaGlassDoor("iron");
@@ -54,7 +54,7 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
         addWoodFamily("phantom", null, true);
 
         getOrCreateTagBuilder(ItemTags.LEAVES)
-            .add((BlockFactoryUpt.callBlock("maple" + "_leaves").asItem()));
+            .add((BlockFactory.callBlock("maple" + "_leaves").asItem()));
 
 
 
@@ -95,56 +95,56 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
             //Logs: log, logs_that_burn
 
             getOrCreateTagBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactoryUpt.callBlock(FamilyBase + "_log" + varient).asItem()));
+                .add((BlockFactory.callBlock(FamilyBase + "_log" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS)
-                .add((BlockFactoryUpt.callBlock(FamilyBase + "_log" + varient).asItem()));
+                .add((BlockFactory.callBlock(FamilyBase + "_log" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactoryUpt.callBlock(FamilyBase + "_wood" + varient).asItem()));
+                .add((BlockFactory.callBlock(FamilyBase + "_wood" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS)
-                .add((BlockFactoryUpt.callBlock(FamilyBase + "_wood" + varient).asItem()));
+                .add((BlockFactory.callBlock(FamilyBase + "_wood" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
+                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS)
-                .add((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
+                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
+                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
             getOrCreateTagBuilder(ItemTags.LOGS)
-                .add((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
+                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
 
         }
 
         getOrCreateTagBuilder(ItemTags.PLANKS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_planks" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_planks" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_BUTTONS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_button" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_button" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_FENCES)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_fence" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_fence" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_FENCES)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_fence_gate" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_PRESSURE_PLATES)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_pressure_plate" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_SLABS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_slab" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_STAIRS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_stairs" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_TRAPDOORS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_trapdoor" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem()));
         getOrCreateTagBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door" + varient).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient).asItem()));
         //Add Hanging Sign + Sign 
 
     }
 
     public void addVanillaGlassDoor(String FamilyBase) {
         getOrCreateTagBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door").asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_glass_door").asItem()));
     }
 
     public void addWoolFamily(String FamilyBase, String color){
         getOrCreateTagBuilder(ItemTags.WOOL)
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_" + color).asItem()));
+            .add((BlockFactory.callBlock(FamilyBase + "_" + color).asItem()));
     }
 
     public void addCombatFamily(String tm){
@@ -191,24 +191,24 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
     @Deprecated
     public void setWoodGroupTags(String baseName, String entTag) {
 
-        getOrCreateTagBuilder(ItemTags.PLANKS).add(BlockFactoryUpt.callBlock(baseName + "_planks" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_STAIRS).add(BlockFactoryUpt.callBlock(baseName + "_stairs" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_SLABS).add(BlockFactoryUpt.callBlock(baseName + "_slab" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactoryUpt.callBlock(baseName + "_button" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_PRESSURE_PLATES).add(BlockFactoryUpt.callBlock(baseName + "_pressure_plate" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactoryUpt.callBlock(baseName + "_fence" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_FENCES).add(BlockFactoryUpt.callBlock(baseName + "_fence_gate" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_TRAPDOORS).add(BlockFactoryUpt.callBlock(baseName + "_trapdoor" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.WOODEN_DOORS).add(BlockFactoryUpt.callBlock(baseName + "_door" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.PLANKS).add(BlockFactory.callBlock(baseName + "_planks" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_STAIRS).add(BlockFactory.callBlock(baseName + "_stairs" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_SLABS).add(BlockFactory.callBlock(baseName + "_slab" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactory.callBlock(baseName + "_button" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_PRESSURE_PLATES).add(BlockFactory.callBlock(baseName + "_pressure_plate" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactory.callBlock(baseName + "_fence" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_FENCES).add(BlockFactory.callBlock(baseName + "_fence_gate" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_TRAPDOORS).add(BlockFactory.callBlock(baseName + "_trapdoor" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.WOODEN_DOORS).add(BlockFactory.callBlock(baseName + "_door" + entTag).asItem());
 
-        getOrCreateTagBuilder(ItemTags.PLANKS).add(BlockFactoryUpt.callBlock(baseName + "_planks" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.STAIRS).add(BlockFactoryUpt.callBlock(baseName + "_stairs" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.SLABS).add(BlockFactoryUpt.callBlock(baseName + "_slab" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.BUTTONS).add(BlockFactoryUpt.callBlock(baseName + "_button" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.FENCES).add(BlockFactoryUpt.callBlock(baseName + "_fence" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.FENCE_GATES).add(BlockFactoryUpt.callBlock(baseName + "_fence_gate" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.TRAPDOORS).add(BlockFactoryUpt.callBlock(baseName + "_trapdoor" + entTag).asItem());
-        getOrCreateTagBuilder(ItemTags.DOORS).add(BlockFactoryUpt.callBlock(baseName + "_door" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.PLANKS).add(BlockFactory.callBlock(baseName + "_planks" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.STAIRS).add(BlockFactory.callBlock(baseName + "_stairs" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.SLABS).add(BlockFactory.callBlock(baseName + "_slab" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.BUTTONS).add(BlockFactory.callBlock(baseName + "_button" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.FENCES).add(BlockFactory.callBlock(baseName + "_fence" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.FENCE_GATES).add(BlockFactory.callBlock(baseName + "_fence_gate" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.TRAPDOORS).add(BlockFactory.callBlock(baseName + "_trapdoor" + entTag).asItem());
+        getOrCreateTagBuilder(ItemTags.DOORS).add(BlockFactory.callBlock(baseName + "_door" + entTag).asItem());
     }
 
 }

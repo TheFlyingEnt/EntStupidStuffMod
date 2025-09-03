@@ -51,7 +51,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.ShieldEntityModel;
 import net.minecraft.util.Identifier;
 
-public class ModModelLayers {
+public class ModEntityModelLayers {
 
     public static final EntityModelLayer LOBBER_ZOMBIE =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "lobber_zombie"), "main");
@@ -164,33 +164,33 @@ public class ModModelLayers {
     public static void onInitialize() {
         
         EntityRendererRegistry.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context, ModModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.LOBBER_ZOMBIE, LobberModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context, ModEntityModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.LOBBER_ZOMBIE, LobberModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context, ModModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_SCORCHED, ScorchedModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context, ModEntityModelLayers.ZOMBIE_SCORCHED, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SCORCHED, ScorchedModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_SLIMED, (EntityRendererFactory.Context context) -> new SlimedZombieEntityRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_SLIMED, () -> SlimedZombieModel.getTexturedModelData(Dilation.NONE));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_SLIMED_OUTER, () -> SlimedZombieModel.getTexturedModelData(new Dilation(0.25F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED, () -> SlimedZombieModel.getTexturedModelData(Dilation.NONE));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER, () -> SlimedZombieModel.getTexturedModelData(new Dilation(0.25F)));
 
         EntityRendererRegistry.register(EntityFactory.ANCIENT_DROWNED, (EntityRendererFactory.Context context) -> new AncientDrownedRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_DROWNED, () -> AncientDrownedModel.getTexturedModelData(Dilation.NONE));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_DROWNED_OUTER, () -> AncientDrownedModel.getTexturedModelData(new Dilation(0.5F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED, () -> AncientDrownedModel.getTexturedModelData(Dilation.NONE));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED_OUTER, () -> AncientDrownedModel.getTexturedModelData(new Dilation(0.5F)));
 
         EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context, ModModelLayers.ZOMBIE_FROSTBITTEN, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_FROSTBITTEN, () -> DrownedEntityModel.getTexturedModelData(Dilation.NONE));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZOMBIE_FROSTBITTEN_OUTER, () -> DrownedEntityModel.getTexturedModelData(new Dilation(0.5F)));
+        EntityRendererRegistry.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context, ModEntityModelLayers.ZOMBIE_FROSTBITTEN, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN, () -> DrownedEntityModel.getTexturedModelData(Dilation.NONE));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER, () -> DrownedEntityModel.getTexturedModelData(new Dilation(0.5F)));
 
         EntityRendererRegistry.register(EntityFactory.ARMORED_PILLAGER, (EntityRendererFactory.Context context) -> new ArmoredPillagerEntityRenderer(context));
 
         EntityRendererRegistry.register(EntityFactory.RSGolem, (EntityRendererFactory.Context context) -> new RedStoneGolemRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.RSGolem, RedStoneGolemModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.RSGolem, RedStoneGolemModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.RED_PANDA, (EntityRendererFactory.Context context) -> new RedPandaRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.RED_PANDA, RedPandaModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.RED_PANDA, RedPandaModel::getTexturedModelData);
 
         //The Fire of the Hunt Update
 
@@ -198,11 +198,11 @@ public class ModModelLayers {
         EntityRendererRegistry.register(EntityFactory.PIGLIN_FUNGAL, (EntityRendererFactory.Context context) -> new PiglinExtraRenderer(context, EntityModelLayers.PIGLIN_BRUTE, EntityModelLayers.PIGLIN_BRUTE_INNER_ARMOR, EntityModelLayers.PIGLIN_BRUTE_OUTER_ARMOR, false));
 
         EntityRendererRegistry.register(EntityFactory.HOVERING_INFERNO, (EntityRendererFactory.Context context) -> new HoveringInfernoRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.HOVERING_INFERNO, HoveringInfernoModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.HOVERING_INFERNO, HoveringInfernoModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModModelLayers.SUNKEN_SKELTON /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SUNKEN_SKELTON, SunkenSkeletonModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModEntityModelLayers.SUNKEN_SKELTON /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SUNKEN_SKELTON, SunkenSkeletonModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.SOUL_SKELETON, (EntityRendererFactory.Context context) -> new SoulSkeletonEntityRender(context));
         EntityRendererRegistry.register(EntityFactory.SOUL_SKELETON, (EntityRendererFactory.Context context) -> new SoulSkeletonEntityRender(context, EntityModelLayers.SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
@@ -210,44 +210,44 @@ public class ModModelLayers {
         // Tale of the Seas Update:
         
         EntityRendererRegistry.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context, ModModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SKELETON_PIRATE_CAPTAIN, SkeletonPirateCaptainModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, SkeletonPirateCaptainModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModModelLayers.SUNKEN_SKELETON_CROSSBOW /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SUNKEN_SKELETON_CROSSBOW, SunkenSkeletonModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context, ModEntityModelLayers.SUNKEN_SKELETON_CROSSBOW /*EntityModelLayers.SKELETON*/, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SUNKEN_SKELETON_CROSSBOW, SunkenSkeletonModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.CANNON_BALL, (EntityRendererFactory.Context context) -> new CannonballEntityRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CANNON_BALL, CannonballModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CANNON_BALL, CannonballModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.UARROW, (EntityRendererFactory.Context context) -> new PrismerineArrowRenderer(context));
 
         EntityRendererRegistry.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context, ModModelLayers.METAL_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.METAL_SKELETON, SkeletonGoldModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new SkeletonGoldRenderer(context, ModEntityModelLayers.METAL_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.METAL_SKELETON, SkeletonGoldModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context));
-        EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context, ModModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PHANTOM_SKELETON, SkeletonGoldModel::getTexturedModelData);
+        EntityRendererRegistry.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context, ModEntityModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.PHANTOM_SKELETON, SkeletonGoldModel::getTexturedModelData);
         
         EntityRendererRegistry.register(EntityFactory.ALLIGATOR_GAR, (EntityRendererFactory.Context context) -> new AlligatorGarRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALLIGATOR_GAR, AlligatorGarModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ALLIGATOR_GAR, AlligatorGarModel::getTexturedModelData);
         
         EntityRendererRegistry.register(EntityFactory.ZEBRA_FISH, (EntityRendererFactory.Context context) -> new ZebraFishRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ZEBRA_FISH, ZebraFishModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZEBRA_FISH, ZebraFishModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.MACKEREL, (EntityRendererFactory.Context context) -> new MackerelRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.MACKEREL, MackerelModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MACKEREL, MackerelModel::getTexturedModelData);
 
         // Work in Progress
 
         EntityRendererRegistry.register(EntityFactory.CUSTOMBOAT, (EntityRendererFactory.Context context) -> new CustomBoatEntityRenderer(context, false));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CUSTOMBOAT, CustomBoatModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CUSTOMBOAT, CustomBoatModel::getTexturedModelData);
 
         // Butterfly
 
         EntityRendererRegistry.register(EntityFactory.BUTTERFLY, (EntityRendererFactory.Context context) -> new ButterflyRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.BUTTERFLY, ButterflyModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.BUTTERFLY, ButterflyModel::getTexturedModelData);
 
         // Shields
 
@@ -270,7 +270,7 @@ public class ModModelLayers {
         EntityModelLayerRegistry.registerModelLayer(DIAMOND_SHIELD, StrongShieldEntityModel::getTexturedModelData);
 
         EntityRendererRegistry.register(EntityFactory.ANCIENT_TRIDENT, (EntityRendererFactory.Context context) -> new AncientTridentRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ANCIENT_TRIDENT, AncientTridentModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_TRIDENT, AncientTridentModel::getTexturedModelData);
         
     }
 

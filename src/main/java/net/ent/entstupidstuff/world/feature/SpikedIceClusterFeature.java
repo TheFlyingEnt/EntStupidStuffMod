@@ -5,7 +5,7 @@ import java.util.OptionalInt;
 
 import com.mojang.serialization.Codec;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -162,7 +162,7 @@ public class SpikedIceClusterFeature extends Feature<DripstoneClusterFeatureConf
 
 	private boolean canWaterSpawn(StructureWorldAccess world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		if (!blockState.isOf(Blocks.WATER) && !blockState.isOf(Blocks.PACKED_ICE) && !blockState.isOf(BlockFactoryUpt.callBlock("pointed_ice"))) {
+		if (!blockState.isOf(Blocks.WATER) && !blockState.isOf(Blocks.PACKED_ICE) && !blockState.isOf(BlockFactory.callBlock("pointed_ice"))) {
 			if (world.getBlockState(pos.up()).getFluidState().isIn(FluidTags.WATER)) {
 				return false;
 			} else {

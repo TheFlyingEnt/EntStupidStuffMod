@@ -1,13 +1,12 @@
 package net.ent.entstupidstuff;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
 import net.ent.entstupidstuff.event.WeaponEvent;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.ent.entstupidstuff.world.gen.ModBiomeFeatures;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
@@ -28,7 +27,7 @@ public class EntStupidStuff implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final Identifier id(String path) {
-        return Identifier.of("entstupidstuff", path);
+        return Identifier.of(MOD_ID, path);
 		
     }
 
@@ -73,24 +72,14 @@ public class EntStupidStuff implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Mod Initializing");
 
-		WeaponEvent.onInitialize(); //TODO: UnCommened - Check
-		//WeaponFactory.onInitialize();
+		WeaponEvent.onInitialize(); //To be Removed
 		EntityFactory.onInitialize();
-		//ModSpawnEgg.onInitialize();
-		//SpawningFactory.onInitialize();
-		//BlockFactory.onInitialize();
-		//BlockFactory.onInitialize();
-		//EnchantmentFactory.onInitialize();
-		//ModFood.onInitialize();
 		ModEffects.registerEffects();
 		ModEntitySpawns.addSpawns();
-
-		BlockFactoryUpt.onInitialize();
+		BlockFactory.onInitialize();
 		ItemFactory.onInitialize();
-		
 		ModGroup.onInitialize();
 		SoundFactory.registerSounds();
-
 		ParticleTypesFactory.initalizer();
 		
 
@@ -98,10 +87,6 @@ public class EntStupidStuff implements ModInitializer {
 
 		UpdatedEnchantmentEffects.registerEnchantmentEffects();
 
-		//ModBiomeFeatures.register();
-		
-
-		//AttackCallbackAll.EVENT.register(WeaponEvent::onEntityAttack);
 
 		
 	}

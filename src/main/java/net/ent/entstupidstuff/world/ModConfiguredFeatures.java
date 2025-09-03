@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.world;
 import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
@@ -48,16 +48,16 @@ public class ModConfiguredFeatures {
 	//Registry for Placers
 
 	public static final TrunkPlacerType<ThreexThreeTrunkPlacer> THREE_BY_THREE_TRUNK =
-        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of("entstupidstuff", "three_by_three_trunk"), new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
+        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "three_by_three_trunk"), new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
 
     public static final FoliagePlacerType<RedwoodFoliagePlacer> REDWOOD_FOLIAGE_PLACER =
-    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of("entstupidstuff", "redwood_foliage"), new FoliagePlacerType<>(RedwoodFoliagePlacer.CODEC));
+    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "redwood_foliage"), new FoliagePlacerType<>(RedwoodFoliagePlacer.CODEC));
 
     public static final FoliagePlacerType<FirFoliagePlacer> FIR_FOLIAGE_PLACER =
-    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of("entstupidstuff", "fir_foliage"), new FoliagePlacerType<>(FirFoliagePlacer.CODEC));
+    	Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "fir_foliage"), new FoliagePlacerType<>(FirFoliagePlacer.CODEC));
 
     public static final TrunkPlacerType<FirTrunkPlacer> FIR_TRUNK_PLACER =
-        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of("entstupidstuff", "fir_trunk"), new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
+        Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "fir_trunk"), new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
 		
     // Registry for ConfiguredFeatures
 
@@ -82,21 +82,21 @@ public class ModConfiguredFeatures {
     public static final Feature<DripstoneClusterFeatureConfig> SPIKED_ICE_CLUSTER_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of("entstupidstuff", "spiked_ice_cluster"),
+            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster"),
             new SpikedIceClusterFeature(DripstoneClusterFeatureConfig.CODEC)
         );
 
     public static final Feature<LargeDripstoneFeatureConfig> LARGER_SPIKED_ICE_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of("entstupidstuff", "large_spiked_ice"),
+            Identifier.of(EntStupidStuff.MOD_ID, "large_spiked_ice"),
             new LargerSpikedIceFeature(LargeDripstoneFeatureConfig.CODEC)
         );
 
     public static final Feature<SmallDripstoneFeatureConfig> SMALL_SPIKED_ICE_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of("entstupidstuff", "spiked_ice"),
+            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
             new SmallSpikedIceFeature(SmallDripstoneFeatureConfig.CODEC)
         );
 
@@ -138,9 +138,9 @@ public class ModConfiguredFeatures {
         RuleTest netherReplacables = new TagMatchRuleTest(BlockTags.BASE_STONE_NETHER);
         RuleTest endReplacables = new BlockMatchRuleTest(Blocks.END_STONE);
 
-		ConfiguredFeatures.register(context, ORE_LIMESTONE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
-		ConfiguredFeatures.register(context, ORE_LIMESTONE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
-		ConfiguredFeatures.register(context, ORE_LIMESTONE_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactoryUpt.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_LIMESTONE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactory.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_LIMESTONE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactory.callBlock("limestone").getDefaultState())), 64));
+		ConfiguredFeatures.register(context, ORE_LIMESTONE_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactory.callBlock("limestone").getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_PACKED_ICE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.PACKED_ICE.getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_PACKED_ICE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.PACKED_ICE.getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_SNOW, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
@@ -156,9 +156,9 @@ public class ModConfiguredFeatures {
 			FIR_KEY,
 			Feature.TREE,
 			new TreeFeatureConfig.Builder(
-					BlockStateProvider.of(BlockFactoryUpt.callBlock("fir_log")),
+					BlockStateProvider.of(BlockFactory.callBlock("fir_log")),
 					new FirTrunkPlacer(7, 3, 5),
-					BlockStateProvider.of(BlockFactoryUpt.callBlock("fir_leaves")),
+					BlockStateProvider.of(BlockFactory.callBlock("fir_leaves")),
                     //new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2), UniformIntProvider.create(1, 2)),
 					new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2)),
 					new TwoLayersFeatureSize(2, 0, 2)
@@ -172,7 +172,7 @@ public class ModConfiguredFeatures {
 			MAPLE_KEY,
 			Feature.TREE,
 			new TreeFeatureConfig.Builder(
-				BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_log")),
+				BlockStateProvider.of(BlockFactory.callBlock("maple_log")),
 				new CherryTrunkPlacer(
 					7,
 					1,
@@ -184,7 +184,7 @@ public class ModConfiguredFeatures {
 					UniformIntProvider.create(-4, -3),
 					UniformIntProvider.create(-1, 0)
 				),
-				BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_leaves")),
+				BlockStateProvider.of(BlockFactory.callBlock("maple_leaves")),
 				new CherryFoliagePlacer(ConstantIntProvider.create(4), ConstantIntProvider.create(0), ConstantIntProvider.create(5), 0.25F, 0.5F, 0.16666667F, 0.33333334F),
 				new TwoLayersFeatureSize(1, 0, 2)
 			)

@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.world.feature;
 
 import java.util.function.Consumer;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -81,7 +81,7 @@ public class SpikedIceHelper {
 		if (canReplace(world.getBlockState(pos.offset(direction.getOpposite())))) {
 			BlockPos.Mutable mutable = pos.mutableCopy();
 			getDripstoneThickness(direction, height, merge, state -> {
-				if (state.isOf(BlockFactoryUpt.callBlock("pointed_ice"))) {
+				if (state.isOf(BlockFactory.callBlock("pointed_ice"))) {
 					state = state.with(PointedDripstoneBlock.WATERLOGGED, Boolean.valueOf(world.isWater(mutable)));
 				}
 
@@ -102,7 +102,7 @@ public class SpikedIceHelper {
 	}
 
 	private static BlockState getState(Direction direction, Thickness thickness) {
-		return BlockFactoryUpt.callBlock("pointed_ice").getDefaultState().with(PointedDripstoneBlock.VERTICAL_DIRECTION, direction).with(PointedDripstoneBlock.THICKNESS, thickness);
+		return BlockFactory.callBlock("pointed_ice").getDefaultState().with(PointedDripstoneBlock.VERTICAL_DIRECTION, direction).with(PointedDripstoneBlock.THICKNESS, thickness);
 	}
 
 	public static boolean canReplaceOrLava(BlockState state) {

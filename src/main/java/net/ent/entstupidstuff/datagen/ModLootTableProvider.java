@@ -2,11 +2,10 @@ package net.ent.entstupidstuff.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.ent.entstupidstuff.block.BlockFactoryUpt;
+import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.minecraft.block.Blocks;
 import net.minecraft.registry.RegistryWrapper;
 
 public class ModLootTableProvider extends FabricBlockLootTableProvider  {
@@ -19,8 +18,8 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
     public void generate() {
 
         generateWoodType("fungal", null, false);
-        for (String color : BlockFactoryUpt.COLORS) {generateWoodType("fungal", color, false);}
-        for (String color : BlockFactoryUpt.COLORS) {addDrop((BlockFactoryUpt.callBlock("textured_wool_" + color)));};
+        for (String color : BlockFactory.COLORS) {generateWoodType("fungal", color, false);}
+        for (String color : BlockFactory.COLORS) {addDrop((BlockFactory.callBlock("textured_wool_" + color)));};
         attachVanillaGlassDoor();
 
         generateWoodType("redwood", null, true);
@@ -29,19 +28,19 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         generateWoodType("maple", null, true);
         generateWoodType("fir", null, true);
 
-        addDrop(BlockFactoryUpt.callBlock("maple_leaves"), block -> this.oakLeavesDrops(block, BlockFactoryUpt.callBlock("maple_sapling"), SAPLING_DROP_CHANCE));
-        addDrop(BlockFactoryUpt.callBlock("fir_leaves"), block -> this.oakLeavesDrops(block, BlockFactoryUpt.callBlock("fir_sapling"), SAPLING_DROP_CHANCE));
+        addDrop(BlockFactory.callBlock("maple_leaves"), block -> this.oakLeavesDrops(block, BlockFactory.callBlock("maple_sapling"), SAPLING_DROP_CHANCE));
+        addDrop(BlockFactory.callBlock("fir_leaves"), block -> this.oakLeavesDrops(block, BlockFactory.callBlock("fir_sapling"), SAPLING_DROP_CHANCE));
 
         generateStone("andesite_brick");
         generateStone("diorite_brick");
         generateStone("granite_brick");
-        addDrop((BlockFactoryUpt.callBlock("polished_andesite" + "_wall")));
-        addDrop((BlockFactoryUpt.callBlock("polished_diorite" + "_wall")));
-        addDrop((BlockFactoryUpt.callBlock("polished_granite" + "_wall")));
+        addDrop((BlockFactory.callBlock("polished_andesite" + "_wall")));
+        addDrop((BlockFactory.callBlock("polished_diorite" + "_wall")));
+        addDrop((BlockFactory.callBlock("polished_granite" + "_wall")));
 
-        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "")));
-        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "_slab")));
-        addDrop((BlockFactoryUpt.callBlock("iron_grate" + "_stairs")));
+        addDrop((BlockFactory.callBlock("iron_grate" + "")));
+        addDrop((BlockFactory.callBlock("iron_grate" + "_slab")));
+        addDrop((BlockFactory.callBlock("iron_grate" + "_stairs")));
 
         //Minecraft Mobs
         
@@ -50,15 +49,15 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
 
     public void attachVanillaGlassDoor(){
         for (String FamilyBase : ModBlocks.V_WOOD_VARIENTS) {
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door")), doorDrops(BlockFactoryUpt.callBlock(FamilyBase + "_glass_door")));
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_trapdoor")));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_glass_door")), doorDrops(BlockFactory.callBlock(FamilyBase + "_glass_door")));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
         }
 
-        addDrop((BlockFactoryUpt.callBlock("iron" + "_glass_door")), doorDrops(BlockFactoryUpt.callBlock("iron" + "_glass_door")));
+        addDrop((BlockFactory.callBlock("iron" + "_glass_door")), doorDrops(BlockFactory.callBlock("iron" + "_glass_door")));
 
         for (String FamilyBase : ModBlocks.COPPER_VARIENTS) {
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door")), doorDrops(BlockFactoryUpt.callBlock(FamilyBase + "_glass_door")));
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_trapdoor")));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_glass_door")), doorDrops(BlockFactory.callBlock(FamilyBase + "_glass_door")));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
         }
     }
 
@@ -67,33 +66,33 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         else {varient = "_" + varient;}
 
         if (natural) {
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_log" + varient)));
-            addDrop((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-            addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_wood" + varient)));
-            addDrop((BlockFactoryUpt.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
+            addDrop((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
+            addDrop((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
+            addDrop((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
         }
 
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_planks" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_trapdoor" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_fence" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_fence_gate" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_pressure_plate" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient)), slabDrops(BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_stairs" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_button" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient)), doorDrops(BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door" + varient)), doorDrops(BlockFactoryUpt.callBlock(FamilyBase + "_glass_door" + varient)));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_planks" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_fence" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_slab" + varient)), slabDrops(BlockFactory.callBlock(FamilyBase + "_slab" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_stairs" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_button" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_door" + varient)), doorDrops(BlockFactory.callBlock(FamilyBase + "_door" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)), doorDrops(BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
 
     }
 
     public void generateStone(String FamilyBase) {
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_wall")));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_slab")));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_stairs")));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "s")));
-        addDrop((BlockFactoryUpt.callBlock("cracked_" + FamilyBase + "s")));
-        addDrop((BlockFactoryUpt.callBlock(FamilyBase + "_chiseled")));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_wall")));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_slab")));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_stairs")));
+        addDrop((BlockFactory.callBlock(FamilyBase + "s")));
+        addDrop((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
+        addDrop((BlockFactory.callBlock(FamilyBase + "_chiseled")));
 
     }
 

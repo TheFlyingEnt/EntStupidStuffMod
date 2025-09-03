@@ -17,7 +17,7 @@ public class PhantomSkeletonEntityRenderer extends SkeletonEntityRenderer<Phanto
 	private static final Identifier TEXTURE1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
     
     public PhantomSkeletonEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, ModModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
+		super(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_INNER_ARMOR, EntityModelLayers.SKELETON_OUTER_ARMOR);
 	}
 
 	public PhantomSkeletonEntityRenderer(EntityRendererFactory.Context ctx, EntityModelLayer layer, EntityModelLayer legArmorLayer, EntityModelLayer bodyArmorLayer) {

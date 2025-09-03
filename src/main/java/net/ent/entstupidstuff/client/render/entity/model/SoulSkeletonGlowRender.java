@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -13,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class SoulSkeletonGlowRender<T extends MobEntity & RangedAttackMob, M extends EntityModel<T>> extends EyesFeatureRenderer<T, SkeletonEntityModel<T>> {
 
-    private static final RenderLayer SKIN = RenderLayer.getEyes(Identifier.of("entstupidstuff", "textures/entity/soul_skeleton_e.png"));
+    private static final RenderLayer SKIN = RenderLayer.getEyes(Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/soul_skeleton_e.png"));
 
     public SoulSkeletonGlowRender(FeatureRendererContext<T, SkeletonEntityModel<T>> featureRendererContext) {
         super(featureRendererContext);

@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.client.render;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
 import net.minecraft.client.model.ModelPart;
@@ -9,7 +10,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.CompositeEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.ModelWithWaterPatch;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,8 +19,8 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 
 public class CustomBoatEntityRenderer extends EntityRenderer<CustomBoatEntity> {
-	//private static final Identifier TEXTURE = Identifier.of("entstupidstuff", "textures/entity/customboat_3.png");
-	private static final Identifier TEXTURE = Identifier.of("entstupidstuff", "textures/entity/ccustomboat_3.png");
+	//private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/customboat_3.png");
+	private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ccustomboat_3.png");
 	private final CustomBoatModel model;
 
 	public CustomBoatEntityRenderer(EntityRendererFactory.Context ctx, boolean chest) {
@@ -28,7 +28,7 @@ public class CustomBoatEntityRenderer extends EntityRenderer<CustomBoatEntity> {
 		this.shadowRadius = 0.8F;
 
 		// You only need ONE model layer registered: "entstupidstuff:custom_boat"
-		EntityModelLayer modelLayer = new EntityModelLayer(Identifier.of("entstupidstuff", "customboat"), "main");
+		EntityModelLayer modelLayer = new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "customboat"), "main");
 		ModelPart modelPart = ctx.getPart(modelLayer);
 		this.model = new CustomBoatModel(modelPart);
 	}

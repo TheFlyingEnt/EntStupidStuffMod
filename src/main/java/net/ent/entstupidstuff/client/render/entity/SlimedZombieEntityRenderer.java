@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModModelLayers;
+import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
 import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -19,7 +19,7 @@ public class SlimedZombieEntityRenderer extends ZombieBaseEntityRenderer<SlimedZ
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public SlimedZombieEntityRenderer(EntityRendererFactory.Context context) {
-      super(context, new SlimedZombieModel(context.getPart(ModModelLayers.ZOMBIE_SLIMED)), new SlimedZombieModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new SlimedZombieModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
+      super(context, new SlimedZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_SLIMED)), new SlimedZombieModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new SlimedZombieModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
       this.addFeature(new SlimedZombieOverlayFeatureRenderer(this, context.getModelLoader()));
    }
 
