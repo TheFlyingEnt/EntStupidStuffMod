@@ -1,11 +1,13 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
 import net.ent.entstupidstuff.event.WeaponEvent;
 import net.ent.entstupidstuff.registry.EntityFactory;
+import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
@@ -13,9 +15,11 @@ import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialRecipeSerializer;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;
@@ -86,6 +90,9 @@ public class EntStupidStuff implements ModInitializer {
 		DispenserBlock.registerProjectileBehavior(ItemFactory.PRISMERINE_ARROW);
 
 		UpdatedEnchantmentEffects.registerEnchantmentEffects();
+
+		BlockEntityFactory.onInitialize();
+		ScreenHandlerFactory.registerScreenHandlers();
 
 
 		

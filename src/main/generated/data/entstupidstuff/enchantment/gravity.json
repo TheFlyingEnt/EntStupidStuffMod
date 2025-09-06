@@ -1,14 +1,14 @@
 {
   "anvil_cost": 2,
   "description": {
-    "translate": "enchantment.entstupidstuff.lightning_striker"
+    "translate": "enchantment.entstupidstuff.gravity"
   },
   "effects": {
     "minecraft:post_attack": [
       {
         "affected": "victim",
         "effect": {
-          "type": "entstupidstuff:lightning_striker"
+          "type": "entstupidstuff:gravity"
         },
         "enchanted": "attacker"
       }
@@ -19,7 +19,7 @@
     "base": 25,
     "per_level_above_first": 9
   },
-  "max_level": 2,
+  "max_level": 1,
   "min_cost": {
     "base": 5,
     "per_level_above_first": 7

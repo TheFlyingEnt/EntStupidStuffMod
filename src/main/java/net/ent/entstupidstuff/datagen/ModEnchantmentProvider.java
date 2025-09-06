@@ -48,7 +48,6 @@ public class ModEnchantmentProvider extends FabricDynamicRegistryProvider{
     TagKey<Enchantment> TRIDENT_EXCLUSIVE_SET = TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID,"exclusive_set/trident/damage"));
     TagKey<EntityType<?>> SENSITIVE_TO_ILLAGER = TagKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"sensitive_to_smite"));
 
-    @SuppressWarnings("unused")
     @Override
     protected void configure(WrapperLookup registries, Entries entries) {
 
@@ -195,30 +194,6 @@ public class ModEnchantmentProvider extends FabricDynamicRegistryProvider{
     public String getName() {
         return "RUNNING ENCHANTMENT";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ////////////////////////////
-
-
-    /*private void register(Entries entries,RegistryKey<Enchantment> key, Enchantment.Builder builder) {
-        register(entries, key, builder);
-    }*/
-
 
     private void register(Entries entries, RegistryKey<Enchantment> key, Enchantment.Builder builder, ResourceCondition...resourceConditions) {
         entries.add(key, builder.build(key.getValue()), resourceConditions);

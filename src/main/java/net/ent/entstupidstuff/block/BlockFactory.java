@@ -15,6 +15,7 @@ import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
+import net.minecraft.block.EnchantingTableBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FlowerbedBlock;
@@ -28,12 +29,14 @@ import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.SkullBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.WallBlock;
+import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.WoodType;
 import net.minecraft.block.enums.NoteBlockInstrument;
@@ -452,10 +455,24 @@ public class BlockFactory {
 
         Block IRON_GRATE = register("iron_grate", new GrateBlock(AbstractBlock.Settings.create().requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()));
         Block STAIRS = BlockFactory.register("iron_grate" + "_stairs" + "", 
-            new GrateStairsBlock(IRON_GRATE.getDefaultState(), AbstractBlock.Settings.copy(IRON_GRATE))); 
+        new GrateStairsBlock(IRON_GRATE.getDefaultState(), AbstractBlock.Settings.copy(IRON_GRATE))); 
 
         Block SLAB = BlockFactory.register("iron_grate" + "_slab" + "", 
-            new GrateSlabBlock(AbstractBlock.Settings.copy(IRON_GRATE)));
+        new GrateSlabBlock(AbstractBlock.Settings.copy(IRON_GRATE)));
+
+        //DEV
+
+        /*Block ConceptEnchantment = BlockFactory.register("dark_enchantment_table", new EnchantingTableBlock(
+			AbstractBlock.Settings.create().mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)
+        ));*/
+
+
+        /*Block HUSK_SKULL = register("husk_skull", new SkullBlock(
+			SkullBlock.Type.ZOMBIE, AbstractBlock.Settings.create().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pistonBehavior(PistonBehavior.DESTROY)
+		));
+
+        Block HUSK_SKULL_WALL = register("husk_wall_skull", new WallSkullBlock(SkullBlock.Type.ZOMBIE, AbstractBlock.Settings.create().strength(1.0F).dropsLike(HUSK_SKULL).pistonBehavior(PistonBehavior.DESTROY)));
+        */
 
         
         
@@ -993,6 +1010,10 @@ public class BlockFactory {
 			.solidBlock(Blocks::never)
 		)
 	);
+
+    public static final Block ConceptEnchantment2 = BlockFactory.register("dark_enchantment_table2", new DarkEnchantingTableBlock(
+		AbstractBlock.Settings.create().mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)
+    ));
 
 
 

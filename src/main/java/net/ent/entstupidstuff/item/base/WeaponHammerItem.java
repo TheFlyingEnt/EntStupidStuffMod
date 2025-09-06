@@ -2,9 +2,12 @@ package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -22,6 +25,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -50,47 +54,86 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
 
     @Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+
         super.appendTooltip(itemStack, context, tooltip, type);
-        //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
-        //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
-        //tooltip.add(Text.translatable("item.entstupidstuff.blunt.tooltip").formatted(Formatting.GRAY));
+
+        var client = net.minecraft.client.MinecraftClient.getInstance();
+        long handle = client.getWindow().getHandle();
+        boolean shiftHeld = InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) 
+                        || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT);
+
+        if (type.isAdvanced() && client.player != null) {
+            boolean hasTwoHandsFree = client.player.getOffHandStack().isEmpty() || client.player.getMainHandStack().isEmpty();
+
+            // Two-Handed I tooltip
+            Formatting twoHandedColor = hasTwoHandsFree ? Formatting.GRAY : Formatting.RED;
+            tooltip.add(Text.literal("Two-Handed I").formatted(twoHandedColor));
+
+            if (shiftHeld) {
+                tooltip.add(Text.literal("- Holding Two Items decreases Damage").formatted(Formatting.GRAY));
+            }
+        }
+
+        // Ground Pound tooltip
+        tooltip.add(Text.literal("Ground Pound").formatted(Formatting.GRAY));
+
+        if (shiftHeld && client.player != null) {
+            boolean hasTwoHandsFree = client.player.getOffHandStack().isEmpty() || client.player.getMainHandStack().isEmpty();
+            String percent = hasTwoHandsFree ? "50% " : "25% ";
+            Formatting percentColor = hasTwoHandsFree ? Formatting.GRAY : Formatting.RED;
+
+            tooltip.add(
+                Text.literal("- Right Clicking on a Block causes AoE Damage worth ")
+                    .formatted(Formatting.GRAY)
+                    .append(Text.literal(percent).formatted(percentColor))
+                    .append(Text.literal("of Weapon's Damage").formatted(Formatting.GRAY))
+            );
+        }
+
+        // Shift Hint
+        if (!shiftHeld) {
+            tooltip.add(Text.literal("Hold SHIFT for more info").formatted(Formatting.DARK_GRAY));
+            tooltip.add(Text.empty());
+        }
+
+        //item.entstupidstuff.double_hand.tooltip
     }
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
-
         World world = context.getWorld();
         PlayerEntity player = context.getPlayer();
         ItemStack stack = context.getStack();
+        BlockPos pos = context.getBlockPos();
+        final int radius = 3;
 
         if (!world.isClient && player != null) {
-
-            // Checking if Player has a Second Item in Off Hand:
-            if (!player.getOffHandStack().isEmpty()) {
-                System.out.println("Hammer Used, Item in Off Hand");
-                return ActionResult.PASS;
-            }
 
             //Adding Cooldown & Durability Damage
             player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
             stack.damage(2, player, EquipmentSlot.MAINHAND);
 
             //Getting Attack Pos
-            BlockPos pos = context.getBlockPos();
             Vec3d attackPos = pos.toCenterPos();
 
             //Playing Sound
             world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundCategory.PLAYERS, 1.0f, 1.0f);
             
             //AOE Attack
-            float radius = 3.0f;
             List<LivingEntity> entities = world.getEntitiesByClass(
                 LivingEntity.class, 
                 new Box(attackPos.add(-radius, -1, -radius), attackPos.add(radius, 2, radius)), 
                 e -> e != player
             );
 
+            float DamangeMutiplyer = 0.25f;
+
+            if (player.getOffHandStack().isEmpty() || player.getMainHandStack().isEmpty()) {
+                DamangeMutiplyer = 0.5f;
+            }
+
             for (LivingEntity targetEntity : entities) {
+
                 targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
                 targetEntity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
 
@@ -98,17 +141,13 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                 targetEntity.addVelocity(knockback.x, 0.3, knockback.z);
                 targetEntity.velocityModified = true;
 
-                world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 6.0f, 0.1f);
                  
             }
         }
 
-        //Effectd
-        BlockPos pos = context.getBlockPos();
+        //Effects
         BlockState blockState = world.getBlockState(context.getBlockPos());
-        int radius = 3;
-        System.out.println("Playing Particles in radius " + radius);
-        
         world.addParticle(ParticleTypesFactory.HAMMER_BOOM, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
 
         for (int dx = -radius; dx <= radius; dx++) {

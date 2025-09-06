@@ -2,7 +2,9 @@ package net.ent.entstupidstuff.enchantment;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.enchantment.effect.FrostbiteEnchantmentEffect;
+import net.ent.entstupidstuff.enchantment.effect.GravityEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.LightningStrikerEnchantmentEffect;
+import net.ent.entstupidstuff.item.ModItemTags;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.enchantment.Enchantment;
@@ -36,6 +38,15 @@ public class UpdatedEnchantmentFactory {
 
     public static final RegistryKey<Enchantment> BANEOFRAIDERS =
     RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "baneofraiders"));
+
+    public static final RegistryKey<Enchantment> GRAVITY =
+    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "gravity"));
+
+    public static final RegistryKey<Enchantment> OSMOSIS =
+    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "osmosis"));
+
+    //public static final RegistryKey<Enchantment> EXCAVATOR =
+    //RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "excavator"));
 
     /*public static final RegistryKey<Enchantment> BANEOFTHEHUNT =
     RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "baneofthehunt"));
@@ -94,11 +105,28 @@ public class UpdatedEnchantmentFactory {
         var enchantments = registry.getRegistryLookup(RegistryKeys.ENCHANTMENT);
         var items = registry.getRegistryLookup(RegistryKeys.ITEM);
 
+        register(registry, OSMOSIS,
+                Enchantment.builder(
+                    Enchantment.definition(
+                        items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE),
+                        2,
+                        4,
+                        Enchantment.leveledCost(21, 9),
+                        Enchantment.leveledCost(1, 9),
+                        4
+                    )
+                )//.exclusiveSet(enchantments.getOrThrow(EnchantmentTags.TR))
+				.addEffect(
+					EnchantmentEffectComponentTypes.ARMOR_EFFECTIVENESS,
+					new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(-1.0F, -0.1F))
+				)
+        );
+
         register(registry, LIGHTNING_STRIKER, // Has a 30% chance to summon a lightning strike that damages nearby enemies.
         Enchantment.builder(
             Enchantment.definition(
-                items.getOrThrow(ItemTags.WEAPON_ENCHANTABLE),
-                items.getOrThrow(ItemTags.SWORD_ENCHANTABLE),
+                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
+                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
                 5,
                 2,
                 Enchantment.leveledCost(5, 7),
@@ -109,6 +137,22 @@ public class UpdatedEnchantmentFactory {
         )
         .exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
         .addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM, new LightningStrikerEnchantmentEffect()));
+
+        register(registry, GRAVITY, // Pulls in Entity towards target
+        Enchantment.builder(
+            Enchantment.definition(
+                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
+                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
+                5,
+                1,
+                Enchantment.leveledCost(5, 7),
+                Enchantment.leveledCost(25, 9),
+                2,
+                AttributeModifierSlot.MAINHAND
+            )
+        )
+        .exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
+        .addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM, new GravityEnchantmentEffect()));
 
         register(registry, FROSTBITE,
         Enchantment.builder(

@@ -6,9 +6,11 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.item.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.ItemTags;
@@ -17,12 +19,10 @@ import net.minecraft.util.Identifier;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
 
-    public static final TagKey<Item> LONG_SWORD = of("long_sword");
-    public static final TagKey<Item> BATTLE_AXE = of("battle_axe");
-    public static final TagKey<Item> DAGGER = of("dagger");
-    public static final TagKey<Item> KATANA = of("katana");
-    public static final TagKey<Item> HAMMER = of("hammer");
-    public static final TagKey<Item> SHIELD = of("shield");
+    /*
+     * Vanilla Reference:
+     * - VanillaItemTagProvider
+     */
 
     public ItemTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> completableFuture) {
         super(output, completableFuture);
@@ -54,10 +54,39 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
         addWoodFamily("phantom", null, true);
 
         getOrCreateTagBuilder(ItemTags.LEAVES)
-            .add((BlockFactory.callBlock("maple" + "_leaves").asItem()));
+        .add((BlockFactory.callBlock("maple" + "_leaves").asItem()));
 
+        //Combat and Food
 
+        getOrCreateTagBuilder(ModItemTags.HAMMER_ENCHANTABLE).addTag(ModItemTags.HAMMER);
 
+        getOrCreateTagBuilder(ModItemTags.HAMMER)
+        .add(ItemFactory.callItem("wooden_hammer"))
+        .add(ItemFactory.callItem("stone_hammer"))
+        .add(ItemFactory.callItem("iron_hammer"))
+        .add(ItemFactory.callItem("golden_hammer"))
+        .add(ItemFactory.callItem("diamond_hammer"))
+        .add(ItemFactory.callItem("netherite_hammer"));
+
+        this.getOrCreateTagBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES).addTag(ModItemTags.HAMMER);
+
+        getOrCreateTagBuilder(ItemTags.DURABILITY_ENCHANTABLE)
+		.addTag(ModItemTags.HAMMER)
+        .add(ItemFactory.callItem("ancient_trident"));
+
+        getOrCreateTagBuilder(ItemTags.MINING_ENCHANTABLE)
+        .addTag(ModItemTags.HAMMER);
+
+        getOrCreateTagBuilder(ItemTags.MINING_LOOT_ENCHANTABLE)
+        .addTag(ModItemTags.HAMMER);
+
+        getOrCreateTagBuilder(ItemTags.TRIDENT_ENCHANTABLE)
+        .add(ItemFactory.callItem("ancient_trident"));
+
+        getOrCreateTagBuilder(ItemTags.CAT_FOOD).add(ItemFactory.MACKEREL, ItemFactory.ALLIGATOR_GAR);
+
+        getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED)
+        .add(ItemFactory.callItem("golden_hammer"));
 
 
 
@@ -148,11 +177,13 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
     }
 
     public void addCombatFamily(String tm){
-        getOrCreateTagBuilder(LONG_SWORD).add(ItemFactory.callItem(tm + "_long_sword"));
+        //Adding new Tags
+
+        //getOrCreateTagBuilder(LONG_SWORD).add(ItemFactory.callItem(tm + "_long_sword"));
         //getOrCreateTagBuilder(BATTLE_AXE).add(ItemFactory.callItem(tm + "_battle_axe"));
-        getOrCreateTagBuilder(DAGGER).add(ItemFactory.callItem(tm + "_dagger"));
+        //getOrCreateTagBuilder(DAGGER).add(ItemFactory.callItem(tm + "_dagger"));
         //getOrCreateTagBuilder(KATANA).add(ItemFactory.callItem(tm + "_katana"));
-        getOrCreateTagBuilder(HAMMER).add(ItemFactory.callItem(tm + "_hammer"));
+        //getOrCreateTagBuilder(HAMMER).add(ItemFactory.callItem(tm + "_hammer"));
 
         //Enchantments
         getOrCreateTagBuilder(ItemTags.SWORD_ENCHANTABLE).add(ItemFactory.callItem(tm + "_long_sword"));

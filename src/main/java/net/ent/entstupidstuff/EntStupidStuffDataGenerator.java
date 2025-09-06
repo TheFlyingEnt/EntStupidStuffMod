@@ -2,6 +2,7 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.datagen.BlockTagProvider;
 import net.ent.entstupidstuff.datagen.ItemTagProvider;
+import net.ent.entstupidstuff.datagen.ModEnchantmentTagProvider;
 import net.ent.entstupidstuff.datagen.ModLangProvider;
 import net.ent.entstupidstuff.datagen.ModEntityLootTableGenerator;
 import net.ent.entstupidstuff.datagen.ModLootTableProvider;
@@ -34,6 +35,7 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(ModRecipeProvider::new);
 		pack.addProvider(ItemTagProvider::new);
+		pack.addProvider(ModEnchantmentTagProvider::new);
 		pack.addProvider(ModLangProvider::new);
 		pack.addProvider(ModRegistryDataGenerator::new);
 		pack.addProvider(ModWorldGenerator::new);

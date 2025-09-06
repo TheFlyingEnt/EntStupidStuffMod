@@ -1,0 +1,32 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.entstupidstuff.osmosis"
+  },
+  "effects": {
+    "minecraft:armor_effectiveness": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": -1.0,
+            "per_level_above_first": -0.1
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 1,
+    "per_level_above_first": 9
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 21,
+    "per_level_above_first": 9
+  },
+  "slots": [],
+  "supported_items": "#minecraft:enchantable/trident",
+  "weight": 2
+}
