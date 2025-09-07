@@ -82,6 +82,8 @@ public class ModelProvider extends FabricModelProvider{
         generateGroupVanillaAddition("cherry");
         generateGroupVanillaAddition("warped");
         generateGroupVanillaAddition("crimson");
+        //generateGroupVanillaAddition("bamboo");
+        generateGlassIntercation("bamboo", "");
 
         // Vanilla Addition for Glass TD and Door
 

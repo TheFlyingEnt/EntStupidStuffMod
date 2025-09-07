@@ -9,7 +9,6 @@ import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.DrownedEntityModel;
 import net.minecraft.client.render.entity.model.ZombieEntityModel;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;

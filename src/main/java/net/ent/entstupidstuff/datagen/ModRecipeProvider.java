@@ -40,11 +40,11 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
     //A way to enable and disable shit //TODO: Implement
     Boolean enableWeapons = true;
-    Boolean enableClaymore = true;
+    Boolean enableClaymore = false;
     Boolean enableHammer = true;
-    Boolean enableGlaive = true;
+    Boolean enableGlaive = false;
     Boolean enableBattleAxe = false; //Disabled
-    Boolean enableLongSword = true;
+    Boolean enableLongSword = false;
     Boolean enableCannon = true;
     Boolean enableETC = true;
 
@@ -146,16 +146,16 @@ public class ModRecipeProvider extends FabricRecipeProvider{
             }
         }
 
-        generateMosaic("oak", Blocks.OAK_PLANKS, Blocks.OAK_SLAB);
-        generateMosaic("spruce", Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB);
-        generateMosaic("jungle", Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB);
-        generateMosaic("birch", Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB);
-        generateMosaic("dark_oak", Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB);
-        generateMosaic("acacia", Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB);
-        generateMosaic("mangrove", Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB);
-        generateMosaic("cherry", Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB);
-        generateMosaic("warped", Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB);
-        generateMosaic("crimson", Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB);
+        generateMosaic("oak", BlockFactory.callBlock("oak" + "_mosaic"), Blocks.OAK_SLAB);
+        generateMosaic("spruce", BlockFactory.callBlock("spruce" + "_mosaic"), Blocks.SPRUCE_SLAB);
+        generateMosaic("jungle", BlockFactory.callBlock("jungle" + "_mosaic"), Blocks.JUNGLE_SLAB);
+        generateMosaic("birch", BlockFactory.callBlock("birch" + "_mosaic"), Blocks.BIRCH_SLAB);
+        generateMosaic("dark_oak", BlockFactory.callBlock("dark_oak" + "_mosaic"), Blocks.DARK_OAK_SLAB);
+        generateMosaic("acacia", BlockFactory.callBlock("acacia" + "_mosaic"), Blocks.ACACIA_SLAB);
+        generateMosaic("mangrove", BlockFactory.callBlock("mangrove" + "_mosaic"), Blocks.MANGROVE_SLAB);
+        generateMosaic("cherry", BlockFactory.callBlock("cherry" + "_mosaic"), Blocks.CHERRY_SLAB);
+        generateMosaic("warped", BlockFactory.callBlock("warped" + "_mosaic"), Blocks.WARPED_SLAB);
+        generateMosaic("crimson", BlockFactory.callBlock("crimson" + "_mosaic"), Blocks.CRIMSON_SLAB);
         
 
         //Modded Wood

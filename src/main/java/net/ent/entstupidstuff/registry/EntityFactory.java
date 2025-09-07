@@ -178,6 +178,15 @@ public class EntityFactory {
         .build("mackerel")
     );
 
+    public static final EntityType<MackerelEntity> BASS = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "bass"),
+        EntityType.Builder.create(MackerelEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F).maxTrackingRange(4)
+        .maxTrackingRange(8)
+        .build("bass")
+    );
+
     public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "red_panda"),
         EntityType.Builder.create(RedPandaEntity::new, SpawnGroup.AMBIENT)
@@ -336,6 +345,7 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ALLIGATOR_GAR, AlligatorGarEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(ZEBRA_FISH, ZebraFishEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(MACKEREL, MackerelEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(BASS, MackerelEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
         FabricDefaultAttributeRegistry.register(RED_PANDA, RedPandaEntity.createRedPandaAttributes());

@@ -5,6 +5,7 @@ import net.ent.entstupidstuff.client.render.entity.AlligatorGarRenderer;
 import net.ent.entstupidstuff.client.render.entity.AncientDrownedRenderer;
 import net.ent.entstupidstuff.client.render.entity.AncientTridentRenderer;
 import net.ent.entstupidstuff.client.render.entity.ArmoredPillagerEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.BassRenderer;
 import net.ent.entstupidstuff.client.render.entity.ButterflyRenderer;
 import net.ent.entstupidstuff.client.render.entity.CannonballEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.FrostbittenZombieEntityRenderer;
@@ -25,6 +26,7 @@ import net.ent.entstupidstuff.client.render.entity.ZebraFishRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.AlligatorGarModel;
 import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
+import net.ent.entstupidstuff.client.render.entity.model.BassModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
@@ -134,6 +136,9 @@ public class ModEntityModelLayers {
     public static final EntityModelLayer MACKEREL =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "mackerel"), "main");
 
+    public static final EntityModelLayer BASS =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "bass"), "main");
+
     public static final EntityModelLayer RED_PANDA =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "red_panda"), "main");
 
@@ -238,6 +243,9 @@ public class ModEntityModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.MACKEREL, (EntityRendererFactory.Context context) -> new MackerelRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MACKEREL, MackerelModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.BASS, (EntityRendererFactory.Context context) -> new BassRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.BASS, BassModel::getTexturedModelData);
 
         // Work in Progress
 

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.MapCodec;
 
 import net.ent.entstupidstuff.block.entity.DarkEnchantingTableBlockEntity;
-import net.ent.entstupidstuff.screen.DarkEnchantingTableHandler;
+import net.ent.entstupidstuff.screen.DarkEnchantmentScreenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -13,13 +13,11 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.EnchantmentScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +35,7 @@ public class DarkEnchantingTableBlock extends BlockWithEntity{
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new EnchantingTableBlockEntity(pos, state);
+        return new DarkEnchantingTableBlockEntity(pos, state);
     }
 
     @Override
@@ -57,12 +55,18 @@ public class DarkEnchantingTableBlock extends BlockWithEntity{
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (world.isClient) {
-			return ActionResult.SUCCESS;
-		} else {
-			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-			return ActionResult.CONSUME;
-		}
+        /*if (!world.isClient) {
+            player.openHandledScreen((NamedScreenHandlerFactory) world.getBlockEntity(pos));
+        }
+        return ActionResult.SUCCESS;*/
+
+        if (!world.isClient) {
+            BlockEntity be = world.getBlockEntity(pos);
+            if (be instanceof NamedScreenHandlerFactory factory) {
+                player.openHandledScreen(factory);
+            }
+        }
+        return ActionResult.SUCCESS;
 	}
 
     @Nullable
@@ -73,7 +77,7 @@ public class DarkEnchantingTableBlock extends BlockWithEntity{
 			Text text = ((Nameable)blockEntity).getDisplayName();
 			return new SimpleNamedScreenHandlerFactory(
 				//(syncId, inventory, player) -> new EnchantmentScreenHandler(syncId, inventory, ScreenHandlerContext.create(world, pos)), text
-                (syncId, inventory, player) -> new DarkEnchantingTableHandler(syncId, inventory, ScreenHandlerContext.create(world, pos)), text
+                (syncId, inventory, player) -> new DarkEnchantmentScreenHandler(syncId, inventory, ScreenHandlerContext.create(world, pos)), text
 			);
 		} else {
 			return null;

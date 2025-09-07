@@ -39,6 +39,7 @@ import net.minecraft.block.WallBlock;
 import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.WoodType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.data.family.BlockFamilies;
@@ -1011,7 +1012,7 @@ public class BlockFactory {
 		)
 	);
 
-    public static final Block ConceptEnchantment2 = BlockFactory.register("dark_enchantment_table2", new DarkEnchantingTableBlock(
+    public static final Block ConceptEnchantment2 = BlockFactory.register("dark_enchantment_table", new DarkEnchantingTableBlock(
 		AbstractBlock.Settings.create().mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)
     ));
 

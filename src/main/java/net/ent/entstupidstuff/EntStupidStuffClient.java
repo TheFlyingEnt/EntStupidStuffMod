@@ -7,11 +7,13 @@ import net.ent.entstupidstuff.client.render.BuiltInModelItemRenderer;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.item.ModModelPredicateReg;
 import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
+import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 
 public class EntStupidStuffClient implements ClientModInitializer {
@@ -40,6 +42,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
                 }
             }
         });
+
+        HandledScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
         
     }
 }

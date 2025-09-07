@@ -115,6 +115,10 @@ public class ItemFactory {
     public static final Item MACKEREL_BUCKET = new EntityBucketItem(EntityFactory.MACKEREL, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    
+    public static final Item BASS_BUCKET = new EntityBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item BASS = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item COOKED_BASS = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
 
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());
     public static final Item CANNON_BALL_ITEM = new CannonBallItem(new Item.Settings());
@@ -233,6 +237,14 @@ public class ItemFactory {
         registerItems("glaive_test22", GlaiveTest2);
         registerItems("greatsword_test", GreatSwrodTest);
 
+        registerItems("wooden_battle_axe", new WeaponBattleAxeItem(ToolMaterials.WOOD, new Item.Settings()));
+        registerItems("stone_battle_axe", new WeaponBattleAxeItem(ToolMaterials.STONE, new Item.Settings()));
+        registerItems("golden_battle_axe", new WeaponBattleAxeItem(ToolMaterials.GOLD, new Item.Settings()));
+        //registerItems("copper_battle_axe", new WeaponBattleAxeItem(ToolMaterials.COPPER, new Item.Settings()));
+        registerItems("iron_battle_axe", new WeaponBattleAxeItem(ToolMaterials.IRON, new Item.Settings()));
+        registerItems("diamond_battle_axe", new WeaponBattleAxeItem(ToolMaterials.DIAMOND, new Item.Settings()));
+        registerItems("netherite_battle_axe", new WeaponBattleAxeItem(ToolMaterials.NETHERITE, new Item.Settings().fireproof()));
+
         // Weapon & Combat
 
         registerItems("wooden_claymore", new WeaponClaymoreItem(ToolMaterials.WOOD, new Item.Settings()));
@@ -317,6 +329,10 @@ public class ItemFactory {
         registerItems("mackerel_bucket", MACKEREL_BUCKET);
         registerItems("mackerel", MACKEREL);
         registerItems("cooked_mackerel", COOKED_MACKEREL);
+
+        registerItems("bass_bucket", BASS_BUCKET);
+        registerItems("bass", BASS);
+        registerItems("cooked_bass", COOKED_BASS);
 
         registerItems("ancient_trident", ANCIENT_TRIDENT);
         registerItems("ancient_drowned", ANCIENT_DROWN_SPAWN);
