@@ -17,8 +17,8 @@ public class ButterflyRenderer extends MobEntityRenderer<ButterflyEntity, Butter
     private static final Identifier LUMINOUS = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_luminous.png");
     private static final Identifier REDWOOD = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_redwood.png");
     private static final Identifier BLUE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_blue.png");
-    private static final Identifier SEELE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_blue.png");
-    private static final Identifier CREEPER = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_blue.png");
+    private static final Identifier SEELE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_seele.png");
+    private static final Identifier CREEPER = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_creeper.png");
 
     public ButterflyRenderer(EntityRendererFactory.Context context) {
 		super(context, new ButterflyModel<>(context.getPart(ModEntityModelLayers.BUTTERFLY)), 0.15F);

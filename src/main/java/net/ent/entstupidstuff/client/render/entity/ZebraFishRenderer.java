@@ -23,9 +23,9 @@ public class ZebraFishRenderer extends MobEntityRenderer<ZebraFishEntity, ZebraF
 
    public Identifier getTexture(ZebraFishEntity fishEntity) {
       //return fishEntity.getVariant() == ZebraFishEntity.Variant.NAVY ? TEXTURE_NAVY : TEXTURE_BLUE;
-      if (fishEntity.getVariant() == ZebraFishEntity.Variant.NAVY) {
+      if (fishEntity.getVariant() == ZebraFishEntity.Variant.STRIPED_NAVY) {
 			return TEXTURE_NAVY;
-		} else if (fishEntity.getVariant() == ZebraFishEntity.Variant.BLUE) {
+		} else if (fishEntity.getVariant() == ZebraFishEntity.Variant.STRIPED_BLUE) {
 			return TEXTURE_BLUE;
 		} else if (fishEntity.getVariant() == ZebraFishEntity.Variant.LEPORD_NAVY) {
 			return TEXTURE_NAVY_LEPORD;

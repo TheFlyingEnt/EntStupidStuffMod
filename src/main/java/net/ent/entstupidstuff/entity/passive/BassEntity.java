@@ -3,7 +3,6 @@ package net.ent.entstupidstuff.entity.passive;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityData;
@@ -18,45 +17,41 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 
-public class ZebraFishEntity extends SchoolingFishEntity {
+public class BassEntity extends SchoolingFishEntity {
 
-   private Variant variant;
-   private static final TrackedData<Integer> VARIANT = DataTracker.registerData(ZebraFishEntity.class, TrackedDataHandlerRegistry.INTEGER);
-   public enum Variant {
-      STRIPED_NAVY(0, "Striped", "Navy"),
-      STRIPED_BLUE(1, "Striped","Blue"),
-      LEPORD_NAVY(2, "Lepord", "Navy"),
-      LEPORD_BLUE(3, "Lepord", "Blue");
-      //LONG_FIN_NAVY(3, "Long Fin", "Nacy");
-      //LONG_FIN_BLUE(3, "Long Fin", "Blue");
-      //LONG_FIN_GOLDEN(3, "Long Fin", "Golden");
+    public BassEntity(EntityType<? extends SchoolingFishEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
-      private static final Variant[] VALUES = values();
+    private Variant variant;
+    private static final TrackedData<Integer> VARIANT = DataTracker.registerData(BassEntity.class, TrackedDataHandlerRegistry.INTEGER);
+
+    public enum Variant {
+        MOUTH(0, "Mouth"),
+        RIVER(1, "River"),
+        SPOTTED(2, "Spotted");
+
+        private static final Variant[] VALUES = values();
 		private final int id;
-		private final String pattern;
-		private final String color;
+		private final String name;
 
-        Variant(int id, String pattern, String color) {
+        Variant(int id, String name) {
 			this.id = id;
-			this.pattern = pattern;
-         this.color = color;
+			this.name = name;
 		}
 
         public int getId() {
 			return id;
 		}
 	
-		public String getPattern() {
-			return pattern;
-		}
-
-      public String getColor() {
-			return color;
+		public String getName() {
+			return name;
 		}
 	
 		public static Variant byId(int id) {
@@ -66,59 +61,40 @@ public class ZebraFishEntity extends SchoolingFishEntity {
         public static Variant getRandom(Random random) {
 			//return VALUES[random.nextInt(VALUES.length)];
 			Random varientR = Random.create();
-        	//float varientRC = varientR.nextInt(3) + 1;
-         float varientRC = varientR.nextInt(11) + 1;
+        	float varientRC = varientR.nextInt(3) + 1;
 
-			if (varientRC >= 2 && varientRC <= 5) { //Between 1 to 5
-            return Variant.STRIPED_NAVY;
-        	} else if (varientRC >= 5 && varientRC <= 10) { //Between 5 to 10
-            return Variant.STRIPED_BLUE;
+			if (varientRC == 1) {
+                return Variant.MOUTH;
+        	} else if (varientRC == 2 ) {
+                return Variant.RIVER;
+        	} else {
+                return Variant.SPOTTED;
         	}
-         else { //is 11
-            Random varientR2 = Random.create();
-            float varientRC2 = varientR.nextInt(4) + 1;
-
-            if (varientRC == 1) {
-               return Variant.STRIPED_NAVY;
-        	   } else if (varientRC == 2) {
-               return Variant.STRIPED_BLUE;
-        	   } else if (varientRC == 3) {
-               return Variant.LEPORD_NAVY;
-        	   } else {
-               return Variant.LEPORD_BLUE;
-        	   }
-
-         }
 
 		}
 
     }
 
-   public ZebraFishEntity(EntityType<? extends ZebraFishEntity> entityType, World world) {
-      super(entityType, world);
-   }
-
-   public ItemStack getBucketItem() {
-      return new ItemStack(ItemFactory.callItem("zebra_fish_bucket"));
+    public ItemStack getBucketItem() {
+      return new ItemStack(ItemFactory.callItem("bass_bucket"));
    }
 
    protected SoundEvent getAmbientSound() {
-      return SoundFactory.ENTITY_ZEBRA_FISH_AMBIENT;
+      return SoundEvents.ENTITY_COD_AMBIENT;
    }
 
    protected SoundEvent getDeathSound() {
-      return SoundFactory.ENTITY_ZEBRA_FISH_DEATH;
+      return SoundEvents.ENTITY_COD_DEATH;
    }
 
    protected SoundEvent getHurtSound(DamageSource source) {
-      return SoundFactory.ENTITY_ZEBRA_FISH_HURT;
+      return SoundEvents.ENTITY_COD_HURT;
    }
 
    protected SoundEvent getFlopSound() {
-      return SoundFactory.ENTITY_ZEBRA_FISH_FLOP;
+      return SoundEvents.ENTITY_COD_FLOP;
    }
 
-   //Varientation Code:
    @Override
    public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
@@ -129,17 +105,14 @@ public class ZebraFishEntity extends SchoolingFishEntity {
       super.copyDataToStack(stack);
       NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
 
-         if (this.getVariant() == Variant.STRIPED_NAVY) {
+         if (this.getVariant() == Variant.MOUTH) {
             nbtCompound.putInt("BucketVariantTag", 0);
          }
-         else if (this.getVariant() == Variant.STRIPED_BLUE) {
+         else if (this.getVariant() == Variant.RIVER) {
             nbtCompound.putInt("BucketVariantTag", 1);
          }
-         else if (this.getVariant() == Variant.LEPORD_NAVY) {
+         else if (this.getVariant() == Variant.SPOTTED) {
             nbtCompound.putInt("BucketVariantTag", 2);
-         }
-         else if (this.getVariant() == Variant.LEPORD_BLUE) {
-            nbtCompound.putInt("BucketVariantTag", 3);
          }
       });
    }
@@ -151,7 +124,7 @@ public class ZebraFishEntity extends SchoolingFishEntity {
 
     }
 
-	public void setVariant(ZebraFishEntity.Variant variant) {
+	public void setVariant(BassEntity.Variant variant) {
 		this.variant = variant; // Ensure the field is updated
 		this.dataTracker.set(VARIANT, variant.getId());
 	}
@@ -182,7 +155,5 @@ public class ZebraFishEntity extends SchoolingFishEntity {
          this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
       }
    }
-   
-
-
+    
 }

@@ -57,6 +57,8 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 	public static final RegistryKey<LootTable> ALLIGATOR_GAR = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/alligator_gar"));
 	public static final RegistryKey<LootTable> ZEBRA_FISH = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/zebra_fish"));
 	public static final RegistryKey<LootTable> MACKEREL = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/mackerel"));
+	public static final RegistryKey<LootTable> BASS = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/bass"));
+
 
 	public static final RegistryKey<LootTable> SUNKEN_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/sunken_skeleton"));
 	public static final RegistryKey<LootTable> METAL_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/metal_skeleton"));
@@ -159,6 +161,20 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
 					.with(ItemEntry.builder(ItemFactory.MACKEREL).apply(FurnaceSmeltLootFunction.builder().conditionally(this.createSmeltLootCondition())))
+				)
+			.pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.BONE_MEAL))
+					.conditionally(RandomChanceLootCondition.builder(0.05F))
+			)
+        );
+
+		lootTableBiConsumer.accept(BASS, LootTable.builder()
+            .pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(ItemFactory.BASS).apply(FurnaceSmeltLootFunction.builder().conditionally(this.createSmeltLootCondition())))
 				)
 			.pool(
 				LootPool.builder()

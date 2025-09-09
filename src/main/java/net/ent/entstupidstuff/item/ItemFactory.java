@@ -74,7 +74,7 @@ public class ItemFactory {
     public static final Item NOODEL_BOWL = new Item(new Item.Settings().maxCount(1).food(FoodComponents.RABBIT_STEW));
     public static final Item APPLE_PIE = new Item(new Item.Settings().food(FoodComponents.PUMPKIN_PIE));
 
-    public static final Item BUTTERFLY_JAR =  new ButterflyJarItem(new Item.Settings().maxCount(16));
+    public static final Item BUTTERFLY_JAR =  new ButterflyJarItem(EntityFactory.BUTTERFLY, SoundEvents.ITEM_BOTTLE_FILL, new Item.Settings().maxCount(16));
 
     public static final Item BUTTERFLY_SPAWN_EGG = new SpawnEggItem(EntityFactory.BUTTERFLY, 0xed7545, 0x4a1d0b, new Item.Settings()); //Butterfly
 
@@ -105,7 +105,7 @@ public class ItemFactory {
 
     // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
         
-    public static final Item ZEBRA_FISH_BUCKET = new EntityBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item ZEBRA_FISH_BUCKET = new ZebraFishBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COD));
     
     public static final Item ALLIGATOR_GAR_BUCKET = new EntityBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
@@ -116,7 +116,7 @@ public class ItemFactory {
     public static final Item MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
-    public static final Item BASS_BUCKET = new EntityBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item BASS_BUCKET = new BassBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item BASS = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_BASS = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
 

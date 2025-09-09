@@ -18,6 +18,7 @@ import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
+import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
@@ -178,9 +179,9 @@ public class EntityFactory {
         .build("mackerel")
     );
 
-    public static final EntityType<MackerelEntity> BASS = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<BassEntity> BASS = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "bass"),
-        EntityType.Builder.create(MackerelEntity::new, SpawnGroup.WATER_AMBIENT)
+        EntityType.Builder.create(BassEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)

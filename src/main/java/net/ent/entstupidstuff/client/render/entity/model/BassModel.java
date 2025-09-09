@@ -43,7 +43,7 @@ public class BassModel <T extends Entity> extends SinglePartEntityModel<T>{
 
 		ModelPartData top_fin = modelPartData.addChild("top_fin", ModelPartBuilder.create().uv(14, 5).cuboid(0.0F, -4.0F, -1.0F, 0.0F, 11.0F, 9.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 20.0F, 0.0F));
 
-		ModelPartData nose = modelPartData.addChild("nose", ModelPartBuilder.create().uv(0, 14).cuboid(-2.0F, -2.0F, -2.0F, 3.0F, 5.0F, 2.0F, new Dilation(0.0F)), ModelTransform.pivot(0.5F, 21.5F, -5.0F));
+		ModelPartData nose = modelPartData.addChild("nose", ModelPartBuilder.create().uv(0, 14).cuboid(-2.0F, -2.0F, -3.0F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)), ModelTransform.pivot(0.5F, 21.5F, -5.0F));
 		return TexturedModelData.of(modelData, 32, 32);
 	}
 

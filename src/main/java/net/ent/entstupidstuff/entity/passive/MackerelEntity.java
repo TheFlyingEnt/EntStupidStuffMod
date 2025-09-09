@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.entity.passive;
 
+import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -15,7 +15,7 @@ public class MackerelEntity extends SchoolingFishEntity {
    }
 
    public ItemStack getBucketItem() {
-      return new ItemStack(Items.COD_BUCKET);
+      return new ItemStack(ItemFactory.callItem("mackerel_bucket"));
    }
 
    protected SoundEvent getAmbientSound() {

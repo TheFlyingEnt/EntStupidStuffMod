@@ -35,6 +35,10 @@ public abstract class ModelLoaderMixin {
         this.loadItemModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow_pulling_2")));
         this.loadItemModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "phantom_cutlass")));
 
+        this.loadItemModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "butterfly_jar_birch")));
+        this.loadItemModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "butterfly_jar_blue")));
+        this.loadItemModel(ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID, "butterfly_jar_creeper")));
+
     }
 }
 

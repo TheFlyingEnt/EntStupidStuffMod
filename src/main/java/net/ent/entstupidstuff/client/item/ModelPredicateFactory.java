@@ -3,7 +3,10 @@ package net.ent.entstupidstuff.client.item;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.client.item.ClampedModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class ModelPredicateFactory {
@@ -28,6 +31,8 @@ public class ModelPredicateFactory {
 
         registerBlocking(ItemFactory.DIAMOND_SHIELD);
 
+        registerVariant(ItemFactory.BUTTERFLY_JAR);
+
         //registerThrowing(ItemFactory.ANCIENT_TRIDENT);
         
 
@@ -47,7 +52,24 @@ public class ModelPredicateFactory {
         ClampedModelPredicateProvider provider =  (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F;
 
         ModelPredicateProviderRegistry.register(item, id, provider);	
-	}  
+	}
 
+    
+
+    public static void registerVariant(Item item) {
+        Identifier id = Identifier.ofVanilla("variant");
+
+        ClampedModelPredicateProvider provider = (stack, world, entity, seed) -> {
+            NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT);
+            NbtCompound nbt = nbtComponent.copyNbt();
+
+            if (nbt.contains("variant", 3)) { // INT_TYPE
+                return (float) nbt.getInt("variant"); // return 0–8 directly
+            }
+            return 0f;
+        };
+
+        ModelPredicateProviderRegistry.register(item, id, provider);
+    }
     
 }
