@@ -17,6 +17,7 @@ import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PatrolEntity;
+import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -71,6 +72,12 @@ public class ModEntitySpawns  {
             SpawnGroup.AMBIENT, EntityFactory.BASS, 30, 2, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.BASS, SpawnLocationTypes.IN_WATER,
             Heightmap.Type.MOTION_BLOCKING, BassEntity::canMobSpawn);
+
+        // FUR TROUT
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.FROZEN_OCEAN, BiomeKeys.FROZEN_RIVER, BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN),
+            SpawnGroup.AMBIENT, EntityFactory.FURTROUT, 30, 2, 5); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.FURTROUT, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, CodEntity::canMobSpawn);
 
         // Zebra Fish
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),

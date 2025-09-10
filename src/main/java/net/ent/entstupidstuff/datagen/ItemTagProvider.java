@@ -83,7 +83,11 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider{
         getOrCreateTagBuilder(ItemTags.TRIDENT_ENCHANTABLE)
         .add(ItemFactory.callItem("ancient_trident"));
 
-        getOrCreateTagBuilder(ItemTags.CAT_FOOD).add(ItemFactory.MACKEREL, ItemFactory.ALLIGATOR_GAR);
+        getOrCreateTagBuilder(ItemTags.CAT_FOOD).add(
+            ItemFactory.MACKEREL, 
+            ItemFactory.ALLIGATOR_GAR, 
+            ItemFactory.BASS
+        );
 
         getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED)
         .add(ItemFactory.callItem("golden_hammer"));

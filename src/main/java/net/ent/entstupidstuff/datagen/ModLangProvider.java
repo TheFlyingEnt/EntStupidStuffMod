@@ -80,6 +80,30 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "cooked_mackerel", "Cooked Mackerel");
         translationBuilder.add("item.entstupidstuff." + "mackerel_bucket", "Bucket of Mackerel");
 
+        translationBuilder.add("subtitles.ent.entity." + "bass.death", "Bass Dies");
+        translationBuilder.add("subtitles.ent.entity." + "bass.hurt", "Bass hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "bass.flop", "Bass Flops");
+        translationBuilder.add("item.entstupidstuff." + "bass", "Bass");
+        translationBuilder.add("item.entstupidstuff." + "cooked_bass", "Cooked Bass");
+        translationBuilder.add("item.entstupidstuff." + "bass_bucket", "Bucket of Bass");
+
+        translationBuilder.add("subtitles.ent.entity." + "koi.death", "Koi Dies");
+        translationBuilder.add("subtitles.ent.entity." + "koi.hurt", "Koi hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "koi.flop", "Koi Flops");
+        translationBuilder.add("item.entstupidstuff." + "koi", "Koi");
+        translationBuilder.add("item.entstupidstuff." + "koi_bucket", "Bucket of Koi");
+
+        translationBuilder.add("subtitles.ent.entity." + "fur_trout.death", "Fur Trout Dies");
+        translationBuilder.add("subtitles.ent.entity." + "fur_trout.hurt", "Fur Trout hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "fur_trout.flop", "Fur Trout Flops");
+        translationBuilder.add("item.entstupidstuff." + "fur_trout", "Fur Trout");
+
+        translationBuilder.add("subtitles.ent.entity." + "lepord_shark.death", "Lepord Shark Dies");
+        translationBuilder.add("subtitles.ent.entity." + "lepord_shark.hurt", "Lepord Shark hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "lepord_shark.flop", "Lepord Shark Flops");
+        translationBuilder.add("item.entstupidstuff." + "lepord_shark", "Lepord Shark");
+        translationBuilder.add("item.entstupidstuff." + "lepord_shark_bucket", "Bucket of Lepord Shark");
+
         translationBuilder.add("item.entstupidstuff." + "sunken_skeleton_spawn_egg", "Sunken Skeleton (Bow) Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "sunken_skeleton2_spawn_egg", "Sunken Skeleton (Crossbow) Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "skeleton_metal" + "_spawn_egg", "Metal Skeleton Spawn Egg");

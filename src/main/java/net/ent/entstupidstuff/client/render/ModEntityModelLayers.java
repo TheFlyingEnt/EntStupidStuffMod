@@ -9,7 +9,9 @@ import net.ent.entstupidstuff.client.render.entity.BassRenderer;
 import net.ent.entstupidstuff.client.render.entity.ButterflyRenderer;
 import net.ent.entstupidstuff.client.render.entity.CannonballEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.FrostbittenZombieEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.FurTroutRenderer;
 import net.ent.entstupidstuff.client.render.entity.HoveringInfernoRenderer;
+import net.ent.entstupidstuff.client.render.entity.KoiRenderer;
 import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.MackerelRenderer;
 import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
@@ -30,8 +32,10 @@ import net.ent.entstupidstuff.client.render.entity.model.BassModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
+import net.ent.entstupidstuff.client.render.entity.model.FurTroutModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
+import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
@@ -138,6 +142,12 @@ public class ModEntityModelLayers {
 
     public static final EntityModelLayer BASS =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "bass"), "main");
+
+    public static final EntityModelLayer KOI =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "koi"), "main");
+
+    public static final EntityModelLayer FURTROUT =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "firtrout"), "main");
 
     public static final EntityModelLayer RED_PANDA =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "red_panda"), "main");
@@ -246,6 +256,12 @@ public class ModEntityModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.BASS, (EntityRendererFactory.Context context) -> new BassRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.BASS, BassModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.KOI, (EntityRendererFactory.Context context) -> new KoiRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.KOI, KoiModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.FURTROUT, (EntityRendererFactory.Context context) -> new FurTroutRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.FURTROUT, FurTroutModel::getTexturedModelData);
 
         // Work in Progress
 

@@ -398,6 +398,14 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MACKEREL), RecipeCategory.FOOD, ItemFactory.COOKED_MACKEREL, 0.35F, 200)
 			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.MACKEREL))
 		.offerTo(exporter);
+		//);
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.BASS), RecipeCategory.FOOD, ItemFactory.COOKED_BASS, 0.35F, 200)
+			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.BASS))
+		.offerTo(exporter);
 
         
         //Shields

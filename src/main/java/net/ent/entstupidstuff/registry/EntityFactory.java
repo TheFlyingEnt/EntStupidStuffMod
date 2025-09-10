@@ -21,6 +21,7 @@ import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
+import net.ent.entstupidstuff.entity.passive.FurTroutEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
 import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
@@ -31,6 +32,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -156,17 +158,17 @@ public class EntityFactory {
     public static final EntityType<AlligatorGarEntity> ALLIGATOR_GAR = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "alligator_gar"),
         EntityType.Builder.create(AlligatorGarEntity::new, SpawnGroup.WATER_AMBIENT)
-        .dimensions(0.5F, 0.3F)
-        .eyeHeight(0.195F).maxTrackingRange(4)
+        .dimensions(0.65F, 0.25F)
+        .eyeHeight(0.2F).maxTrackingRange(4)
         .build("alligator_gar")
     );
 
-    public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE, //Cod Size
         Identifier.of(EntStupidStuff.MOD_ID, "zebra_fish"),
         EntityType.Builder.create(ZebraFishEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.5F, 0.3F)
-        .eyeHeight(0.195F).maxTrackingRange(4)
-        .maxTrackingRange(8)
+        .eyeHeight(0.195F)
+        .maxTrackingRange(4)
         .build("zebra_fish")
     );
 
@@ -182,10 +184,28 @@ public class EntityFactory {
     public static final EntityType<BassEntity> BASS = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "bass"),
         EntityType.Builder.create(BassEntity::new, SpawnGroup.WATER_AMBIENT)
-        .dimensions(0.5F, 0.3F)
+        .dimensions(0.65F, 0.375F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
         .build("bass")
+    );
+
+    public static final EntityType<BassEntity> KOI = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "koi"),
+        EntityType.Builder.create(BassEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.75F, 0.43F)
+        .eyeHeight(0.195F).maxTrackingRange(4)
+        .maxTrackingRange(8)
+        .build("koi")
+    );
+
+    public static final EntityType<FurTroutEntity> FURTROUT = Registry.register(Registries.ENTITY_TYPE, //Cod Size
+        Identifier.of(EntStupidStuff.MOD_ID, "furtrout"),
+        EntityType.Builder.create(FurTroutEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F)
+        .maxTrackingRange(4)
+        .build("furtrout")
     );
 
     public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
@@ -346,7 +366,9 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ALLIGATOR_GAR, AlligatorGarEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(ZEBRA_FISH, ZebraFishEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(MACKEREL, MackerelEntity.createFishAttributes());
-        FabricDefaultAttributeRegistry.register(BASS, MackerelEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(BASS, BassEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(KOI, BassEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(FURTROUT, CodEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
         FabricDefaultAttributeRegistry.register(RED_PANDA, RedPandaEntity.createRedPandaAttributes());

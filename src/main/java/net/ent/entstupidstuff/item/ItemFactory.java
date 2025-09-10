@@ -66,6 +66,14 @@ public class ItemFactory {
     public static final Map<Identifier, Item> ItemList = new LinkedHashMap<>();
     public static final Map<Identifier, Item> ModelList = new LinkedHashMap<>();
 
+    //Food Comp
+
+    public static final FoodComponent FOOD_BASS = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodComponent FOOD_COOKED_BASS = new FoodComponent.Builder().nutrition(7).saturationModifier(0.8F).build();
+
+    public static final FoodComponent FOOD_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodComponent FOOD_COOKED_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(4).saturationModifier(0.5F).build();
+
     //Launch - Welcome to Stupidity
     
     public static final Item MARSHMELLOW_RAW = new Item(new Item.Settings().maxCount(16).food(new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).usingConvertsTo(Items.STICK).alwaysEdible().build()));
@@ -106,19 +114,26 @@ public class ItemFactory {
     // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
         
     public static final Item ZEBRA_FISH_BUCKET = new ZebraFishBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
-    public static final Item ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item ZEBRA_FISH = new Item((new Item.Settings()).food(FoodComponents.TROPICAL_FISH));
     
     public static final Item ALLIGATOR_GAR_BUCKET = new EntityBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
-    public static final Item ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COD));
-    public static final Item COOKED_ALLIGATOR_GAR = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    public static final Item ALLIGATOR_GAR = new Item((new Item.Settings()).food(FOOD_ALLIGATOR_JAR));
+    public static final Item COOKED_ALLIGATOR_GAR = new Item((new Item.Settings()).food(FOOD_COOKED_ALLIGATOR_JAR));
     
     public static final Item MACKEREL_BUCKET = new EntityBucketItem(EntityFactory.MACKEREL, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COD));
     public static final Item COOKED_MACKEREL = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
     public static final Item BASS_BUCKET = new BassBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
-    public static final Item BASS = new Item((new Item.Settings()).food(FoodComponents.COD));
-    public static final Item COOKED_BASS = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    public static final Item BASS = new Item((new Item.Settings()).food(FOOD_BASS));
+    public static final Item COOKED_BASS = new Item((new Item.Settings()).food(FOOD_COOKED_BASS));
+    
+    public static final Item FUR_TROUT_BUCKET = new BassBucketItem(EntityFactory.FURTROUT, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    //public static final Item FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COD));
+    //public static final Item COOKED_FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    
+    public static final Item KOI_BUCKET = new BassBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item KOI = new Item((new Item.Settings()).food(FoodComponents.TROPICAL_FISH));
 
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());
     public static final Item CANNON_BALL_ITEM = new CannonBallItem(new Item.Settings());
@@ -333,6 +348,14 @@ public class ItemFactory {
         registerItems("bass_bucket", BASS_BUCKET);
         registerItems("bass", BASS);
         registerItems("cooked_bass", COOKED_BASS);
+
+        registerItems("fur_trout_bucket", FUR_TROUT_BUCKET);
+        //registerItems("fur_trout", FUR_TROUT);
+        //registerItems("cooked_fur_trout", COOKED_FUR_TROUT);
+
+        registerItems("koi_bucket", KOI_BUCKET);
+        registerItems("koi", KOI);
+
 
         registerItems("ancient_trident", ANCIENT_TRIDENT);
         registerItems("ancient_drowned", ANCIENT_DROWN_SPAWN);

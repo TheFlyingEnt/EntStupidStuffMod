@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.client.render.entity.model.FurTroutModel;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
@@ -58,6 +59,8 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 	public static final RegistryKey<LootTable> ZEBRA_FISH = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/zebra_fish"));
 	public static final RegistryKey<LootTable> MACKEREL = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/mackerel"));
 	public static final RegistryKey<LootTable> BASS = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/bass"));
+	public static final RegistryKey<LootTable> FURTROUT = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/furtrout"));
+	public static final RegistryKey<LootTable> KOI = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/koi"));
 
 
 	public static final RegistryKey<LootTable> SUNKEN_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/sunken_skeleton"));
@@ -175,6 +178,34 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
 					.with(ItemEntry.builder(ItemFactory.BASS).apply(FurnaceSmeltLootFunction.builder().conditionally(this.createSmeltLootCondition())))
+				)
+			.pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.BONE_MEAL))
+					.conditionally(RandomChanceLootCondition.builder(0.05F))
+			)
+        );
+
+		lootTableBiConsumer.accept(FURTROUT, LootTable.builder()
+            .pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.COD).apply(FurnaceSmeltLootFunction.builder().conditionally(this.createSmeltLootCondition())))
+				)
+			.pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.BONE_MEAL))
+					.conditionally(RandomChanceLootCondition.builder(0.05F))
+			)
+        );
+
+		lootTableBiConsumer.accept(KOI, LootTable.builder()
+            .pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(ItemFactory.KOI).apply(FurnaceSmeltLootFunction.builder().conditionally(this.createSmeltLootCondition())))
 				)
 			.pool(
 				LootPool.builder()
