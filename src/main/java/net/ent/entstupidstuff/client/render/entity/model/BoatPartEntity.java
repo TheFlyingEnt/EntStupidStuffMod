@@ -13,7 +13,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.util.Identifier;
 
 public class BoatPartEntity extends Entity {
 	public final CustomBoatEntity owner;

@@ -38,6 +38,7 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
+@Deprecated
 public class ModEnchantmentProvider extends FabricDynamicRegistryProvider{
 
     public ModEnchantmentProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> registriesFuture) {

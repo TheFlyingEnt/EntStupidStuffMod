@@ -143,7 +143,7 @@ public class BassEntity extends SchoolingFishEntity {
 	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
 
 		Variant randomVariant = Variant.getRandom(this.getRandom());
-        this.setVariant(randomVariant);
+      this.setVariant(randomVariant);
 
         return super.initialize(world, difficulty, spawnReason, entityData);
 	}

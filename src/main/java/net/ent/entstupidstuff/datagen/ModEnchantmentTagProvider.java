@@ -2,16 +2,13 @@ package net.ent.entstupidstuff.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
-import net.ent.entstupidstuff.item.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.util.Identifier;
 
 public class ModEnchantmentTagProvider extends FabricTagProvider.EnchantmentTagProvider {
     public ModEnchantmentTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> completableFuture) {

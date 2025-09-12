@@ -22,6 +22,7 @@ import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
 import net.ent.entstupidstuff.entity.passive.FurTroutEntity;
+import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
 import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
@@ -190,9 +191,9 @@ public class EntityFactory {
         .build("bass")
     );
 
-    public static final EntityType<BassEntity> KOI = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<KoiEntity> KOI = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "koi"),
-        EntityType.Builder.create(BassEntity::new, SpawnGroup.WATER_AMBIENT)
+        EntityType.Builder.create(KoiEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.75F, 0.43F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
@@ -367,7 +368,7 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ZEBRA_FISH, ZebraFishEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(MACKEREL, MackerelEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(BASS, BassEntity.createFishAttributes());
-        FabricDefaultAttributeRegistry.register(KOI, BassEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(KOI, KoiEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(FURTROUT, CodEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());

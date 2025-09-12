@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;

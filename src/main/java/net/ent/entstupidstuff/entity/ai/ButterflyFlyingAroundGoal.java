@@ -1,16 +1,8 @@
 package net.ent.entstupidstuff.entity.ai;
 
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.mob.FlyingEntity;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.MathHelper;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
-import net.minecraft.entity.LivingEntity;
-
 import java.util.EnumSet;
 import java.util.Random;
 

@@ -15,11 +15,9 @@ import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialRecipeSerializer;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;
