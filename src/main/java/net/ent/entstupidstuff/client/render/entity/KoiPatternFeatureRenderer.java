@@ -1,5 +1,8 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import net.ent.entstupidstuff.client.render.entity.koiNew.KoiBaseColor;
+import net.ent.entstupidstuff.client.render.entity.koiNew.KoiPatternSecondary;
+import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -19,24 +22,42 @@ public class KoiPatternFeatureRenderer
     }
 
     @Override
-    public void render(
-            MatrixStack matrices,
-            VertexConsumerProvider vertexConsumers,
-            int light,
-            KoiEntity koi,
-            float limbAngle,
-            float limbDistance,
-            float tickDelta,
-            float animationProgress,
-            float headYaw,
-            float headPitch
-    ) {
-        if (koi.isInvisible()) return;
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, KoiEntity koi, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) 
+    {
+        if (koi.isInvisible()) 
+            return;
 
         KoiVariant variant = koi.getVariant();
 
+        // Kohaku (only if base is white)
+        if (variant.getBaseColor() == KoiBaseColor.WHITE && variant.getPatternKohaku() != null) {
+            Identifier tex = Identifier.of("entstupidstuff",
+                    "textures/entity/koi/pattern_kohaku_" + variant.getPatternKohaku().getName() + ".png");
+            VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
+            this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
+        }
+
+        // Secondary patterns (sanke / showa)
+        if (variant.getSecondaryPattern() != null) {
+            KoiPatternSecondary sec = variant.getSecondaryPattern();
+
+            String type = sec.getType();
+            if ("sanka".equals(type)) {
+                Identifier tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_sanke_" + sec.getName().toLowerCase() + ".png");
+                VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
+                this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
+            } else if ("showa".equals(type)) {
+                Identifier tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_showa_" + sec.getName().toLowerCase() + ".png");
+                VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
+                this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
+            }
+        }
+        
+
+        /*LegacyKoiVariant variant = koi.getVariant();
+
         // --- Pattern 1 ---
-        if (variant.getPattern() == KoiPattern.PATTERN_1) {
+        if (variant.getPattern() == LegacyKoiPattern.PATTERN_1) {
             Identifier tex = Identifier.of("entstupidstuff",
                     "textures/entity/koi/pattern_" + variant.getPatternColor1().get().getName() + ".png");
 
@@ -45,7 +66,7 @@ public class KoiPatternFeatureRenderer
         }
 
         // --- Pattern 2 ---
-        if (variant.getPattern() == KoiPattern.PATTERN_2) {
+        if (variant.getPattern() == LegacyKoiPattern.PATTERN_2) {
             Identifier tex1 = Identifier.of("entstupidstuff",
                     "textures/entity/koi/pattern_main_" + variant.getPatternColor1().get().getName() + ".png");
             Identifier tex2 = Identifier.of("entstupidstuff",
@@ -56,6 +77,6 @@ public class KoiPatternFeatureRenderer
 
             VertexConsumer vc2 = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex2));
             this.getContextModel().render(matrices, vc2, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
-        }
+        }*/
     }
 }

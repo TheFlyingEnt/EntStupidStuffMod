@@ -198,6 +198,12 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 					.with(ItemEntry.builder(Items.BONE_MEAL))
 					.conditionally(RandomChanceLootCondition.builder(0.05F))
 			)
+			.pool(
+				LootPool.builder()
+					.rolls(ConstantLootNumberProvider.create(1.0F))
+					.with(ItemEntry.builder(Items.WHITE_WOOL))
+					.conditionally(RandomChanceLootCondition.builder(0.05F))
+			)
         );
 
 		lootTableBiConsumer.accept(KOI, LootTable.builder()

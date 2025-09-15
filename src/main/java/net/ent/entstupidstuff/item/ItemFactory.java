@@ -10,6 +10,7 @@ import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
 import net.ent.entstupidstuff.item.base.CannonBallItem;
 import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.item.base.KoiBucketItem;
 import net.ent.entstupidstuff.item.base.PrismerineArrowItem;
 import net.ent.entstupidstuff.item.base.WeaponBattleAxeItem;
 import net.ent.entstupidstuff.item.base.WeaponClaymoreItem;
@@ -132,7 +133,7 @@ public class ItemFactory {
     //public static final Item FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COD));
     //public static final Item COOKED_FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
-    public static final Item KOI_BUCKET = new BassBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item KOI_BUCKET = new KoiBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item KOI = new Item((new Item.Settings()).food(FoodComponents.TROPICAL_FISH));
 
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());

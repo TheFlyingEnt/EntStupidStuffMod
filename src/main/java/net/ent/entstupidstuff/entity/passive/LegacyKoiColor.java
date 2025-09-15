@@ -1,6 +1,6 @@
-package net.ent.entstupidstuff.client.render.entity;
+package net.ent.entstupidstuff.entity.passive;
 
-public enum KoiColor {
+public enum LegacyKoiColor {
     WHITE("white"),
     RED("red"),
     ORANGE("orange"),
@@ -9,11 +9,13 @@ public enum KoiColor {
 
     private final String name;
 
-    KoiColor(String name) {
+    LegacyKoiColor(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
     }
+
+    
 }

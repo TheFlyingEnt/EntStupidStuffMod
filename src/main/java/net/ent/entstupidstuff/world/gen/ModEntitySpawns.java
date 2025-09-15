@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
+import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.item.ModItemTags;
@@ -78,6 +79,12 @@ public class ModEntitySpawns  {
             SpawnGroup.AMBIENT, EntityFactory.FURTROUT, 30, 2, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.FURTROUT, SpawnLocationTypes.IN_WATER,
             Heightmap.Type.MOTION_BLOCKING, CodEntity::canMobSpawn);
+
+        // KOI #1 (UnCommon)
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.CHERRY_GROVE, BiomeKeys.MEADOW),
+            SpawnGroup.AMBIENT, EntityFactory.KOI, 5, 2, 3); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.KOI, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, KoiEntity::canMobSpawn);
 
         // Zebra Fish
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),

@@ -97,6 +97,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("subtitles.ent.entity." + "fur_trout.hurt", "Fur Trout hurts ");
         translationBuilder.add("subtitles.ent.entity." + "fur_trout.flop", "Fur Trout Flops");
         translationBuilder.add("item.entstupidstuff." + "fur_trout", "Fur Trout");
+        translationBuilder.add("item.entstupidstuff." + "fur_trout_bucket", "Bucket of Fur Trout");
 
         translationBuilder.add("subtitles.ent.entity." + "lepord_shark.death", "Lepord Shark Dies");
         translationBuilder.add("subtitles.ent.entity." + "lepord_shark.hurt", "Lepord Shark hurts ");

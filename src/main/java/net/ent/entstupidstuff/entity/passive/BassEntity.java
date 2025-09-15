@@ -122,7 +122,7 @@ public class BassEntity extends SchoolingFishEntity {
         super.readCustomDataFromNbt(nbt);
         this.setVariant(Variant.byId(nbt.getInt("Variant")));
 
-    }
+   }
 
 	public void setVariant(BassEntity.Variant variant) {
 		this.variant = variant; // Ensure the field is updated

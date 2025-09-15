@@ -4,6 +4,8 @@ import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.render.entity.koiNew.KoiBaseColor;
+import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -16,12 +18,10 @@ import net.minecraft.util.math.RotationAxis;
 public class KoiRenderer extends MobEntityRenderer<KoiEntity, KoiModel<KoiEntity>> {
     //private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi.png");
 
-    private static final Map<KoiColor, Identifier> BASE_TEXTURES = Map.of(
-        KoiColor.WHITE, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_white.png"),
-        KoiColor.RED, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_red.png"),
-        KoiColor.ORANGE, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_orange.png"),
-        KoiColor.YELLOW, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_yellow.png"),
-        KoiColor.BLACK, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_black.png")
+    private static final Map<KoiBaseColor, Identifier> BASE_TEXTURES = Map.of(
+        KoiBaseColor.WHITE, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_white.png"),
+        KoiBaseColor.RED, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_red.png"),
+        KoiBaseColor.YELLOW, Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/koi/base_yellow.png")
     );
 
     public KoiRenderer(EntityRendererFactory.Context context) {
@@ -31,8 +31,9 @@ public class KoiRenderer extends MobEntityRenderer<KoiEntity, KoiModel<KoiEntity
 
     @Override
     public Identifier getTexture(KoiEntity entity) {
-        KoiVariant variant = entity.getVariantObject();
-        return BASE_TEXTURES.get(variant.getBase());
+        //LegacyKoiVariant variant = entity.getVariantObject();
+        KoiVariant variant = entity.getVariant();
+        return BASE_TEXTURES.get(variant.getBaseColor());
     }
 
     protected void setupTransforms(KoiEntity fishEntity, MatrixStack matrixStack, float f, float g, float h, float i) {
