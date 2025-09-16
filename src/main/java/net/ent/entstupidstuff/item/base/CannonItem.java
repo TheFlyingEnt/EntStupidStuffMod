@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
+import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.advancement.criterion.Criteria;
@@ -16,14 +16,12 @@ import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -32,9 +30,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class FinalCannon extends RangedWeaponItem{
+public class CannonItem extends RangedWeaponItem{
 
-    public FinalCannon(Item.Settings settings) {
+    public CannonItem(Item.Settings settings) {
         super(settings.maxCount(1).maxDamage(465).component(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT));
     }
 
@@ -84,18 +82,10 @@ public class FinalCannon extends RangedWeaponItem{
 
     @Override
 	protected ProjectileEntity createArrowEntity(World world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical) {
-		if (projectileStack.isOf(ItemFactory.CANNON_BALL_ITEM)) { //TODO: Change to CannonBall Entity when Done
-			//return new FireworkRocketEntity(world, projectileStack, shooter, shooter.getX(), shooter.getEyeY() - 0.15F, shooter.getZ(), true);
-			//return new CannonBallEntity(world, projectileStack, shooter, shooter.getX(), shooter.getEyeY() - 0.15F, shooter.getZ(), true);
-			//return new CannonBallEntity(world, shooter, weaponStack, null);
-			return new CannonBallEntity(world, shooter, projectileStack, weaponStack);
+		if (projectileStack.isOf(ItemFactory.CANNON_BALL_ITEM)) {
+			return new CannonballEntity(world, shooter, projectileStack, weaponStack);
 		} else {
-			ProjectileEntity projectileEntity = super.createArrowEntity(world, shooter, weaponStack, projectileStack, critical);
-			if (projectileEntity instanceof PersistentProjectileEntity persistentProjectileEntity) {
-				persistentProjectileEntity.setSound(SoundEvents.ITEM_CROSSBOW_HIT);
-			}
-
-			return projectileEntity;
+			return new CannonballEntity(world, shooter, projectileStack, weaponStack);
 		}
 	}
 

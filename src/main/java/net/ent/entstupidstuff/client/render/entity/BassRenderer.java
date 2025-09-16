@@ -18,6 +18,8 @@ public class BassRenderer extends MobEntityRenderer<BassEntity, BassModel<BassEn
    private static final Identifier TEXTURE_2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/bass/bass_2.png");
    private static final Identifier TEXTURE_3 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/bass/bass_3.png");
 
+   //TODO: New Model/Textures based on Bass
+
    public BassRenderer(EntityRendererFactory.Context context) {
       super(context, new BassModel(context.getPart(ModEntityModelLayers.BASS)), 0.3F);
    }

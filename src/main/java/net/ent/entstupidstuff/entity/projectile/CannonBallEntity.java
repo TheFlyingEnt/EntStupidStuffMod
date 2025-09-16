@@ -2,11 +2,17 @@ package net.ent.entstupidstuff.entity.projectile;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.api.enchantment.EntEnchantmentHelper;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.registry.EntityFactory;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker.Builder;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
@@ -17,7 +23,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-public class CannonBallEntity extends PersistentProjectileEntity {
+public class CannonballEntity extends PersistentProjectileEntity {
 
 	/*
 	 * Enhantments:
@@ -27,18 +33,21 @@ public class CannonBallEntity extends PersistentProjectileEntity {
 	 * AOT Potion Enchantment??
 	 */
 
+	private boolean hasFlame;
 
-
-
-    public CannonBallEntity(EntityType<? extends CannonBallEntity> entityType, World world) {
+    public CannonballEntity(EntityType<? extends CannonballEntity> entityType, World world) {
 		super(entityType, world);
 	}
     
-    public CannonBallEntity(World world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { //Player
+    public CannonballEntity(World world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { //Player
 		super(EntityFactory.CANNON_BALL, owner, world, stack, shotFrom);
+
+		if (shotFrom != null) {
+			this.hasFlame = EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantments(owner.getWorld(), Enchantments.FLAME), stack) > 0;
+    	}
 	}
 
-	public CannonBallEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { //Mob
+	public CannonballEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { //Mob
 		super(EntityFactory.CANNON_BALL, x, y, z, world, stack, shotFrom);
 	}
 
@@ -136,6 +145,15 @@ public class CannonBallEntity extends PersistentProjectileEntity {
 			this.getWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F, World.ExplosionSourceType.NONE);
             hit = 1;
 		}
+
+		Entity target = entityHitResult.getEntity();
+
+		if (target instanceof LivingEntity living) {
+			// Flame
+			if (hasFlame) {
+				living.setOnFireFor(5); // 5 seconds
+			}
+		}
 	}
 
     @SuppressWarnings("unused")
@@ -153,6 +171,11 @@ public class CannonBallEntity extends PersistentProjectileEntity {
     protected void initDataTracker(Builder builder) {
         super.initDataTracker(builder);
     }
+
+	public boolean hasFlame() { 
+		return hasFlame;
+	}
+
 
 
 }

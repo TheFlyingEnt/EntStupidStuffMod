@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatPart;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.RideableInventory;
 import net.minecraft.entity.mob.PiglinBrain;

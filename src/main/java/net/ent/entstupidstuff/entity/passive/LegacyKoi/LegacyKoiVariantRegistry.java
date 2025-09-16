@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.entity.passive;
+package net.ent.entstupidstuff.entity.passive.LegacyKoi;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.entity.ai.UnderwaterBowAttackGoal;
+import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -106,6 +107,11 @@ public class GenericSkeletonBow extends SkeletonEntity{
     @Override
 	protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
     	UnderwaterArrowEntity arrowEntity = new UnderwaterArrowEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+    	return arrowEntity;
+	}
+
+	protected PersistentProjectileEntity createCannonBallProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+    	CannonballEntity arrowEntity = new CannonballEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 

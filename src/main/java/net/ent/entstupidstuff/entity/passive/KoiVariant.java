@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.koiNew;
+package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 

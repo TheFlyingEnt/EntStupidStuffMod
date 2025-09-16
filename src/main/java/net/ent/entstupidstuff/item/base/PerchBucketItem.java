@@ -1,8 +1,8 @@
-package net.ent.entstupidstuff.item;
+package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.entity.passive.BassEntity;
+import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
@@ -17,11 +17,12 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class BassBucketItem extends EntityBucketItem {
-    public BassBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
+public class PerchBucketItem extends EntityBucketItem{
+
+    public PerchBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
         super(type, fluid, emptyingSound, settings);
     }
-
+    
     @Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
@@ -31,7 +32,7 @@ public class BassBucketItem extends EntityBucketItem {
 
 
         if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-            BassEntity.Variant variant = BassEntity.Variant.byId(nbt.getInt("BucketVariantTag"));
+            PerchFishEntity.Variant variant = PerchFishEntity.Variant.byId(nbt.getInt("BucketVariantTag"));
             tooltip.add(Text.literal(variant.getName()).formatted(Formatting.GRAY, Formatting.ITALIC));
         }
     }

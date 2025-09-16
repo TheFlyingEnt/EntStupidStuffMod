@@ -75,7 +75,7 @@ public class BassEntity extends SchoolingFishEntity {
 
     }
 
-    public ItemStack getBucketItem() {
+   public ItemStack getBucketItem() {
       return new ItemStack(ItemFactory.callItem("bass_bucket"));
    }
 
@@ -125,12 +125,12 @@ public class BassEntity extends SchoolingFishEntity {
    }
 
 	public void setVariant(BassEntity.Variant variant) {
-		this.variant = variant; // Ensure the field is updated
+		this.variant = variant;
 		this.dataTracker.set(VARIANT, variant.getId());
 	}
 
 	public Variant getVariant() {
-		return Variant.byId(this.dataTracker.get(VARIANT)); // Ensure it retrieves from dataTracker
+		return Variant.byId(this.dataTracker.get(VARIANT));
 	}
 
    @Override

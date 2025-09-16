@@ -2,8 +2,6 @@ package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariant;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariantRegistry;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;

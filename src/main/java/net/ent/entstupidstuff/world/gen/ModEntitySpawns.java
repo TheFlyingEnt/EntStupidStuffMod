@@ -8,6 +8,9 @@ import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
+import net.ent.entstupidstuff.entity.passive.MahiMahiEntity;
+import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
+import net.ent.entstupidstuff.entity.passive.SnapperFishEntity;
 import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.item.ModItemTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
@@ -91,6 +94,24 @@ public class ModEntitySpawns  {
             SpawnGroup.AMBIENT, EntityFactory.ZEBRA_FISH, 20, 3, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.ZEBRA_FISH, SpawnLocationTypes.IN_WATER,
             Heightmap.Type.MOTION_BLOCKING, ZebraFishEntity::canMobSpawn);
+
+        // Mahi Mahi
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
+            SpawnGroup.AMBIENT, EntityFactory.MAHIMAHI, 20, 1, 3); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.MAHIMAHI, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, MahiMahiEntity::canMobSpawn);
+
+        // Red Snapper
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
+            SpawnGroup.AMBIENT, EntityFactory.SNAPPER, 20, 2, 4); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.SNAPPER, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, SnapperFishEntity::canMobSpawn);
+
+        // Perch
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
+            SpawnGroup.AMBIENT, EntityFactory.PERCH, 20, 4, 6); //100, 3, 5
+        SpawnRestriction.register(EntityFactory.PERCH, SpawnLocationTypes.IN_WATER,
+            Heightmap.Type.MOTION_BLOCKING, PerchFishEntity::canMobSpawn);
 
         //Sunken Skeleton
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.WARM_OCEAN),

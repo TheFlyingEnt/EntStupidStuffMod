@@ -2,7 +2,10 @@ package net.ent.entstupidstuff.entity.generic;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.entity.ai.CannonAttackGoalNew;
 import net.ent.entstupidstuff.entity.ai.TrackTargetGoal;
+import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.provider.EnchantmentProviders;
 import net.minecraft.entity.CrossbowUser;
@@ -75,6 +78,7 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		this.goalSelector.add(3, new EscapeSunlightGoal(this, 1.0));
 		this.goalSelector.add(3, new FleeEntityGoal(this, WolfEntity.class, 6.0F, 1.0, 1.2));
 		this.goalSelector.add(4, new CrossbowAttackGoal<>(this, 1.0, 8.0F));
+		this.goalSelector.add(4, new CannonAttackGoalNew<>(this, 1.0, 8.0F));
 
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
@@ -117,7 +121,11 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 
 	@Override
 	public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
-		return weapon == Items.CROSSBOW;
+
+		if (weapon == Items.CROSSBOW || weapon == ItemFactory.CANNON_ITEM)
+			return true;
+		return false;
+
 	}
 
 	public boolean isCharging() {
@@ -137,7 +145,7 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	public GenericSkeletonCrossbow.State getState() {
 		if (this.isCharging()) {
 			return GenericSkeletonCrossbow.State.CROSSBOW_CHARGE;
-		} else if (this.isHolding(Items.CROSSBOW)) {
+		} else if (this.isHolding(Items.CROSSBOW) || this.isHolding(ItemFactory.CANNON_ITEM)) {
 			return GenericSkeletonCrossbow.State.CROSSBOW_HOLD;
 		} else {
 			return this.isAttacking() ? GenericSkeletonCrossbow.State.ATTACKING : GenericSkeletonCrossbow.State.NEUTRAL;
@@ -223,6 +231,20 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.CROSSBOW));
 			ItemStack itemStack2 = this.getProjectileType(itemStack);
 			PersistentProjectileEntity persistentProjectileEntity = this.createArrowProjectile(itemStack2, pullProgress, itemStack);
+			double d = target.getX() - this.getX();
+			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+			double f = target.getZ() - this.getZ();
+			double g = Math.sqrt(d * d + f * f);
+			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+			this.getWorld().spawnEntity(persistentProjectileEntity);
+		}
+
+		else if (mainHandStack.getItem() instanceof CannonItem) {
+			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, ItemFactory.CANNON_ITEM));
+			ItemStack itemStack2 = this.getProjectileType(itemStack);
+			PersistentProjectileEntity persistentProjectileEntity = this.createCannonBallProjectile(itemStack2, pullProgress, itemStack);
+			
 			double d = target.getX() - this.getX();
 			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();

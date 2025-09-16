@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.client.render.entity;
 
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiBaseColor;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiPatternSecondary;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
+import net.ent.entstupidstuff.entity.passive.KoiBaseColor;
 import net.ent.entstupidstuff.entity.passive.KoiEntity;
+import net.ent.entstupidstuff.entity.passive.KoiPatternSecondary;
+import net.ent.entstupidstuff.entity.passive.KoiVariant;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;

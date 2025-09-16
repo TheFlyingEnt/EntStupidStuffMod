@@ -14,6 +14,8 @@ import net.ent.entstupidstuff.client.render.entity.HoveringInfernoRenderer;
 import net.ent.entstupidstuff.client.render.entity.KoiRenderer;
 import net.ent.entstupidstuff.client.render.entity.LobberEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.MackerelRenderer;
+import net.ent.entstupidstuff.client.render.entity.MahiMahiRenderer;
+import net.ent.entstupidstuff.client.render.entity.PerchFishRenderer;
 import net.ent.entstupidstuff.client.render.entity.PiglinExtraRenderer;
 import net.ent.entstupidstuff.client.render.entity.PrismerineArrowRenderer;
 import net.ent.entstupidstuff.client.render.entity.RedPandaRenderer;
@@ -22,6 +24,7 @@ import net.ent.entstupidstuff.client.render.entity.ScorchedEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.SkeletonGoldRenderer;
 import net.ent.entstupidstuff.client.render.entity.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.SlimedZombieEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.SnapperFishRenderer;
 import net.ent.entstupidstuff.client.render.entity.SoulSkeletonEntityRender;
 import net.ent.entstupidstuff.client.render.entity.SunkenSkeletonEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.ZebraFishRenderer;
@@ -38,12 +41,15 @@ import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
+import net.ent.entstupidstuff.client.render.entity.model.MahiMahiModel;
+import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
+import net.ent.entstupidstuff.client.render.entity.model.SnapperFishModel;
 import net.ent.entstupidstuff.client.render.entity.model.SunkenSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.model.ZebraFishModel;
 import net.ent.entstupidstuff.registry.EntityFactory;
@@ -147,7 +153,16 @@ public class ModEntityModelLayers {
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "koi"), "main");
 
     public static final EntityModelLayer FURTROUT =
-    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "firtrout"), "main");
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "furtrout"), "main");
+
+    public static final EntityModelLayer PERCH =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "perch"), "main");
+
+    public static final EntityModelLayer SNAPPER =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "snapper"), "main");
+
+    public static final EntityModelLayer MAHIMAHI =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "mahimahi"), "main");
 
     public static final EntityModelLayer RED_PANDA =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "red_panda"), "main");
@@ -262,6 +277,15 @@ public class ModEntityModelLayers {
 
         EntityRendererRegistry.register(EntityFactory.FURTROUT, (EntityRendererFactory.Context context) -> new FurTroutRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.FURTROUT, FurTroutModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.PERCH, (EntityRendererFactory.Context context) -> new PerchFishRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.PERCH, PerchFishModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.SNAPPER, (EntityRendererFactory.Context context) -> new SnapperFishRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SNAPPER, SnapperFishModel::getTexturedModelData);
+
+        EntityRendererRegistry.register(EntityFactory.MAHIMAHI, (EntityRendererFactory.Context context) -> new MahiMahiRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MAHIMAHI, MahiMahiModel::getTexturedModelData);
 
         // Work in Progress
 

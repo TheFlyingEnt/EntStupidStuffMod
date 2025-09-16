@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.entity.ai;
 import java.util.EnumSet;
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.entity.CrossbowUser;
@@ -113,7 +113,7 @@ public class CannonAttackGoal <T extends HostileEntity & RangedAttackMob & Cross
     
                     int i = this.actor.getItemUseTime();
                     ItemStack itemStack = this.actor.getActiveItem();
-                    if (i >= FinalCannon.getPullTime(itemStack, this.actor)) {
+                    if (i >= CannonItem.getPullTime(itemStack, this.actor)) {
                         this.actor.stopUsingItem();
                         this.stage = CannonAttackGoal.Stage.CHARGED;
                         this.chargedTicksLeft = 20 + this.actor.getRandom().nextInt(20);

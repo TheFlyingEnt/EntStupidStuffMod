@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.entity.mob.SkeletonCrossbowEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity.Variant;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
@@ -115,6 +116,20 @@ public class SunkenSkeletonModel<T extends SkeletonEntity> extends /*SkeletonEnt
 		super.setAngles(mobEntity, f, g, h, i, j);
 
         if (mobEntity instanceof GenericSkeletonCrossbow && mobEntity.getMainHandStack().getItem() instanceof CrossbowItem ) {
+            GenericSkeletonCrossbow.State state = ((GenericSkeletonCrossbow) mobEntity).getState();
+		    if (state == GenericSkeletonCrossbow.State.ATTACKING) {
+			    if (mobEntity.getMainHandStack().isEmpty()) {
+				    CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, true, this.handSwingProgress, h);
+			    } else {
+					CrossbowPosing.meleeAttack(this.rightArm, this.leftArm, mobEntity, this.handSwingProgress, h);
+				}
+			} else if (state == GenericSkeletonCrossbow.State.CROSSBOW_HOLD) {
+			    CrossbowPosing.hold(this.rightArm, this.leftArm, this.head, true);
+			} else if (state == GenericSkeletonCrossbow.State.CROSSBOW_CHARGE) {
+			    CrossbowPosing.charge(this.rightArm, this.leftArm, mobEntity, true);
+			}
+        }
+		else if (mobEntity instanceof GenericSkeletonCrossbow && mobEntity.getMainHandStack().getItem() instanceof CannonItem ) {
             GenericSkeletonCrossbow.State state = ((GenericSkeletonCrossbow) mobEntity).getState();
 		    if (state == GenericSkeletonCrossbow.State.ATTACKING) {
 			    if (mobEntity.getMainHandStack().isEmpty()) {

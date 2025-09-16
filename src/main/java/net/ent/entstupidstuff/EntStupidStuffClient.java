@@ -6,7 +6,7 @@ import net.ent.entstupidstuff.client.item.ModelPredicateFactory;
 import net.ent.entstupidstuff.client.render.BuiltInModelItemRenderer;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.item.ModModelPredicateReg;
-import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,7 +32,7 @@ public class EntStupidStuffClient implements ClientModInitializer {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player != null) {
                 ItemStack stack = client.player.getMainHandStack();
-                if (stack.getItem() instanceof FinalCannon && FinalCannon.isCharged(stack)) {
+                if (stack.getItem() instanceof CannonItem && CannonItem.isCharged(stack)) {
                     int x = drawContext.getScaledWindowWidth() / 2;
                     int y = drawContext.getScaledWindowHeight() / 2;
                     //Identifier TEX = Identifier.of("entstupidstuff", "textures/gui/cannon_crosshair.png");

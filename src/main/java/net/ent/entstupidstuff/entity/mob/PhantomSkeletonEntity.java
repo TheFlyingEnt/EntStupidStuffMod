@@ -4,9 +4,9 @@ import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.entity.ai.CannonAttackGoal;
 import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
-import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
+import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -181,7 +181,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	}*/
 
 	protected PersistentProjectileEntity createCannonProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	CannonBallEntity arrowEntity = new CannonBallEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+    	CannonballEntity arrowEntity = new CannonballEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
@@ -213,7 +213,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	@Override
 	public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
 		ItemStack mainHandStack = this.getMainHandStack();
-		if (mainHandStack.getItem() instanceof FinalCannon) {
+		if (mainHandStack.getItem() instanceof CannonItem) {
 			return weapon == ItemFactory.CANNON_ITEM;
 		}
 		else {
@@ -253,7 +253,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 			this.getWorld().spawnEntity(persistentProjectileEntity);
 		}
 
-		else*/ if (mainHandStack.getItem() instanceof FinalCannon) {
+		else*/ if (mainHandStack.getItem() instanceof CannonItem) {
 
 			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, ItemFactory.CANNON_ITEM));
 			ItemStack itemStack2 = this.getProjectileType(itemStack);

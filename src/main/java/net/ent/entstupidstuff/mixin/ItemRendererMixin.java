@@ -167,7 +167,29 @@ public abstract class ItemRendererMixin {
             }
             else if (entity instanceof PhantomSkeletonEntity) {
                 if (stack.isOf(Items.BOW)) {
-                    BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow"), "inventory"));
+                    boolean pulling = entity.isUsingItem() && entity.getActiveItem() == stack;
+                    int useTime = stack.getMaxUseTime(entity) - entity.getItemUseTimeLeft();
+
+                    ModelIdentifier modelId;
+                    if (pulling) {
+                        if (useTime >= 18) {
+                            modelId = new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow_pulling_2"), "inventory");
+                        } else if (useTime > 13) {
+                            modelId = new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow_pulling_1"), "inventory");
+                        } else if (useTime > 0) {
+                            modelId = new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow_pulling_0"), "inventory");
+                        } else {
+                            modelId = new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow"), "inventory");
+                        }
+                    } else {
+                        modelId = new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "phantom_bow"), "inventory");
+                    }
+
+                    BakedModel customModel = ((ItemRendererAccessor) this)
+                        .mccourse$getModels()
+                        .getModelManager()
+                        .getModel(modelId);
+
                     cir.setReturnValue(customModel);
                 }
                 else if (stack.isOf(Items.IRON_SWORD)) {

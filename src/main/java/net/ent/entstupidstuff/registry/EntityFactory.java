@@ -24,10 +24,13 @@ import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
 import net.ent.entstupidstuff.entity.passive.FurTroutEntity;
 import net.ent.entstupidstuff.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.entity.passive.MackerelEntity;
+import net.ent.entstupidstuff.entity.passive.MahiMahiEntity;
+import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
+import net.ent.entstupidstuff.entity.passive.SnapperFishEntity;
 import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
-import net.ent.entstupidstuff.entity.projectile.CannonBallEntity;
+import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
@@ -146,6 +149,15 @@ public class EntityFactory {
         .build("butterfly")
     );
 
+    public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "red_panda"),
+        EntityType.Builder.create(RedPandaEntity::new, SpawnGroup.AMBIENT)
+        .dimensions(0.5f, 0.5F)
+        .eyeHeight(0.25F)
+        .maxTrackingRange(8)
+        .build("red_panda")
+    );
+
     public static final EntityType<CustomBoatEntity> CUSTOMBOAT = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "customboat"),
         EntityType.Builder.<CustomBoatEntity>create(CustomBoatEntity::new, SpawnGroup.MISC)
@@ -209,13 +221,31 @@ public class EntityFactory {
         .build("furtrout")
     );
 
-    public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
-        Identifier.of(EntStupidStuff.MOD_ID, "red_panda"),
-        EntityType.Builder.create(RedPandaEntity::new, SpawnGroup.AMBIENT)
-        .dimensions(0.5f, 0.5F)
-        .eyeHeight(0.25F)
-        .maxTrackingRange(8)
-        .build("red_panda")
+    public static final EntityType<PerchFishEntity> PERCH = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "perch"),
+        EntityType.Builder.create(PerchFishEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F)
+        .maxTrackingRange(4)
+        .build("perch")
+    );
+
+    public static final EntityType<SnapperFishEntity> SNAPPER = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "snapper"),
+        EntityType.Builder.create(SnapperFishEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F)
+        .maxTrackingRange(4)
+        .build("snapper")
+    );
+
+    public static final EntityType<MahiMahiEntity> MAHIMAHI = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "mahimahi"),
+        EntityType.Builder.create(MahiMahiEntity::new, SpawnGroup.WATER_AMBIENT)
+        .dimensions(0.5F, 0.3F)
+        .eyeHeight(0.195F)
+        .maxTrackingRange(4)
+        .build("mahimahi")
     );
 
 
@@ -272,9 +302,9 @@ public class EntityFactory {
             .build("underwater_arrow")
 	);
 
-    public static final EntityType<CannonBallEntity> CANNON_BALL = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<CannonballEntity> CANNON_BALL = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "cannon_ball"),
-		EntityType.Builder.create((EntityType<CannonBallEntity> type, World world) -> new CannonBallEntity(type, world), SpawnGroup.MISC)
+		EntityType.Builder.create((EntityType<CannonballEntity> type, World world) -> new CannonballEntity(type, world), SpawnGroup.MISC)
 		    .dimensions(0.5F, 0.5F)
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
@@ -370,6 +400,9 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(BASS, BassEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(KOI, KoiEntity.createFishAttributes());
         FabricDefaultAttributeRegistry.register(FURTROUT, CodEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(PERCH, PerchFishEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(SNAPPER, SnapperFishEntity.createFishAttributes());
+        FabricDefaultAttributeRegistry.register(MAHIMAHI, MahiMahiEntity.createFishAttributes());
 
         //FabricDefaultAttributeRegistry.register(CUSTOMBOAT, CustomBoatEntity.());
         FabricDefaultAttributeRegistry.register(RED_PANDA, RedPandaEntity.createRedPandaAttributes());

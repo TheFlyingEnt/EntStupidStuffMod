@@ -6,17 +6,21 @@ import java.util.Map;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
+import net.ent.entstupidstuff.item.base.BassBucketItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
-import net.ent.entstupidstuff.item.base.CannonBallItem;
-import net.ent.entstupidstuff.item.base.FinalCannon;
+import net.ent.entstupidstuff.item.base.CannonballItem;
+import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.item.base.KoiBucketItem;
+import net.ent.entstupidstuff.item.base.MahiMahiBucketItem;
+import net.ent.entstupidstuff.item.base.PerchBucketItem;
 import net.ent.entstupidstuff.item.base.PrismerineArrowItem;
 import net.ent.entstupidstuff.item.base.WeaponBattleAxeItem;
 import net.ent.entstupidstuff.item.base.WeaponClaymoreItem;
 import net.ent.entstupidstuff.item.base.WeaponGlaiveItem;
 import net.ent.entstupidstuff.item.base.WeaponHammerItem;
 import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.ZebraFishBucketItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponGlaiveItem22;
 import net.ent.entstupidstuff.item.base.weapons.WeaponGreatSwordItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponHalberdItem;
@@ -74,6 +78,9 @@ public class ItemFactory {
 
     public static final FoodComponent FOOD_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
     public static final FoodComponent FOOD_COOKED_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(4).saturationModifier(0.5F).build();
+
+    public static final FoodComponent FOOD_MAHIMAHI = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodComponent FOOD_COOKED_FOOD_MAHIMAHI = new FoodComponent.Builder().nutrition(8).saturationModifier(0.9F).build();
 
     //Launch - Welcome to Stupidity
     
@@ -135,10 +142,22 @@ public class ItemFactory {
     
     public static final Item KOI_BUCKET = new KoiBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item KOI = new Item((new Item.Settings()).food(FoodComponents.TROPICAL_FISH));
+    
+    public static final Item PERCH_BUCKET = new PerchBucketItem(EntityFactory.PERCH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item PERCH = new Item((new Item.Settings()).food(FoodComponents.COD));
+    public static final Item COOKED_PERCH = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
+    
+    public static final Item MAHIMAHI_BUCKET = new MahiMahiBucketItem(EntityFactory.MAHIMAHI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item MAHIMAHI = new Item((new Item.Settings()).food(FOOD_MAHIMAHI));
+    public static final Item COOKED_MAHIMAHI = new Item((new Item.Settings()).food(FOOD_COOKED_FOOD_MAHIMAHI));
+    
+    public static final Item SNAPPER_BUCKET = new EntityBucketItem(EntityFactory.SNAPPER, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
+    public static final Item SNAPPER = new Item((new Item.Settings()).food(FOOD_BASS));
+    public static final Item COOKED_SNAPPER = new Item((new Item.Settings()).food(FOOD_COOKED_BASS));
 
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());
-    public static final Item CANNON_BALL_ITEM = new CannonBallItem(new Item.Settings());
-    public static final Item CANNON_ITEM = new FinalCannon(new Item.Settings());
+    public static final Item CANNON_BALL_ITEM = new CannonballItem(new Item.Settings());
+    public static final Item CANNON_ITEM = new CannonItem(new Item.Settings());
     public static final Item FLINT_LOCK_BOW = null;
     public static final Item PRISMERINE_ARROW = new PrismerineArrowItem(new Item.Settings());
     public static final Item CLAB_GEM = null; //Alterive to Quarts???
@@ -356,6 +375,18 @@ public class ItemFactory {
 
         registerItems("koi_bucket", KOI_BUCKET);
         registerItems("koi", KOI);
+
+        registerItems("perch_bucket", PERCH_BUCKET);
+        registerItems("perch", PERCH);
+        registerItems("cooked_perch", COOKED_PERCH);
+
+        registerItems("snapper_bucket", SNAPPER_BUCKET);
+        registerItems("snapper", SNAPPER);
+        registerItems("cooked_snapper", COOKED_SNAPPER);
+
+        registerItems("mahimahi_bucket", MAHIMAHI_BUCKET);
+        registerItems("mahimahi", MAHIMAHI);
+        registerItems("cooked_mahimahi", COOKED_MAHIMAHI);
 
 
         registerItems("ancient_trident", ANCIENT_TRIDENT);

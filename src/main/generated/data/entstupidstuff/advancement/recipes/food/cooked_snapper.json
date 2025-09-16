@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_snapper": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:snapper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:cooked_snapper"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_snapper"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:cooked_snapper"
+    ]
+  }
+}

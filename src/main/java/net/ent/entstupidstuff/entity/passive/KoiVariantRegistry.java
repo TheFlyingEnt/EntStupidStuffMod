@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.koiNew;
+package net.ent.entstupidstuff.entity.passive;
 
 import java.util.ArrayList;
 import java.util.List;

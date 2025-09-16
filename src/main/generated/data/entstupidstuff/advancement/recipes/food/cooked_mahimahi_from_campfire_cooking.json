@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mahimahi": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:mahimahi"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:cooked_mahimahi_from_campfire_cooking"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mahimahi"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:cooked_mahimahi_from_campfire_cooking"
+    ]
+  }
+}

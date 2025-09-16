@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.entity.passive;
+package net.ent.entstupidstuff.entity.passive.LegacyKoi;
 
 public enum LegacyKoiColor {
     WHITE("white"),

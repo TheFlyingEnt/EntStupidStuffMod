@@ -381,31 +381,66 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 			exporter, RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
 		);
 
+        //offerReversibleCompactingRecipesWithCompactingRecipeGroup(
+		//	exporter, RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
+		//);
+
+        //Alligator Gar
+
         offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
         offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
 
         CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.ALLIGATOR_GAR), RecipeCategory.FOOD, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F, 200)
-			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.ALLIGATOR_GAR))
+			.criterion("has_alligator_gar", conditionsFromItem(ItemFactory.ALLIGATOR_GAR))
 		.offerTo(exporter);
 
-        //offerReversibleCompactingRecipesWithCompactingRecipeGroup(
-		//	exporter, RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
-		//);
+        //Mackerel
 
         offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
         offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
 
         CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MACKEREL), RecipeCategory.FOOD, ItemFactory.COOKED_MACKEREL, 0.35F, 200)
-			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.MACKEREL))
+			.criterion("has_mackerel", conditionsFromItem(ItemFactory.MACKEREL))
 		.offerTo(exporter);
-		//);
+	
+        //Bass
 
         offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
         offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
 
         CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.BASS), RecipeCategory.FOOD, ItemFactory.COOKED_BASS, 0.35F, 200)
-			.criterion("has_marshmellow", conditionsFromItem(ItemFactory.BASS))
+			.criterion("has_bass", conditionsFromItem(ItemFactory.BASS))
 		.offerTo(exporter);
+	
+        //Perch
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.PERCH), RecipeCategory.FOOD, ItemFactory.COOKED_PERCH, 0.35F, 200)
+			.criterion("has_perch", conditionsFromItem(ItemFactory.PERCH))
+		.offerTo(exporter);
+
+	
+        //Snapper
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.SNAPPER), RecipeCategory.FOOD, ItemFactory.COOKED_SNAPPER, 0.35F, 200)
+			.criterion("has_snapper", conditionsFromItem(ItemFactory.SNAPPER))
+		.offerTo(exporter);
+	
+        //MahiMahi
+
+        offerFoodCookingRecipe(exporter, "smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
+        offerFoodCookingRecipe(exporter, "campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
+
+        CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MAHIMAHI), RecipeCategory.FOOD, ItemFactory.COOKED_MAHIMAHI, 0.35F, 200)
+			.criterion("has_mahimahi", conditionsFromItem(ItemFactory.MAHIMAHI))
+		.offerTo(exporter);
+
+
 
         
         //Shields

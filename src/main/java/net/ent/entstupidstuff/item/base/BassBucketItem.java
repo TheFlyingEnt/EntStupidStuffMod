@@ -1,8 +1,8 @@
-package net.ent.entstupidstuff.item;
+package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
+import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
@@ -17,8 +17,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class ZebraFishBucketItem extends EntityBucketItem {
-    public ZebraFishBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
+public class BassBucketItem extends EntityBucketItem {
+    public BassBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
         super(type, fluid, emptyingSound, settings);
     }
 
@@ -29,11 +29,10 @@ public class ZebraFishBucketItem extends EntityBucketItem {
         NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT);
         NbtCompound nbt = nbtComponent.copyNbt();
 
+
         if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-            ZebraFishEntity.Variant variant = ZebraFishEntity.Variant.byId(nbt.getInt("BucketVariantTag"));
-            tooltip.add(Text.literal(variant.getPattern()).formatted(Formatting.GRAY, Formatting.ITALIC));
-            tooltip.add(Text.literal(variant.getColor()).formatted(Formatting.GRAY, Formatting.ITALIC));
+            BassEntity.Variant variant = BassEntity.Variant.byId(nbt.getInt("BucketVariantTag"));
+            tooltip.add(Text.literal(variant.getName()).formatted(Formatting.GRAY, Formatting.ITALIC));
         }
     }
 }
-

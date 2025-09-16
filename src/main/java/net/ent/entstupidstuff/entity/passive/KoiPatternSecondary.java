@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.koiNew;
+package net.ent.entstupidstuff.entity.passive;
 
 public enum KoiPatternSecondary {
     sanka_1("sanka", "1"),

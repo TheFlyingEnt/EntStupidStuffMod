@@ -2,11 +2,11 @@ package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiBaseColor;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiPatternMain;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiPatternSecondary;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariant;
-import net.ent.entstupidstuff.client.render.entity.koiNew.KoiVariantRegistry;
+import net.ent.entstupidstuff.entity.passive.KoiBaseColor;
+import net.ent.entstupidstuff.entity.passive.KoiPatternMain;
+import net.ent.entstupidstuff.entity.passive.KoiPatternSecondary;
+import net.ent.entstupidstuff.entity.passive.KoiVariant;
+import net.ent.entstupidstuff.entity.passive.KoiVariantRegistry;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
