@@ -21,9 +21,9 @@ public class PiglinExtraRenderer extends BipedEntityRenderer<MobEntity, PiglinEn
 
     private static final Map<EntityType<?>, Identifier> TEXTURES = ImmutableMap.of(
 		EntityFactory.PIGLIN_WARRIOR,
-		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png"),
-		EntityFactory.PIGLIN_FUNGAL,
-		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_fungusthrower.png")
+		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png")
+		/*EntityFactory.PIGLIN_FUNGAL,
+		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_fungusthrower.png")*/
 	);
     
     private static final float HORIZONTAL_SCALE = 1.0019531F;

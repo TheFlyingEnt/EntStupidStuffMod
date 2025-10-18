@@ -156,7 +156,6 @@ public abstract class ItemRendererMixin {
             if (entity instanceof PiglinWarriorEntity || entity instanceof ZombifiedPiglinEntity || entity instanceof PiglinBruteEntity || entity instanceof PiglinEntity) {
                 if (stack.isOf(ItemFactory.callItem("golden_hammer"))) {
                     BakedModel customModel = ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(Identifier.of(EntStupidStuff.MOD_ID, "golden_hammer_model_piglin"), "inventory"));
-                    //BakedModel customModel = this.models.getModelManager().getModel((ModelIdentifier.ofInventoryVariant(Identifier.of(EntStupidStuff.MOD_ID,"golden_hammer_model_piglin"))));
                     cir.setReturnValue(customModel);
                 }
                 else if (stack.isOf(ItemFactory.callItem("netherite_hammer"))) {

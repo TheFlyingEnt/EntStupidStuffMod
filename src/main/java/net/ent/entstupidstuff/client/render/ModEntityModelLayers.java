@@ -225,7 +225,6 @@ public class ModEntityModelLayers {
         //The Fire of the Hunt Update
 
         EntityRendererRegistry.register(EntityFactory.PIGLIN_WARRIOR, (EntityRendererFactory.Context context) -> new PiglinExtraRenderer(context, EntityModelLayers.PIGLIN_BRUTE, EntityModelLayers.PIGLIN_BRUTE_INNER_ARMOR, EntityModelLayers.PIGLIN_BRUTE_OUTER_ARMOR, false));
-        EntityRendererRegistry.register(EntityFactory.PIGLIN_FUNGAL, (EntityRendererFactory.Context context) -> new PiglinExtraRenderer(context, EntityModelLayers.PIGLIN_BRUTE, EntityModelLayers.PIGLIN_BRUTE_INNER_ARMOR, EntityModelLayers.PIGLIN_BRUTE_OUTER_ARMOR, false));
 
         EntityRendererRegistry.register(EntityFactory.HOVERING_INFERNO, (EntityRendererFactory.Context context) -> new HoveringInfernoRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.HOVERING_INFERNO, HoveringInfernoModel::getTexturedModelData);

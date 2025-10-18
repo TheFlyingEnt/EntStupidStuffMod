@@ -6,6 +6,7 @@ import java.util.Map;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
@@ -21,6 +22,9 @@ import net.minecraft.block.FlowerbedBlock;
 import net.minecraft.block.GrateBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.MushroomBlock;
+import net.minecraft.block.MushroomPlantBlock;
+import net.minecraft.block.NyliumBlock;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.OxidizableDoorBlock;
 import net.minecraft.block.OxidizableTrapdoorBlock;
@@ -48,6 +52,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.gen.feature.TreeConfiguredFeatures;
 
 public class BlockFactory {
 
@@ -232,7 +237,7 @@ public class BlockFactory {
             .button(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
             .fence(BlockFactory.callBlock("fungal" + "_" + "fence" + Varient))
             .fenceGate(BlockFactory.callBlock("fungal" + "_" + "fence_gate" + Varient))
-            .pressurePlate(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
+            .pressurePlate(BlockFactory.callBlock("fungal" + "_" + "pressure_plate" + Varient))
             .slab(BlockFactory.callBlock("fungal" + "_slab" + Varient))
             .stairs(BlockFactory.callBlock("fungal" + "_stairs" + Varient))
             .trapdoor(BlockFactory.callBlock("fungal" + "_" + "trapdoor" + Varient))
@@ -321,6 +326,47 @@ public class BlockFactory {
         WoodSystem("fungal", "pink", MapColor.PINK, false);*/
 
         onInitializeNewUpdated();
+
+        //Blue Mushroom:
+        Block BLUE_MUSHROOM = register(
+		"blue_mushroom",
+		new MushroomPlantBlock(
+			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY,
+			AbstractBlock.Settings.create()
+				.mapColor(MapColor.BLUE)
+				.noCollision()
+				.ticksRandomly()
+				.breakInstantly()
+				.sounds(BlockSoundGroup.GRASS)
+				.postProcess(Blocks::always)
+				.pistonBehavior(PistonBehavior.DESTROY)
+		));
+
+        Block BLUE_MUSHROOM_BLOCK = register(
+            "blue_mushroom_block",
+            new MushroomBlock(
+                AbstractBlock.Settings.create()
+                    .mapColor(MapColor.BLUE)
+                    .instrument(NoteBlockInstrument.BASS)
+                    .strength(0.2F)
+                    .sounds(BlockSoundGroup.WOOD)
+                    .luminance(state -> 5)
+                .burnable()
+            )
+        );
+
+        Block GLOWING_SHROOMLIUM = register(
+		"glowing_shroomlium",
+		new ShroomliumBlock(
+			AbstractBlock.Settings.create()
+				.mapColor(MapColor.BLUE)
+				.instrument(NoteBlockInstrument.BASEDRUM)
+				.requiresTool()
+				.strength(0.4F)
+				.sounds(BlockSoundGroup.MUD)
+				.ticksRandomly()
+		)
+	);
         
         // Adding Vanilla Glassdoor and TrapDoors
         OxidizableFamily();
@@ -496,8 +542,8 @@ public class BlockFactory {
         ItemFactory.registerItems(name, blockItem);
 
 
-
-        System.out.println(id.toString());
+        if (EntStupidStuff.DEV_MODE)
+            System.out.println(id.toString());
         return Registry.register(Registries.BLOCK, id, block);
 	}
 
@@ -505,7 +551,8 @@ public class BlockFactory {
         Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
         BlockList.put(id, block);
         
-        System.out.println(id.toString());
+        if (EntStupidStuff.DEV_MODE)
+            System.out.println(id.toString());
         return Registry.register(Registries.BLOCK, id, block);
     }
 

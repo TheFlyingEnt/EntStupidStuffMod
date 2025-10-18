@@ -142,7 +142,6 @@ public class BuiltInModelItemRenderer {
         BuiltinItemRendererRegistry.INSTANCE.register(
             ItemFactory.ANCIENT_TRIDENT,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
-                //System.out.println("Trident - Clint Code");
 
                 AncientTridentModel model = new AncientTridentModel(
                     MinecraftClient.getInstance().getEntityModelLoader().getModelPart(ModEntityModelLayers.ANCIENT_TRIDENT)

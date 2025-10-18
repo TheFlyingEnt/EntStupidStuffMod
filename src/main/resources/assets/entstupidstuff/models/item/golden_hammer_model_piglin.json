@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "entstupidstuff:item/golden_hammer_model",
-		"particle": "entstupidstuff:item/golden_hammer_model"
+		"0": "entstupidstuff:item/golden_hammer_model_piglin",
+		"particle": "entstupidstuff:item/golden_hammer_model_piglin"
 	},
 	"elements": [
 		{

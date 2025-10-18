@@ -87,24 +87,30 @@ public class ItemFactory {
     public static final Item MARSHMELLOW_RAW = new Item(new Item.Settings().maxCount(16).food(new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).usingConvertsTo(Items.STICK).alwaysEdible().build()));
     public static final Item MARSHMELLOW_TOASTED = new Item(new Item.Settings().maxCount(16).food(new FoodComponent.Builder().nutrition(4).saturationModifier(0.3F).usingConvertsTo(Items.STICK).alwaysEdible().build()));
     public static final Item BAGGUETTE = new Item(new Item.Settings().maxCount(16).food(FoodComponents.BREAD).attributeModifiers(WeaponItem.createAttributeModifiers(ToolMaterials.WOOD, 1  + ToolMaterials.WOOD.getAttackDamage(), 2.6f, 1, 0, 0)));
-    public static final Item NOODEL_BOWL = new Item(new Item.Settings().maxCount(1).food(FoodComponents.RABBIT_STEW));
-    public static final Item APPLE_PIE = new Item(new Item.Settings().food(FoodComponents.PUMPKIN_PIE));
-
+    
     public static final Item BUTTERFLY_JAR =  new ButterflyJarItem(EntityFactory.BUTTERFLY, SoundEvents.ITEM_BOTTLE_FILL, new Item.Settings().maxCount(16));
+    public static final Item BUTTERFLY_SPAWN_EGG = new SpawnEggItem(EntityFactory.BUTTERFLY, 0xed7545, 0x4a1d0b, new Item.Settings());
+    
+    public static final Item ZOMBIE_LOBBER_SPAWN_EGG = new SpawnEggItem(EntityFactory.LOBBER_ZOMBIE, 0x39574b, 0x748365, new Item.Settings());
+    public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SCORCHED, 0x732124, 0xe38d2f, new Item.Settings());
+    public static final Item ZOMBIE_FROSTBITE_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_FROSTBITTEN, 0x732124, 0xe38d2f, new Item.Settings());
+    public static final Item ZOMBIE_SLIMED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SLIMED, 0x732124, 0xe38d2f, new Item.Settings());
+    public static final Item ARMORED_PILLAGER_SPAWN_EGG = new SpawnEggItem(EntityFactory.ARMORED_PILLAGER, 0x732124, 0xe38d2f, new Item.Settings());
 
-    public static final Item BUTTERFLY_SPAWN_EGG = new SpawnEggItem(EntityFactory.BUTTERFLY, 0xed7545, 0x4a1d0b, new Item.Settings()); //Butterfly
 
-    public static final Item OTTER_SPAWN_EGG = null;
+    //public static final Item NOODEL_BOWL = new Item(new Item.Settings().maxCount(1).food(FoodComponents.RABBIT_STEW));
+    //public static final Item APPLE_PIE = new Item(new Item.Settings().food(FoodComponents.PUMPKIN_PIE));
 
-    public static final Item MUSHROOM_GLOWING = null;
-    public static final Item MAGIC_DUST = null;
-    public static final Item VENOM_GLOB = null;
+    //public static final Item MUSHROOM_GLOWING = null;
+    //public static final Item MAGIC_DUST = null;
+    //public static final Item VENOM_GLOB = null;
 
-    public static final Item ZOMBIE_LOBBER_SPAWN_EGG = new SpawnEggItem(EntityFactory.LOBBER_ZOMBIE, /*0x9CAE86, 0x39574B*/ 0x39574b, 0x748365, new Item.Settings()); //39574b and 748365
-    public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SCORCHED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
-    public static final Item ZOMBIE_FROSTBITE_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_FROSTBITTEN, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
-    public static final Item ZOMBIE_SLIMED_SPAWN_EGG = new SpawnEggItem(EntityFactory.ZOMBIE_SLIMED, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
-    public static final Item ARMORED_PILLAGER_SPAWN_EGG = new SpawnEggItem(EntityFactory.ARMORED_PILLAGER, /*0x6D2729, 0xE38D2F*/0x732124, 0xe38d2f, new Item.Settings()); //732124 and e38d2f
+    //public static final Item FLINT_LOCK_BOW = null;
+    //public static final Item CLAB_GEM = null; //Alterive to Quarts???
+    //public static final Item SUNKEN_ARMOR_TRIM_SMITHING_TEMPLATE = null;
+
+
+
 
     //The Fire of the Hunt Update:
 
@@ -114,10 +120,9 @@ public class ItemFactory {
 
     public static final Item HUNT_ARMOR_TRIM_SMITHING_TEMPLATE = null;
 
-    public static final Item PIGLIN_WARRIOR_SPAWN = new SpawnEggItem(EntityFactory.PIGLIN_WARRIOR, 0x591010, 0xF9F3A4, new Item.Settings()); //Colored
-    public static final Item PIGLIN_FUNGAL_THROWER_SPAWN = new SpawnEggItem(EntityFactory.PIGLIN_FUNGAL, 0x455A4D, 0xF9F3A4, new Item.Settings());
-    public static final Item BLAZING_INFERNO_SPAWN = new SpawnEggItem(EntityFactory.HOVERING_INFERNO, /*0x5d342c, 0xedaa45*/0xfc9600, 0x502727, new Item.Settings()); //fc9600 and 502727
-    public static final Item SOUL_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.SOUL_SKELETON, /*0xC1C1C1, 0x39D6E0*/ 0xdac9be, 0x4b3739, new Item.Settings()); // dac9be and 4b3739
+    public static final Item PIGLIN_WARRIOR_SPAWN = new SpawnEggItem(EntityFactory.PIGLIN_WARRIOR, 0x591010, 0xF9F3A4, new Item.Settings());
+    public static final Item BLAZING_INFERNO_SPAWN = new SpawnEggItem(EntityFactory.HOVERING_INFERNO, 0xfc9600, 0x502727, new Item.Settings());
+    public static final Item SOUL_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.SOUL_SKELETON, 0xdac9be, 0x4b3739, new Item.Settings());
 
     // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
         
@@ -137,8 +142,6 @@ public class ItemFactory {
     public static final Item COOKED_BASS = new Item((new Item.Settings()).food(FOOD_COOKED_BASS));
     
     public static final Item FUR_TROUT_BUCKET = new BassBucketItem(EntityFactory.FURTROUT, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
-    //public static final Item FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COD));
-    //public static final Item COOKED_FUR_TROUT = new Item((new Item.Settings()).food(FoodComponents.COOKED_COD));
     
     public static final Item KOI_BUCKET = new KoiBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (new Item.Settings()).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT));
     public static final Item KOI = new Item((new Item.Settings()).food(FoodComponents.TROPICAL_FISH));
@@ -158,11 +161,7 @@ public class ItemFactory {
     public static final Item RUM = new BottleOfRumItem(new Item.Settings());
     public static final Item CANNON_BALL_ITEM = new CannonballItem(new Item.Settings());
     public static final Item CANNON_ITEM = new CannonItem(new Item.Settings());
-    public static final Item FLINT_LOCK_BOW = null;
     public static final Item PRISMERINE_ARROW = new PrismerineArrowItem(new Item.Settings());
-    public static final Item CLAB_GEM = null; //Alterive to Quarts???
-
-    public static final Item SUNKEN_ARMOR_TRIM_SMITHING_TEMPLATE = null;
 
     public static final Item SUNKEN_SKELETON_SPAWN = new SpawnEggItem(EntityFactory.SUNKEN_SKELETON, 0xC1C1C1, 0x51A03E, new Item.Settings());
     public static final Item SUNKEN_SKELETON2_SPAWN = new SpawnEggItem(EntityFactory.SUNKEN_SKELETON_CROSSBOW, 0xC1C1C1, 0x7EBF6E, new Item.Settings());
@@ -329,8 +328,6 @@ public class ItemFactory {
         registerItems("raw_marshmellow", MARSHMELLOW_RAW);
         registerItems("toasted_marshmellow", MARSHMELLOW_TOASTED);
         registerItems("baguette", BAGGUETTE);
-        registerItems("noodle_bowl", NOODEL_BOWL);
-        registerItems("apple_pie", APPLE_PIE);
         
         registerItems("zombie_lobber_spawn_egg", ZOMBIE_LOBBER_SPAWN_EGG);
         registerItems("zombie_scorched_spawn_egg", ZOMBIE_SCORCHED_SPAWN_EGG);
@@ -348,7 +345,6 @@ public class ItemFactory {
         registerItems("prismerine_arrow", PRISMERINE_ARROW);
 
         registerItems("piglin_warrior_spawn_egg", PIGLIN_WARRIOR_SPAWN);
-        registerItems("piglin_fungal_thrower_spawn_egg", PIGLIN_FUNGAL_THROWER_SPAWN);
         registerItems("blazing_inferno_spawn_egg", BLAZING_INFERNO_SPAWN);
         registerItems("soul_skeleton_spawn_egg", SOUL_SKELETON_SPAWN);
 
@@ -437,7 +433,6 @@ public class ItemFactory {
                 ZOMBIE_LOBBER_SPAWN_EGG,
                 ZOMBIE_SCORCHED_SPAWN_EGG,
                 PIGLIN_WARRIOR_SPAWN,
-                PIGLIN_FUNGAL_THROWER_SPAWN,
                 BLAZING_INFERNO_SPAWN,
                 SOUL_SKELETON_SPAWN,
                 SUNKEN_SKELETON_SPAWN,
@@ -475,7 +470,8 @@ public class ItemFactory {
     public static <I extends BlockItem> I registerBlockItems(String name, I item) {
 
         Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
-        System.out.println("Item: " + id.toString());
+        if (EntStupidStuff.DEV_MODE)
+            System.out.println("Item: " + id.toString());
         ItemList.put(id, item);
 
         Registry.register(Registries.ITEM, RegistryKey.of(Registries.ITEM.getKey(), Registries.BLOCK.getId(item.getBlock())), item);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.block.BlockState;
@@ -13,6 +14,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -21,6 +23,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -50,6 +53,10 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
 
         ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
 
+    }
+
+    public double getAttackDamage() {
+        return ATTACK_DAMAGE;
     }
 
     @Override
@@ -148,26 +155,35 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
 
         //Effects
         BlockState blockState = world.getBlockState(context.getBlockPos());
-        world.addParticle(ParticleTypesFactory.HAMMER_BOOM, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(
+                ParticleTypesFactory.HAMMER_BOOM,
+                pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5,
+                1, 0.0, 0.0, 0.0, 0.0 // count, offsetX, offsetY, offsetZ, speed
+            );
+        }
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
-                // check circle distance
                 if (dx * dx + dz * dz <= radius * radius) {
                     double px = pos.getX() + 1 + dx;
                     double py = pos.getY() + 1;
                     double pz = pos.getZ() + 1 + dz;
 
-                    // Block-breaking particle
-                    world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
+                    if (world instanceof ServerWorld serverWorld) {
+                        serverWorld.spawnParticles(
+                            new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
                             px, py, pz,
-                            0.0, 0.5, 0.0);
+                            3, 0.25, 0.25, 0.25, 0.05 // count & spread for variation
+                        );
+                    }
                 }
             }
         }
 
         return ActionResult.SUCCESS;
     }
+    
 
     @Override
 	public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {

@@ -3,11 +3,46 @@ plugins {
 	id 'maven-publish'
 }
 
+// === Auto Increment Version ===
+def propsFile = file("gradle.properties")
+def props = new Properties()
+props.load(propsFile.newInputStream())
+
+def currentVersion = props["mod_version"]
+def (major, minor, patch) = currentVersion.tokenize('.').collect { it as int }
+
+// Increment PATCH by default
+patch += 1
+def newVersion = "${major}.${minor}.${patch}"
+
+// Set it as current project version
+version = newVersion
+
+// Update gradle.properties after build
+tasks.register("incrementVersion") {
+    doLast {
+        // Make sure version is written as a plain String
+        props["mod_version"] = newVersion.toString()
+
+        // Safely write back to gradle.properties
+        props.store(propsFile.newWriter(false), null)
+
+        println "✅ Version updated: ${currentVersion} → ${newVersion}"
+    }
+}
+// Automatically update after build
+tasks.named("build") {
+    finalizedBy("incrementVersion")
+}
+
+//Original File
+
 version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+	//archivesName = project.archives_base_name
+	archivesName = "${project.archives_base_name}-${project.minecraft_version}"
 }
 
 repositories {

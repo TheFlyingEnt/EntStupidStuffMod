@@ -12,6 +12,7 @@ import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MushroomBlock;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -74,6 +75,8 @@ public class ModConfiguredFeatures {
 	public static final RegistryKey<ConfiguredFeature<?, ?>> SPIKED_ICE_CLUSTER = registerKey("spiked_ice_cluster");
     public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_spiked_ice");
     public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
+
+	public static final RegistryKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY = registerKey("huge_blue_mushroom");
 
 
     // Registry for Features
@@ -145,10 +148,97 @@ public class ModConfiguredFeatures {
 		ConfiguredFeatures.register(context, ORE_SNOW, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_SNOW_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
 
+		BlockPredicate blockPredicate = BlockPredicate.matchingBlocks(
+			Blocks.OAK_SAPLING,
+			Blocks.SPRUCE_SAPLING,
+			Blocks.BIRCH_SAPLING,
+			Blocks.JUNGLE_SAPLING,
+			Blocks.ACACIA_SAPLING,
+			Blocks.CHERRY_SAPLING,
+			Blocks.DARK_OAK_SAPLING,
+			Blocks.MANGROVE_PROPAGULE,
+			Blocks.DANDELION,
+			Blocks.TORCHFLOWER,
+			Blocks.POPPY,
+			Blocks.BLUE_ORCHID,
+			Blocks.ALLIUM,
+			Blocks.AZURE_BLUET,
+			Blocks.RED_TULIP,
+			Blocks.ORANGE_TULIP,
+			Blocks.WHITE_TULIP,
+			Blocks.PINK_TULIP,
+			Blocks.OXEYE_DAISY,
+			Blocks.CORNFLOWER,
+			Blocks.WITHER_ROSE,
+			Blocks.LILY_OF_THE_VALLEY,
+			Blocks.BROWN_MUSHROOM,
+			Blocks.RED_MUSHROOM,
+			Blocks.WHEAT,
+			Blocks.SUGAR_CANE,
+			Blocks.ATTACHED_PUMPKIN_STEM,
+			Blocks.ATTACHED_MELON_STEM,
+			Blocks.PUMPKIN_STEM,
+			Blocks.MELON_STEM,
+			Blocks.LILY_PAD,
+			Blocks.NETHER_WART,
+			Blocks.COCOA,
+			Blocks.CARROTS,
+			Blocks.POTATOES,
+			Blocks.CHORUS_PLANT,
+			Blocks.CHORUS_FLOWER,
+			Blocks.TORCHFLOWER_CROP,
+			Blocks.PITCHER_CROP,
+			Blocks.BEETROOTS,
+			Blocks.SWEET_BERRY_BUSH,
+			Blocks.WARPED_FUNGUS,
+			Blocks.CRIMSON_FUNGUS,
+			Blocks.WEEPING_VINES,
+			Blocks.WEEPING_VINES_PLANT,
+			Blocks.TWISTING_VINES,
+			Blocks.TWISTING_VINES_PLANT,
+			Blocks.CAVE_VINES,
+			Blocks.CAVE_VINES_PLANT,
+			Blocks.SPORE_BLOSSOM,
+			Blocks.AZALEA,
+			Blocks.FLOWERING_AZALEA,
+			Blocks.MOSS_CARPET,
+			Blocks.PINK_PETALS,
+			Blocks.BIG_DRIPLEAF,
+			Blocks.BIG_DRIPLEAF_STEM,
+			Blocks.SMALL_DRIPLEAF
+		);
+
 
 
 		//List.of(OreFeatureConfig.createTarget(, BlockFactoryUpt.callBlock("limestone").getDefaultState()))
-		
+		//BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom").getDefaultState()
+
+		/*ConfiguredFeatures.register(
+			context,
+			HUGE_BLUE_MUSHROOM_KEY,
+			Feature.HUGE_RED_MUSHROOM,
+			new HugeMushroomFeatureConfig(
+				BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom_block").getDefaultState().with(MushroomBlock.DOWN, Boolean.valueOf(false))),
+				BlockStateProvider.of(
+					Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, Boolean.valueOf(false)).with(MushroomBlock.DOWN, Boolean.valueOf(false))
+				),
+				2
+			)
+		);*/
+
+		ConfiguredFeatures.register(
+			context,
+			HUGE_BLUE_MUSHROOM_KEY,
+			Feature.HUGE_FUNGUS,
+			new HugeFungusFeatureConfig(
+				Blocks.GRASS_BLOCK.getDefaultState(),
+				Blocks.MUSHROOM_STEM.getDefaultState(),
+				BlockFactory.callBlock("blue_mushroom_block").getDefaultState(),
+				Blocks.SHROOMLIGHT.getDefaultState(),
+				blockPredicate,
+				true
+			)
+		);
 
 		ConfiguredFeatures.register(
 			context,

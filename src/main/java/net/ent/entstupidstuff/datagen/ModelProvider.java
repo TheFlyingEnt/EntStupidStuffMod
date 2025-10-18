@@ -114,6 +114,9 @@ public class ModelProvider extends FabricModelProvider{
         // Iron Grate
         generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactory.callBlock("iron_grate"));
 
+        //Blue Mushrooom
+        blockStateModelGenerator2.registerMushroomBlock(BlockFactory.callBlock("blue_mushroom_block"));
+
 	}
 
     public void generateGroupWoodFamilty(String blockName, String suffix, Boolean withLeaves) {

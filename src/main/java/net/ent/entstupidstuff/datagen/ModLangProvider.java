@@ -32,6 +32,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "baguette", "La Baguette");
         translationBuilder.add("item.entstupidstuff." + "noodle_bowl", "Bowl of Noodles");
         translationBuilder.add("item.entstupidstuff." + "apple_pie", "Apple Pie");
+        translationBuilder.add("item.entstupidstuff." + "bad_apple", "Apple Pie");
 
         translationBuilder.add("item.entstupidstuff." + "butterfly_spawn_egg", "Butterfly Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "zombie_lobber_spawn_egg", "Lobber Spawn Egg");
@@ -66,12 +67,14 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "alligator_gar", "Alligator Gar");
         translationBuilder.add("item.entstupidstuff." + "cooked_alligator_gar", "Cooked Alligator Gar");
         translationBuilder.add("item.entstupidstuff." + "alligator_gar_bucket", "Bucket of Alligator Gar");
+        translationBuilder.add("entity.entstupidstuff." + "alligator_gar", "Alligator Gar");
 
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.death", "Zebra Fish Dies");
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.hurt", "Zebra Fish hurts ");
         translationBuilder.add("subtitles.ent.entity." + "zebra_fish.flop", "Zebra Fish Flops");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish", "Zebra Fish");
         translationBuilder.add("item.entstupidstuff." + "zebra_fish_bucket", "Bucket of Zebra Fish");
+        translationBuilder.add("entity.entstupidstuff." + "zebra_fish", "Zebra Fish");
 
         translationBuilder.add("subtitles.ent.entity." + "mackerel.death", "Mackerel Dies");
         translationBuilder.add("subtitles.ent.entity." + "mackerel.hurt", "Mackerel hurts ");
@@ -79,6 +82,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "mackerel", "Mackerel");
         translationBuilder.add("item.entstupidstuff." + "cooked_mackerel", "Cooked Mackerel");
         translationBuilder.add("item.entstupidstuff." + "mackerel_bucket", "Bucket of Mackerel");
+        translationBuilder.add("entity.entstupidstuff." + "mackerel", "Mackerel");
 
         translationBuilder.add("subtitles.ent.entity." + "bass.death", "Bass Dies");
         translationBuilder.add("subtitles.ent.entity." + "bass.hurt", "Bass hurts ");
@@ -86,24 +90,52 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "bass", "Bass");
         translationBuilder.add("item.entstupidstuff." + "cooked_bass", "Cooked Bass");
         translationBuilder.add("item.entstupidstuff." + "bass_bucket", "Bucket of Bass");
+        translationBuilder.add("entity.entstupidstuff." + "bass", "Bass");
 
         translationBuilder.add("subtitles.ent.entity." + "koi.death", "Koi Dies");
         translationBuilder.add("subtitles.ent.entity." + "koi.hurt", "Koi hurts ");
         translationBuilder.add("subtitles.ent.entity." + "koi.flop", "Koi Flops");
         translationBuilder.add("item.entstupidstuff." + "koi", "Koi");
         translationBuilder.add("item.entstupidstuff." + "koi_bucket", "Bucket of Koi");
+        translationBuilder.add("entity.entstupidstuff." + "koi", "Koi");
 
         translationBuilder.add("subtitles.ent.entity." + "fur_trout.death", "Fur Trout Dies");
         translationBuilder.add("subtitles.ent.entity." + "fur_trout.hurt", "Fur Trout hurts ");
         translationBuilder.add("subtitles.ent.entity." + "fur_trout.flop", "Fur Trout Flops");
         translationBuilder.add("item.entstupidstuff." + "fur_trout", "Fur Trout");
         translationBuilder.add("item.entstupidstuff." + "fur_trout_bucket", "Bucket of Fur Trout");
+        translationBuilder.add("entity.entstupidstuff." + "fur_trout", "Fur Trout");
 
         translationBuilder.add("subtitles.ent.entity." + "lepord_shark.death", "Lepord Shark Dies");
         translationBuilder.add("subtitles.ent.entity." + "lepord_shark.hurt", "Lepord Shark hurts ");
         translationBuilder.add("subtitles.ent.entity." + "lepord_shark.flop", "Lepord Shark Flops");
         translationBuilder.add("item.entstupidstuff." + "lepord_shark", "Lepord Shark");
         translationBuilder.add("item.entstupidstuff." + "lepord_shark_bucket", "Bucket of Lepord Shark");
+        translationBuilder.add("entity.entstupidstuff." + "lepord_shark", "Lepord Shark");
+
+        translationBuilder.add("subtitles.ent.entity." + "perch.death", "Perch Dies");
+        translationBuilder.add("subtitles.ent.entity." + "perch.hurt", "Perch hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "perch.flop", "Perch Flops");
+        translationBuilder.add("item.entstupidstuff." + "perch", "Perch");
+        translationBuilder.add("item.entstupidstuff." + "cooked_perch", "Cooked Perch");
+        translationBuilder.add("item.entstupidstuff." + "perch_bucket", "Bucket of Perch");
+        translationBuilder.add("entity.entstupidstuff." + "perch", "Perch");
+
+        translationBuilder.add("subtitles.ent.entity." + "mahimahi.death", "Mahi Mahi Dies");
+        translationBuilder.add("subtitles.ent.entity." + "mahimahi.hurt", "Mahi Mahi hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "mahimahi.flop", "Mahi Mahi Flops");
+        translationBuilder.add("item.entstupidstuff." + "mahimahi", "Mahi Mahi");
+        translationBuilder.add("item.entstupidstuff." + "cooked_mahimahi", "Cooked Mahi Mahi");
+        translationBuilder.add("item.entstupidstuff." + "mahimahi_bucket", "Bucket of Mahi Mahi");
+        translationBuilder.add("entity.entstupidstuff." + "mahimahi", "Mahi Mahi");
+
+        translationBuilder.add("subtitles.ent.entity." + "snapper.death", "Snapper Dies");
+        translationBuilder.add("subtitles.ent.entity." + "snapper.hurt", "Snapper hurts ");
+        translationBuilder.add("subtitles.ent.entity." + "snapper.flop", "Snapper Flops");
+        translationBuilder.add("item.entstupidstuff." + "snapper", "Snapper");
+        translationBuilder.add("item.entstupidstuff." + "cooked_snapper", "Cooked Snapper");
+        translationBuilder.add("item.entstupidstuff." + "snapper_bucket", "Bucket of Snapper");
+        translationBuilder.add("entity.entstupidstuff." + "snapper", "Snapper");
 
         translationBuilder.add("item.entstupidstuff." + "sunken_skeleton_spawn_egg", "Sunken Skeleton (Bow) Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "sunken_skeleton2_spawn_egg", "Sunken Skeleton (Crossbow) Spawn Egg");
@@ -353,10 +385,6 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("block.entstupidstuff." + "waxed_oxidized_copper" + "_glass_trapdoor", "Waxed Oxidized Copper" + " Glass Trapdoor");
         translationBuilder.add("block.entstupidstuff." + "waxed_weathered_copper" + "_glass_trapdoor", "Waxed Weathered Copper" + " Glass Trapdoor");
 
-
-
-
-
         //Redwood
 
         translationBuilder.add(BlockFactory.callBlock("redwood_log"), "Redwood Log");
@@ -450,6 +478,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactory.callBlock("phantom_mosaic_slab"), "Phantom Mosaic Slab");
 
         //Fir
+
         translationBuilder.add(BlockFactory.callBlock("fir_log"), "Fir Log");
         translationBuilder.add(BlockFactory.callBlock("stripped_fir_log"), "Stripped Fir Log");
         translationBuilder.add(BlockFactory.callBlock("fir_wood"), "Fir Wood");
@@ -471,17 +500,29 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactory.callBlock("fir_mosaic_stairs"), "Fir Mosaic Stairs");
         translationBuilder.add(BlockFactory.callBlock("fir_mosaic_slab"), "Fir Mosaic Slab");
 
-        /*translationBuilder.add(SIMPLE_ITEM, "Simple Item");
-        translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
-        translationBuilder.add(SIMPLE_ITEM_GROUP, "Simple Item Group");*/
-     
-        // Load an existing language file.
-        /*try {
-            Path existingFilePath = dataOutput.getModContainer().findPath("assets/entstupidstuff/lang/en_us.existing.json").get();
-            translationBuilder.add(existingFilePath);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to add existing language file!", e);
-        }*/
+        // Limestone
+
+        translationBuilder.add(BlockFactory.callBlock("limestone"), "Limestone");
+        translationBuilder.add(BlockFactory.callBlock("limestone" + "_stairs"), "Limestone Stairs");
+        translationBuilder.add(BlockFactory.callBlock("limestone" + "_slab"), "Limestone Slab");
+        translationBuilder.add(BlockFactory.callBlock("limestone" + "_wall"), "Limestone Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone"), "Polished Limestone");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_stairs"), "Polished Limestone Stairs");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_slab"), "Polished Limestone Slab");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_wall"), "Polished Limestone Wall");
+        
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_bricks"), "Polished Limestone Bricks");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_brick_stairs"), "Polished Limestone Brick Stairs");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_brick_slab"), "Polished Limestone Brick Slab");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_brick_wall"), "Polished Limestone Brick Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_brick_chiseled"), "Chiseled Polished Limestone Bricks");
+        translationBuilder.add(BlockFactory.callBlock("cracked" + "_polished_limestone" + "_bricks"), "Cracked Polished Limestone Brick");
+
+        translationBuilder.add("item.entstupidstuff.server_group", "Server Group (Only)");
+        //translationBuilder.add("item.entstupidstuff.deco_group", "Simple Item Group");
+        //translationBuilder.add("item.entstupidstuff.natural_group", "Simple Item Group");
+        //translationBuilder.add("item.entstupidstuff.default_group", "Simple Item Group");
+        //translationBuilder.add("item.entstupidstuff.combat_group", "Simple Item Group");
     }
 
     public static String formatString(String input) {

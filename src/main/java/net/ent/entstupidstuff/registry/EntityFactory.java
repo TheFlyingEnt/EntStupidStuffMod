@@ -8,7 +8,6 @@ import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
 import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity;
 import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
-import net.ent.entstupidstuff.entity.mob.PiglinFungalEntity;
 import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.entity.mob.RedStoneGolemEntity;
 import net.ent.entstupidstuff.entity.mob.ScorchedZombieEntity;
@@ -268,17 +267,6 @@ public class EntityFactory {
         .build("piglin_warrior")
     );
 
-    public static final EntityType<PiglinFungalEntity> PIGLIN_FUNGAL = Registry.register(Registries.ENTITY_TYPE,
-        Identifier.of(EntStupidStuff.MOD_ID, "piglin_fungal"),
-        EntityType.Builder.create(PiglinFungalEntity::new, SpawnGroup.MONSTER)
-        .dimensions(0.6F, 1.95F)
-        .eyeHeight(1.79F)
-        .passengerAttachments(2.0125F)
-        .vehicleAttachment(-0.7F)
-        .maxTrackingRange(8)
-    .build("piglin_fungal")
-    );
-
     public static final EntityType<HoveringInfernoEntity> HOVERING_INFERNO = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "hovering_inferno"),
         EntityType.Builder.create(HoveringInfernoEntity::new, SpawnGroup.MONSTER)
@@ -382,7 +370,6 @@ public class EntityFactory {
 
         //The Fire of the Hunt Update
         FabricDefaultAttributeRegistry.register(PIGLIN_WARRIOR, PiglinWarriorEntity.createPiglinBruteAttributes());
-        FabricDefaultAttributeRegistry.register(PIGLIN_FUNGAL, PiglinFungalEntity.createPiglinAttributes());
 
         FabricDefaultAttributeRegistry.register(HOVERING_INFERNO, HoveringInfernoEntity.createBlazeAttributes());
 

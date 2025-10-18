@@ -232,7 +232,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
         if (enableFungal) {
             Item FUNGAL_PLANK = BlockFactory.callBlock("fungal_planks").asItem();
             ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, FUNGAL_PLANK, 4)
-			    .input(Ingredient.ofItems(Blocks.MUSHROOM_STEM, Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK))
+			    .input(Ingredient.ofItems(Blocks.MUSHROOM_STEM, Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK, BlockFactory.callBlock("blue_mushroom_block")))
 			    .group("planks")
 			    .criterion(hasItem(Blocks.MUSHROOM_STEM), conditionsFromItem(Blocks.MUSHROOM_STEM))
                 .criterion(hasItem(Blocks.RED_MUSHROOM_BLOCK), conditionsFromItem(Blocks.RED_MUSHROOM_BLOCK))

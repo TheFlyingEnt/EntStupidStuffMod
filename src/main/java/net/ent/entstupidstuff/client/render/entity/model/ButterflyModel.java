@@ -79,7 +79,6 @@ public class ButterflyModel<T extends ButterflyEntity> extends SinglePartEntityM
 			this.leftWing.yaw = 0.2618F;
 			this.leftWing.roll = 0.0F;
 
-			// System.out.println("1");
 		} else {
 			float k = h * 120.32113F * (float) (Math.PI / 180.0);
 			this.rightWing.yaw = 0.0F;
@@ -87,7 +86,6 @@ public class ButterflyModel<T extends ButterflyEntity> extends SinglePartEntityM
 			this.leftWing.pitch = this.rightWing.pitch;
 			this.leftWing.yaw = this.rightWing.yaw;
 			this.leftWing.roll = -this.rightWing.roll;
-			// System.out.println("2");
 		}
 
 	}

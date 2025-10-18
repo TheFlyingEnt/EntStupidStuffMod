@@ -148,4 +148,18 @@ public class GrateSlabBlock extends GrateBlock{
 				return false;
 		}
 	}
+
+	@Override
+		protected boolean isSideInvisible(BlockState state, BlockState neighbor, Direction direction) {
+			/*if (state.get(TYPE) == SlabType.DOUBLE) {
+				return super.isSideInvisible(state, neighbor, direction);
+			}*/
+
+
+			if (neighbor.getBlock() instanceof GrateBlock || neighbor.getBlock() instanceof GrateSlabBlock) {
+				return false;
+			}
+
+			return super.isSideInvisible(state, neighbor, direction);
+		}
 }

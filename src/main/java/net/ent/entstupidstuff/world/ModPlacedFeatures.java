@@ -31,6 +31,11 @@ public class ModPlacedFeatures {
             Identifier.of(EntStupidStuff.MOD_ID, "fir_tree_placed")
     );
 
+    public static final RegistryKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED_KEY = RegistryKey.of(
+            RegistryKeys.PLACED_FEATURE,
+            Identifier.of(EntStupidStuff.MOD_ID, "huge_blue_mushroom_placed")
+    );
+
     public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = RegistryKey.of(
             RegistryKeys.PLACED_FEATURE,
             Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone")
@@ -97,6 +102,14 @@ public class ModPlacedFeatures {
                         BlockFactory.callBlock("fir_sapling")
                 )
         ));
+
+        /*context.register(HUGE_BLUE_MUSHROOM_PLACED_KEY, new PlacedFeature(
+                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY),
+                VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
+                        PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
+                        BlockFactory.callBlock("fir_sapling")
+                )
+        ));*/
 
         context.register(
             ORE_LIMESTONE_PLACED_KEY,

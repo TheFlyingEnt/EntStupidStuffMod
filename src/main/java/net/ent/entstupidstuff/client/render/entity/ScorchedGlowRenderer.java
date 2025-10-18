@@ -13,12 +13,10 @@ public class ScorchedGlowRenderer<T extends ScorchedZombieEntity> extends EyesFe
 
 	public ScorchedGlowRenderer(FeatureRendererContext<T, ScorchedModel<T>> featureRendererContext) {
 		super(featureRendererContext);
-		//System.out.println("Glowing Ran!!");
 	}
 
 	@Override
 	public RenderLayer getEyesTexture() {
-		//System.out.println("Glowing Ran2!!");
 		return SKIN;
 	}
 

@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.entity.passive;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityData;
@@ -17,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -80,19 +80,19 @@ public class BassEntity extends SchoolingFishEntity {
    }
 
    protected SoundEvent getAmbientSound() {
-      return SoundEvents.ENTITY_COD_AMBIENT;
+      return SoundFactory.ENTITY_BASS_AMBIENT;
    }
 
    protected SoundEvent getDeathSound() {
-      return SoundEvents.ENTITY_COD_DEATH;
+      return SoundFactory.ENTITY_BASS_DEATH;
    }
 
    protected SoundEvent getHurtSound(DamageSource source) {
-      return SoundEvents.ENTITY_COD_HURT;
+      return SoundFactory.ENTITY_BASS_HURT;
    }
 
    protected SoundEvent getFlopSound() {
-      return SoundEvents.ENTITY_COD_FLOP;
+      return SoundFactory.ENTITY_BASS_FLOP;
    }
 
    @Override

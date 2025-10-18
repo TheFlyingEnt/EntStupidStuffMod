@@ -23,20 +23,45 @@ public class SoundFactory {
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_HURT = registerSoundEvent("entity.alligator_gar.hurt");
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_FLOP = registerSoundEvent("entity.alligator_gar.flop");
 
-    public static final SoundEvent ENTITY_TUNA_AMBIENT = registerSoundEvent("entity.tuna.ambient");
-    public static final SoundEvent ENTITY_TUNA_DEATH = registerSoundEvent("entity.tuna.death");
-    public static final SoundEvent ENTITY_TUNA_HURT = registerSoundEvent("entity.tuna.hurt");
-    public static final SoundEvent ENTITY_TUNA_FLOP = registerSoundEvent("entity.tuna.flop");
+    public static final SoundEvent ENTITY_MACKEREL_AMBIENT = registerSoundEvent("entity.mackerel.ambient");
+    public static final SoundEvent ENTITY_MACKEREL_DEATH = registerSoundEvent("entity.mackerel.death");
+    public static final SoundEvent ENTITY_MACKEREL_HURT = registerSoundEvent("entity.mackerel.hurt");
+    public static final SoundEvent ENTITY_MACKEREL_FLOP = registerSoundEvent("entity.mackerel.flop");
 
     public static final SoundEvent ENTITY_ZEBRA_FISH_AMBIENT = registerSoundEvent("entity.zebra_fish.ambient");
     public static final SoundEvent ENTITY_ZEBRA_FISH_DEATH = registerSoundEvent("entity.zebra_fish.death");
     public static final SoundEvent ENTITY_ZEBRA_FISH_HURT = registerSoundEvent("entity.zebra_fish.hurt");
     public static final SoundEvent ENTITY_ZEBRA_FISH_FLOP = registerSoundEvent("entity.zebra_fish.flop");
 
-    public static final SoundEvent ENTITY_SWORD_FISH_AMBIENT = registerSoundEvent("entity.sword_fish.ambient");
-    public static final SoundEvent ENTITY_SWORD_FISH_DEATH = registerSoundEvent("entity.sword_fish.death");
-    public static final SoundEvent ENTITY_SWORD_FISH_HURT = registerSoundEvent("entity.sword_fish.hurt");
-    public static final SoundEvent ENTITY_SWORD_FISH_FLOP = registerSoundEvent("entity.sword_fish.flop");
+    public static final SoundEvent ENTITY_BASS_AMBIENT = registerSoundEvent("entity.bass.ambient");
+    public static final SoundEvent ENTITY_BASS_DEATH = registerSoundEvent("entity.bass.death");
+    public static final SoundEvent ENTITY_BASS_HURT = registerSoundEvent("entity.bass.hurt");
+    public static final SoundEvent ENTITY_BASS_FLOP = registerSoundEvent("entity.bass.flop");
+
+    public static final SoundEvent ENTITY_PERCH_AMBIENT = registerSoundEvent("entity.perch.ambient");
+    public static final SoundEvent ENTITY_PERCH_DEATH = registerSoundEvent("entity.perch.death");
+    public static final SoundEvent ENTITY_PERCH_HURT = registerSoundEvent("entity.perch.hurt");
+    public static final SoundEvent ENTITY_PERCH_FLOP = registerSoundEvent("entity.perch.flop");
+
+    public static final SoundEvent ENTITY_SNAPPER_AMBIENT = registerSoundEvent("entity.snapper.ambient");
+    public static final SoundEvent ENTITY_SNAPPER_DEATH = registerSoundEvent("entity.snapper.death");
+    public static final SoundEvent ENTITY_SNAPPER_HURT = registerSoundEvent("entity.snapper.hurt");
+    public static final SoundEvent ENTITY_SNAPPER_FLOP = registerSoundEvent("entity.snapper.flop");
+
+    public static final SoundEvent ENTITY_KOI_AMBIENT = registerSoundEvent("entity.koi.ambient");
+    public static final SoundEvent ENTITY_KOI_DEATH = registerSoundEvent("entity.koi.death");
+    public static final SoundEvent ENTITY_KOI_HURT = registerSoundEvent("entity.koi.hurt");
+    public static final SoundEvent ENTITY_KOI_FLOP = registerSoundEvent("entity.koi.flop");
+
+    public static final SoundEvent ENTITY_MAHIMAHI_AMBIENT = registerSoundEvent("entity.mahimahi.ambient");
+    public static final SoundEvent ENTITY_MAHIMAHI_DEATH = registerSoundEvent("entity.mahimahi.death");
+    public static final SoundEvent ENTITY_MAHIMAHI_HURT = registerSoundEvent("entity.mahimahi.hurt");
+    public static final SoundEvent ENTITY_MAHIMAHI_FLOP = registerSoundEvent("entity.mahimahi.flop");
+
+    public static final SoundEvent ENTITY_FUR_TROUT_AMBIENT = registerSoundEvent("entity.fur_trout.ambient");
+    public static final SoundEvent ENTITY_FUR_TROUT_DEATH = registerSoundEvent("entity.fur_trout.death");
+    public static final SoundEvent ENTITY_FUR_TROUT_HURT = registerSoundEvent("entity.fur_trout.hurt");
+    public static final SoundEvent ENTITY_FUR_TROUT_FLOP = registerSoundEvent("entity.fur_trout.flop");
 
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);

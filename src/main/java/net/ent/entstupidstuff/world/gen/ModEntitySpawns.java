@@ -1,17 +1,11 @@
 package net.ent.entstupidstuff.world.gen;
 
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
+import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
-import net.ent.entstupidstuff.entity.passive.BassEntity;
 import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
-import net.ent.entstupidstuff.entity.passive.KoiEntity;
-import net.ent.entstupidstuff.entity.passive.MackerelEntity;
-import net.ent.entstupidstuff.entity.passive.MahiMahiEntity;
-import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
-import net.ent.entstupidstuff.entity.passive.SnapperFishEntity;
-import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.item.ModItemTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -21,9 +15,13 @@ import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PatrolEntity;
-import net.minecraft.entity.passive.CodEntity;
+import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.BiomeKeys;
+
+/*
+ * Reference Class: SpawnRestriction
+ */
 
 public class ModEntitySpawns  {
     public static void addSpawns() {
@@ -63,55 +61,55 @@ public class ModEntitySpawns  {
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.MANGROVE_SWAMP, BiomeKeys.SWAMP),
             SpawnGroup.AMBIENT, EntityFactory.ALLIGATOR_GAR, 30, 5, 8); //100, 3, 5
         SpawnRestriction.register(EntityFactory.ALLIGATOR_GAR, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, AlligatorGarEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // MACKEREL
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.LUKEWARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.MACKEREL, 10, 4, 7); //100, 3, 5
         SpawnRestriction.register(EntityFactory.MACKEREL, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, MackerelEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // BASS
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.RIVER, BiomeKeys.TAIGA, BiomeKeys.OLD_GROWTH_PINE_TAIGA, BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA),
             SpawnGroup.AMBIENT, EntityFactory.BASS, 30, 2, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.BASS, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, BassEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // FUR TROUT
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.FROZEN_OCEAN, BiomeKeys.FROZEN_RIVER, BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.FURTROUT, 30, 2, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.FURTROUT, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, CodEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // KOI #1 (UnCommon)
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.CHERRY_GROVE, BiomeKeys.MEADOW),
-            SpawnGroup.AMBIENT, EntityFactory.KOI, 5, 2, 3); //100, 3, 5
+            SpawnGroup.AMBIENT, EntityFactory.KOI, 5, 1, 3); //100, 3, 5
         SpawnRestriction.register(EntityFactory.KOI, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, KoiEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // Zebra Fish
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.ZEBRA_FISH, 20, 3, 5); //100, 3, 5
         SpawnRestriction.register(EntityFactory.ZEBRA_FISH, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, ZebraFishEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // Mahi Mahi
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.MAHIMAHI, 20, 1, 3); //100, 3, 5
         SpawnRestriction.register(EntityFactory.MAHIMAHI, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, MahiMahiEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // Red Snapper
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.SNAPPER, 20, 2, 4); //100, 3, 5
         SpawnRestriction.register(EntityFactory.SNAPPER, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, SnapperFishEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         // Perch
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN),
             SpawnGroup.AMBIENT, EntityFactory.PERCH, 20, 4, 6); //100, 3, 5
         SpawnRestriction.register(EntityFactory.PERCH, SpawnLocationTypes.IN_WATER,
-            Heightmap.Type.MOTION_BLOCKING, PerchFishEntity::canMobSpawn);
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canMobSpawn);
 
         //Sunken Skeleton
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.WARM_OCEAN),
@@ -126,10 +124,18 @@ public class ModEntitySpawns  {
             Heightmap.Type.MOTION_BLOCKING, FrostbittenZombieEntity::canSpawnInDark);
 
         //Zombie Slimed
-        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.OCEAN, BiomeKeys.SWAMP, BiomeKeys.MANGROVE_SWAMP),
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.SWAMP, BiomeKeys.MANGROVE_SWAMP),
             SpawnGroup.MONSTER, EntityFactory.ZOMBIE_SLIMED, 30, 1, 3);
         SpawnRestriction.register(EntityFactory.ZOMBIE_SLIMED, SpawnLocationTypes.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING, SlimedZombieEntity::canSpawnInDark);
+
+        //Piglin Warrior
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.NETHER_WASTES, BiomeKeys.CRIMSON_FOREST),
+            SpawnGroup.MONSTER, EntityFactory.PIGLIN_WARRIOR, 30, 1, 3);
+        SpawnRestriction.register(EntityFactory.PIGLIN_WARRIOR, SpawnLocationTypes.ON_GROUND,
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PiglinWarriorEntity::canSpawn);
+
+
         // Add Lobber Zombie
         // Add Fire Zombie
         // Drunken Skeleton

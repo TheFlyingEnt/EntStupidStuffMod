@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.entity.mob;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -112,7 +113,8 @@ public class ArmoredPillagerEntity extends PillagerEntity{
 
     @SuppressWarnings("unused")
     private void equipDefaultEquipment() {
-        System.out.println("AP - equipDefaultEquipment");
+        if (EntStupidStuff.DEV_MODE)
+            System.out.println("AP - equipDefaultEquipment");
         this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
     }
 
@@ -155,7 +157,8 @@ public class ArmoredPillagerEntity extends PillagerEntity{
     @Override
     protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
         super.initEquipment(random, localDifficulty);
-        System.out.println("AP - initEquipment");
+        if (EntStupidStuff.DEV_MODE)
+            System.out.println("AP - initEquipment");
         this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
 
         applyArmorStats();

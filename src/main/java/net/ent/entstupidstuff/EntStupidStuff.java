@@ -28,6 +28,8 @@ public class EntStupidStuff implements ModInitializer {
 	public static final String MOD_ID = "entstupidstuff";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	public static final Boolean DEV_MODE = true;
+
 	public static final Identifier id(String path) {
         return Identifier.of(MOD_ID, path);
 		
