@@ -48,9 +48,9 @@ public class ModBiomes {
         context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
 
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 5, 2, 4))
-			.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.RABBIT, 6, 2, 3))
-			.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 5, 2, 4));
+        spawnSettings.spawn(SpawnGroup.CREATURE, 5, new SpawnSettings.SpawnEntry(EntityType.FOX, 2, 4))
+			.spawn(SpawnGroup.CREATURE, 6, new SpawnSettings.SpawnEntry(EntityType.RABBIT, 2, 3))
+			.spawn(SpawnGroup.CREATURE, 5, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 2, 4));
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 		addBasicFeatures(biomeBuilder);
 		DefaultBiomeFeatures.addPlainsTallGrass(biomeBuilder);
@@ -105,7 +105,7 @@ public class ModBiomes {
 		DefaultBiomeFeatures.addDefaultDisks(biomeBuilder);
 		DefaultBiomeFeatures.addPlainsFeatures(biomeBuilder);
 		DefaultBiomeFeatures.addDefaultMushrooms(biomeBuilder);
-		DefaultBiomeFeatures.addDefaultVegetation(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultVegetation(biomeBuilder, false);
         biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.LARGE_SPIKED_ICE_PLACED_KEY);
         biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_CLUSTER_PLACED_KEY);
         biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_PLACED_KEY);

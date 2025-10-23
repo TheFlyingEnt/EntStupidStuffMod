@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "entstupidstuff:redwood_log"
-    }
+    "entstupidstuff:redwood_log"
   ],
   "result": {
     "count": 4,

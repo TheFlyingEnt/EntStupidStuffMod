@@ -37,7 +37,7 @@ public class ModGroup {
         .displayName(Text.translatable("item.entstupidstuff.server_group"))
         .build());
 
-        if (EntStupidStuff.DEV_MODE) {
+        //if (EntStupidStuff.DEV_MODE) {
 
             Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(BlockFactory.callBlock("fungal_planks_cyan").asItem()))
@@ -63,7 +63,7 @@ public class ModGroup {
 
             AddItem();
 
-        }
+        //}
         LaunchItem() ;
 
         /*

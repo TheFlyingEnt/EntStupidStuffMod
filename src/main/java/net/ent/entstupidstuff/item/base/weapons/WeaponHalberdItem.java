@@ -12,7 +12,7 @@ import net.minecraft.sound.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-public class WeaponHalberdItem extends SwordItem {
+public class WeaponHalberdItem extends WeaponUpdatedItem {
     private static final int COOLDOWN_TICKS = 36;
     private static final double REACH = 5.0;
     private static final double BASE_ATTACK_DAMAGE = 6.0;
@@ -22,41 +22,41 @@ public class WeaponHalberdItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(),
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
                 -3.1f,
                 2,
                 1,
                 0.1f
             )
         ));
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (target.hasVehicle() || target.hasPassengers()) {
             target.damage(attacker.getDamageSources().mobAttack(attacker), 3.0F);
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (!world.isClient) {
-            player.getItemCooldownManager().set(this, player.isCreative() ? 3 : COOLDOWN_TICKS);
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
+        if (!world.isClient()) {
+            player.getItemCooldownManager().set(player.getMainHandStack(), player.isCreative() ? 3 : COOLDOWN_TICKS);
 
             
 
             var hit = ReachHelper.pickAttackTarget(world, player, REACH);
             if (hit instanceof LivingEntity le) {
-                le.damage(player.getDamageSources().playerAttack(player), (float)ATTACK_DAMAGE);
+                le.damage((ServerWorld) world,player.getDamageSources().playerAttack(player), (float)ATTACK_DAMAGE);
                 world.playSound(null, le.getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1f, 0.9f);
                 ((ServerWorld)world).spawnParticles(ParticleTypes.SWEEP_ATTACK, le.getX(), le.getY() + 1.0, le.getZ(), 6, 0.3, 0.2, 0.3, 0.0);
             } else {
                 world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.8f, 1.0f);
             }
         }
-        return TypedActionResult.success(player.getStackInHand(hand));
+        return ActionResult.SUCCESS;
     }
 
     @Override

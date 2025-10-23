@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.block;
 
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import com.mojang.serialization.MapCodec;
@@ -11,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.GrateBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.StairShape;
@@ -20,44 +22,60 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.AxisRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.DirectionTransformation;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.tick.ScheduledTickView;
 
 @SuppressWarnings("unused")
-public class GrateStairsBlock extends GrateBlock implements Waterloggable{
-    public static final MapCodec<GrateStairsBlock> CODEC = RecordCodecBuilder.mapCodec(
+public class GrateStairsBlock extends GrateBlock implements Waterloggable {
+
+	public static final MapCodec<GrateStairsBlock> CODEC = RecordCodecBuilder.mapCodec(
 		instance -> instance.group(BlockState.CODEC.fieldOf("base_state").forGetter(block -> block.baseBlockState), createSettingsCodec())
 				.apply(instance, GrateStairsBlock::new)
 	);
-	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-	public static final EnumProperty<BlockHalf> HALF = Properties.BLOCK_HALF;
-	public static final EnumProperty<StairShape> SHAPE = Properties.STAIR_SHAPE;
-	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-	protected static final VoxelShape TOP_SHAPE = GrateSlabBlock.TOP_SHAPE;
-	protected static final VoxelShape BOTTOM_SHAPE = GrateSlabBlock.BOTTOM_SHAPE;
-	protected static final VoxelShape BOTTOM_NORTH_WEST_CORNER_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 8.0, 8.0, 8.0);
-	protected static final VoxelShape BOTTOM_SOUTH_WEST_CORNER_SHAPE = Block.createCuboidShape(0.0, 0.0, 8.0, 8.0, 8.0, 16.0);
-	protected static final VoxelShape TOP_NORTH_WEST_CORNER_SHAPE = Block.createCuboidShape(0.0, 8.0, 0.0, 8.0, 16.0, 8.0);
-	protected static final VoxelShape TOP_SOUTH_WEST_CORNER_SHAPE = Block.createCuboidShape(0.0, 8.0, 8.0, 8.0, 16.0, 16.0);
-	protected static final VoxelShape BOTTOM_NORTH_EAST_CORNER_SHAPE = Block.createCuboidShape(8.0, 0.0, 0.0, 16.0, 8.0, 8.0);
-	protected static final VoxelShape BOTTOM_SOUTH_EAST_CORNER_SHAPE = Block.createCuboidShape(8.0, 0.0, 8.0, 16.0, 8.0, 16.0);
-	protected static final VoxelShape TOP_NORTH_EAST_CORNER_SHAPE = Block.createCuboidShape(8.0, 8.0, 0.0, 16.0, 16.0, 8.0);
-	protected static final VoxelShape TOP_SOUTH_EAST_CORNER_SHAPE = Block.createCuboidShape(8.0, 8.0, 8.0, 16.0, 16.0, 16.0);
-	protected static final VoxelShape[] TOP_SHAPES = composeShapes(
-		TOP_SHAPE, BOTTOM_NORTH_WEST_CORNER_SHAPE, BOTTOM_NORTH_EAST_CORNER_SHAPE, BOTTOM_SOUTH_WEST_CORNER_SHAPE, BOTTOM_SOUTH_EAST_CORNER_SHAPE
-	);
-	protected static final VoxelShape[] BOTTOM_SHAPES = composeShapes(
-		BOTTOM_SHAPE, TOP_NORTH_WEST_CORNER_SHAPE, TOP_NORTH_EAST_CORNER_SHAPE, TOP_SOUTH_WEST_CORNER_SHAPE, TOP_SOUTH_EAST_CORNER_SHAPE
-	);
+    
+	public static final EnumProperty<Direction> FACING;
+	public static final EnumProperty<BlockHalf> HALF;
+	public static final EnumProperty<StairShape> SHAPE;
+	public static final BooleanProperty WATERLOGGED;
+	private static final VoxelShape OUTER_SHAPE;
+	private static final VoxelShape STRAIGHT_SHAPE;
+	private static final VoxelShape INNER_SHAPE;
+	private static final Map<Direction, VoxelShape> OUTER_BOTTOM_SHAPES;
+	private static final Map<Direction, VoxelShape> STRAIGHT_BOTTOM_SHAPES;
+	private static final Map<Direction, VoxelShape> INNER_BOTTOM_SHAPES;
+	private static final Map<Direction, VoxelShape> OUTER_TOP_SHAPES;
+	private static final Map<Direction, VoxelShape> STRAIGHT_TOP_SHAPES;
+	private static final Map<Direction, VoxelShape> INNER_TOP_SHAPES;
+
+	static {
+      FACING = HorizontalFacingBlock.FACING;
+      HALF = Properties.BLOCK_HALF;
+      SHAPE = Properties.STAIR_SHAPE;
+      WATERLOGGED = Properties.WATERLOGGED;
+      OUTER_SHAPE = VoxelShapes.union(Block.createColumnShape(16.0, 0.0, 8.0), Block.createCuboidShape(0.0, 8.0, 0.0, 8.0, 16.0, 8.0));
+      STRAIGHT_SHAPE = VoxelShapes.union(OUTER_SHAPE, VoxelShapes.transform(OUTER_SHAPE, DirectionTransformation.fromRotations(AxisRotation.R0, AxisRotation.R90)));
+      INNER_SHAPE = VoxelShapes.union(STRAIGHT_SHAPE, VoxelShapes.transform(STRAIGHT_SHAPE, DirectionTransformation.fromRotations(AxisRotation.R0, AxisRotation.R90)));
+      OUTER_BOTTOM_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(OUTER_SHAPE);
+      STRAIGHT_BOTTOM_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(STRAIGHT_SHAPE);
+      INNER_BOTTOM_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(INNER_SHAPE);
+      OUTER_TOP_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(VoxelShapes.transform(OUTER_SHAPE, DirectionTransformation.INVERT_Y));
+      STRAIGHT_TOP_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(VoxelShapes.transform(STRAIGHT_SHAPE, DirectionTransformation.INVERT_Y));
+      INNER_TOP_SHAPES = VoxelShapes.createHorizontalFacingShapeMap(VoxelShapes.transform(INNER_SHAPE, DirectionTransformation.INVERT_Y));
+   }
+
 	private static final int[] SHAPE_INDICES = new int[]{12, 5, 3, 10, 14, 13, 7, 11, 13, 7, 11, 14, 8, 4, 1, 2, 4, 1, 2, 8};
 	private final Block baseBlock;
 	protected final BlockState baseBlockState;
@@ -111,15 +129,46 @@ public class GrateStairsBlock extends GrateBlock implements Waterloggable{
 		return true;
 	}
 
-	@Override
+
 	protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return (state.get(HALF) == BlockHalf.TOP ? TOP_SHAPES : BOTTOM_SHAPES)[SHAPE_INDICES[this.getShapeIndexIndex(state)]];
+      boolean bl = state.get(HALF) == BlockHalf.BOTTOM;
+      Direction direction = (Direction)state.get(FACING);
+      Map var10000;
+      switch ((StairShape) state.get(SHAPE)) {
+		case STRAIGHT:
+			var10000 = bl ? STRAIGHT_BOTTOM_SHAPES : STRAIGHT_TOP_SHAPES;
+			break;
+		case OUTER_LEFT:
+		case OUTER_RIGHT:
+			var10000 = bl ? OUTER_BOTTOM_SHAPES : OUTER_TOP_SHAPES;
+			break;
+		case INNER_LEFT:
+		case INNER_RIGHT:
+			var10000 = bl ? INNER_BOTTOM_SHAPES : INNER_TOP_SHAPES;
+			break;
+		default:
+			throw new IllegalStateException("Unexpected StairShape: " + ((StairShape) state.get(SHAPE)));
 	}
 
-	private int getShapeIndexIndex(BlockState state) {
-		return ((StairShape)state.get(SHAPE)).ordinal() * 4 + ((Direction)state.get(FACING)).getHorizontal();
+      Direction var10001;
+      switch ((StairShape) state.get(SHAPE)) {
+		case STRAIGHT:
+		case INNER_LEFT:
+		case INNER_RIGHT:
+			var10001 = direction;
+			break;
+		case OUTER_LEFT:
+			var10001 = direction.rotateYCounterclockwise();
+			break;
+		case OUTER_RIGHT:
+			var10001 = direction.rotateYClockwise();
+			break;
+		default:
+			throw new MatchException(null, null);
 	}
 
+      return (VoxelShape)var10000.get(var10001);
+   }
 	@Override
 	public float getBlastResistance() {
 		return this.baseBlock.getBlastResistance();
@@ -140,46 +189,42 @@ public class GrateStairsBlock extends GrateBlock implements Waterloggable{
 	}
 
 	@Override
-	protected BlockState getStateForNeighborUpdate(
-		BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos
-	) {
-		if ((Boolean)state.get(WATERLOGGED)) {
-			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-		}
+	protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
+      if ((Boolean)state.get(WATERLOGGED)) {
+         tickView.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+      }
 
-		return direction.getAxis().isHorizontal()
-			? state.with(SHAPE, getStairShape(state, world, pos))
-			: super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-	}
+      return direction.getAxis().isHorizontal() ? (BlockState)state.with(SHAPE, getStairShape(state, world, pos)) : super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
+   }
 
 	private static StairShape getStairShape(BlockState state, BlockView world, BlockPos pos) {
-		Direction direction = state.get(FACING);
-		BlockState blockState = world.getBlockState(pos.offset(direction));
-		if (isStairs(blockState) && state.get(HALF) == blockState.get(HALF)) {
-			Direction direction2 = blockState.get(FACING);
-			if (direction2.getAxis() != ((Direction)state.get(FACING)).getAxis() && isDifferentOrientation(state, world, pos, direction2.getOpposite())) {
-				if (direction2 == direction.rotateYCounterclockwise()) {
-					return StairShape.OUTER_LEFT;
-				}
+      Direction direction = (Direction)state.get(FACING);
+      BlockState blockState = world.getBlockState(pos.offset(direction));
+      if (isStairs(blockState) && state.get(HALF) == blockState.get(HALF)) {
+         Direction direction2 = (Direction)blockState.get(FACING);
+         if (direction2.getAxis() != ((Direction)state.get(FACING)).getAxis() && isDifferentOrientation(state, world, pos, direction2.getOpposite())) {
+            if (direction2 == direction.rotateYCounterclockwise()) {
+               return StairShape.OUTER_LEFT;
+            }
 
-				return StairShape.OUTER_RIGHT;
-			}
-		}
+            return StairShape.OUTER_RIGHT;
+         }
+      }
 
-		BlockState blockState2 = world.getBlockState(pos.offset(direction.getOpposite()));
-		if (isStairs(blockState2) && state.get(HALF) == blockState2.get(HALF)) {
-			Direction direction3 = blockState2.get(FACING);
-			if (direction3.getAxis() != ((Direction)state.get(FACING)).getAxis() && isDifferentOrientation(state, world, pos, direction3)) {
-				if (direction3 == direction.rotateYCounterclockwise()) {
-					return StairShape.INNER_LEFT;
-				}
+      BlockState blockState2 = world.getBlockState(pos.offset(direction.getOpposite()));
+      if (isStairs(blockState2) && state.get(HALF) == blockState2.get(HALF)) {
+         Direction direction3 = (Direction)blockState2.get(FACING);
+         if (direction3.getAxis() != ((Direction)state.get(FACING)).getAxis() && isDifferentOrientation(state, world, pos, direction3)) {
+            if (direction3 == direction.rotateYCounterclockwise()) {
+               return StairShape.INNER_LEFT;
+            }
 
-				return StairShape.INNER_RIGHT;
-			}
-		}
+            return StairShape.INNER_RIGHT;
+         }
+      }
 
-		return StairShape.STRAIGHT;
-	}
+      return StairShape.STRAIGHT;
+   }
 
 	private static boolean isDifferentOrientation(BlockState state, BlockView world, BlockPos pos, Direction dir) {
 		BlockState blockState = world.getBlockState(pos.offset(dir));
@@ -192,13 +237,13 @@ public class GrateStairsBlock extends GrateBlock implements Waterloggable{
 
 	@Override
 	protected BlockState rotate(BlockState state, BlockRotation rotation) {
-		return state.with(FACING, rotation.rotate(state.get(FACING)));
-	}
+      return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+   }
 
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected BlockState mirror(BlockState state, BlockMirror mirror) {
-		Direction direction = state.get(FACING);
+		Direction direction = (Direction)state.get(FACING);
 		StairShape stairShape = state.get(SHAPE);
 		switch (mirror) {
 			case LEFT_RIGHT:

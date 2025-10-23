@@ -2,10 +2,13 @@ package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -16,8 +19,9 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -41,7 +45,12 @@ public class ZebraFishEntity extends SchoolingFishEntity {
 		private final String pattern;
 		private final String color;
 
-        Variant(int id, String pattern, String color) {
+      public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+         Variant::byId,
+         Variant::getId
+      );
+
+      Variant(int id, String pattern, String color) {
 			this.id = id;
 			this.pattern = pattern;
          this.color = color;
@@ -120,10 +129,10 @@ public class ZebraFishEntity extends SchoolingFishEntity {
 
    //Varientation Code:
    @Override
-   public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
-    }
+   public void writeCustomData(WriteView view) {
+      super.writeCustomData(view);
+      view.putInt("Variant", this.getVariant().getId());
+   }
 
    public void copyDataToStack(ItemStack stack) {
       super.copyDataToStack(stack);
@@ -145,11 +154,10 @@ public class ZebraFishEntity extends SchoolingFishEntity {
    }
 
    @Override
-   public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
-
-    }
+   protected void readCustomData(ReadView view) {
+      super.readCustomData(view);
+		this.setVariant((ZebraFishEntity.Variant)view.read("Variant", ZebraFishEntity.Variant.INDEX_CODEC).orElse(ZebraFishEntity.Variant.LEPORD_BLUE));
+   }
 
 	public void setVariant(ZebraFishEntity.Variant variant) {
 		this.variant = variant; // Ensure the field is updated
@@ -177,10 +185,7 @@ public class ZebraFishEntity extends SchoolingFishEntity {
 
    @Override
    public void copyDataFromNbt(NbtCompound nbt) {
-      super.copyDataFromNbt(nbt);
-      if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-         this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
-      }
+      Bucketable.copyDataFromNbt(this, nbt);
    }
    
 

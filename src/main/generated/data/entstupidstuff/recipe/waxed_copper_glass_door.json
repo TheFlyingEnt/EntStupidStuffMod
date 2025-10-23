@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "glass_door",
   "ingredients": [
-    {
-      "item": "minecraft:waxed_copper_door"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:waxed_copper_door",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "glass_door",
   "ingredients": [
-    {
-      "item": "minecraft:iron_door"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:iron_door",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

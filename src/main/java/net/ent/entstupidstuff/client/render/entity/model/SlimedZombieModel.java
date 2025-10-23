@@ -8,11 +8,11 @@ import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.DrownedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.client.render.entity.model.ZombieEntityModel;
+import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
 
-public class SlimedZombieModel<T extends ZombieEntity> extends DrownedEntityModel<T>{
+public class SlimedZombieModel extends ZombieEntityModel<ZombieEntityRenderState>{
 
     public SlimedZombieModel(ModelPart modelPart) {
         super(modelPart);
@@ -27,7 +27,7 @@ public class SlimedZombieModel<T extends ZombieEntity> extends DrownedEntityMode
         slime.addChild(
 			"slime",
 			ModelPartBuilder.create().uv(0, 32).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(1F)),
-			ModelTransform.pivot(0.0F, 0.0F + 0.0F, 0.0F)
+			ModelTransform.origin(0.0F, 0.0F + 0.0F, 0.0F)
 		);
 
 

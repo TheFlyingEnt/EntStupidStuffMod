@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_stairs",
   "key": {
-    "#": {
-      "item": "entstupidstuff:dark_oak_mosaic"
-    }
+    "#": "entstupidstuff:dark_oak_mosaic"
   },
   "pattern": [
     "#  ",

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/pointed_dripstone",
-  "textures": {
-    "cross": "entstupidstuff:block/pointed_ice_down_tip_merge"
-  }
-}

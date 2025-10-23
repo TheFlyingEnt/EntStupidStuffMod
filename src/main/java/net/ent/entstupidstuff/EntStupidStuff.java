@@ -17,7 +17,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
-import net.minecraft.recipe.SpecialRecipeSerializer;
+import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
 import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;

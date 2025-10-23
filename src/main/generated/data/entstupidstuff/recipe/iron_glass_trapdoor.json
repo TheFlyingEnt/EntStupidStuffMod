@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "glass_trapdoor",
   "ingredients": [
-    {
-      "item": "minecraft:iron_trapdoor"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:iron_trapdoor",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

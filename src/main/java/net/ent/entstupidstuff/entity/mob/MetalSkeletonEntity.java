@@ -2,6 +2,8 @@ package net.ent.entstupidstuff.entity.mob;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.entity.EntityData;
@@ -15,10 +17,12 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -40,6 +44,11 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 		private static final MetalSkeletonVariant[] VALUES = values();
 		private final int id;
 		private final String name;
+
+		public static final Codec<MetalSkeletonVariant> INDEX_CODEC = Codec.INT.xmap(
+            MetalSkeletonVariant::byId,
+            MetalSkeletonVariant::getId
+        );
 	
 		MetalSkeletonVariant(int id, String name) {
 			this.id = id;
@@ -114,7 +123,7 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
             variant = MetalSkeletonVariant.DEFAULT;
         }*/
 
-		/*if (!world.isClient) {
+		/*if (!world.isClient()) {
 			this.variant = MetalSkeletonVariant.byId(Random.create().nextInt(3));
 		}*/
 
@@ -138,14 +147,14 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 	}
 
 	@Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
 
 		// Check if the damage source is a potion
     	if (source.getSource() instanceof PotionEntity potionEntity) {
         	// Check if the potion is Healing or Harming
         	if (potionEntity == Potions.HEALING) {
             	// Healing potion causes damage to the skeleton
-            	return super.damage(source, amount * 1.5f); // Takes more damage from healing potions (increase if needed)
+            	return super.damage(world, source, amount * 1.5f); // Takes more damage from healing potions (increase if needed)
         	} else if (potionEntity == Potions.HARMING) {
             	// Harming potion heals the skeleton
             	this.heal(amount * 1.5f); // Heals with harming potions (increase healing if needed)
@@ -156,13 +165,13 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 
         if (source.isIn(DamageTypeTags.IS_EXPLOSION) || source.isIn(DamageTypeTags.IS_PROJECTILE)) {
             // Weakness to explosions and fireworks (taking full or increased damage)
-            return super.damage(source, amount * 1.5f);
+            return super.damage(world, source, amount * 1.5f);
         } else if (source.isIn(DamageTypeTags.BYPASSES_ARMOR)) {
             // Keep normal damage for armor-piercing attacks
-            return super.damage(source, amount);
+            return super.damage(world, source, amount);
         } else {
             // High resistance to melee (reducing melee damage)
-            return super.damage(source, amount * 0.5f);
+            return super.damage(world, source, amount * 0.5f);
         }
     }
 
@@ -188,16 +197,15 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
     }*/
 
 	@Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(MetalSkeletonVariant.byId(nbt.getInt("Variant")));
-
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+		this.setVariant((MetalSkeletonEntity.MetalSkeletonVariant)view.read("Variant", MetalSkeletonEntity.MetalSkeletonVariant.INDEX_CODEC).orElse(MetalSkeletonEntity.MetalSkeletonVariant.DEFAULT));
     }
 
 	public void setVariant(MetalSkeletonEntity.MetalSkeletonVariant variant) {

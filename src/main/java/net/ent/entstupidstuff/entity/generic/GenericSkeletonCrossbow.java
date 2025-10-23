@@ -49,6 +49,8 @@ import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
@@ -107,10 +109,10 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 
     public static DefaultAttributeContainer.Builder createGenericSkeletonCrossbow() {
 		return HostileEntity.createHostileAttributes()
-			.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35F)
-			.add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0)
-			.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
-			.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0);
+			.add(EntityAttributes.MOVEMENT_SPEED, 0.35F)
+			.add(EntityAttributes.MAX_HEALTH, 24.0)
+			.add(EntityAttributes.ATTACK_DAMAGE, 5.0)
+			.add(EntityAttributes.FOLLOW_RANGE, 32.0);
 	}
 
     @Override
@@ -138,8 +140,8 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	}
 
     @Override
-	public void writeCustomDataToNbt(NbtCompound nbt) {
-		super.writeCustomDataToNbt(nbt);
+	public void writeCustomData(WriteView view) {
+      super.writeCustomData(view);
 	}
 
 	public GenericSkeletonCrossbow.State getState() {
@@ -153,8 +155,8 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	}
 
     @Override
-	public void readCustomDataFromNbt(NbtCompound nbt) {
-		super.readCustomDataFromNbt(nbt);
+	protected void readCustomData(ReadView view) {
+      super.readCustomData(view);
 		this.setCanPickUpLoot(true);
 	}
 
@@ -210,14 +212,6 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	}
 
     @Override
-	protected void loot(ItemEntity item) {
-		ItemStack itemStack = item.getStack();
-		if (itemStack.getItem() instanceof BannerItem) {
-			super.loot(item);
-		} 
-	}
-
-    @Override
 	public StackReference getStackReference(int mappedIndex) {
 		int i = mappedIndex - 300;
 		return i >= 0 && i < this.inventory.size() ? StackReference.of(this.inventory, i) : super.getStackReference(mappedIndex);
@@ -235,9 +229,9 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getWorld().spawnEntity(persistentProjectileEntity);
+			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
 		}
 
 		else if (mainHandStack.getItem() instanceof CannonItem) {
@@ -249,9 +243,9 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getWorld().spawnEntity(persistentProjectileEntity);
+			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
 		}
 
 		else if (mainHandStack.getItem() instanceof BowItem) {
@@ -263,9 +257,9 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getWorld().spawnEntity(persistentProjectileEntity);
+			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
 		}
 
 

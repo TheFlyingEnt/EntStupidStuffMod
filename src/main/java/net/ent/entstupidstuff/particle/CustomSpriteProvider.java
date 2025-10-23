@@ -32,4 +32,10 @@ public class CustomSpriteProvider implements SpriteProvider {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSprite'");
     }
+
+    @Override
+    public Sprite getFirst() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFirst'");
+    }
 }

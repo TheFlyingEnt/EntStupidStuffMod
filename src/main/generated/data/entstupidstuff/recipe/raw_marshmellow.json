@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:stick"
-    },
-    {
-      "item": "minecraft:honeycomb"
-    },
-    {
-      "item": "minecraft:sugar"
-    }
+    "minecraft:stick",
+    "minecraft:honeycomb",
+    "minecraft:sugar"
   ],
   "result": {
     "count": 1,

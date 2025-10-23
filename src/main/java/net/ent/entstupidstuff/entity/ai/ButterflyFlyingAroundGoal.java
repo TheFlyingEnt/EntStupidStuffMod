@@ -28,10 +28,10 @@ public class ButterflyFlyingAroundGoal extends Goal {
 
     @Override
     public void tick() {
-        if (--cooldown <= 0 || target == null || butterfly.getPos().distanceTo(target) < 2.0) {
+        if (--cooldown <= 0 || target == null || butterfly.getEntityPos().distanceTo(target) < 2.0) {
             cooldown = interval;
 
-            Vec3d pos = butterfly.getPos();
+            Vec3d pos = butterfly.getEntityPos();
             Random random = new Random();
 
             double dx = (random.nextDouble() - 0.5) * 12;

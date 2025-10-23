@@ -2,33 +2,41 @@ package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.render.entity.model.FrostbittenZombieModel;
+import net.ent.entstupidstuff.client.render.entity.state.FrostbittenEntityRenderState;
 import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
-import net.minecraft.client.render.entity.model.DrownedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
 import net.minecraft.util.Identifier;
 
-public class FrostbittenZombieEntityRenderer extends ZombieBaseEntityRenderer<FrostbittenZombieEntity, DrownedEntityModel<FrostbittenZombieEntity>>{
+public class FrostbittenZombieEntityRenderer extends ZombieBaseEntityRenderer<FrostbittenZombieEntity, FrostbittenEntityRenderState, FrostbittenZombieModel> {
     private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite_chilled.png");
     private static final Identifier TEXTURE_B = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite.png");
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public FrostbittenZombieEntityRenderer(EntityRendererFactory.Context context) {
-      super(context, new DrownedEntityModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new DrownedEntityModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
-      this.addFeature(new FrostbittenZombieOverlay(this, context.getModelLoader()));
-   }
-
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-    public FrostbittenZombieEntityRenderer(EntityRendererFactory.Context ctx, EntityModelLayer layer, EntityModelLayer legsArmorLayer, EntityModelLayer bodyArmorLayer) {
-		super(ctx, new DrownedEntityModel<>(ctx.getPart(layer)), new DrownedEntityModel<>(ctx.getPart(legsArmorLayer)), new DrownedEntityModel<>(ctx.getPart(bodyArmorLayer)));
-        this.addFeature(new FrostbittenZombieOverlay(this, ctx.getModelLoader()));
+		super(
+			context,
+			new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),
+            new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),//TODO 1.21.10 - Add baby Models
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new),
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new)
+		);
 	}
 
     @Override
-    public Identifier getTexture(FrostbittenZombieEntity entity) {
-        return entity.getVariant() == FrostbittenZombieEntity.Variant.FROSTBITTEN ? TEXTURE : TEXTURE_B;
+    public Identifier getTexture(FrostbittenEntityRenderState state) {
+        return switch (state.variant) {
+			case FROSTBITTEN -> TEXTURE;
+			case NORMAL -> TEXTURE_B;
+			default -> TEXTURE_B;
+		};
     }
+
+    @Override
+    public FrostbittenEntityRenderState createRenderState() {
+		return new FrostbittenEntityRenderState();
+	}
     
 }

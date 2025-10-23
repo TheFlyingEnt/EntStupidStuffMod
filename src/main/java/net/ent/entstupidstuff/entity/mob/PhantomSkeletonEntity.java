@@ -2,8 +2,11 @@ package net.ent.entstupidstuff.entity.mob;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.entity.ai.CannonAttackGoal;
 import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
+import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity.MetalSkeletonVariant;
 import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.CannonItem;
@@ -23,7 +26,10 @@ import net.minecraft.item.Items;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -51,6 +57,11 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 		private static final PhantomSkeletonVariant[] VALUES = values();
 		private final int id;
 		private final String name;
+
+		public static final Codec<PhantomSkeletonVariant> INDEX_CODEC = Codec.INT.xmap(
+            PhantomSkeletonVariant::byId,
+            PhantomSkeletonVariant::getId
+        );
 	
 		PhantomSkeletonVariant(int id, String name) {
 			this.id = id;
@@ -134,7 +145,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	}
 
 	@Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
 
 		if (source.isIn(DamageTypeTags.IS_FALL) || source.isIn(DamageTypeTags.BURN_FROM_STEPPING)) {
 			return false;
@@ -142,20 +153,15 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 		else {
 			//boolean bl = source.getSource() instanceof PotionEntity;
 			if (source.isIn(DamageTypeTags.IS_PROJECTILE)/* && !bl */) {
-				//boolean bl2 = super.damage(source, amount);
+				//boolean bl2 = super.damage(world, source, amount);
 				return false;
 				//return bl2;
 			}
 			else {
-				return super.damage(source, amount);
+				return super.damage(world, source, amount);
 			}
 		}
     }
-
-	@Override
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-    	return false;
-	}
 
 	@Override
 	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
@@ -181,22 +187,20 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	}*/
 
 	protected PersistentProjectileEntity createCannonProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	CannonballEntity arrowEntity = new CannonballEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+    	CannonballEntity arrowEntity = new CannonballEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
 	@Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-		nbt.putInt("Variant", this.getVariant().getId());
-        super.writeCustomDataToNbt(nbt);
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        this.setVariant(PhantomSkeletonVariant.byId(nbt.getInt("Variant")));
-		super.readCustomDataFromNbt(nbt);
-        
-
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+		this.setVariant((PhantomSkeletonEntity.PhantomSkeletonVariant)view.read("Variant", PhantomSkeletonEntity.PhantomSkeletonVariant.INDEX_CODEC).orElse(PhantomSkeletonEntity.PhantomSkeletonVariant.MELEE));
     }
 
 	public void setVariant(PhantomSkeletonEntity.PhantomSkeletonVariant variant) {
@@ -262,9 +266,9 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getWorld().spawnEntity(persistentProjectileEntity);
+			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
 		}
 
 		super.shootAt(target, pullProgress);

@@ -1,16 +1,15 @@
 {
-  "carvers": {
-    "air": [
-      "minecraft:cave",
-      "minecraft:cave_extra_underground",
-      "minecraft:canyon"
-    ]
-  },
+  "carvers": [
+    "minecraft:cave",
+    "minecraft:cave_extra_underground",
+    "minecraft:canyon"
+  ],
   "downfall": 0.8,
   "effects": {
     "fog_color": 12638463,
     "foliage_color": 16747660,
     "grass_color": 9158743,
+    "music_volume": 1.0,
     "sky_color": 7843327,
     "water_color": 6401774,
     "water_fog_color": 347777

@@ -5,42 +5,57 @@ import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class AncientDrownedRenderer extends ZombieBaseEntityRenderer<DrownedEntity, AncientDrownedModel<DrownedEntity>>{
+public class AncientDrownedRenderer extends ZombieBaseEntityRenderer<DrownedEntity, ZombieEntityRenderState, AncientDrownedModel>{
    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned.png");
    //private static final Identifier GLOW_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_e.png");
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public AncientDrownedRenderer(EntityRendererFactory.Context context) {
-      super(context, new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_INNER_ARMOR)), new AncientDrownedModel(context.getPart(EntityModelLayers.DROWNED_OUTER_ARMOR)));
-      this.addFeature(new AncientDrownedOverlayFeatureRenderer(this, context.getModelLoader()));
-   }
+		super(
+			context,
+			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER)),
+			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER)),
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), AncientDrownedModel::new),
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), AncientDrownedModel::new)
+		);
+		this.addFeature(new AncientDrownedOverlayFeatureRenderer(this, context.getEntityModels()));
+	}
 
-   public Identifier getTexture(ZombieEntity zombieEntity) {
-      return TEXTURE;
-   }
+   public ZombieEntityRenderState createRenderState() {
+		return new ZombieEntityRenderState();
+	}
 
-   protected void setupTransforms(DrownedEntity drownedEntity, MatrixStack matrixStack, float f, float g, float h, float i) {
-      super.setupTransforms(drownedEntity, matrixStack, f, g, h, i);
-      float j = drownedEntity.getLeaningPitch(h);
-      if (j > 0.0F) {
-         float k = -10.0F - drownedEntity.getPitch();
-         float l = MathHelper.lerp(j, 0.0F, k);
-         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(l), 0.0F, drownedEntity.getHeight() / 2.0F / i, 0.0F);
-      }
-   }
+	@Override
+	public Identifier getTexture(ZombieEntityRenderState zombieEntityRenderState) {
+		return TEXTURE;
+	}
 
-   /*@Override
-   public void render(DrownedEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-      VertexConsumer glowConsumer = vertexConsumers.getBuffer(RenderLayer.getEyes(GLOW_TEXTURE));
-        this.model.render(matrices, glowConsumer, 15728640, OverlayTexture.DEFAULT_UV); // 15728640 = maximum light
-      super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
-   }*/
+	protected void setupTransforms(ZombieEntityRenderState zombieEntityRenderState, MatrixStack matrixStack, float f, float g) {
+		super.setupTransforms(zombieEntityRenderState, matrixStack, f, g);
+		float h = zombieEntityRenderState.leaningPitch;
+		if (h > 0.0F) {
+			float i = -10.0F - zombieEntityRenderState.pitch;
+			float j = MathHelper.lerp(h, 0.0F, i);
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(j), 0.0F, zombieEntityRenderState.height / 2.0F / g, 0.0F);
+		}
+	}
+
+	protected BipedEntityModel.ArmPose getArmPose(DrownedEntity drownedEntity, Arm arm) {
+		ItemStack itemStack = drownedEntity.getStackInArm(arm);
+		return drownedEntity.getMainArm() == arm && drownedEntity.isAttacking() && itemStack.isOf(Items.TRIDENT)
+			? BipedEntityModel.ArmPose.THROW_SPEAR
+			: BipedEntityModel.ArmPose.EMPTY;
+	}
 }

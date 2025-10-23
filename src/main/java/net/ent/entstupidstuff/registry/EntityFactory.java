@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.registry;
 
+import java.util.function.Supplier;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
@@ -36,8 +38,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.passive.CodEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -51,7 +57,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build("zombie_lobber")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "zombie_lobber")))
     );
 
     public static final EntityType<ScorchedZombieEntity> ZOMBIE_SCORCHED = Registry.register(Registries.ENTITY_TYPE,
@@ -62,7 +68,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build("zombie_scorched")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched")))
     );
 
     public static final EntityType<SlimedZombieEntity> ZOMBIE_SLIMED = Registry.register(Registries.ENTITY_TYPE,
@@ -73,7 +79,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build("zombie_slimed")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"zombie_slimed")))
     );
 
     public static final EntityType<AncientDrownedEntity> ANCIENT_DROWNED = Registry.register(Registries.ENTITY_TYPE,
@@ -84,7 +90,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build("ancient_drowned")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"ancient_drowned")))
     );
 
     public static final EntityType<AncientTridentEntity> ANCIENT_TRIDENT = Registry.register(Registries.ENTITY_TYPE,
@@ -94,7 +100,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build("ancient_trident")
+            .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"ancient_trident")))
 	);
 
     public static final EntityType<FrostbittenZombieEntity> ZOMBIE_FROSTBITTEN = Registry.register(Registries.ENTITY_TYPE,
@@ -105,7 +111,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0125F)
 		.vehicleAttachment(-0.7F)
 		.maxTrackingRange(8)
-        .build("zombie_frostbitten")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"zombie_frostbitten")))
     );
 
     public static final EntityType<ArmoredPillagerEntity> ARMORED_PILLAGER = Registry.register(Registries.ENTITY_TYPE,
@@ -116,7 +122,7 @@ public class EntityFactory {
 		.passengerAttachments(2.0F)
 		.vehicleAttachment(-0.6F)
 		.maxTrackingRange(8)
-        .build("armored_pillager")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"armored_pillager")))
     );
 
     public static final EntityType<SoulSkeletonEntity> SOUL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -126,7 +132,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("soul_skeleton")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"soul_skeleton")))
     );
 
     public static final EntityType<RedStoneGolemEntity> RSGolem = Registry.register(Registries.ENTITY_TYPE,
@@ -136,7 +142,7 @@ public class EntityFactory {
         .eyeHeight(2.60F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("redstone_golem")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"redstone_golem")))
     );
 
     public static final EntityType<ButterflyEntity> BUTTERFLY = Registry.register(Registries.ENTITY_TYPE,
@@ -145,7 +151,7 @@ public class EntityFactory {
         .dimensions(0.5f, 0.5F)
         .eyeHeight(0.25F)
         .maxTrackingRange(8)
-        .build("butterfly")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"butterfly")))
     );
 
     public static final EntityType<RedPandaEntity> RED_PANDA = Registry.register(Registries.ENTITY_TYPE,
@@ -154,17 +160,17 @@ public class EntityFactory {
         .dimensions(0.5f, 0.5F)
         .eyeHeight(0.25F)
         .maxTrackingRange(8)
-        .build("red_panda")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"red_panda")))
     );
 
     public static final EntityType<CustomBoatEntity> CUSTOMBOAT = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "customboat"),
-        EntityType.Builder.<CustomBoatEntity>create(CustomBoatEntity::new, SpawnGroup.MISC)
+        EntityType.Builder.create(getBigBoatFactory(() -> Items.ACACIA_CHEST_BOAT), SpawnGroup.MISC)
         //.dimensions(0.98F, 0.7F)
         .dimensions(3.5F, 0.7F)
 		.passengerAttachments(0.1875F)
 		.maxTrackingRange(8)
-        .build("customboat")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"customboat")))
     );
 
     public static final EntityType<AlligatorGarEntity> ALLIGATOR_GAR = Registry.register(Registries.ENTITY_TYPE,
@@ -172,7 +178,7 @@ public class EntityFactory {
         EntityType.Builder.create(AlligatorGarEntity::new, SpawnGroup.WATER_AMBIENT)
         .dimensions(0.65F, 0.25F)
         .eyeHeight(0.2F).maxTrackingRange(4)
-        .build("alligator_gar")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"alligator_gar")))
     );
 
     public static final EntityType<ZebraFishEntity> ZEBRA_FISH = Registry.register(Registries.ENTITY_TYPE, //Cod Size
@@ -181,7 +187,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F)
         .maxTrackingRange(4)
-        .build("zebra_fish")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"zebra_fish")))
     );
 
     public static final EntityType<MackerelEntity> MACKEREL = Registry.register(Registries.ENTITY_TYPE,
@@ -190,7 +196,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
-        .build("mackerel")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"mackerel")))
     );
 
     public static final EntityType<BassEntity> BASS = Registry.register(Registries.ENTITY_TYPE,
@@ -199,7 +205,7 @@ public class EntityFactory {
         .dimensions(0.65F, 0.375F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
-        .build("bass")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"bass")))
     );
 
     public static final EntityType<KoiEntity> KOI = Registry.register(Registries.ENTITY_TYPE,
@@ -208,7 +214,7 @@ public class EntityFactory {
         .dimensions(0.75F, 0.43F)
         .eyeHeight(0.195F).maxTrackingRange(4)
         .maxTrackingRange(8)
-        .build("koi")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"koi")))
     );
 
     public static final EntityType<FurTroutEntity> FURTROUT = Registry.register(Registries.ENTITY_TYPE, //Cod Size
@@ -217,7 +223,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F)
         .maxTrackingRange(4)
-        .build("furtrout")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"furtrout")))
     );
 
     public static final EntityType<PerchFishEntity> PERCH = Registry.register(Registries.ENTITY_TYPE,
@@ -226,7 +232,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F)
         .maxTrackingRange(4)
-        .build("perch")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"perch")))
     );
 
     public static final EntityType<SnapperFishEntity> SNAPPER = Registry.register(Registries.ENTITY_TYPE,
@@ -235,7 +241,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F)
         .maxTrackingRange(4)
-        .build("snapper")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"snapper")))
     );
 
     public static final EntityType<MahiMahiEntity> MAHIMAHI = Registry.register(Registries.ENTITY_TYPE,
@@ -244,7 +250,7 @@ public class EntityFactory {
         .dimensions(0.5F, 0.3F)
         .eyeHeight(0.195F)
         .maxTrackingRange(4)
-        .build("mahimahi")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"mahimahi")))
     );
 
 
@@ -264,7 +270,7 @@ public class EntityFactory {
         .passengerAttachments(2.0125F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("piglin_warrior")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"piglin_warrior")))
     );
 
     public static final EntityType<HoveringInfernoEntity> HOVERING_INFERNO = Registry.register(Registries.ENTITY_TYPE,
@@ -273,7 +279,7 @@ public class EntityFactory {
         .makeFireImmune()
         .dimensions(0.6F, 1.8F)
         .maxTrackingRange(8)
-        .build("hovering_inferno")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"hovering_inferno")))
     );
 
     /*
@@ -287,7 +293,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build("underwater_arrow")
+            .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"underwater_arrow")))
 	);
 
     public static final EntityType<CannonballEntity> CANNON_BALL = Registry.register(Registries.ENTITY_TYPE,
@@ -297,7 +303,7 @@ public class EntityFactory {
 			.eyeHeight(0.13F)
 			.maxTrackingRange(4)
 			.trackingTickInterval(20)
-            .build("cannon_ball")
+            .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"cannon_ball")))
 	);
 
     public static final EntityType<SunkenSkeletonEntity> SUNKEN_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -307,7 +313,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("sunken_skeleton")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"sunken_skeleton")))
     );
 
     public static final EntityType<SkeletonPirateCaptainEntity> SKELETON_PIRATE_CAPTAIN = Registry.register(Registries.ENTITY_TYPE,
@@ -317,7 +323,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("skeleton_pirate_captain_concept")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"skeleton_pirate_captain_concept")))
     );
 
     public static final EntityType<SkeletonCrossbowEntity> SUNKEN_SKELETON_CROSSBOW = Registry.register(Registries.ENTITY_TYPE,
@@ -327,7 +333,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("sunken_skeleton_crossbow")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"sunken_skeleton_crossbow")))
     );
 
     public static final EntityType<MetalSkeletonEntity> METAL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -337,7 +343,7 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("metal_skeleton")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"metal_skeleton")))
     );
 
     public static final EntityType<PhantomSkeletonEntity> PHANTOM_SKELETON = Registry.register(Registries.ENTITY_TYPE,
@@ -347,11 +353,13 @@ public class EntityFactory {
         .eyeHeight(1.74F)
         .vehicleAttachment(-0.7F)
         .maxTrackingRange(8)
-        .build("phantom_skeleton")
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"phantom_skeleton")))
     );
 
 
-
+    private static EntityType.EntityFactory<CustomBoatEntity> getBigBoatFactory(Supplier<Item> itemSupplier) {
+		return (type, world) -> new CustomBoatEntity(type, world, itemSupplier);
+	}
 
 
 

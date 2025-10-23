@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "entstupidstuff:maple_slab"
-    }
+    "#": "entstupidstuff:maple_slab"
   },
   "pattern": [
     "#",

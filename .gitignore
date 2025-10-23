@@ -45,4 +45,5 @@ replay_*.log
 .oldcode/
 .devEnt/
 src/main/generated/.cache/
+remappedSrc
 

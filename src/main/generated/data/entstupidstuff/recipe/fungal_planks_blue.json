@@ -3,12 +3,8 @@
   "category": "building",
   "group": "colored_planks",
   "key": {
-    "#": {
-      "item": "entstupidstuff:fungal_planks"
-    },
-    "D": {
-      "item": "minecraft:blue_dye"
-    }
+    "#": "entstupidstuff:fungal_planks",
+    "D": "minecraft:blue_dye"
   },
   "pattern": [
     "###",

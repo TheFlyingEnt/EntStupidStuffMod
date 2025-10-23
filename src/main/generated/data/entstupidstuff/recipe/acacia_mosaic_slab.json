@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_slab",
   "key": {
-    "#": {
-      "item": "entstupidstuff:acacia_mosaic"
-    }
+    "#": "entstupidstuff:acacia_mosaic"
   },
   "pattern": [
     "###"

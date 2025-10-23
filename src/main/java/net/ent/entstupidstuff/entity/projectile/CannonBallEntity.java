@@ -21,6 +21,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
+
 public class CannonballEntity extends PersistentProjectileEntity {
 
 	/*
@@ -33,115 +34,109 @@ public class CannonballEntity extends PersistentProjectileEntity {
 
 	private boolean hasFlame;
 
-    public CannonballEntity(EntityType<? extends CannonballEntity> entityType, World world) {
+	public CannonballEntity(EntityType<? extends CannonballEntity> entityType, World world) {
 		super(entityType, world);
 	}
-    
-    public CannonballEntity(World world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { //Player
+
+	public CannonballEntity(World world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { // Player
 		super(EntityFactory.CANNON_BALL, owner, world, stack, shotFrom);
 
 		if (shotFrom != null) {
-			this.hasFlame = EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantments(owner.getWorld(), Enchantments.FLAME), stack) > 0;
-    	}
+			this.hasFlame =
+			EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantments(owner.getEntityWorld(),
+			Enchantments.FLAME), stack) > 0;
+		}
 	}
 
-	public CannonballEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { //Mob
+	public CannonballEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { // Mob
 		super(EntityFactory.CANNON_BALL, x, y, z, world, stack, shotFrom);
 	}
 
-    @Override
+	@Override
 	public void setVelocity(double x, double y, double z, float power, float uncertainty) {
 		super.setVelocity(x, y, z, power, uncertainty);
 	}
 
-    @Override
-    protected ItemStack getDefaultItemStack() {
-        return new ItemStack(ItemFactory.CANNON_BALL_ITEM);
-    }
-
-
+	@Override
+	protected ItemStack getDefaultItemStack() {
+		return new ItemStack(ItemFactory.CANNON_BALL_ITEM);
+	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.getWorld().isClient) {
-			if (!this.inGround) {
-                this.getWorld().addParticle(
-					ParticleTypes.LARGE_SMOKE,
-					this.getX(),
-					this.getY(),
-					this.getZ(),
-					this.random.nextGaussian() * 0.05,
-					-this.getVelocity().y * 0.5,
-					this.random.nextGaussian() * 0.05
-				);
-                this.getWorld().addParticle(
-					ParticleTypes.FLAME,
-					this.getX(),
-					this.getY(),
-					this.getZ(),
-					this.random.nextGaussian() * 0.05,
-					-this.getVelocity().y * 0.5,
-					this.random.nextGaussian() * 0.05
-				);
-            }
-            else if (this.inGround) {
-
+		if (this.getEntityWorld().isClient() && !this.isSubmergedInWater()) {
+			if (this.getVelocity().lengthSquared() > 0.01) {
+				this.getEntityWorld().addParticleClient(
+						ParticleTypes.LARGE_SMOKE,
+						this.getX(),
+						this.getY(),
+						this.getZ(),
+						this.random.nextGaussian() * 0.05,
+						-this.getVelocity().y * 0.5,
+						this.random.nextGaussian() * 0.05);
+				this.getEntityWorld().addParticleClient(
+						ParticleTypes.FLAME,
+						this.getX(),
+						this.getY(),
+						this.getZ(),
+						this.random.nextGaussian() * 0.05,
+						-this.getVelocity().y * 0.5,
+						this.random.nextGaussian() * 0.05);
+			} else {
 				if (this.getOwner() instanceof PlayerEntity) {
 
-					this.getWorld().addParticle(
-					ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
-					this.getX(),
-					this.getY(),
-					this.getZ(),
-					this.random.nextGaussian() * 0.05,
-					-this.getVelocity().y * 0.5,
-					this.random.nextGaussian() * 0.05
-				);
+					this.getEntityWorld().addParticleClient(
+							ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
+							this.getX(),
+							this.getY() + this.getHeight(),
+							this.getZ(),
+							this.random.nextGaussian() * 0.02,
+							0.07,
+							this.random.nextGaussian() * 0.02);
 
 				}
-            }
-        }
+			}
+		}
 	}
 
+	////////////////
 
-    ////////////////
+	public int hit = 0;
 
-    public int hit = 0;
+	@Override
+	protected void onCollision(HitResult hitResult) {
+		super.onCollision(hitResult);
+		if (!this.getEntityWorld().isClient()) {
 
+		}
+	}
 
-    @Override
-    protected void onCollision(HitResult hitResult) {
-        super.onCollision(hitResult);
-        if (!this.getWorld().isClient) {
-
-        }
-    }
-
-    @Override
+	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
-        if (hit == 0) {
-            this.getWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F, World.ExplosionSourceType.NONE); 
-            hit = 1;
-            this.getWorld().addParticle(
+		if (hit == 0) {
+			this.getEntityWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					World.ExplosionSourceType.NONE);
+			hit = 1;
+			this.getEntityWorld().addParticleClient(
 					ParticleTypes.EXPLOSION_EMITTER,
 					this.getX(),
 					this.getY(),
 					this.getZ(),
 					this.random.nextGaussian() * 0.05,
 					-this.getVelocity().y * 0.5,
-					this.random.nextGaussian() * 0.05
-				);
-        }
+					this.random.nextGaussian() * 0.05);
+		}
 		super.onBlockHit(blockHitResult);
 	}
 
-    @Override
+	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
 		super.onEntityHit(entityHitResult);
-		if (!this.getWorld().isClient && hit == 0) {
-			this.getWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F, World.ExplosionSourceType.NONE);
-            hit = 1;
+		if (!this.getEntityWorld().isClient() && hit == 0) {
+			this.getEntityWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					World.ExplosionSourceType.NONE);
+			hit = 1;
 		}
 
 		Entity target = entityHitResult.getEntity();
@@ -149,31 +144,29 @@ public class CannonballEntity extends PersistentProjectileEntity {
 		if (target instanceof LivingEntity living) {
 			// Flame
 			if (hasFlame) {
-				living.setOnFireFor(5); // 5 seconds
+				living.setOnFireFor(5);
 			}
 		}
 	}
 
-    @SuppressWarnings("unused")
-    private SoundEvent sound = this.getHitSound();
+	@SuppressWarnings("unused")
+	private SoundEvent sound = this.getHitSound();
 
-    public void setSound(SoundEvent sound) {
+	public void setSound(SoundEvent sound) {
 		this.sound = sound;
 	}
 
-    protected SoundEvent getHitSound() {
+	protected SoundEvent getHitSound() {
 		return SoundEvents.ENTITY_ARROW_HIT;
 	}
 
-    @Override
-    protected void initDataTracker(Builder builder) {
-        super.initDataTracker(builder);
-    }
-
-	public boolean hasFlame() { 
-		return hasFlame;
+	@Override
+	protected void initDataTracker(Builder builder) {
+		super.initDataTracker(builder);
 	}
 
-
+	public boolean hasFlame() {
+		return hasFlame;
+	}
 
 }

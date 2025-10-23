@@ -3,9 +3,7 @@
   "category": "building",
   "group": "textured_wool",
   "key": {
-    "#": {
-      "item": "minecraft:yellow_wool"
-    }
+    "#": "minecraft:yellow_wool"
   },
   "pattern": [
     " ##",

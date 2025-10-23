@@ -3,9 +3,7 @@
   "category": "food",
   "cookingtime": 600,
   "experience": 0.35,
-  "ingredient": {
-    "item": "entstupidstuff:raw_marshmellow"
-  },
+  "ingredient": "entstupidstuff:raw_marshmellow",
   "result": {
     "id": "entstupidstuff:toasted_marshmellow"
   }

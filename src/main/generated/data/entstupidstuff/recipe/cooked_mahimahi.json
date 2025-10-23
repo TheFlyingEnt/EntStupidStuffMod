@@ -3,9 +3,7 @@
   "category": "food",
   "cookingtime": 200,
   "experience": 0.35,
-  "ingredient": {
-    "item": "entstupidstuff:mahimahi"
-  },
+  "ingredient": "entstupidstuff:mahimahi",
   "result": {
     "id": "entstupidstuff:cooked_mahimahi"
   }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "entstupidstuff:phantom_slab"
-    }
+    "#": "entstupidstuff:phantom_slab"
   },
   "pattern": [
     "#",

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "ancient_debris",
   "key": {
-    "#": {
-      "item": "entstupidstuff:ancient_debris_nugget"
-    }
+    "#": "entstupidstuff:ancient_debris_nugget"
   },
   "pattern": [
     "###",

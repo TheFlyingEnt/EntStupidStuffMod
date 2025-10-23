@@ -38,6 +38,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -99,26 +100,26 @@ public class GenericSkeletonBow extends SkeletonEntity{
             this.lookAtEntity(target, 30.0F, 30.0F);
         }
 
-        if (this.isWet()) {
+        if (this.isTouchingWaterOrRain()) {
             this.setAir(300);
         }
     }
 
     @Override
 	protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	UnderwaterArrowEntity arrowEntity = new UnderwaterArrowEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+    	UnderwaterArrowEntity arrowEntity = new UnderwaterArrowEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
 	protected PersistentProjectileEntity createCannonBallProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	CannonballEntity arrowEntity = new CannonballEntity(this.getWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+    	CannonballEntity arrowEntity = new CannonballEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
     
     @Override
     public void updateSwimming() {
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             if (this.canMoveVoluntarily() && this.isTouchingWater() /*&& this.isTargetingUnderwater()*/) {
                 this.navigation = this.waterNavigation;
                 this.setSwimming(true);
@@ -149,9 +150,9 @@ public class GenericSkeletonBow extends SkeletonEntity{
 		double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
 		double f = target.getZ() - this.getZ();
 		double g = Math.sqrt(d * d + f * f);
-		persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getWorld().getDifficulty().getId() * 4));
+		persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
 		this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-		this.getWorld().spawnEntity(persistentProjectileEntity);
+		this.getEntityWorld().spawnEntity(persistentProjectileEntity);
 	}
 
     @Override
@@ -160,8 +161,8 @@ public class GenericSkeletonBow extends SkeletonEntity{
 	}
 
     @Override
-	public void readCustomDataFromNbt(NbtCompound nbt) {
-		super.readCustomDataFromNbt(nbt);
+	protected void readCustomData(ReadView view) {
+		super.readCustomData(view);
 		this.updateAttackType();
 	}
 
@@ -169,7 +170,7 @@ public class GenericSkeletonBow extends SkeletonEntity{
     @Override
 	public void equipStack(EquipmentSlot slot, ItemStack stack) {
 		super.equipStack(slot, stack);
-		if (!this.getWorld().isClient) {
+		if (!this.getEntityWorld().isClient()) {
 			this.updateAttackType();
 		}
 	}
@@ -209,7 +210,7 @@ public class GenericSkeletonBow extends SkeletonEntity{
                 float h = (float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F;
                 this.skeleton.setYaw(this.wrapDegrees(this.skeleton.getYaw(), h, 90.0F));
                 this.skeleton.bodyYaw = this.skeleton.getYaw();
-                float i = (float)(this.speed * this.skeleton.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
+                float i = (float)(this.speed * this.skeleton.getAttributeValue(EntityAttributes.MOVEMENT_SPEED));
                 float j = MathHelper.lerp(0.125F, this.skeleton.getMovementSpeed(), i);
                 this.skeleton.setMovementSpeed(j);
                 this.skeleton.setVelocity(this.skeleton.getVelocity().add((double)j * d * 0.005, (double)j * e * 0.1, (double)j * f * 0.005));

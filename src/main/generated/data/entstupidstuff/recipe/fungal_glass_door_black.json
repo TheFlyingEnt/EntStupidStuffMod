@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "wooden_glass_door",
   "ingredients": [
-    {
-      "item": "entstupidstuff:fungal_door_black"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "entstupidstuff:fungal_door_black",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.entity.Jarredable;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModItemTags;
@@ -24,8 +26,8 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.FlyingEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -36,6 +38,8 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
@@ -50,7 +54,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 
-public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredable {
+public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarredable {
 
     private Variant variant;
     private static final TrackedData<Integer> VARIANT = DataTracker.registerData(ButterflyEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -78,6 +82,11 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
         SEELE(7, "Seele", false, List.of(ModItemTags.SPAWN_SEELE_BUTTERFLY)),
         CREEPER(8, "Creeper", false, List.of(ModItemTags.SPAWN_CREEPER_BUTTERFLY));
 
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+            Variant::byId,
+            Variant::getId
+        );
+
         private final int id;
         private final String name;
         private final boolean natural;
@@ -94,7 +103,7 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
         public String getName() { return name; }
         public boolean isNatural() { return natural; }
         public boolean canSpawnInBiome(ServerWorld world, RegistryKey<Biome> biome) {
-            RegistryEntry<Biome> entry = world.getRegistryManager().get(RegistryKeys.BIOME).entryOf(biome);
+            RegistryEntry<Biome> entry = world.getRegistryManager().getOrThrow(RegistryKeys.BIOME).getOrThrow(biome);
             return allowedBiomeTags.stream().anyMatch(tag -> entry.isIn(tag));
         }
 
@@ -139,10 +148,10 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
 
     // === Data NBT ===
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
-        nbt.putBoolean("FromJar", this.isFromJar());
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
+        view.putBoolean("FromJar", this.isFromJar());
     }
 
     /**
@@ -160,21 +169,19 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        // Prefer canonical "Variant" key (used when loaded from world NBT),
-        // but if not present, allow bucket tag to define it.
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
+    public void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.setVariant((ButterflyEntity.Variant)view.read("Variant", ButterflyEntity.Variant.INDEX_CODEC).orElse(ButterflyEntity.Variant.MONARCH));
     }
 
     @Override
 	public void copyDataFromNbt(NbtCompound nbt) {
 		Jarredable.copyDataFromNbt(this, nbt);
-		if (nbt.contains("BucketVariantTag", 3)) { // INT_TYPE
+		/*if (nbt.contains("BucketVariantTag", 3)) { // INT_TYPE
 			this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
 		} else if (nbt.contains("Variant", 3)) {
 			this.setVariant(Variant.byId(nbt.getInt("Variant")));
-		}
+		}*/
 	}
 
     public void setVariant(ButterflyEntity.Variant variant) {
@@ -226,7 +233,7 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
             Variant variant;
 
             // SpawnEgg or Spawner ignores biome
-            if (spawnReason == SpawnReason.SPAWN_EGG || spawnReason == SpawnReason.SPAWNER) {
+            if (spawnReason == SpawnReason.SPAWN_ITEM_USE || spawnReason == SpawnReason.SPAWNER) {
                 variant = Variant.getRandom(world.getRandom()); // no biome restriction
             } else {
                 // Get biome key for biome-restricted spawning
@@ -242,9 +249,9 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
 
     public static DefaultAttributeContainer.Builder createButterflyAttributes() {
         return MobEntity.createMobAttributes()
-            .add(EntityAttributes.GENERIC_MAX_HEALTH, 8.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
-            .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35);
+            .add(EntityAttributes.MAX_HEALTH, 8.0)
+            .add(EntityAttributes.MOVEMENT_SPEED, 0.2)
+            .add(EntityAttributes.FLYING_SPEED, 0.35);
     }
 
     @Override
@@ -314,7 +321,7 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
 
             butterfly.getMoveControl().moveTo(target.x, target.y, target.z, 1.0);
 
-            Vec3d direction = target.subtract(butterfly.getPos());
+            Vec3d direction = target.subtract(butterfly.getEntityPos());
             double dx = direction.x;
             double dz = direction.z;
             butterfly.setYaw((float)(Math.toDegrees(Math.atan2(dz, dx)) - 90));
@@ -326,7 +333,7 @@ public class ButterflyEntity extends FlyingEntity implements Flutterer, Jarredab
             double dx = (butterfly.random.nextDouble() - 0.5) * 20;
             double dz = (butterfly.random.nextDouble() - 0.5) * 20;
 
-            int topY = butterfly.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, butterfly.getBlockX(), butterfly.getBlockZ());
+            int topY = butterfly.getEntityWorld().getTopY(Heightmap.Type.WORLD_SURFACE, butterfly.getBlockX(), butterfly.getBlockZ());
 
             double minY = topY + 1;
             double maxY = topY + 10;

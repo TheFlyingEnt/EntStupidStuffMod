@@ -1,65 +1,46 @@
 package net.ent.entstupidstuff.client.render.entity;
 
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
-
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.registry.EntityFactory;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.model.ArmorEntityModel;
+import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
 import net.minecraft.client.render.entity.model.PiglinEntityModel;
-import net.minecraft.entity.EntityType;
+import net.minecraft.client.render.entity.state.PiglinEntityRenderState;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 
-public class PiglinExtraRenderer extends BipedEntityRenderer<MobEntity, PiglinEntityModel<MobEntity>>{
+public class PiglinExtraRenderer extends BipedEntityRenderer<AbstractPiglinEntity, PiglinEntityRenderState, PiglinEntityModel> {
 
-    private static final Map<EntityType<?>, Identifier> TEXTURES = ImmutableMap.of(
-		EntityFactory.PIGLIN_WARRIOR,
-		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png")
-		/*EntityFactory.PIGLIN_FUNGAL,
-		Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_fungusthrower.png")*/
-	);
-    
-    private static final float HORIZONTAL_SCALE = 1.0019531F;
+	private static final Identifier PIGLIN_W_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png");
+	public static final HeadFeatureRenderer.HeadTransformation HEAD_TRANSFORMATION = new HeadFeatureRenderer.HeadTransformation(0.0F, 0.0F, 1.0019531F);
 
 	@SuppressWarnings("rawtypes")
-    public PiglinExtraRenderer(
-		EntityRendererFactory.Context ctx, EntityModelLayer mainLayer, EntityModelLayer innerArmorLayer, EntityModelLayer outerArmorLayer, boolean zombie
-	) {
-		super(ctx, getPiglinModel(ctx.getModelLoader(), mainLayer, zombie), 0.5F, HORIZONTAL_SCALE, 1.0F, HORIZONTAL_SCALE);
+    public PiglinExtraRenderer(EntityRendererFactory.Context ctx, EntityModelLayer mainLayer, EntityModelLayer babyMainLayer, EquipmentModelData<EntityModelLayer> equipmentModelData, EquipmentModelData<EntityModelLayer> equipmentModelData2) {
+		super(ctx, new PiglinEntityModel(ctx.getPart(mainLayer)), new PiglinEntityModel(ctx.getPart(babyMainLayer)), 0.5F, HEAD_TRANSFORMATION);
 		this.addFeature(
 			new ArmorFeatureRenderer<>(
-				this, new ArmorEntityModel(ctx.getPart(innerArmorLayer)), new ArmorEntityModel(ctx.getPart(outerArmorLayer)), ctx.getModelManager()
+				this,
+				EquipmentModelData.mapToEntityModel(equipmentModelData, ctx.getEntityModels(), PiglinEntityModel::new),
+				EquipmentModelData.mapToEntityModel(equipmentModelData2, ctx.getEntityModels(), PiglinEntityModel::new),
+				ctx.getEquipmentRenderer()
 			)
 		);
 	}
 
-	private static PiglinEntityModel<MobEntity> getPiglinModel(EntityModelLoader modelLoader, EntityModelLayer layer, boolean zombie) {
-		PiglinEntityModel<MobEntity> piglinEntityModel = new PiglinEntityModel<>(modelLoader.getModelPart(layer));
-		if (zombie) {
-			piglinEntityModel.rightEar.visible = false;
-		}
 
-		return piglinEntityModel;
+	public PiglinEntityRenderState createRenderState() {
+		return new PiglinEntityRenderState();
 	}
 
-	public Identifier getTexture(MobEntity mobEntity) {
-		Identifier identifier = (Identifier)TEXTURES.get(mobEntity.getType());
-		if (identifier == null) {
-			throw new IllegalArgumentException("I don't know what texture to use for " + mobEntity.getType());
-		} else {
-			return identifier;
-		}
+	public Identifier getTexture(PiglinEntityRenderState piglinEntityRenderState) {
+		return PIGLIN_W_TEXTURE;
 	}
 
-	protected boolean isShaking(MobEntity mobEntity) {
-		return super.isShaking(mobEntity) || mobEntity instanceof AbstractPiglinEntity && ((AbstractPiglinEntity)mobEntity).shouldZombify();
+	protected boolean isShaking(PiglinEntityRenderState piglinEntityRenderState) {
+		return super.isShaking(piglinEntityRenderState) || piglinEntityRenderState.shouldZombify;
 	}
 
 }

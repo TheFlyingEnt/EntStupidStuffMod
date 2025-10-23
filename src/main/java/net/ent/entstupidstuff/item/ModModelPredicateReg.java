@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.item;
 
 
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
@@ -14,7 +13,7 @@ public class ModModelPredicateReg {
 
     public static void onInitialize() {
 
-        ModelPredicateProviderRegistry.register(
+        /*ModelPredicateProviderRegistry.register(
 			ItemFactory.CANNON_ITEM,
 			Identifier.ofVanilla("pull"),
 			(stack, world, entity, seed) -> {
@@ -34,7 +33,7 @@ public class ModModelPredicateReg {
 			(stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack && !CrossbowItem.isCharged(stack) ? 1.0F : 0.0F
 		);
 
-		ModelPredicateProviderRegistry.register(ItemFactory.CANNON_ITEM, Identifier.ofVanilla("charged"), (stack, world, entity, seed) -> CrossbowItem.isCharged(stack) ? 1.0F : 0.0F);
+		ModelPredicateProviderRegistry.register(ItemFactory.CANNON_ITEM, Identifier.ofVanilla("charged"), (stack, world, entity, seed) -> CrossbowItem.isCharged(stack) ? 1.0F : 0.0F);*/
 
     }
 

@@ -13,6 +13,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -29,8 +30,8 @@ public class ScorchedZombieEntity extends ZombieEntity{
     }
 
     @Override
-    public boolean tryAttack(Entity target) {
-        boolean successful = super.tryAttack(target);
+    public boolean tryAttack(ServerWorld world, Entity target) {
+        boolean successful = super.tryAttack(world, target);
         if (successful) {
             // Check if the target is an instance of LivingEntity to ensure it can be set on fire
             if (target instanceof LivingEntity) {
@@ -43,20 +44,20 @@ public class ScorchedZombieEntity extends ZombieEntity{
 
     public static DefaultAttributeContainer.Builder createScorchedZombieAttributes() {
         return ZombieEntity.createZombieAttributes()
-        .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D)
-        .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23D)
-        .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
-        .add(EntityAttributes.GENERIC_ARMOR, 2.0D)
-        .add(EntityAttributes.ZOMBIE_SPAWN_REINFORCEMENTS);
+        .add(EntityAttributes.FOLLOW_RANGE, 35.0D)
+        .add(EntityAttributes.MOVEMENT_SPEED, 0.23D)
+        .add(EntityAttributes.ATTACK_DAMAGE, 3.0D)
+        .add(EntityAttributes.ARMOR, 2.0D)
+        .add(EntityAttributes.SPAWN_REINFORCEMENTS);
     }
 
     @Override
     protected void initAttributes() {
         super.initAttributes();
-        this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(20.0D);
-        this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.23D);
-        this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(3.0D);
-        this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(2.0D);
+        this.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(20.0D);
+        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
+        this.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+        this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(2.0D);
     }
 
     /* Sounds */
@@ -85,10 +86,7 @@ public class ScorchedZombieEntity extends ZombieEntity{
 		return true;
 	}
 
-	@Override
-	protected ItemStack getSkull() {
-		return ItemStack.EMPTY;
-	}
+	
 
     /* Drown Code - Replaced with Water Damage + Sun Res */
 
@@ -96,15 +94,15 @@ public class ScorchedZombieEntity extends ZombieEntity{
     public void tick() {
         super.tick();
         if (this.isWet()) {
-            this.damage(this.getDamageSources().drown(), 1.0F); // Adjust damage amount as needed
+            //this.damage(this.getDamageSources().drown(), 1.0F); // Adjust damage amount as needed // TODO: 1.21.10 Fix this
         }
         // Prevent sunlight damage
         this.extinguish();
     }
 
-    @Override
+
     public boolean isWet() {
-        return this.isTouchingWater();
+        return this.isTouchingWaterOrRain();
     }
 
     @Override
@@ -122,7 +120,7 @@ public class ScorchedZombieEntity extends ZombieEntity{
     @Override
 	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
 		super.initEquipment(random, localDifficulty);
-		if (random.nextFloat() < (this.getWorld().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
+		if (random.nextFloat() < (this.getEntityWorld().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
 			int i = random.nextInt(3);;
 			if (i == 0) {
 				this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ItemFactory.callItem("iron_dagger")));

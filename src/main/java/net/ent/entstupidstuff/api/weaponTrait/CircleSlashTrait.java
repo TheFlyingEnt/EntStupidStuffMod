@@ -15,7 +15,7 @@ public class CircleSlashTrait {
     private static final int DURABILITY_DAMAGE = 5; // Customize the durability damage
 
     public static void performCircleSlash(PlayerEntity player, double radius) {
-        World world = player.getWorld();
+        World world = player.getEntityWorld();
         Box area = new Box(
             player.getX() - radius, player.getY() - radius, player.getZ() - radius,
             player.getX() + radius, player.getY() + radius, player.getZ() + radius
@@ -25,11 +25,11 @@ public class CircleSlashTrait {
 
         for (LivingEntity entity : entities) {
             // Deal damage to each entity
-            entity.damage(player.getDamageSources().playerAttack(player), 10.0F); // Adjust the damage value as needed
+            entity.damage(null, player.getDamageSources().playerAttack(player), 10.0F); // Adjust the damage value as needed
         }
 
         // Apply cooldown to the player
-        player.getItemCooldownManager().set(player.getMainHandStack().getItem(), COOLDOWN_TICKS);
+        player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
     
         // Damage the item
         // Damage the item
@@ -52,7 +52,7 @@ public class CircleSlashTrait {
     }
 
     public static boolean canPerformCircleSlash(PlayerEntity player) {
-        return !player.getItemCooldownManager().isCoolingDown(player.getMainHandStack().getItem());
+        return !player.getItemCooldownManager().isCoolingDown(player.getMainHandStack());
     }
 
 }

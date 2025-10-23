@@ -17,7 +17,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
-public class WeaponScytheItem extends SwordItem {
+public class WeaponScytheItem extends WeaponUpdatedItem {
     private static final int COOLDOWN_TICKS = 50;
     private static final double SWEEP_RANGE = 3.5;
     private static final double BASE_ATTACK_DAMAGE = 5.0;
@@ -27,21 +27,21 @@ public class WeaponScytheItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(),
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
                 -3.0f,
                 1,
                 2,
                 0.0f
             )
         ));
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         // small extra sweep on hit
         World world = attacker.getWorld();
-        if (!world.isClient) {
+        if (!world.isClient()) {
             List<LivingEntity> ents = world.getEntitiesByClass(LivingEntity.class, target.getBoundingBox().expand(2.0), e -> e != attacker && e.isAlive());
             for (LivingEntity le : ents) {
                 le.damage(attacker.getDamageSources().mobAttack(attacker), 2.0F);
@@ -49,12 +49,12 @@ public class WeaponScytheItem extends SwordItem {
             world.playSound(null, target.getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.8f, 0.9f);
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (!world.isClient) {
-            player.getItemCooldownManager().set(this, player.isCreative() ? 3 : COOLDOWN_TICKS);
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
+        if (!world.isClient()) {
+            player.getItemCooldownManager().set(player.getMainHandStack(), player.isCreative() ? 3 : COOLDOWN_TICKS);
 
             // Harvest mature crops around player in a small area
             BlockPos center = player.getBlockPos();
@@ -73,13 +73,13 @@ public class WeaponScytheItem extends SwordItem {
             // visual sweep + light mob damage
             List<LivingEntity> ents = world.getEntitiesByClass(LivingEntity.class, new Box(center).expand(SWEEP_RANGE), e -> e != player && e.isAlive());
             for (LivingEntity le : ents) {
-                le.damage(player.getDamageSources().playerAttack(player), (float)ATTACK_DAMAGE * 0.75f);
+                le.damage((ServerWorld) world,player.getDamageSources().playerAttack(player), (float)ATTACK_DAMAGE * 0.75f);
             }
 
             world.playSound(null, center, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1f, 0.7f);
             ((ServerWorld)world).spawnParticles(ParticleTypes.SWEEP_ATTACK, player.getX(), player.getY() + 1.0, player.getZ(), 12, 2.0, 0.5, 2.0, 0.0);
         }
-        return TypedActionResult.success(player.getStackInHand(hand));
+        return ActionResult.SUCCESS;
     }
 
     @Override

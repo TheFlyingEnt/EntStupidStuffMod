@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "entstupidstuff:fungal_slab_purple"
-    }
+    "#": "entstupidstuff:fungal_slab_purple"
   },
   "pattern": [
     "#",

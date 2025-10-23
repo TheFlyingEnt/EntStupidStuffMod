@@ -1,8 +1,5 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
-import com.google.common.collect.ImmutableList;
-
-import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
@@ -10,10 +7,11 @@ import net.minecraft.client.model.ModelPartBuilder;
 import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.AnimalModel;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 
-public class RedPandaModel<T extends RedPandaEntity> extends AnimalModel<T> {
+public class RedPandaModel extends EntityModel<LivingEntityRenderState>{
     
     public final ModelPart head;
 	private final ModelPart body;
@@ -24,7 +22,8 @@ public class RedPandaModel<T extends RedPandaEntity> extends AnimalModel<T> {
 	//private final ModelPart tail;
 
     public RedPandaModel(ModelPart root) {
-		super(true, 8.0F, 3.35F);
+		super(root);
+		//super(true, 8.0F, 3.35F);
 		this.head = root.getChild(EntityModelPartNames.HEAD);
 		this.body = root.getChild(EntityModelPartNames.BODY);
 		this.rightHindLeg = root.getChild(EntityModelPartNames.RIGHT_HIND_LEG);
@@ -47,46 +46,31 @@ public class RedPandaModel<T extends RedPandaEntity> extends AnimalModel<T> {
             .uv(32, 43).cuboid(EntityModelPartNames.LEFT_EAR, -3.0F, -6.0F, -11.25F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F))
             .uv(36, 43).cuboid(EntityModelPartNames.RIGHT_EAR, 2.0F, -6.0F, -11.25F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F))
 		    .uv(40, 15).cuboid(EntityModelPartNames.RIGHT_EAR, 3.0F, -7.0F, -11.25F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)),
-        ModelTransform.pivot(2.0F, 15.0F, -6.0F));
+        ModelTransform.origin(2.0F, 15.0F, -6.0F));
 
         modelPartData.addChild(
             EntityModelPartNames.BODY,
             ModelPartBuilder.create()
             .uv(0, 0).cuboid(-4.0F, -3.0F, 0.0F, 8.0F, 7.0F, 12.0F, new Dilation(0.0F))
             .uv(0, 34).cuboid(EntityModelPartNames.TAIL, -2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 12.0F, new Dilation(0.0F)),
-            ModelTransform.pivot(2.0F, 15.0F, -6.0F));
+            ModelTransform.origin(2.0F, 15.0F, -6.0F));
 
 
-        //ModelPartData body = modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -3.0F, 0.0F, 8.0F, 7.0F, 12.0F, new Dilation(0.0F)), ModelTransform.pivot(2.0F, 15.0F, -6.0F));
+        //ModelPartData body = modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -3.0F, 0.0F, 8.0F, 7.0F, 12.0F, new Dilation(0.0F)), ModelTransform.origin(2.0F, 15.0F, -6.0F));
 
-        ModelPartData leftArm = modelPartData.addChild(EntityModelPartNames.LEFT_FRONT_LEG, ModelPartBuilder.create().uv(34, 19).mirrored().cuboid(-1.0F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-1.0F, 19.0F, -4.5F));
+        ModelPartData leftArm = modelPartData.addChild(EntityModelPartNames.LEFT_FRONT_LEG, ModelPartBuilder.create().uv(34, 19).mirrored().cuboid(-1.0F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.origin(-1.0F, 19.0F, -4.5F));
 
-		ModelPartData rightArm = modelPartData.addChild(EntityModelPartNames.RIGHT_FRONT_LEG, ModelPartBuilder.create().uv(34, 19).cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)), ModelTransform.pivot(4.5F, 19.0F, -4.5F));
+		ModelPartData rightArm = modelPartData.addChild(EntityModelPartNames.RIGHT_FRONT_LEG, ModelPartBuilder.create().uv(34, 19).cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)), ModelTransform.origin(4.5F, 19.0F, -4.5F));
 
-		ModelPartData rightLeg = modelPartData.addChild(EntityModelPartNames.RIGHT_HIND_LEG, ModelPartBuilder.create().uv(34, 19).cuboid(3.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)), ModelTransform.pivot(-0.5F, 19.0F, 4.5F));
+		ModelPartData rightLeg = modelPartData.addChild(EntityModelPartNames.RIGHT_HIND_LEG, ModelPartBuilder.create().uv(34, 19).cuboid(3.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)), ModelTransform.origin(-0.5F, 19.0F, 4.5F));
 
-		ModelPartData leftLeg = modelPartData.addChild(EntityModelPartNames.LEFT_HIND_LEG, ModelPartBuilder.create().uv(34, 19).mirrored().cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-0.5F, 19.0F, 4.5F));
+		ModelPartData leftLeg = modelPartData.addChild(EntityModelPartNames.LEFT_HIND_LEG, ModelPartBuilder.create().uv(34, 19).mirrored().cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 5.0F, 3.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.origin(-0.5F, 19.0F, 4.5F));
 
-		//ModelPartData tail = modelPartData.addChild(EntityModelPartNames.TAIL, ModelPartBuilder.create().uv(0, 34).cuboid(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 12.0F, new Dilation(0.0F)), ModelTransform.pivot(2.0F, 14.0F, 6.0F));
+		//ModelPartData tail = modelPartData.addChild(EntityModelPartNames.TAIL, ModelPartBuilder.create().uv(0, 34).cuboid(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 12.0F, new Dilation(0.0F)), ModelTransform.origin(2.0F, 14.0F, 6.0F));
 
         return TexturedModelData.of(modelData, 64, 64);
     }
 
-    @Override
-	protected Iterable<ModelPart> getHeadParts() {
-		return ImmutableList.<ModelPart>of(this.head);
-	}
-
-	@Override
-	protected Iterable<ModelPart> getBodyParts() {
-		return ImmutableList.<ModelPart>of(this.body, this.rightHindLeg, this.leftHindLeg, this.rightFrontLeg, this.leftFrontLeg);
-	}
-
-    @Override
-    public void setAngles(T entity, float limbAngle, float limbDistance, float animationProgress, float headYaw,
-            float headPitch) {
-        
-    }
 
 
     

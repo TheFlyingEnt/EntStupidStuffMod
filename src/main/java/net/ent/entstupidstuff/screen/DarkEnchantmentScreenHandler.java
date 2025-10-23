@@ -83,8 +83,8 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
             }
 
             @Override
-            public Pair<Identifier, Identifier> getBackgroundSprite() {
-                return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, EMPTY_ECHO_SHARD_SLOT_TEXTURE);
+            public Identifier getBackgroundSprite() {
+                return EMPTY_ECHO_SHARD_SLOT_TEXTURE;
             }
         });
 
@@ -102,7 +102,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
         this.addProperty(Property.create(this.enchantmentPower, 0));
         this.addProperty(Property.create(this.enchantmentPower, 1));
         this.addProperty(Property.create(this.enchantmentPower, 2));
-        this.addProperty(this.seed).set(playerInventory.player.getEnchantmentTableSeed());
+        this.addProperty(this.seed).set(playerInventory.player.getEnchantingTableSeed());
         this.addProperty(Property.create(this.enchantmentId, 0));
         this.addProperty(Property.create(this.enchantmentId, 1));
         this.addProperty(Property.create(this.enchantmentId, 2));
@@ -117,7 +117,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 			ItemStack itemStack = inventory.getStack(0);
 			if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
 				this.context.run((world, pos) -> {
-					IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getIndexedEntries();
+					IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getIndexedEntries();
 					int ix = 0;
 
 					for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
@@ -142,8 +142,8 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 							List<EnchantmentLevelEntry> list = this.generateEnchantments(world.getRegistryManager(), itemStack, jx, this.enchantmentPower[jx]);
 							if (list != null && !list.isEmpty()) {
 								EnchantmentLevelEntry enchantmentLevelEntry = (EnchantmentLevelEntry)list.get(this.random.nextInt(list.size()));
-								this.enchantmentId[jx] = indexedIterable.getRawId(enchantmentLevelEntry.enchantment);
-								this.enchantmentLevel[jx] = enchantmentLevelEntry.level;
+								this.enchantmentId[jx] = indexedIterable.getRawId(enchantmentLevelEntry.enchantment());
+								this.enchantmentLevel[jx] = enchantmentLevelEntry.level();
 							}
 						}
 					}
@@ -189,7 +189,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
                         }
 
                         for (EnchantmentLevelEntry entry : list) {
-                            enchanted.addEnchantment(entry.enchantment, entry.level);
+                            enchanted.addEnchantment(entry.enchantment(), entry.level());
                         }
 
                         player.incrementStat(Stats.ENCHANT_ITEM);
@@ -198,7 +198,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
                         }
 
                         this.inventory.markDirty();
-                        this.seed.set(player.getEnchantmentTableSeed());
+                        this.seed.set(player.getEnchantingTableSeed());
                         this.onContentChanged(this.inventory);
                         world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F,
                                 world.random.nextFloat() * 0.1F + 0.9F);
@@ -215,7 +215,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 
         // 🔽 Vanilla enchantments only (for now)
         Optional<RegistryEntryList.Named<Enchantment>> optional =
-                registryManager.get(RegistryKeys.ENCHANTMENT).getEntryList(EnchantmentTags.IN_ENCHANTING_TABLE);
+                registryManager.getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(EnchantmentTags.IN_ENCHANTING_TABLE);
         if (optional.isEmpty()) {
             return List.of();
         }

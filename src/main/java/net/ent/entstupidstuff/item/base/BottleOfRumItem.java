@@ -7,10 +7,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 public class BottleOfRumItem extends Item {
@@ -32,9 +31,9 @@ public class BottleOfRumItem extends Item {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
         player.setCurrentHand(hand);
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
+        return ActionResult.SUCCESS;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class BottleOfRumItem extends Item {
 
         PlayerEntity player2 = (PlayerEntity) player;
 
-        if (!world.isClient) {
+        if (!world.isClient()) {
             if (!player2.isCreative()) {
                 stack.decrement(1);
             }
@@ -59,7 +58,7 @@ public class BottleOfRumItem extends Item {
 
     /*@Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity player) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             player.setStackInHand(player.getActiveHand(), new ItemStack(Items.GLASS_BOTTLE));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 200, 1));
             //applyDrunkEffect(player, (ServerWorld) world);

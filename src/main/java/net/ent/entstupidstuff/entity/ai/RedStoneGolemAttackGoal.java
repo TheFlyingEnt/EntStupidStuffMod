@@ -66,7 +66,7 @@ public class RedStoneGolemAttackGoal  extends MeleeAttackGoal  {
     protected void performAttack(LivingEntity pEnemy) {
         this.resetAttackCooldown();
         this.mob.swingHand(Hand.MAIN_HAND);
-        this.mob.tryAttack(pEnemy);
+        this.mob.tryAttack(null, pEnemy);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class BleedingTrait implements ITrait {
             damageMultiplier = 1.0f;
         }
 
-        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 
         if (attackDamageInstance != null) {
             attackDamageInstance.removeModifier(BASE_ATTACK_DAMAGE_MODIFIER_ID);

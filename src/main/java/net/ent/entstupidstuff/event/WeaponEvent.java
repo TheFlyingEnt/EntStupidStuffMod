@@ -37,7 +37,7 @@ public class WeaponEvent {
 
                 //Running only for player
                 PlayerEntity player = (PlayerEntity) attacker;
-                float baseDamage = (float) attacker.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                float baseDamage = (float) attacker.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE);
 
                 if (mainHandItem instanceof ITwoHandTrait) {
                     System.out.println("Applying Effect: TwoHand");
@@ -60,9 +60,9 @@ public class WeaponEvent {
 
                     BluntTrait.applyBluntEffect(attacker, (LivingEntity) entity);
 
-                    if (world.isClient) { // Ensure this runs only on the client side
-                        Vec3d pos = player.getPos();
-                        world.addParticle(ParticleTypes.SONIC_BOOM, pos.x, pos.y + 1.0, pos.z, 0.0, 0.0, 0.0);
+                    if (world.isClient()) { // Ensure this runs only on the client side
+                        Vec3d pos = player.getEntityPos();
+                        world.addParticleClient(ParticleTypes.SONIC_BOOM, pos.x, pos.y + 1.0, pos.z, 0.0, 0.0, 0.0);
                     }
                 }
 
@@ -97,11 +97,11 @@ public class WeaponEvent {
                 //Running only for Living Entitys
                 // Added an If then statement which should work when an entity does not have a GENERIC_ATTACK_DAMAGE
 
-                EntityAttributeInstance attackDamageAttribute = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                EntityAttributeInstance attackDamageAttribute = attacker.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
                 float baseDamage = 0;
 
                 if (attackDamageAttribute != null) {
-                    baseDamage = (float) attacker.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                    baseDamage = (float) attacker.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE);
 
                     if (mainHandItem instanceof ITwoHandTrait) {
 
@@ -199,7 +199,7 @@ public class WeaponEvent {
 
                 //Implementation of Legacy Code
 
-                float baseDamage = (float) player.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                float baseDamage = (float) player.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE);
 
                 if (mainHandItem instanceof ITwoHandTrait) {
 
@@ -267,7 +267,7 @@ public class WeaponEvent {
                 Item mainHandItem = mainHandStack.getItem();
 
                 //Pre-Trait Damage:
-                float baseDamage = (float) playerEntity.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                float baseDamage = (float) playerEntity.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE);
                 System.out.println(baseDamage);
 
 

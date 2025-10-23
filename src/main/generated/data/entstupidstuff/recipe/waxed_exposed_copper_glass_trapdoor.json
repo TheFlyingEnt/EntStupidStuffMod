@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "glass_trapdoor",
   "ingredients": [
-    {
-      "item": "minecraft:waxed_exposed_copper_trapdoor"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:waxed_exposed_copper_trapdoor",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

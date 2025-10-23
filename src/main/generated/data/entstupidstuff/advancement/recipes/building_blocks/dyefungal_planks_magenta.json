@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:dyefungal_planks_magenta"
+        "recipe": "entstupidstuff:dyefungal_planks_magenta"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:dyefungal_planks_magenta"
+      "entstupidstuff:dyefungal_planks_magenta"
     ]
   }
 }

@@ -15,7 +15,7 @@ public class UpdatedEnchantmentEffects {
 
     public static final MapCodec<? extends EnchantmentEntityEffect> LIGHTNING_STRIKER = registerEntityEffect("lightning_striker", LightningStrikerEnchantmentEffect.CODEC);
     public static final MapCodec<? extends EnchantmentEntityEffect> FROSTBITE = registerEntityEffect("frostbite", FrostbiteEnchantmentEffect.CODEC);
-    public static final MapCodec<? extends EnchantmentEntityEffect> BANEOFRAIDERS = registerEntityEffect("lightning_striker", LightningStrikerEnchantmentEffect.CODEC);
+    //public static final MapCodec<? extends EnchantmentEntityEffect> BANEOFRAIDERS = registerEntityEffect("baneofraiders", LightningStrikerEnchantmentEffect.CODEC);
     public static final MapCodec<? extends EnchantmentEntityEffect> GRAVITY = registerEntityEffect("gravity", GravityEnchantmentEffect.CODEC);
 
 

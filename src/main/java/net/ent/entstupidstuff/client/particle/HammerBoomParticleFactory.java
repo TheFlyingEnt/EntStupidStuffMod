@@ -5,6 +5,7 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.util.math.random.Random;
 
 public class HammerBoomParticleFactory implements ParticleFactory<SimpleParticleType> {
     private final SpriteProvider spriteProvider;
@@ -14,7 +15,9 @@ public class HammerBoomParticleFactory implements ParticleFactory<SimpleParticle
     }
 
     @Override
-    public Particle createParticle(SimpleParticleType type, ClientWorld world, double x, double y, double z, double vx, double vy, double vz) {
+    public Particle createParticle(SimpleParticleType arg0, ClientWorld world, double x, double y, double z,
+            double vx, double vy, double vz, Random arg8) {
         return new HammerBoomParticle(world, x, y, z, vx, vy, vz, this.spriteProvider);
     }
+
 }

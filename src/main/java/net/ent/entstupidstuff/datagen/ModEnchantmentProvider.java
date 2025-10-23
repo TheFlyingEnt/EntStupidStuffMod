@@ -53,10 +53,11 @@ public class ModEnchantmentProvider extends FabricDynamicRegistryProvider{
     protected void configure(WrapperLookup registries, Entries entries) {
 
         //Enchantments
-        RegistryEntryLookup<DamageType> damageTypeLookup = registries.getWrapperOrThrow(RegistryKeys.DAMAGE_TYPE);
-        RegistryEntryLookup<Enchantment> enchantmentLookup = registries.getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
-        RegistryEntryLookup<Item> itemLookup = registries.getWrapperOrThrow(RegistryKeys.ITEM);
-        RegistryEntryLookup<Block> blockLookup = registries.getWrapperOrThrow(RegistryKeys.BLOCK);
+        RegistryEntryLookup<DamageType> damageTypeLookup = registries.getOrThrow(RegistryKeys.DAMAGE_TYPE);
+        RegistryEntryLookup<Enchantment> enchantmentLookup = registries.getOrThrow(RegistryKeys.ENCHANTMENT);
+        RegistryEntryLookup<EntityType<?>> entityTypeLookup = registries.getOrThrow(RegistryKeys.ENTITY_TYPE);
+        RegistryEntryLookup<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
+        RegistryEntryLookup<Block> blockLookup = registries.getOrThrow(RegistryKeys.BLOCK);
         register(
                 entries,
                 EnchantmentFactory.FROSTBITE,
@@ -169,7 +170,7 @@ public class ModEnchantmentProvider extends FabricDynamicRegistryProvider{
 					EnchantmentEffectComponentTypes.DAMAGE,
 					new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5F)),
 					EntityPropertiesLootCondition.builder(
-						LootContext.EntityTarget.THIS, EntityPredicate.Builder.create().type(EntityTypePredicate.create(EntityTypeTags.RAIDERS))
+						LootContext.EntityReference.THIS, EntityPredicate.Builder.create().type(EntityTypePredicate.create(entityTypeLookup, EntityTypeTags.RAIDERS))
 					)
 				)
 		);

@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
+import net.ent.entstupidstuff.client.render.entity.state.PerchFishRenderState;
 import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -11,7 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class PerchFishRenderer extends MobEntityRenderer<PerchFishEntity, PerchFishModel<PerchFishEntity>>{
+public class PerchFishRenderer extends MobEntityRenderer<PerchFishEntity, PerchFishRenderState, PerchFishModel>{
     private static final Identifier TEXTURE_1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/perch/perch_dark.png");
     private static final Identifier TEXTURE_2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/perch/perch_lighter.png");
 
@@ -20,22 +21,33 @@ public class PerchFishRenderer extends MobEntityRenderer<PerchFishEntity, PerchF
     }
 
     @Override
-    public Identifier getTexture(PerchFishEntity fishEntity) {
-      if (fishEntity.getVariant() == PerchFishEntity.Variant.DARK) {
-			return TEXTURE_1;
-		} else {
-			return TEXTURE_2;
-		} 
+    public Identifier getTexture(PerchFishRenderState state) {
+      	return switch (state.variant) {
+			case DARK -> TEXTURE_1;
+			case LIGHT -> TEXTURE_2;
+			default -> TEXTURE_2;
+		};
     }
 
-    protected void setupTransforms(PerchFishEntity fishEntity, MatrixStack matrixStack, float f, float g, float h, float i) {
-        super.setupTransforms(fishEntity, matrixStack, f, g, h, i);
-        float j = 4.3F * MathHelper.sin(0.6F * f);
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        if (!fishEntity.isTouchingWater()) {
-            matrixStack.translate(0.1F, 0.1F, -0.1F);
-            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
-        }
+	@Override
+	public PerchFishRenderState createRenderState() {
+		return new PerchFishRenderState();
+	}
 
-    }  
+    @Override
+	protected void setupTransforms(PerchFishRenderState state, MatrixStack matrices, float bodyYaw, float baseHeight) {
+		super.setupTransforms(state, matrices, bodyYaw, baseHeight);
+		float f = 4.3F * MathHelper.sin(0.6F * state.age);
+		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(f));
+		if (!state.touchingWater) {
+			matrices.translate(0.1F, 0.1F, -0.1F);
+			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
+		}
+	}
+
+	@Override
+	public void updateRenderState(PerchFishEntity entity, PerchFishRenderState state, float tickDelta) {
+		super.updateRenderState(entity, state, tickDelta);
+		state.variant = entity.getVariant();
+	}
 }

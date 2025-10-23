@@ -3,30 +3,29 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
-import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-public class SlimedZombieOverlayFeatureRenderer<T extends SlimedZombieEntity> extends FeatureRenderer<T, SlimedZombieModel<T>> {
+public class SlimedZombieOverlayFeatureRenderer extends FeatureRenderer<ZombieEntityRenderState, SlimedZombieModel> {
    private static final Identifier SKIN = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_slimed_outer_layer.png");
-   private final SlimedZombieModel<T> model;
+   private final SlimedZombieModel babyModel;
+   private final SlimedZombieModel model;
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   public SlimedZombieOverlayFeatureRenderer(FeatureRendererContext<T, SlimedZombieModel<T>> context, EntityModelLoader loader) {
+   public SlimedZombieOverlayFeatureRenderer( FeatureRendererContext<ZombieEntityRenderState, SlimedZombieModel> context, LoadedEntityModels loader) {
       super(context);
       this.model = new SlimedZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER));
+      this.babyModel = new SlimedZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER)); //TODO: 1.21.10 Please Fix
    }
 
    @Override
-   public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-      //render(this.getContextModel(), this.model, SKIN, matrixStack, vertexConsumerProvider, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, OverlayTexture.DEFAULT_UV);
-      RenderLayer layer = RenderLayer.getEntityTranslucentCull(SKIN);
-      render(this.getContextModel(), this.model, SKIN, matrices, vertexConsumers, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, -1);
+   public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, ZombieEntityRenderState state, float limbAngle, float limbDistance) {
+      SlimedZombieModel entity = state.baby ? this.babyModel : this.model;
+		render(entity, SKIN, matrices, queue, light, state, -1, 1);
    }
 
 }

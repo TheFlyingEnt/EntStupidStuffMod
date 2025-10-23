@@ -7,11 +7,11 @@ import net.ent.entstupidstuff.api.IntTrait.ITrait;
 import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
 import net.ent.entstupidstuff.api.weaponTrait.CircleSlashTrait;
 import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.ParticleTypes;
@@ -19,7 +19,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -27,22 +26,23 @@ import net.minecraft.world.World;
 
 
 
-public class LongSwordItem extends SwordItem  implements ITwoHandTrait, ITrait, ICircleSlashTrait{
+public class LongSwordItem extends WeaponUpdatedItem {
 
     //public float attack = 4;
 
     public LongSwordItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (5/*3.5*/)  + toolMaterial.getAttackDamage(), -2.6f, 1, 1, 0)));
+        super(toolMaterial, settings);
+        //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (5/*3.5*/)  + toolMaterial.attackDamageBonus(), -2.6f, 1, 1, 0)));
         
         //material, baseAttackDamage (Added), attackSpeed (Added), toolReach (Added), attackSweep (Added)
 
     }
 
     // For 1.20.5+ Adding TwoHanded ToolTip
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
-    }
+    }*/
 
     /*@Override
 	public UseAction getUseAction(ItemStack stack) {
@@ -51,12 +51,12 @@ public class LongSwordItem extends SwordItem  implements ITwoHandTrait, ITrait, 
 
     /* Experimental Code */
 
-    @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    /*@Override
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
 
-        if (world.isClient && hand == Hand.MAIN_HAND) {
+        if (world.isClient() && hand == Hand.MAIN_HAND) {
             if (CircleSlashTrait.canPerformCircleSlash(player)) {
-                if (player.getWorld().isClient()) {
+                if (player.getEntityWorld().isClient()) {
                     for (int i = 0; i < 360; i += 10) {
                         /*Vec3d playerPos = player.getPos();
                         double angle = Math.toRadians(i);
@@ -65,7 +65,7 @@ public class LongSwordItem extends SwordItem  implements ITwoHandTrait, ITrait, 
                         double offsetZ = playerPos.z + 1 * Math.sin(angle);
             
                         // Spawn particles
-                        world.addParticle(ParticleTypes.SWEEP_ATTACK, offsetX, offsetY, offsetZ, 0, 0, 0);*/
+                        world.addParticle(ParticleTypes.SWEEP_ATTACK, offsetX, offsetY, offsetZ, 0, 0, 0);*
                         createParticleArc(world, player);
                     }
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20, 1));
@@ -74,19 +74,19 @@ public class LongSwordItem extends SwordItem  implements ITwoHandTrait, ITrait, 
             }
         }
 
-        if (!world.isClient && hand == Hand.MAIN_HAND) {
+        if (!world.isClient() && hand == Hand.MAIN_HAND) {
             if (CircleSlashTrait.canPerformCircleSlash(player)) {
                 CircleSlashTrait.performCircleSlash(player, 2.0); // Perform the circle slash with a 2-block radius               
 
-                return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
+                return new ActionResult;
             } else {
-                return new TypedActionResult<>(ActionResult.FAIL, player.getStackInHand(hand)); // Indicate failure if on cooldown
+                return new ActionResult; // Indicate failure if on cooldown
             }
         }
-        return new TypedActionResult<>(ActionResult.PASS, player.getStackInHand(hand));
-    }
+        return new ActionResult.;
+    }*/
 
-    private void createParticleArc(World world, PlayerEntity player) {
+    /*private void createParticleArc(World world, PlayerEntity player) {
         // Arc parameters
 
         System.out.println("Sweap Attack Preformed - Particles");
@@ -104,7 +104,7 @@ public class LongSwordItem extends SwordItem  implements ITwoHandTrait, ITrait, 
             Vec3d particlePos = startPos.add(x, y, z);
             world.addParticle(ParticleTypes.SMOKE, particlePos.x, particlePos.y, particlePos.z, 0, 0.01, 0);
         }
-    }
+    }*/
 
     
 }

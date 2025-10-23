@@ -2,10 +2,13 @@ package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -16,8 +19,9 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -25,23 +29,28 @@ import net.minecraft.world.World;
 
 public class BassEntity extends SchoolingFishEntity {
 
-    public BassEntity(EntityType<? extends SchoolingFishEntity> entityType, World world) {
-        super(entityType, world);
-    }
+      public BassEntity(EntityType<? extends SchoolingFishEntity> entityType, World world) {
+         super(entityType, world);
+      }
 
-    private Variant variant;
-    private static final TrackedData<Integer> VARIANT = DataTracker.registerData(BassEntity.class, TrackedDataHandlerRegistry.INTEGER);
+      private Variant variant;
+      private static final TrackedData<Integer> VARIANT = DataTracker.registerData(BassEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
-    public enum Variant {
+   public enum Variant {
         MOUTH(0, "Mouth"),
         RIVER(1, "River"),
         SPOTTED(2, "Spotted");
 
-        private static final Variant[] VALUES = values();
+      private static final Variant[] VALUES = values();
 		private final int id;
 		private final String name;
 
-        Variant(int id, String name) {
+      public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+         Variant::byId,
+         Variant::getId
+      );
+
+      Variant(int id, String name) {
 			this.id = id;
 			this.name = name;
 		}
@@ -96,10 +105,10 @@ public class BassEntity extends SchoolingFishEntity {
    }
 
    @Override
-   public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
-    }
+   public void writeCustomData(WriteView view) {
+      super.writeCustomData(view);
+      view.putInt("Variant", this.getVariant().getId());
+   }
 
    public void copyDataToStack(ItemStack stack) {
       super.copyDataToStack(stack);
@@ -118,10 +127,9 @@ public class BassEntity extends SchoolingFishEntity {
    }
 
    @Override
-   public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
-
+   protected void readCustomData(ReadView view) {
+      super.readCustomData(view);
+		this.setVariant((BassEntity.Variant)view.read("Variant", BassEntity.Variant.INDEX_CODEC).orElse(BassEntity.Variant.MOUTH));
    }
 
 	public void setVariant(BassEntity.Variant variant) {
@@ -150,10 +158,7 @@ public class BassEntity extends SchoolingFishEntity {
 
    @Override
    public void copyDataFromNbt(NbtCompound nbt) {
-      super.copyDataFromNbt(nbt);
-      if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-         this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
-      }
+      Bucketable.copyDataFromNbt(this, nbt);
    }
     
 }

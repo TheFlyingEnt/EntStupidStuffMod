@@ -35,7 +35,7 @@ public class SunkenSkeletonMoveControl extends MoveControl {
             float h = (float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F;
             this.skeleton.setYaw(this.wrapDegrees(this.skeleton.getYaw(), h, 90.0F));
             this.skeleton.bodyYaw = this.skeleton.getYaw();
-            float i = (float)(this.speed * this.skeleton.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
+            float i = (float)(this.speed * this.skeleton.getAttributeValue(EntityAttributes.MOVEMENT_SPEED));
             float j = MathHelper.lerp(0.125F, this.skeleton.getMovementSpeed(), i);
             this.skeleton.setMovementSpeed(j);
             this.skeleton.setVelocity(this.skeleton.getVelocity().add((double)j * d * 0.005, (double)j * e * 0.1, (double)j * f * 0.005));

@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import java.util.List;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
@@ -8,18 +10,19 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.state.TridentEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.RotationAxis;
 
 @Environment(EnvType.CLIENT)
-public class AncientTridentRenderer extends EntityRenderer<AncientTridentEntity> {
+public class AncientTridentRenderer extends EntityRenderer<AncientTridentEntity, TridentEntityRenderState> {
    public static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident.png");
    public static final Identifier GLOW_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident_e.png");
    private final AncientTridentModel model;
@@ -30,27 +33,70 @@ public class AncientTridentRenderer extends EntityRenderer<AncientTridentEntity>
    }
 
    @Override
-   public void render(AncientTridentEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) { //This Does Work
-        matrices.push();
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(MathHelper.lerp(tickDelta, entity.prevYaw, entity.getYaw()) - 90.0F));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.lerp(tickDelta, entity.prevPitch, entity.getPitch()) + 90.0F));
+   public void render(
+         TridentEntityRenderState state,
+         MatrixStack matrices,
+         OrderedRenderCommandQueue renderQueue,
+         CameraRenderState camera
+   ) {
+      matrices.push();
 
-        // Base texture
-        VertexConsumer baseConsumer = ItemRenderer.getDirectItemGlintConsumer(
-            vertexConsumers, this.model.getLayer(TEXTURE), false, entity.isEnchanted()
-        );
-        this.model.render(matrices, baseConsumer, light, OverlayTexture.DEFAULT_UV);
+      // Apply rotation like before
+      matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw - 90.0F));
+      matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(state.pitch + 90.0F));
 
-        // Glow texture
-        VertexConsumer glowConsumer = vertexConsumers.getBuffer(RenderLayer.getEyes(GLOW_TEXTURE));
-        this.model.render(matrices, glowConsumer, 15728640, OverlayTexture.DEFAULT_UV); // 15728640 = maximum light
+      // === Base texture (with optional glint) ===
+      List<RenderLayer> layers = ItemRenderer.getGlintRenderLayers(
+               this.model.getLayer(TEXTURE),
+               false,
+               state.enchanted
+      );
 
-        matrices.pop();
-        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
-    }
+      for (int i = 0; i < layers.size(); i++) {
+         renderQueue.getBatchingQueue(i).submitModel(
+                  this.model,
+                  Unit.INSTANCE,
+                  matrices,
+                  layers.get(i),
+                  state.light,
+                  OverlayTexture.DEFAULT_UV,
+                  -1,
+                  null,
+                  state.outlineColor,
+                  null
+         );
+      }
+
+      // === Glow texture (like RenderLayer.getEyes(GLOW_TEXTURE)) ===
+      renderQueue.getBatchingQueue(0).submitModel(
+               this.model,
+               Unit.INSTANCE,
+               matrices,
+               RenderLayer.getEyes(GLOW_TEXTURE),
+               15728640, // Max light (same as before)
+               OverlayTexture.DEFAULT_UV,
+               -1,
+               null,
+               state.outlineColor,
+               null
+      );
+
+      matrices.pop();
+
+      super.render(state, matrices, renderQueue, camera);
+   }
 
    @Override
-   public Identifier getTexture(AncientTridentEntity tridentEntity) {
-      return TEXTURE;
+   public TridentEntityRenderState createRenderState() {
+      return new TridentEntityRenderState();
    }
+
+   @Override
+   public void updateRenderState(AncientTridentEntity entity, TridentEntityRenderState state, float tickDelta) {
+      super.updateRenderState(entity, state, tickDelta);
+      state.yaw = entity.getLerpedYaw(tickDelta);
+      state.pitch = entity.getLerpedPitch(tickDelta);
+      state.enchanted = entity.isEnchanted();
+   }
+   
 }

@@ -27,7 +27,7 @@ public class HoveringInfernoEntity extends BlazeEntity{
     @Override
     public void tick() {
         super.tick();
-        if(this.getWorld().isClient()) {
+        if(this.getEntityWorld().isClient()) {
             setupAnimationStates();
         }
     }
@@ -92,7 +92,7 @@ public class HoveringInfernoEntity extends BlazeEntity{
     @Override
     protected void updateLimbs(float posDelta) {
         float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
-        this.limbAnimator.updateLimbs(f, 0.2f);
+        this.limbAnimator.updateLimbs(f, 0.2f, 1);
     }
 
 }

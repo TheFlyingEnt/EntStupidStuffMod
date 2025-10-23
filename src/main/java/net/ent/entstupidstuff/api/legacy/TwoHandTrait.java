@@ -43,7 +43,7 @@ public class TwoHandTrait /*implements Trait*/{
 
     public float modWeaponDamage(ToolMaterial material, float baseDamage, DamageSource source, LivingEntity attackerE, LivingEntity victiumE){
         float damageMultiplier = 0.25f;
-        float finalDamage = (material.getAttackDamage() + baseDamage) * damageMultiplier;
+        float finalDamage = (material.attackDamageBonus() + baseDamage) * damageMultiplier;
 
         return (1 - finalDamage);
     }
@@ -89,7 +89,7 @@ public class TwoHandTrait /*implements Trait*/{
 
     public static void applyDamageReduction(PlayerEntity player, boolean reduceDamage, double toolDamage) {
         double damageMultiplier = reduceDamage ? 0.25 : 1.0;
-        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 
         // Remove the existing modifier if it exists
         if (attackDamageInstance != null) {
@@ -105,9 +105,9 @@ public class TwoHandTrait /*implements Trait*/{
 
     public static void weaponCheck(ItemStack stack, World world, Entity entity, int slot, boolean selected, ToolMaterial toolMaterial, float attackDamage ) {
         System.out.println("InMethod");
-        if (!world.isClient && entity instanceof PlayerEntity) {
+        if (!world.isClient() && entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
-            boolean isHoldingTwoHandedWeapon = player.getMainHandStack().getItem() instanceof WeaponItem;
+            boolean isHoldingTwoHandedWeapon = false; //= player.getMainHandStack().getItem() instanceof WeaponItem;
 
             if (isHoldingTwoHandedWeapon) {
                 boolean reduceDamage = isUsingTwoHands(player);
@@ -141,7 +141,7 @@ public class TwoHandTrait /*implements Trait*/{
 
     /*public static void applyDamageReduction(PlayerEntity player, boolean reduceDamage, double toolDamage) {
         double damageMultiplier = reduceDamage ? 0.25 : 1.0;
-        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 
         // Remove the existing modifier if it exists
         if (attackDamageInstance != null) {

@@ -24,11 +24,11 @@ public class RedPandaEntity extends AnimalEntity{
 
     public static DefaultAttributeContainer.Builder createRedPandaAttributes() {
 		return MobEntity.createMobAttributes()
-			.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3F)
-			.add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0)
-			.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
-			.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0)
-			.add(EntityAttributes.GENERIC_SAFE_FALL_DISTANCE, 5.0);
+			.add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
+			.add(EntityAttributes.MAX_HEALTH, 10.0)
+			.add(EntityAttributes.FOLLOW_RANGE, 32.0)
+			.add(EntityAttributes.ATTACK_DAMAGE, 2.0)
+			.add(EntityAttributes.SAFE_FALL_DISTANCE, 5.0);
 	}
 
 

@@ -32,29 +32,29 @@ public class UpdatedItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void configure(WrapperLookup wrapperLookup) {
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED)
+        valueLookupBuilder(ItemTags.PIGLIN_LOVED)
                 .addTag(ItemTags.GOLD_ORES)
                 .add(
                         ItemFactory.callItem("golden_hammer") // TODO: Add Remaining Golden Weapons
                 );
 
-        /*this.getOrCreateTagBuilder(ItemTags.SWORD_ENCHANTABLE).addTag(ItemTags.SWORDS);
-        this.getOrCreateTagBuilder(ItemTags.FIRE_ASPECT_ENCHANTABLE).addTag(ItemTags.SWORD_ENCHANTABLE).add(Items.MACE);
-        this.getOrCreateTagBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).addTag(ItemTags.SWORDS).addTag(ItemTags.AXES);
-        this.getOrCreateTagBuilder(ItemTags.WEAPON_ENCHANTABLE).addTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
+        /*valueLookupBuilder(ItemTags.SWORD_ENCHANTABLE).addTag(ItemTags.SWORDS);
+        valueLookupBuilder(ItemTags.FIRE_ASPECT_ENCHANTABLE).addTag(ItemTags.SWORD_ENCHANTABLE).add(Items.MACE);
+        valueLookupBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).addTag(ItemTags.SWORDS).addTag(ItemTags.AXES);
+        valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).addTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
                 .add(Items.MACE);
-        this.getOrCreateTagBuilder(ItemTags.MACE_ENCHANTABLE).add(Items.MACE);
-        this.getOrCreateTagBuilder(ItemTags.MINING_ENCHANTABLE)
+        valueLookupBuilder(ItemTags.MACE_ENCHANTABLE).add(Items.MACE);
+        valueLookupBuilder(ItemTags.MINING_ENCHANTABLE)
                 .addTag(ItemTags.AXES)
                 .addTag(ItemTags.PICKAXES)
                 .addTag(ItemTags.SHOVELS)
                 .addTag(ItemTags.HOES)
                 .add(Items.SHEARS);
-        this.getOrCreateTagBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).addTag(ItemTags.AXES).addTag(ItemTags.PICKAXES)
+        valueLookupBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).addTag(ItemTags.AXES).addTag(ItemTags.PICKAXES)
                 .addTag(ItemTags.SHOVELS).addTag(ItemTags.HOES);
-        this.getOrCreateTagBuilder(ItemTags.FISHING_ENCHANTABLE).add(Items.FISHING_ROD);
-        this.getOrCreateTagBuilder(ItemTags.TRIDENT_ENCHANTABLE).add(Items.TRIDENT);
-        this.getOrCreateTagBuilder(ItemTags.DURABILITY_ENCHANTABLE)
+        valueLookupBuilder(ItemTags.FISHING_ENCHANTABLE).add(Items.FISHING_ROD);
+        valueLookupBuilder(ItemTags.TRIDENT_ENCHANTABLE).add(Items.TRIDENT);
+        valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE)
                 .addTag(ItemTags.FOOT_ARMOR)
                 .addTag(ItemTags.LEG_ARMOR)
                 .addTag(ItemTags.CHEST_ARMOR)
@@ -75,8 +75,8 @@ public class UpdatedItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.FISHING_ROD)
                 .add(Items.CARROT_ON_A_STICK, Items.WARPED_FUNGUS_ON_A_STICK)
                 .add(Items.MACE);
-        this.getOrCreateTagBuilder(ItemTags.BOW_ENCHANTABLE).add(Items.BOW);
-        this.getOrCreateTagBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
+        valueLookupBuilder(ItemTags.BOW_ENCHANTABLE).add(Items.BOW);
+        valueLookupBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE)
                 .addTag(ItemTags.FOOT_ARMOR)
                 .addTag(ItemTags.LEG_ARMOR)
                 .addTag(ItemTags.CHEST_ARMOR)
@@ -84,7 +84,7 @@ public class UpdatedItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.ELYTRA)
                 .addTag(ItemTags.SKULLS)
                 .add(Items.CARVED_PUMPKIN);
-        this.getOrCreateTagBuilder(ItemTags.CROSSBOW_ENCHANTABLE).add(Items.CROSSBOW);
+        valueLookupBuilder(ItemTags.CROSSBOW_ENCHANTABLE).add(Items.CROSSBOW);
         */
 
         

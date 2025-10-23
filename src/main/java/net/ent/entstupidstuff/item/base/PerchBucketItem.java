@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.EntityBucketItem;
 import net.minecraft.item.Item;
@@ -19,11 +20,11 @@ import net.minecraft.util.Formatting;
 
 public class PerchBucketItem extends EntityBucketItem{
 
-    public PerchBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
+    public PerchBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
         super(type, fluid, emptyingSound, settings);
     }
     
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
 
@@ -35,5 +36,5 @@ public class PerchBucketItem extends EntityBucketItem{
             PerchFishEntity.Variant variant = PerchFishEntity.Variant.byId(nbt.getInt("BucketVariantTag"));
             tooltip.add(Text.literal(variant.getName()).formatted(Formatting.GRAY, Formatting.ITALIC));
         }
-    }
+    }*/
 }

@@ -1,51 +1,34 @@
 package net.ent.entstupidstuff.datagen;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
-
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.minecraft.enchantment.Enchantment;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootTableProvider;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTable.Builder;
-import net.minecraft.loot.condition.AnyOfLootCondition;
-import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.KilledByPlayerLootCondition;
 import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.condition.RandomChanceWithEnchantedBonusLootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.EnchantedCountIncreaseLootFunction;
 import net.minecraft.loot.function.FurnaceSmeltLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
-import net.minecraft.predicate.NumberRange;
-import net.minecraft.predicate.entity.EntityEquipmentPredicate;
-import net.minecraft.predicate.entity.EntityFlagsPredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.item.EnchantmentPredicate;
-import net.minecraft.predicate.item.EnchantmentsPredicate;
-import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.predicate.item.ItemSubPredicateTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.util.Identifier;
 
-public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
+public class ModEntityLootTableGenerator extends FabricEntityLootTableProvider /*SimpleFabricLootTableProvider*/{
 
     private CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
     public ModEntityLootTableGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-        super(output, registryLookup, LootContextTypes.ENTITY);
+        super(output, registryLookup);
         this.registryLookup = registryLookup;
     }
 
@@ -69,12 +52,9 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 	public static final RegistryKey<LootTable> METAL_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/metal_skeleton"));
 	public static final RegistryKey<LootTable> PHANTOM_SKELETON = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(EntStupidStuff.MOD_ID, "entities/phantom_skeleton"));
 
-
-
-    @Override
-    public void accept(BiConsumer<RegistryKey<LootTable>, Builder> lootTableBiConsumer) {
-
-        lootTableBiConsumer.accept(ZOMBIE_SCORCHED, LootTable.builder()
+	@Override
+	public void generate() {
+		this.register(EntityFactory.ZOMBIE_SCORCHED, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -93,7 +73,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(ZOMBIE_FROSTBITTEN, LootTable.builder()
+		this.register(EntityFactory.ZOMBIE_FROSTBITTEN, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -112,7 +92,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(ZOMBIE_SLIMED, LootTable.builder()
+		this.register(EntityFactory.ZOMBIE_SLIMED, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -133,7 +113,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 
 		// Fish
 
-		lootTableBiConsumer.accept(ALLIGATOR_GAR, LootTable.builder()
+		this.register(EntityFactory.ALLIGATOR_GAR, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -147,7 +127,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(ZEBRA_FISH, LootTable.builder()
+		this.register(EntityFactory.ZEBRA_FISH, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -161,7 +141,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(MACKEREL, LootTable.builder()
+		this.register(EntityFactory.MACKEREL, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -175,7 +155,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(BASS, LootTable.builder()
+		this.register(EntityFactory.BASS, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -189,7 +169,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(FURTROUT, LootTable.builder()
+		this.register(EntityFactory.FURTROUT, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -209,7 +189,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(KOI, LootTable.builder()
+		this.register(EntityFactory.KOI, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -223,7 +203,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(PERCH, LootTable.builder()
+		this.register(EntityFactory.PERCH, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -237,7 +217,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(SNAPPER, LootTable.builder()
+		this.register(EntityFactory.SNAPPER, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -251,7 +231,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 			)
         );
 
-		lootTableBiConsumer.accept(MAHIMAHI, LootTable.builder()
+		this.register(EntityFactory.MAHIMAHI, LootTable.builder()
             .pool(
 				LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -266,7 +246,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
         );
 
 
-		lootTableBiConsumer.accept(METAL_SKELETON, LootTable.builder()
+		this.register(EntityFactory.METAL_SKELETON, LootTable.builder()
 			.pool(
 					LootPool.builder()
 					.rolls(ConstantLootNumberProvider.create(1.0F))
@@ -287,31 +267,7 @@ public class ModEntityLootTableGenerator extends SimpleFabricLootTableProvider{
 					.conditionally(KilledByPlayerLootCondition.builder())
 			)
 		);
-
-    }
-
-	protected final AnyOfLootCondition.Builder createSmeltLootCondition() {
-		RegistryWrapper.WrapperLookup lookup = this.registryLookup.join();
-		RegistryWrapper.Impl<Enchantment> impl = lookup.getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
-		return AnyOfLootCondition.builder(
-			EntityPropertiesLootCondition.builder(
-				LootContext.EntityTarget.THIS, EntityPredicate.Builder.create().flags(EntityFlagsPredicate.Builder.create().onFire(true))
-			),
-			EntityPropertiesLootCondition.builder(
-				LootContext.EntityTarget.DIRECT_ATTACKER,
-				EntityPredicate.Builder.create()
-					.equipment(
-						EntityEquipmentPredicate.Builder.create()
-							.mainhand(
-								ItemPredicate.Builder.create()
-									.subPredicate(
-										ItemSubPredicateTypes.ENCHANTMENTS,
-										EnchantmentsPredicate.enchantments(List.of(new EnchantmentPredicate(impl.getOrThrow(EnchantmentTags.SMELTS_LOOT), NumberRange.IntRange.ANY)))
-									)
-							)
-					)
-			)
-		);
+		
 	}
 
 

@@ -55,12 +55,12 @@ public class DarkEnchantingTableBlock extends BlockWithEntity{
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        /*if (!world.isClient) {
+        /*if (!world.isClient()) {
             player.openHandledScreen((NamedScreenHandlerFactory) world.getBlockEntity(pos));
         }
         return ActionResult.SUCCESS;*/
 
-        if (!world.isClient) {
+        if (!world.isClient()) {
             BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof NamedScreenHandlerFactory factory) {
                 player.openHandledScreen(factory);

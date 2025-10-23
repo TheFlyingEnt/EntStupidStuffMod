@@ -192,23 +192,32 @@ public class UpdatedEnchantmentFactory {
 				)
 			)
 		.exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
-		.addEffect(EnchantmentEffectComponentTypes.DAMAGE,
-			new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5F)),
-			EntityPropertiesLootCondition.builder(
-				LootContext.EntityTarget.THIS, EntityPredicate.Builder.create().type(EntityTypePredicate.create(EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS)) //Change to Illagers
-			)
-		)
-		.addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM,
-			new ApplyMobEffectEnchantmentEffect(
-				RegistryEntryList.of(StatusEffects.SLOWNESS),
-				EnchantmentLevelBasedValue.constant(1.5F),
-				EnchantmentLevelBasedValue.linear(1.5F, 0.5F),
-				EnchantmentLevelBasedValue.constant(3.0F),
-				EnchantmentLevelBasedValue.constant(3.0F)
-			),
-			EntityPropertiesLootCondition.builder( LootContext.EntityTarget.THIS, EntityPredicate.Builder.create().type(EntityTypePredicate.create(EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))) //Change to Illagers
-			.and(DamageSourcePropertiesLootCondition.builder(DamageSourcePredicate.Builder.create().isDirect(true)))
-		));
+		.addEffect(
+					EnchantmentEffectComponentTypes.DAMAGE,
+					new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5F)),
+					EntityPropertiesLootCondition.builder(
+						LootContext.EntityReference.THIS,
+						EntityPredicate.Builder.create().type(EntityTypePredicate.create(registry.getRegistryLookup(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
+					)
+				)
+				.addEffect(
+					EnchantmentEffectComponentTypes.POST_ATTACK,
+					EnchantmentEffectTarget.ATTACKER,
+					EnchantmentEffectTarget.VICTIM,
+					new ApplyMobEffectEnchantmentEffect(
+						RegistryEntryList.of(StatusEffects.SLOWNESS),
+						EnchantmentLevelBasedValue.constant(1.5F),
+						EnchantmentLevelBasedValue.linear(1.5F, 0.5F),
+						EnchantmentLevelBasedValue.constant(3.0F),
+						EnchantmentLevelBasedValue.constant(3.0F)
+					),
+					EntityPropertiesLootCondition.builder(
+							LootContext.EntityReference.THIS,
+							EntityPredicate.Builder.create().type(EntityTypePredicate.create(registry.getRegistryLookup(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
+						)
+						.and(DamageSourcePropertiesLootCondition.builder(DamageSourcePredicate.Builder.create().isDirect(true)))
+				)
+		);
     }
 
     private static void register(Registerable<Enchantment> registry, RegistryKey<Enchantment> key, Enchantment.Builder builder) {

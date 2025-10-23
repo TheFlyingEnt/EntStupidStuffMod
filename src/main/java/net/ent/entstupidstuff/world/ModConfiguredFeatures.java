@@ -12,7 +12,6 @@ import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.MushroomBlock;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -24,7 +23,7 @@ import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.structure.rule.RuleTest;
 import net.minecraft.structure.rule.TagMatchRuleTest;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DataPool;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.floatprovider.ClampedNormalFloatProvider;
 import net.minecraft.util.math.floatprovider.UniformFloatProvider;
@@ -267,7 +266,7 @@ public class ModConfiguredFeatures {
 					1,
 					0,
 					new WeightedListIntProvider(
-						DataPool.<IntProvider>builder().add(ConstantIntProvider.create(1), 1).add(ConstantIntProvider.create(2), 1).add(ConstantIntProvider.create(3), 1).build()
+						Pool.<IntProvider>builder().add(ConstantIntProvider.create(1), 1).add(ConstantIntProvider.create(2), 1).add(ConstantIntProvider.create(3), 1).build()
 					),
 					UniformIntProvider.create(2, 4),
 					UniformIntProvider.create(-4, -3),

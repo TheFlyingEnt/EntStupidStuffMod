@@ -5,17 +5,18 @@ import java.util.List;
 import net.ent.entstupidstuff.api.IntTrait.IBluntTrait;
 import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
 import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item.TooltipContext;
 //import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class HammerItem extends SwordItem implements IBluntTrait, ITwoHandTrait{
+public class HammerItem extends WeaponUpdatedItem{
 
     /***
      * @param toolMaterial
@@ -27,20 +28,21 @@ public class HammerItem extends SwordItem implements IBluntTrait, ITwoHandTrait{
     */
 
     public HammerItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.getAttackDamage(), -3.4f, 1, 0, 3)));
+        super(toolMaterial, settings);
+        //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.attackDamageBonus(), -3.4f, 1, 0, 3)));
     }
 
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
         tooltip.add(Text.translatable("item.entstupidstuff.blunt.tooltip").formatted(Formatting.GRAY));
-    }
+    }*/
 
     //Concept
 
     private double knockbackStrength = 0;
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         applyKnockback(target, attacker, knockbackStrength);
         return true;
@@ -49,7 +51,7 @@ public class HammerItem extends SwordItem implements IBluntTrait, ITwoHandTrait{
     @Override
     public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.damage(1, attacker, EquipmentSlot.MAINHAND);
-    }
+    }*/
 
     public void setKnockbackStrength() {
         this.knockbackStrength = 20;

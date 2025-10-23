@@ -5,15 +5,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-// Apply massive dash attack damage - target.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), getAttackDamage() * DASH_DAMAGE_MULTIPLIER);
+// Apply massive dash attack damage - target.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), attackDamageBonus() * DASH_DAMAGE_MULTIPLIER);
 
 
 public class WeaponGlaiveItem extends WeaponUpdatedItem {
@@ -31,7 +32,7 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(), 
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
                 -2.0f, 
                 3, 
                 0, 
@@ -39,18 +40,18 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
             )
         ));
 
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
 
-        if (!world.isClient) {
+        if (!world.isClient()) {
 
             if (player.isCreative() == true) {
-                player.getItemCooldownManager().set(this, 3);
+                player.getItemCooldownManager().set(player.getMainHandStack(), 3);
             } else {
-                player.getItemCooldownManager().set(this, DASH_COOLDOWN_TICKS);
+                player.getItemCooldownManager().set(player.getMainHandStack(), DASH_COOLDOWN_TICKS);
             }
 
             if (player.isOnGround()) {
@@ -62,14 +63,14 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
 
                 Vec3d startPos = player.getEyePos();
                 Vec3d endPos = startPos.add(lookVec.multiply(ATTACK_REACH + 1));
-                EntityHitResult hitResult = ProjectileUtil.getEntityCollision(
+                /*EntityHitResult hitResult = ProjectileUtil.getEntityCollision(
                     world, player, startPos, endPos, 
                     new Box(startPos, endPos).expand(1.0), 
                     e -> e instanceof LivingEntity && e != player
                 );
 
                 if (hitResult != null && hitResult.getEntity() instanceof LivingEntity target) {
-                    target.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * DASH_DAMAGE_MULTIPLIER);
+                    target.damage((ServerWorld) world, player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * DASH_DAMAGE_MULTIPLIER);
                     System.out.println("Dash Attack Worked");
 
                     // Knockback target
@@ -82,14 +83,14 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
                     world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1.0f, 1.2f);
                     // Play Swoop Sound Effect Instead.
 
-                }
+                }*/
             }
 
             
 
         }
 
-        return TypedActionResult.success(player.getStackInHand(hand));
+        return ActionResult.SUCCESS;
         
     }
     

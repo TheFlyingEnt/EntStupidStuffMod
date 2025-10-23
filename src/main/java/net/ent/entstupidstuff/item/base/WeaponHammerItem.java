@@ -2,14 +2,18 @@ package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
+import net.fabricmc.fabric.api.item.v1.FabricItem.Settings;
+import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -22,6 +26,7 @@ import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -43,23 +48,33 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(), 
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
                 -3.4f, 
                 1, 
                 0, 
                 1.25f //Handled in Code
             )
-        ).component(DataComponentTypes.TOOL, toolMaterial.createComponent(BlockTags.PICKAXE_MINEABLE)));
+        ).component(DataComponentTypes.TOOL, new ToolComponent(
+					List.of(
+						ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), -3.4f )
+					),
+					1.0F,
+					1,
+					true
+				)));
 
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
+
+        
 
     }
 
-    public double getAttackDamage() {
+    public double attackDamageBonus() {
         return ATTACK_DAMAGE;
     }
+    
 
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
 
         super.appendTooltip(itemStack, context, tooltip, type);
@@ -104,7 +119,7 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         }
 
         //item.entstupidstuff.double_hand.tooltip
-    }
+    }*/
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
@@ -114,10 +129,10 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         BlockPos pos = context.getBlockPos();
         final int radius = 3;
 
-        if (!world.isClient && player != null) {
+        if (!world.isClient() && player != null) {
 
             //Adding Cooldown & Durability Damage
-            player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
+            player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
             stack.damage(2, player, EquipmentSlot.MAINHAND);
 
             //Getting Attack Pos
@@ -142,9 +157,9 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             for (LivingEntity targetEntity : entities) {
 
                 targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
-                targetEntity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
+                targetEntity.damage((ServerWorld) world, player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
 
-                Vec3d knockback = targetEntity.getPos().subtract(attackPos).normalize().multiply(0.5);
+                Vec3d knockback = targetEntity.getEntityPos().subtract(attackPos).normalize().multiply(0.5);
                 targetEntity.addVelocity(knockback.x, 0.3, knockback.z);
                 targetEntity.velocityModified = true;
 

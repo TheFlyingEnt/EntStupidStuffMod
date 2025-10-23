@@ -11,7 +11,7 @@ import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 
-public class WeaponTwinDaggerItem extends SwordItem {
+public class WeaponTwinDaggerItem extends WeaponUpdatedItem {
     private static final double BASE_ATTACK_DAMAGE = 1.5;
     private static double ATTACK_DAMAGE;
 
@@ -19,17 +19,17 @@ public class WeaponTwinDaggerItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(),
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
                 -0.5f, // very fast
                 0,
                 0,
                 0.0f
             )
         ));
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker instanceof PlayerEntity player) {
             // dual-wield bonus (both items must be daggers)
@@ -50,7 +50,7 @@ public class WeaponTwinDaggerItem extends SwordItem {
             //target.addStatusEffect(new StatusEffectInstance(ModEffects.BLEEDING_EFFECT, 100, 0)); // 5s
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
     public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {

@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "wooden_trapdoor",
   "key": {
-    "#": {
-      "item": "entstupidstuff:fir_planks"
-    }
+    "#": "entstupidstuff:fir_planks"
   },
   "pattern": [
     "###",

@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "entstupidstuff:andesite_bricks"
-  },
+  "ingredient": "entstupidstuff:andesite_bricks",
   "result": {
     "count": 1,
     "id": "entstupidstuff:andesite_brick_chiseled"

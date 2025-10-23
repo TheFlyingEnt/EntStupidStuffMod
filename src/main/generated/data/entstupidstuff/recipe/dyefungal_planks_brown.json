@@ -4,55 +4,23 @@
   "group": "colored_planks",
   "ingredients": [
     [
-      {
-        "item": "entstupidstuff:fungal_planks_white"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_light_gray"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_gray"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_black"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_red"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_orange"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_yellow"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_lime"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_green"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_cyan"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_light_blue"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_blue"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_purple"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_magenta"
-      },
-      {
-        "item": "entstupidstuff:fungal_planks_pink"
-      }
+      "entstupidstuff:fungal_planks_white",
+      "entstupidstuff:fungal_planks_light_gray",
+      "entstupidstuff:fungal_planks_gray",
+      "entstupidstuff:fungal_planks_black",
+      "entstupidstuff:fungal_planks_red",
+      "entstupidstuff:fungal_planks_orange",
+      "entstupidstuff:fungal_planks_yellow",
+      "entstupidstuff:fungal_planks_lime",
+      "entstupidstuff:fungal_planks_green",
+      "entstupidstuff:fungal_planks_cyan",
+      "entstupidstuff:fungal_planks_light_blue",
+      "entstupidstuff:fungal_planks_blue",
+      "entstupidstuff:fungal_planks_purple",
+      "entstupidstuff:fungal_planks_magenta",
+      "entstupidstuff:fungal_planks_pink"
     ],
-    {
-      "item": "minecraft:brown_dye"
-    }
+    "minecraft:brown_dye"
   ],
   "result": {
     "count": 1,

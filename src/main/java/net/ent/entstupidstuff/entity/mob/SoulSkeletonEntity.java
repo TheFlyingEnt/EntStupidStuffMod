@@ -14,7 +14,6 @@ import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TurtleEntity;
@@ -23,8 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -65,15 +62,6 @@ public class SoulSkeletonEntity extends SkeletonEntity{
 	//}
 
 	@Override
-	protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
-		super.dropEquipment(world, source, causedByPlayer);
-		if (source.getAttacker() instanceof CreeperEntity creeperEntity && creeperEntity.shouldDropHead()) {
-			creeperEntity.onHeadDropped();
-			this.dropItem(Items.SKELETON_SKULL);
-		}
-	}
-
-	@Override
 	protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
 		PersistentProjectileEntity persistentProjectileEntity = super.createArrowProjectile(arrow, damageModifier, shotFrom);
 		if (persistentProjectileEntity instanceof ArrowEntity arrowEntity) {
@@ -100,7 +88,7 @@ public class SoulSkeletonEntity extends SkeletonEntity{
 	}
 
 	public static DefaultAttributeContainer.Builder createSoulSkeletonAttributes() {
-		return SkeletonEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25);
+		return SkeletonEntity.createHostileAttributes().add(EntityAttributes.MOVEMENT_SPEED, 0.25);
 	}
 
 }

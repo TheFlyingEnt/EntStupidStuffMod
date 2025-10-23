@@ -20,12 +20,12 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -64,7 +64,7 @@ public class CannonItem extends RangedWeaponItem{
 
 		projectile.setVelocity((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), speed, divergence);
 
-		shooter.getWorld().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_HAMMER_GROUND, shooter.getSoundCategory(), 1.0f, 1.0f); 
+		shooter.getEntityWorld().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_HAMMER_GROUND, shooter.getSoundCategory(), 1.0f, 1.0f); 
 
 	}
 
@@ -100,21 +100,21 @@ public class CannonItem extends RangedWeaponItem{
 	private boolean loaded = false;
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand)
+    public ActionResult use(World world, PlayerEntity user, Hand hand)
     {
 
         ItemStack itemStack = user.getStackInHand(hand);
 		ChargedProjectilesComponent chargedProjectilesComponent = itemStack.get(DataComponentTypes.CHARGED_PROJECTILES);
 		if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {
 			this.shootAll(world, user, hand, itemStack, getSpeed(chargedProjectilesComponent), 1.0F, null);
-			return TypedActionResult.consume(itemStack);
+			return ActionResult.CONSUME;
 		} else if (!user.getProjectileType(itemStack).isEmpty()) {
 			this.charged = false;
 			this.loaded = false;
 			user.setCurrentHand(hand);
-			return TypedActionResult.consume(itemStack);
+			return ActionResult.CONSUME;
 		} else {
-			return TypedActionResult.fail(itemStack);
+			return ActionResult.FAIL;
 		}
 
     }
@@ -124,25 +124,9 @@ public class CannonItem extends RangedWeaponItem{
 	}
 
     @Override
-	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+	public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
 		int i = this.getMaxUseTime(stack, user) - remainingUseTicks;
-		float f = getPullProgress(i, stack, user);
-		if (f >= 1.0F && !isCharged(stack) && loadProjectiles(user, stack)) {
-			/*CrossbowItem.LoadingSounds loadingSounds = this.getLoadingSounds(stack);
-			loadingSounds.end()
-				.ifPresent(
-					sound -> world.playSound(
-							null,
-							user.getX(),
-							user.getY(),
-							user.getZ(),
-							(SoundEvent)sound.value(),
-							user.getSoundCategory(),
-							1.0F,
-							1.0F / (world.getRandom().nextFloat() * 0.5F + 1.0F) + 0.2F
-						)
-				);*/
-		}
+		return getPullProgress(i, stack, user) >= 1.0F && isCharged(stack);
 	}
 
     private static boolean loadProjectiles(LivingEntity shooter, ItemStack crossbow) {
@@ -187,7 +171,7 @@ public class CannonItem extends RangedWeaponItem{
 
 				if (shooter instanceof PlayerEntity player && !player.isCreative()) {
 	
-					player.getItemCooldownManager().set(player.getMainHandStack().getItem(), (20 * 15));
+					player.getItemCooldownManager().set(player.getMainHandStack(), (20 * 15));
 				}
 			}
 		}
@@ -195,8 +179,7 @@ public class CannonItem extends RangedWeaponItem{
 
     @Override
 	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-		if (!world.isClient) {
-			//CrossbowItem.LoadingSounds loadingSounds = this.getLoadingSounds(stack);
+		if (!world.isClient()) {
 			float f = (float)(stack.getMaxUseTime(user) - remainingUseTicks) / (float)getPullTime(stack, user);
 			if (f < 0.2F) {
 				this.charged = false;
@@ -206,13 +189,12 @@ public class CannonItem extends RangedWeaponItem{
 			if (f >= 0.2F && !this.charged) {
 				this.charged = true;
 				//loadingSounds.start()
-				//	.ifPresent(sound -> world.playSound(null, user.getX(), user.getY(), user.getZ(), (SoundEvent)sound.value(), SoundCategory.PLAYERS, 0.5F, 1.0F));
 			}
 
 			if (f >= 0.5F && !this.loaded) {
 				this.loaded = true;
+				loadProjectiles(user, stack);
 				//loadingSounds.mid()
-				//	.ifPresent(sound -> world.playSound(null, user.getX(), user.getY(), user.getZ(), (SoundEvent)sound.value(), SoundCategory.PLAYERS, 0.5F, 1.0F));
 			}
 		}
 	}

@@ -1,26 +1,8 @@
 package net.ent.entstupidstuff.client.render;
 
-import java.util.Objects;
-
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
-import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
-import net.ent.entstupidstuff.item.ItemFactory;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
-import net.minecraft.client.render.entity.model.ShieldEntityModel;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 public class BuiltInModelItemRenderer {
@@ -139,7 +121,7 @@ public class BuiltInModelItemRenderer {
 
     public static void onInitialize() {
 
-        BuiltinItemRendererRegistry.INSTANCE.register(
+        /*BuiltinItemRendererRegistry.INSTANCE.register(
             ItemFactory.ANCIENT_TRIDENT,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
 
@@ -297,7 +279,7 @@ public class BuiltInModelItemRenderer {
                 );
                 createDefaultShield(stack, mode, matrices, vertexConsumers, light, overlay, WOODEN_PALE_OAK_SHIELD_MODEL, WOODEN_PALE_OAK_SHIELD_BASE, WOODEN_PALE_OAK_BASE_NO_PATTERN_1);
             }
-        );*/
+        );
 
         BuiltinItemRendererRegistry.INSTANCE.register(
             ItemFactory.STONE_SHIELD,
@@ -371,7 +353,7 @@ public class BuiltInModelItemRenderer {
 
             matrices.pop();
             }
-        );
+        );*/
             
             
 
@@ -379,7 +361,77 @@ public class BuiltInModelItemRenderer {
 
     }
 
-    public static void createDefaultShield(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ShieldEntityModel model, SpriteIdentifier base, SpriteIdentifier base_nopattern){
+    /*public static void UpdartedcreateShield(@Nullable ComponentMap componentMap, ItemDisplayContext itemDisplayContext, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, int i, int j, boolean bl, int k, ShieldEntityModel model, SpriteIdentifier SHIELD_BASE, SpriteIdentifier SHIELD_BASE_NO_PATTERN) 
+    {
+        // Get the banner patterns and base color from the component map, or use defaults
+        BannerPatternsComponent bannerPatternsComponent = componentMap != null
+                ? componentMap.getOrDefault(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)
+                : BannerPatternsComponent.DEFAULT;
+
+        DyeColor dyeColor = componentMap != null ? componentMap.get(DataComponentTypes.BASE_COLOR) : null;
+
+        // Determine if the shield has patterns or base color
+        boolean hasPattern = !bannerPatternsComponent.layers().isEmpty() || dyeColor != null;
+
+        matrixStack.push();
+        matrixStack.scale(1.0F, -1.0F, -1.0F);
+
+        // Choose the appropriate sprite for the shield
+        SpriteIdentifier spriteIdentifier = hasPattern ? SHIELD_BASE : SHIELD_BASE_NO_PATTERN;
+
+        // Render the shield handle
+        orderedRenderCommandQueue.submitModelPart(
+                model.getHandle(),
+                matrixStack,
+                model.getLayer(spriteIdentifier.getAtlasId()),
+                i,
+                j,
+                spriteIdentifier.getSprite(spriteIdentifier),
+                false,
+                bl,
+                -1,
+                null,
+                k
+        );
+
+        // Render the shield plate
+        if (hasPattern) {
+            BannerBlockEntityRenderer.renderCanvas(
+                    spriteIdentifier.getSprite(),
+                    matrixStack,
+                    orderedRenderCommandQueue,
+                    i,
+                    j,
+                    model,
+                    Unit.INSTANCE,
+                    spriteIdentifier,
+                    false,
+                    Objects.requireNonNullElse(dyeColor, DyeColor.WHITE),
+                    bannerPatternsComponent,
+                    bl,
+                    null,
+                    k
+            );
+        } else {
+            orderedRenderCommandQueue.submitModelPart(
+                    model.getPlate(),
+                    matrixStack,
+                    model.getLayer(spriteIdentifier.getAtlasId()),
+                    i,
+                    j,
+                    spriteIdentifier.getSprite(),
+                    false,
+                    bl,
+                    -1,
+                    null,
+                    k
+            );
+        }
+
+        matrixStack.pop();
+    }
+
+    public static void createDefaultShield(ItemStack stack, ModelTransformation mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ShieldEntityModel model, SpriteIdentifier base, SpriteIdentifier base_nopattern){
 
         BannerPatternsComponent bannerPatternsComponent = (BannerPatternsComponent)stack.getOrDefault(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT);
         DyeColor dyeColor2 = (DyeColor)stack.get(DataComponentTypes.BASE_COLOR);
@@ -406,7 +458,7 @@ public class BuiltInModelItemRenderer {
             model.getPlate().render(matrices, vertexConsumer, light, overlay);
         }
         matrices.pop();
-    }
+    }*/
 
 
     

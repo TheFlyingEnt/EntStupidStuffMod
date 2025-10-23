@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.datagen.ModEnchantmentTagProvider;
 import net.ent.entstupidstuff.datagen.ModLangProvider;
 import net.ent.entstupidstuff.datagen.ModEntityLootTableGenerator;
 import net.ent.entstupidstuff.datagen.ModLootTableProvider;
+import net.ent.entstupidstuff.datagen.ModModelProvider;
 import net.ent.entstupidstuff.datagen.ModRecipeProvider;
 import net.ent.entstupidstuff.datagen.ModRegistryDataGenerator;
 import net.ent.entstupidstuff.datagen.ModWorldGenerator;
@@ -26,6 +27,8 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
+		pack.addProvider(ModRegistryDataGenerator::new);
+
 		pack.addProvider(ModEntityLootTableGenerator::new);
 		//pack.addProvider(ModFishingLootTableGenerator::new);
 
@@ -37,11 +40,14 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(ItemTagProvider::new);
 		pack.addProvider(ModEnchantmentTagProvider::new);
 		pack.addProvider(ModLangProvider::new);
-		pack.addProvider(ModRegistryDataGenerator::new);
 		pack.addProvider(ModWorldGenerator::new);
+
+		//pack.addProvider(ModModelProvider::new);
+
 
 		
 	}
+
 
 	@Override
 	public void buildRegistry(RegistryBuilder registryBuilder) {

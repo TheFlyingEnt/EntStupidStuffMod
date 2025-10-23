@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.entity.animation;
 
-import net.minecraft.client.render.entity.animation.Animation;
+import net.minecraft.client.render.entity.animation.AnimationDefinition;
 import net.minecraft.client.render.entity.animation.AnimationHelper;
 import net.minecraft.client.render.entity.animation.Keyframe;
 import net.minecraft.client.render.entity.animation.Transformation;
@@ -14,7 +14,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 
  public class RSGAnimation {
 	
-	public static final Animation SPAWN = Animation.Builder.create(1.95F)
+	public static final AnimationDefinition SPAWN = AnimationDefinition.Builder.create(1.95F)
 		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.ROTATE, 
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -24,7 +24,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.55F, AnimationHelper.createRotationalVector(22.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.95F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.75F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -56,7 +56,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.55F, AnimationHelper.createRotationalVector(12.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.95F, AnimationHelper.createRotationalVector(12.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("leftarm", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("leftarm", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.75F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -77,7 +77,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.55F, AnimationHelper.createRotationalVector(-42.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.95F, AnimationHelper.createRotationalVector(-10.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("lefthand", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("lefthand", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.75F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -98,7 +98,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.55F, AnimationHelper.createRotationalVector(12.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.95F, AnimationHelper.createRotationalVector(12.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("rightarm", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("rightarm", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.75F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -112,7 +112,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.55F, AnimationHelper.createRotationalVector(-45.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.95F, AnimationHelper.createRotationalVector(-12.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("righthand", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("righthand", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.35F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.75F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
@@ -142,7 +142,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 		))
 		.build();
 
-	public static final Animation ATTACK = Animation.Builder.create(1.0F)
+	public static final AnimationDefinition ATTACK = AnimationDefinition.Builder.create(1.0F)
 		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.ROTATE, 
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.25F, AnimationHelper.createRotationalVector(0.0F, 22.5F, -5.0F), Transformation.Interpolations.LINEAR),
@@ -162,7 +162,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 		))
 		.build();
 
-	public static final Animation ATTACKFAST = Animation.Builder.create(0.5F)
+	public static final AnimationDefinition ATTACKFAST = AnimationDefinition.Builder.create(0.5F)
 		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.ROTATE, 
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.125F, AnimationHelper.createRotationalVector(0.0F, 22.5F, -5.0F), Transformation.Interpolations.LINEAR),
@@ -182,7 +182,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 		))
 		.build();
 
-	public static final Animation WALK = Animation.Builder.create(1.0F).looping()
+	public static final AnimationDefinition WALK = AnimationDefinition.Builder.create(1.0F).looping()
 		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.ROTATE, 
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(0.2F, AnimationHelper.createRotationalVector(-0.329F, -7.4928F, 2.5215F), Transformation.Interpolations.LINEAR),
@@ -216,13 +216,13 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
 		.build();
-		public static final Animation IDLE = Animation.Builder.create(4.0F).looping()
+		public static final AnimationDefinition IDLE = AnimationDefinition.Builder.create(4.0F).looping()
 		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.ROTATE, 
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(2.0417F, AnimationHelper.createRotationalVector(5.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("upperbody", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(1.5F, AnimationHelper.createTranslationalVector(0.0F, 0.5F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
@@ -241,7 +241,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.5F, AnimationHelper.createRotationalVector(-25.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createRotationalVector(-29.8511F, 1.7279F, 9.8511F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("lefthand", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("lefthand", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))
@@ -259,7 +259,7 @@ import net.minecraft.client.render.entity.animation.Transformation;
 			new Keyframe(1.5F, AnimationHelper.createRotationalVector(-25.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createRotationalVector(-29.8511F, -1.7279F, 9.8511F), Transformation.Interpolations.LINEAR)
 		))
-		.addBoneAnimation("righthand", new Transformation(Transformation.Targets.TRANSLATE, 
+		.addBoneAnimation("righthand", new Transformation(Transformation.Targets.MOVE_ORIGIN, 
 			new Keyframe(0.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
 			new Keyframe(4.0F, AnimationHelper.createTranslationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
 		))

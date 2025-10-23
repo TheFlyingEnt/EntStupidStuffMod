@@ -28,6 +28,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -92,23 +93,14 @@ public class RedStoneGolemEntity extends IllagerEntity{
 
 	}
 
-	@Override
-	public void mobTick() {
-		if (!this.isAiDisabled() && NavigationConditions.hasMobNavigation(this)) {
-			boolean bl = ((ServerWorld)this.getWorld()).hasRaidAt(this.getBlockPos());
-			((MobNavigation)this.getNavigation()).setCanPathThroughDoors(bl);
-		}
-		super.mobTick();
-	}
-
 	///////////////
 
 	public static DefaultAttributeContainer.Builder createVindicatorAttributes() {
 		return HostileEntity.createHostileAttributes()
-			.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25F) //was 0.35
-			.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0)
-			.add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0)
-			.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0);
+			.add(EntityAttributes.MOVEMENT_SPEED, 0.25F) //was 0.35
+			.add(EntityAttributes.FOLLOW_RANGE, 12.0)
+			.add(EntityAttributes.MAX_HEALTH, 24.0)
+			.add(EntityAttributes.ATTACK_DAMAGE, 5.0);
 	}
 
     @Override
@@ -158,7 +150,7 @@ public class RedStoneGolemEntity extends IllagerEntity{
 
 	static class TargetGoal extends ActiveTargetGoal<LivingEntity> {
 		public TargetGoal(RedStoneGolemEntity vindicator) {
-			super(vindicator, LivingEntity.class, 0, true, true, LivingEntity::isMobOrPlayer);
+			super(vindicator, LivingEntity.class, 0, true, true, (target, world) -> target.isMobOrPlayer());
 		}
 
 		@Override
@@ -197,13 +189,13 @@ public class RedStoneGolemEntity extends IllagerEntity{
 	@Override
     protected void updateLimbs(float posDelta) {
         float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
-        this.limbAnimator.updateLimbs(f, 0.2f);
+        this.limbAnimator.updateLimbs(f, 0.2f, 1);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if(this.getWorld().isClient()) {
+        if(this.getEntityWorld().isClient()) {
             setupAnimationStates();
         }
     }

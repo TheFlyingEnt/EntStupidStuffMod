@@ -1,21 +1,21 @@
 package net.ent.entstupidstuff.datagen;
 
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.item.ItemFactory;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.Thickness;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.BlockStateModelGenerator.BlockTexturePool;
-import net.minecraft.data.client.BlockStateVariant;
-import net.minecraft.data.client.BlockStateVariantMap;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Models;
-import net.minecraft.data.client.TextureMap;
-import net.minecraft.data.client.TexturedModel;
-import net.minecraft.data.client.VariantSettings;
-import net.minecraft.data.client.VariantsBlockStateSupplier;
+import net.minecraft.client.data.BlockStateModelGenerator;
+import net.minecraft.client.data.BlockStateModelGenerator.BlockTexturePool;
+import net.minecraft.client.data.BlockStateVariantMap;
+import net.minecraft.client.data.ItemModelGenerator;
+import net.minecraft.client.data.Models;
+import net.minecraft.client.data.TextureMap;
+import net.minecraft.client.data.TexturedModel;
+import net.minecraft.client.data.VariantsBlockModelDefinitionCreator;
+import net.minecraft.client.render.model.json.WeightedVariant;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 
@@ -26,6 +26,92 @@ public class ModelProvider extends FabricModelProvider{
     }
     
     BlockStateModelGenerator blockStateModelGenerator;
+    ItemModelGenerator itemModelGenerator;
+    
+
+    @Override
+    public void generateItemModels(ItemModelGenerator itemModelGenerator2) {
+        this.itemModelGenerator = itemModelGenerator2;
+
+        itemModelGenerator.register(ItemFactory.MARSHMELLOW_RAW, Models.HANDHELD);
+        itemModelGenerator.register(ItemFactory.MARSHMELLOW_TOASTED, Models.HANDHELD);
+        //BAGGUETTE is done via Manually
+
+        itemModelGenerator.register(ItemFactory.BUTTERFLY_JAR, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.BUTTERFLY_SPAWN_EGG, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.WITHER_BONE, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.ANCIENT_DEBRIS_NUGGET, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.PIGLIN_WARRIOR_SPAWN, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.BLAZING_INFERNO_SPAWN, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.SOUL_SKELETON_SPAWN, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.ZEBRA_FISH_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.ZEBRA_FISH, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.ALLIGATOR_GAR_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.ALLIGATOR_GAR, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_ALLIGATOR_GAR, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.MACKEREL_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.MACKEREL, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_MACKEREL, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.BASS_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.BASS, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_BASS, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.FUR_TROUT_BUCKET, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.KOI_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.KOI, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.PERCH_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.PERCH, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_PERCH, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.MAHIMAHI_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.MAHIMAHI, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_MAHIMAHI, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.SNAPPER_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.SNAPPER, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.COOKED_SNAPPER, Models.GENERATED);
+
+        //RUM is done via Manually
+        itemModelGenerator.register(ItemFactory.CANNON_BALL_ITEM, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.CANNON_ITEM, Models.CROSSBOW);
+        itemModelGenerator.register(ItemFactory.PRISMERINE_ARROW, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.SUNKEN_SKELETON_SPAWN, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.SUNKEN_SKELETON2_SPAWN, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.SKELETON_PIRATE_CAPTAIN_SPAWN, Models.GENERATED);
+        itemModelGenerator.register(ItemFactory.METAL_SKELETON_SPAWN, Models.GENERATED);
+
+        itemModelGenerator.register(ItemFactory.ANCIENT_DROWN_SPAWN, Models.GENERATED);
+        //ANCIENT_TRIDENT is done via Manually
+
+        itemModelGenerator.register(ItemFactory.PHANTOM_SKELETON_SPAWN, Models.GENERATED);
+
+        //itemModelGenerator2.register(ItemFactory.DIAMOND_SHIELD, Models.);
+
+        /*ItemModel.Unbaked unbakedShield = ItemModels.basic(itemModelGenerator2.upload(ItemFactory.DIAMOND_SHIELD, Models.GENERATED));
+        ItemModel.Unbaked unbakedBlocking = ItemModels.basic(itemModelGenerator2.registerSubModel(ItemFactory.DIAMOND_SHIELD, "blocking", Models.GENERATED)); //ToFix
+        itemModelGenerator.output.accept(
+        ItemFactory.DIAMOND_SHIELD,
+        new ItemAsset(
+            new ConditionItemModel.Unbaked(
+                new HasComponentProperty(DataComponentTypes.BLOCKS_ATTACKS, true),
+                unbakedBlocking,
+                unbakedShield
+            ),
+            new ItemAsset.Properties(false, false)
+        ).model()
+    );*/
+
+
+    }
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator2) {
@@ -33,6 +119,8 @@ public class ModelProvider extends FabricModelProvider{
         this.blockStateModelGenerator = blockStateModelGenerator2;
 
         //Fungal Wood Type
+
+        System.out.println("ModProvide: " + "fungal");
 
         generateGroupFungalFamilty("fungal", "");
         generateGroupFungalFamilty("fungal", "white");
@@ -54,25 +142,25 @@ public class ModelProvider extends FabricModelProvider{
         
         //Phantom Wood Type
 
-        generateGroupWoodFamilty("phantom", "", true);
+        generateGroupWoodFamilty("phantom", "", true); System.out.println("ModProvide: " + "Phantom");
         
         //Redwood Wood Type
         
-        generateGroupWoodFamilty("redwood", "", true);
+        generateGroupWoodFamilty("redwood", "", true); System.out.println("ModProvide: " + "Redwood");
         
         //Maple Wood Type
 
         generateGroupWoodFamilty("maple", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED);
         
         //Fir Wood Type
 
         generateGroupWoodFamilty("fir", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.TintType.NOT_TINTED);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED); //TintType.NOT_TINTED
         
-        //Vanilla Wood Type
+        //Vanilla Wood Type 
 
-        generateGroupVanillaAddition("oak");
+        generateGroupVanillaAddition("oak");  System.out.println("ModProvide: " + "VANILLA");
         generateGroupVanillaAddition("spruce");
         generateGroupVanillaAddition("jungle");
         generateGroupVanillaAddition("birch");
@@ -87,13 +175,13 @@ public class ModelProvider extends FabricModelProvider{
 
         // Vanilla Addition for Glass TD and Door
 
-        generateGlassIntercation("iron", "");
+        generateGlassIntercation("iron", ""); System.out.println("ModProvide: " + "METAL");
         generateGlassIntercation("copper", "");
         generateGlassIntercation("exposed_copper", "");
         generateGlassIntercation("oxidized_copper", "");
         generateGlassIntercation("weathered_copper", "");
 
-        generateGroupBricksFamilty("andesite", "");
+        generateGroupBricksFamilty("andesite", ""); System.out.println("ModProvide: " + "STONE");
         generateGroupBricksFamilty("diorite", "");
         generateGroupBricksFamilty("granite", "");
 
@@ -101,13 +189,13 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
         blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
         
-        registerPointedIce();
+        registerPointedIce();  System.out.println("ModProvide: " + "ICE");
 
         generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactory.callBlock("limestone"));
-        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactory.callBlock("polished_limestone"));
+        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactory.callBlock("polished_limestone"));  System.out.println("ModProvide: " + "LIMESTONE");
         generateGroupBricksFamilty("polished_limestone", "");
 
-        blockStateModelGenerator.registerGlassPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
+        blockStateModelGenerator.registerGlassAndPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
         blockStateModelGenerator.registerLantern(BlockFactory.callBlock("phantom_lantern"));
         blockStateModelGenerator.registerTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
 
@@ -116,6 +204,7 @@ public class ModelProvider extends FabricModelProvider{
 
         //Blue Mushrooom
         blockStateModelGenerator2.registerMushroomBlock(BlockFactory.callBlock("blue_mushroom_block"));
+
 
 	}
 
@@ -174,9 +263,10 @@ public class ModelProvider extends FabricModelProvider{
             blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
             
         }
+
+        blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock(blockName + "_log" + suffix)).log(BlockFactory.callBlock(blockName + "_log" + suffix)).wood(BlockFactory.callBlock(blockName + "_wood" + suffix));
+        blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix));
         
-        blockStateModelGenerator.registerLog(BlockFactory.callBlock(blockName + "_log" + suffix)).log(BlockFactory.callBlock(blockName + "_log" + suffix)).wood(BlockFactory.callBlock(blockName + "_wood" + suffix));
-        blockStateModelGenerator.registerLog(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix));  
     }
 
     public void generateBaseAndIntercationFamily(String blockName, String suffix, Boolean generateWoodBase, Boolean generateStoneBase, Block MainTexture) {
@@ -224,30 +314,38 @@ public class ModelProvider extends FabricModelProvider{
 
 
 
-    /* OLD */
+    /* OLD */ 
 
+    private void registerPointedIce() {
+      BlockStateVariantMap.DoubleProperty<WeightedVariant, Direction, Thickness> doubleProperty = BlockStateVariantMap.models(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
+      Thickness[] var2 = Thickness.values();
+      int var3 = var2.length;
 
-	private void registerPointedIce() {
-		blockStateModelGenerator.excludeFromSimpleItemModelGeneration(BlockFactory.callBlock("pointed_ice"));
-		BlockStateVariantMap.DoubleProperty<Direction, Thickness> doubleProperty = BlockStateVariantMap.create(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
+      int var4;
+      Thickness thickness;
+      for(var4 = 0; var4 < var3; ++var4) {
+         thickness = var2[var4];
+         doubleProperty.register(Direction.UP, thickness, this.getDripstoneVariant(Direction.UP, thickness));
+      }
 
-		for (Thickness thickness : Thickness.values()) {
-			doubleProperty.register(Direction.UP, thickness, this.getDripstoneVariant(Direction.UP, thickness));
-		}
+      var2 = Thickness.values();
+      var3 = var2.length;
 
-		for (Thickness thickness : Thickness.values()) {
-			doubleProperty.register(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
-		}
+      for(var4 = 0; var4 < var3; ++var4) {
+         thickness = var2[var4];
+         doubleProperty.register(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
+      }
 
-		blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(BlockFactory.callBlock("pointed_ice")).coordinate(doubleProperty));
-	}
+      blockStateModelGenerator.blockStateCollector.accept(VariantsBlockModelDefinitionCreator.of(BlockFactory.callBlock("pointed_ice")).with(doubleProperty));
+   }
 
-    public final BlockStateVariant getDripstoneVariant(Direction direction, Thickness thickness) {
-		String string = "_" + direction.asString() + "_" + thickness.asString();
-		TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(BlockFactory.callBlock("pointed_ice"), string));
-		return BlockStateVariant.create()
-			.put(VariantSettings.MODEL, Models.POINTED_DRIPSTONE.upload(BlockFactory.callBlock("pointed_ice"), string, textureMap, blockStateModelGenerator.modelCollector));
-	}
+    public final WeightedVariant getDripstoneVariant(Direction direction, Thickness thickness) {
+      String var10000 = direction.asString();
+      String string = "_" + var10000 + "_" + thickness.asString();
+      TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(Blocks.POINTED_DRIPSTONE, string)); 
+      //return createWeightedVariant(Models.POINTED_DRIPSTONE.upload(Blocks.POINTED_DRIPSTONE, string, textureMap, blockStateModelGenerator.modelCollector));
+      return blockStateModelGenerator.createWeightedVariant(Models.POINTED_DRIPSTONE.upload(Blocks.POINTED_DRIPSTONE, string, textureMap, blockStateModelGenerator.modelCollector));
+   }
 
 
     @Deprecated
@@ -287,8 +385,9 @@ public class ModelProvider extends FabricModelProvider{
             blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(Familybase + "_leaves" + varient), TexturedModel.LEAVES);
         }
         if (enableLogs) {
-            blockStateModelGenerator.registerLog(BlockFactory.callBlock(Familybase + "_log" + varient)).log(BlockFactory.callBlock(Familybase + "_log" + varient)).wood(BlockFactory.callBlock(Familybase + "_wood" + varient));
-            blockStateModelGenerator.registerLog(BlockFactory.callBlock("stripped_" + Familybase + "_log" + varient)).log(BlockFactory.callBlock("stripped_" +Familybase + "_log" + varient)).wood(BlockFactory.callBlock("stripped_" +Familybase + "_wood" + varient));
+
+            blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock(Familybase + "_log" + varient));
+            blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock("stripped_" + Familybase + "_log" + varient));
         }
 
 
@@ -359,16 +458,6 @@ public class ModelProvider extends FabricModelProvider{
 
     }
 
-
-
-
-
-
-
-    @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        // Unused for Now
-    }
 
     /**
      *  Annocument: New Post-Text subline - Applied to Wood Type

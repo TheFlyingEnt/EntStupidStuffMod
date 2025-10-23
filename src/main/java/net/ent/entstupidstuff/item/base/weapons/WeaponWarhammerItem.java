@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.*;
 
-public class WeaponWarhammerItem extends SwordItem {
+public class WeaponWarhammerItem extends WeaponUpdatedItem {
     private static final double BASE_ATTACK_DAMAGE = 8.0;
     private static double ATTACK_DAMAGE;
 
@@ -17,17 +17,17 @@ public class WeaponWarhammerItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(),
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
                 -3.5f,
                 0,
                 0,
                 0.2f
             )
         ));
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker instanceof PlayerEntity player) {
             // crude "is armored" check: total armor > 0
@@ -38,7 +38,7 @@ public class WeaponWarhammerItem extends SwordItem {
             target.getWorld().playSound(null, target.getBlockPos(), SoundEvents.BLOCK_ANVIL_HIT, SoundCategory.PLAYERS, 0.6f, 1.2f);
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
     public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {

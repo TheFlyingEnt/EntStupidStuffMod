@@ -4,33 +4,46 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
 import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.EntityRendererFactory.Context;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
 import net.minecraft.util.Identifier;
 
-public class LobberEntityRenderer extends ZombieBaseEntityRenderer<LobberZombieEntity, LobberModel<LobberZombieEntity>>{
+public class LobberEntityRenderer extends ZombieBaseEntityRenderer<LobberZombieEntity, ZombieEntityRenderState, LobberModel> { //TODO 1.21.10: Please Check
+    
+
+    protected LobberEntityRenderer(Context context, LobberModel mainModel, LobberModel babyMainModel, EquipmentModelData<LobberModel> equipmentModelData, EquipmentModelData<LobberModel> equipmentModelData2) {
+        super(
+            context, new LobberModel(context.getPart(EntityModelLayers.DROWNED)), 
+            babyMainModel, 
+            equipmentModelData, 
+            equipmentModelData2
+        );
+    }
 
     public LobberEntityRenderer(EntityRendererFactory.Context context) {
-        this(context, ModEntityModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_INNER_ARMOR, EntityModelLayers.ZOMBIE_OUTER_ARMOR);
-    }
-
-    public LobberEntityRenderer(EntityRendererFactory.Context ctx, EntityModelLayer layer, EntityModelLayer legsArmorLayer, EntityModelLayer bodyArmorLayer) {
-		super(ctx, new LobberModel<>(ctx.getPart(layer)), new LobberModel<>(ctx.getPart(legsArmorLayer)), new LobberModel<>(ctx.getPart(bodyArmorLayer)));
-
+		super(
+			context,
+			new LobberModel(context.getPart(ModEntityModelLayers.LOBBER_ZOMBIE)),
+            new LobberModel(context.getPart(ModEntityModelLayers.LOBBER_ZOMBIE)),//TODO 1.21.10 - Add baby Models
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), LobberModel::new),
+			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), LobberModel::new)
+		);
 	}
 
-    @Override //Render Logic
-    public void render(LobberZombieEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+    //ScorchedEntityRenderer(EntityRendererFactory.Context, EntityModelLayer, EntityModelLayer, EquipmentModelData<EntityModelLayer>, EquipmentModelData<EntityModelLayer>)
+
+    @Override
+    public Identifier getTexture(ZombieEntityRenderState zombieEntityRenderState) {
+        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_lobber.png");
     }
 
-    @Override //Getting Texture of Mob
-    public Identifier getTexture(LobberZombieEntity entity) {
-        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_lobber.png");
+    @Override
+    public ZombieEntityRenderState createRenderState() {
+        return new ZombieEntityRenderState();
     }
 
 }

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_pressure_plate",
   "key": {
-    "#": {
-      "item": "entstupidstuff:fungal_planks_green"
-    }
+    "#": "entstupidstuff:fungal_planks_green"
   },
   "pattern": [
     "##"

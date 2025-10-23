@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "wooden_glass_trapdoor",
   "ingredients": [
-    {
-      "item": "entstupidstuff:fungal_trapdoor_lime"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "entstupidstuff:fungal_trapdoor_lime",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

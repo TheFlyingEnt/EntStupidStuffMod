@@ -53,7 +53,7 @@ public class ButterflyJarItem extends Item {
             jarredEntity.setFromJar(true);
         }
     }
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
 
@@ -64,7 +64,7 @@ public class ButterflyJarItem extends Item {
             ButterflyEntity.Variant variant = ButterflyEntity.Variant.byId(nbt.getInt("Variant"));
             tooltip.add(Text.literal(variant.getName()).formatted(Formatting.GRAY, Formatting.ITALIC));
         }
-    }
+    }*/
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
@@ -84,6 +84,6 @@ public class ButterflyJarItem extends Item {
             }
         }
 
-        return ActionResult.success(world.isClient);
+        return ActionResult.SUCCESS;
     }
 }

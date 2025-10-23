@@ -3,9 +3,7 @@
   "category": "food",
   "cookingtime": 100,
   "experience": 0.35,
-  "ingredient": {
-    "item": "entstupidstuff:bass"
-  },
+  "ingredient": "entstupidstuff:bass",
   "result": {
     "id": "entstupidstuff:cooked_bass"
   }

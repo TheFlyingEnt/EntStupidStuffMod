@@ -8,6 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.EnchantingPhrases;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -27,6 +29,7 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
@@ -116,7 +119,7 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 	@Override
 	protected void init() {
 		super.init();
-		this.BOOK_MODEL = new BookModel(this.client.getEntityModelLoader().getModelPart(EntityModelLayers.BOOK));
+		this.BOOK_MODEL = new BookModel(this.client.getLoadedEntityModels().getModelPart(EntityModelLayers.BOOK));
 	}
 
 	@Override
@@ -126,28 +129,28 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(Click click, boolean doubled) {
 		int i = (this.width - this.backgroundWidth) / 2;
 		int j = (this.height - this.backgroundHeight) / 2;
 
 		for (int k = 0; k < 3; k++) {
-			double d = mouseX - (double)(i + 60);
-			double e = mouseY - (double)(j + 14 + 19 * k);
+			double d = click.x() - (i + 60);
+			double e = click.y() - (j + 14 + 19 * k);
 			if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k)) {
 				this.client.interactionManager.clickButton(this.handler.syncId, k);
 				return true;
 			}
 		}
 
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
 	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
 		int i = (this.width - this.backgroundWidth) / 2;
 		int j = (this.height - this.backgroundHeight) / 2;
-		context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-		this.drawBook(context, i, j, delta);
+		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 256, 256);
+		this.drawBook(context, i, j);
 		EnchantingPhrases.getInstance().setSeed((long)this.handler.getSeed());
 		int k = this.handler.getEchoShardCount();
 
@@ -156,36 +159,30 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 			int n = m + 20;
 			int o = this.handler.enchantmentPower[l];
 			if (o == 0) {
-				RenderSystem.enableBlend();
-				context.drawGuiTexture(ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-				RenderSystem.disableBlend();
+				context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
 			} else {
 				String string = o + "";
 				int p = 86 - this.textRenderer.getWidth(string);
 				StringVisitable stringVisitable = EnchantingPhrases.getInstance().generatePhrase(this.textRenderer, p);
 				int q = 6839882;
 				if ((k < l + 1 || this.client.player.experienceLevel < o) && !this.client.player.getAbilities().creativeMode) {
-					RenderSystem.enableBlend();
-					context.drawGuiTexture(ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-					context.drawGuiTexture(LEVEL_DISABLED_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					RenderSystem.disableBlend();
-					context.drawTextWrapped(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, (q & 16711422) >> 1);
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, LEVEL_DISABLED_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
+					context.drawWrappedText(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, ColorHelper.fullAlpha((q & 16711422) >> 1), false);
 					q = 4226832;
 				} else {
 					int r = mouseX - (i + 60);
 					int s = mouseY - (j + 14 + 19 * l);
-					RenderSystem.enableBlend();
 					if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-						context.drawGuiTexture(ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-						q = 16777088;
+						context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+						q = -128;
 					} else {
-						context.drawGuiTexture(ENCHANTMENT_SLOT_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+						context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, m, j + 14 + 19 * l, 108, 19);
 					}
 
-					context.drawGuiTexture(LEVEL_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					RenderSystem.disableBlend();
-					context.drawTextWrapped(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, q);
-					q = 8453920;
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, LEVEL_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
+					context.drawWrappedText(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, q, false);
+					q = -8323296;
 				}
 
 				context.drawTextWithShadow(this.textRenderer, string, n + 86 - this.textRenderer.getWidth(string), j + 16 + 19 * l + 7, q);
@@ -193,27 +190,15 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 		}
 	}
 
-	private void drawBook(DrawContext context, int x, int y, float delta) {
-		float f = MathHelper.lerp(delta, this.pageTurningSpeed, this.nextPageTurningSpeed);
-		float g = MathHelper.lerp(delta, this.pageAngle, this.nextPageAngle);
-		DiffuseLighting.method_34742();
-		context.getMatrices().push();
-		context.getMatrices().translate((float)x + 33.0F, (float)y + 31.0F, 100.0F);
-		float h = 40.0F;
-		context.getMatrices().scale(-40.0F, 40.0F, 40.0F);
-		context.getMatrices().multiply(RotationAxis.POSITIVE_X.rotationDegrees(25.0F));
-		context.getMatrices().translate((1.0F - f) * 0.2F, (1.0F - f) * 0.1F, (1.0F - f) * 0.25F);
-		float i = -(1.0F - f) * 90.0F - 90.0F;
-		context.getMatrices().multiply(RotationAxis.POSITIVE_Y.rotationDegrees(i));
-		context.getMatrices().multiply(RotationAxis.POSITIVE_X.rotationDegrees(180.0F));
-		float j = MathHelper.clamp(MathHelper.fractionalPart(g + 0.25F) * 1.6F - 0.3F, 0.0F, 1.0F);
-		float k = MathHelper.clamp(MathHelper.fractionalPart(g + 0.75F) * 1.6F - 0.3F, 0.0F, 1.0F);
-		this.BOOK_MODEL.setPageAngles(0.0F, j, k, f);
-		VertexConsumer vertexConsumer = context.getVertexConsumers().getBuffer(this.BOOK_MODEL.getLayer(BOOK_TEXTURE));
-		this.BOOK_MODEL.render(context.getMatrices(), vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
-		context.draw();
-		context.getMatrices().pop();
-		DiffuseLighting.enableGuiDepthLighting();
+	private void drawBook(DrawContext context, int x, int y) {
+		float f = this.client.getRenderTickCounter().getTickProgress(false);
+		float g = MathHelper.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
+		float h = MathHelper.lerp(f, this.pageAngle, this.nextPageAngle);
+		int i = x + 14;
+		int j = y + 14;
+		int k = i + 38;
+		int l = j + 31;
+		context.addBookModel(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
 	}
 
 	@Override
@@ -228,7 +213,7 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 			Optional<RegistryEntry.Reference<Enchantment>> optional = this.client
 				.world
 				.getRegistryManager()
-				.get(RegistryKeys.ENCHANTMENT)
+				.getOrThrow(RegistryKeys.ENCHANTMENT)
 				.getEntry(this.handler.enchantmentId[j]);
 			if (!optional.isEmpty()) {
 				int l = this.handler.enchantmentLevel[j];

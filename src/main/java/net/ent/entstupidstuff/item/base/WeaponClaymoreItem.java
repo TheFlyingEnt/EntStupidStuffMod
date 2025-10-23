@@ -6,11 +6,11 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 @SuppressWarnings("unused")
@@ -28,7 +28,7 @@ public class WeaponClaymoreItem extends WeaponUpdatedItem{
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(), 
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
                 -2.6f, 
                 1.5f, 
                 4, 
@@ -36,14 +36,14 @@ public class WeaponClaymoreItem extends WeaponUpdatedItem{
             )
         ));
 
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
     @Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+	public ActionResult use(World world, PlayerEntity user, Hand hand) {
 		ItemStack itemStack = user.getStackInHand(hand);
 		user.setCurrentHand(hand);
-		return TypedActionResult.consume(itemStack);
+		return ActionResult.CONSUME;
 	}
 
     @Override

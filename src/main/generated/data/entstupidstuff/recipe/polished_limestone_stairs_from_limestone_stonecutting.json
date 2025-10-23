@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "entstupidstuff:limestone"
-  },
+  "ingredient": "entstupidstuff:limestone",
   "result": {
     "count": 1,
     "id": "entstupidstuff:polished_limestone_stairs"

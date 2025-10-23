@@ -10,6 +10,7 @@ import net.ent.entstupidstuff.entity.passive.KoiVariantRegistry;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.EntityBucketItem;
 import net.minecraft.item.Item;
@@ -23,7 +24,7 @@ import net.minecraft.util.Formatting;
 
 public class KoiBucketItem extends EntityBucketItem {
 
-    public KoiBucketItem(EntityType<?> type, Fluid fluid, SoundEvent emptyingSound, Item.Settings settings) {
+    public KoiBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound, Item.Settings settings) {
         super(type, fluid, emptyingSound, settings);
     }
 
@@ -42,7 +43,7 @@ public class KoiBucketItem extends EntityBucketItem {
     // Yellow, Black
 
 
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context,
                               List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
@@ -151,5 +152,5 @@ public class KoiBucketItem extends EntityBucketItem {
                 tooltip.add(Text.literal(styleLine).formatted(Formatting.GRAY, Formatting.ITALIC));
             }
         }
-    }
+    }*/
 }

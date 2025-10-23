@@ -38,8 +38,8 @@ public class PiglinWarriorEntity extends PiglinBruteEntity{
     }
 
     private void applyArmorStats() {
-        this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(7.0);
-        this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2.0);
+        this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(7.0);
+        this.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).setBaseValue(2.0);
         //this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(11.0); // Gold armor value
         //this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0.0);
     }
@@ -54,8 +54,8 @@ public class PiglinWarriorEntity extends PiglinBruteEntity{
 	}
 
     @Override
-    public boolean tryAttack(Entity target) {
-        boolean success = super.tryAttack(target);
+    public boolean tryAttack(ServerWorld world, Entity target) {
+        boolean success = super.tryAttack(world, target);
 
         if (success && target instanceof LivingEntity livingTarget) {
             ItemStack stack = this.getMainHandStack();
@@ -63,10 +63,9 @@ public class PiglinWarriorEntity extends PiglinBruteEntity{
             // Check if holding your hammer
             if (stack.getItem() instanceof WeaponHammerItem hammer) {
 
-                int roll = this.getWorld().getRandom().nextInt(7) + 1;
+                int roll = this.getEntityWorld().getRandom().nextInt(7) + 1;
                 if (roll == 7) {
-                    World world = this.getWorld();
-                    Vec3d attackPos = livingTarget.getPos();
+                    Vec3d attackPos = livingTarget.getEntityPos();
 
                     
                     // Play hammer sound
@@ -102,12 +101,13 @@ public class PiglinWarriorEntity extends PiglinBruteEntity{
 
                         // Damage
                         targetEntity.damage(
+                            world,
                             this.getDamageSources().mobAttack(this),
-                            (float) hammer.getAttackDamage() * damageMultiplier
+                            (float) hammer.attackDamageBonus() * damageMultiplier
                         );
 
                         // Knockback
-                        Vec3d knockback = targetEntity.getPos().subtract(attackPos).normalize().multiply(0.5);
+                        Vec3d knockback = targetEntity.getEntityPos().subtract(attackPos).normalize().multiply(0.5);
                         targetEntity.addVelocity(knockback.x, 0.3, knockback.z);
                         targetEntity.velocityModified = true;
 

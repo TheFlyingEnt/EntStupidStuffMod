@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -85,23 +88,20 @@ public class KoiEntity extends /*SchoolingFishEntity*/ FishEntity{
     // ----- NBT Sync -----
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", KoiVariantRegistry.getId(this.getVariant()));
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", KoiVariantRegistry.getId(this.getVariant()));
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(KoiVariantRegistry.getById(nbt.getInt("Variant")));
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.setVariant(KoiVariantRegistry.getById(view.getInt("Variant", 0)));
     }
 
     @Override
     public void copyDataFromNbt(NbtCompound nbt) {
-        super.copyDataFromNbt(nbt);
-        if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-            this.setVariant(KoiVariantRegistry.getById(nbt.getInt("BucketVariantTag")));
-        }
+        Bucketable.copyDataFromNbt(this, nbt);
     }
 
     @Override

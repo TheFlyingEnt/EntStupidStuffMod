@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "wooden_glass_door",
   "ingredients": [
-    {
-      "item": "minecraft:cherry_door"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:cherry_door",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

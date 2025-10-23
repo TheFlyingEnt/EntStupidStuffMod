@@ -2,6 +2,8 @@ package net.ent.entstupidstuff.entity.mob;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -26,7 +28,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -45,6 +48,11 @@ public class ArmoredPillagerEntity extends PillagerEntity{
         private static final Variant[] VALUES = values();
 		private final int id;
 		private final String name;
+
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+            Variant::byId,
+            Variant::getId
+        );
 
         Variant(int id, String name) {
 			this.id = id;
@@ -120,20 +128,20 @@ public class ArmoredPillagerEntity extends PillagerEntity{
 
     private void applyArmorStats() {
         if (this.variant == Variant.DIAMOND) {
-            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(20.0); // Diamond armor value
-            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2.0);
+            this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(20.0); // Diamond armor value
+            this.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).setBaseValue(2.0);
         } else if (this.variant == Variant.GOLD) {
-            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(11.0); // Gold armor value
-            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0.0);
+            this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(11.0); // Gold armor value
+            this.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).setBaseValue(0.0);
         }
     }
 
     public static DefaultAttributeContainer.Builder createArmoredPillagerAttributes() {
         return PillagerEntity.createPillagerAttributes()
-        .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35F)
-		.add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0)
-		.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
-		.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0);
+        .add(EntityAttributes.MOVEMENT_SPEED, 0.35F)
+		.add(EntityAttributes.MAX_HEALTH, 24.0)
+		.add(EntityAttributes.ATTACK_DAMAGE, 5.0)
+		.add(EntityAttributes.FOLLOW_RANGE, 32.0);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" }) //TODO: Check on This
@@ -166,16 +174,15 @@ public class ArmoredPillagerEntity extends PillagerEntity{
 
     //Varientation Code:
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
-
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.setVariant((ArmoredPillagerEntity.Variant)view.read("Variant", ArmoredPillagerEntity.Variant.INDEX_CODEC).orElse(ArmoredPillagerEntity.Variant.GOLD));
     }
 
 	public void setVariant(ArmoredPillagerEntity.Variant variant) {

@@ -17,10 +17,7 @@ public class SlimedZombieEntity extends ZombieEntity{
         super(entityType, world);
     }
 
-    @Override
-	protected ItemStack getSkull() {
-		return ItemStack.EMPTY;
-	}
+    
 
     public static boolean canSpawnIn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL

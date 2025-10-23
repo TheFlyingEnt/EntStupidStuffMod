@@ -2,6 +2,8 @@ package net.ent.entstupidstuff.entity.mob;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -14,8 +16,9 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
@@ -37,6 +40,11 @@ public class FrostbittenZombieEntity extends ZombieEntity{
         private static final Variant[] VALUES = values();
 		private final int id;
 		private final String name;
+
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+            Variant::byId,
+            Variant::getId
+        );
 
         Variant(int id, String name) {
 			this.id = id;
@@ -90,10 +98,9 @@ public class FrostbittenZombieEntity extends ZombieEntity{
     }
 
     @Override
-    public boolean tryAttack(Entity target) {
-        boolean successful = super.tryAttack(target);
+    public boolean tryAttack(ServerWorld world, Entity target) {
+        boolean successful = super.tryAttack(world, target);
         if (successful) {
-            // Check if the target is an instance of LivingEntity to ensure it can be set on fire
             if (target instanceof LivingEntity) {
                 ((LivingEntity) target).addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 1, 1));
                 ((LivingEntity) target).addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 1, 1));
@@ -103,11 +110,6 @@ public class FrostbittenZombieEntity extends ZombieEntity{
         return successful;
     }
 
-    @Override
-	protected ItemStack getSkull() {
-		return ItemStack.EMPTY;
-	}
-
     public static boolean canSpawnIn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL
 			&& (SpawnReason.isTrialSpawner(spawnReason) || isSpawnDark(world, pos, random))
@@ -116,16 +118,15 @@ public class FrostbittenZombieEntity extends ZombieEntity{
 
 	//Varientation Code:
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
-
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.setVariant((FrostbittenZombieEntity.Variant)view.read("Variant", FrostbittenZombieEntity.Variant.INDEX_CODEC).orElse(FrostbittenZombieEntity.Variant.NORMAL));
     }
 
 	public void setVariant(FrostbittenZombieEntity.Variant variant) {

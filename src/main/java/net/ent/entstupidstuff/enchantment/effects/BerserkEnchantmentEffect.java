@@ -42,19 +42,19 @@ public record BerserkEnchantmentEffect (EnchantmentLevelBasedValue value) implem
             ItemStack mainHandItem = context.owner().getMainHandStack();
             if (mainHandItem.hasEnchantments()) {
                 // Remove existing Berserk modifier if present
-                EntityAttributeModifier existingModifier = context.owner().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).getModifier(BERSERK_MODIFIER_ID);
+                EntityAttributeModifier existingModifier = context.owner().getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).getModifier(BERSERK_MODIFIER_ID);
                 if (existingModifier != null) {
-                    context.owner().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).removeModifier(existingModifier);
+                    context.owner().getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).removeModifier(existingModifier);
                 }
 
                 // Apply the new Berserk damage multiplier
                 EntityAttributeModifier berserkModifier = new EntityAttributeModifier(BERSERK_MODIFIER_ID, damageMultiplier - 1.0f, EntityAttributeModifier.Operation.ADD_VALUE);
-                context.owner().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).addTemporaryModifier(berserkModifier);
+                context.owner().getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).addTemporaryModifier(berserkModifier);
             } else {
                 // Remove the Berserk modifier if the item is no longer enchanted
-                EntityAttributeModifier existingModifier = context.owner().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).getModifier(BERSERK_MODIFIER_ID);
+                EntityAttributeModifier existingModifier = context.owner().getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).getModifier(BERSERK_MODIFIER_ID);
                 if (existingModifier != null) {
-                    context.owner().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).removeModifier(existingModifier);
+                    context.owner().getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).removeModifier(existingModifier);
                 }
             }
         }

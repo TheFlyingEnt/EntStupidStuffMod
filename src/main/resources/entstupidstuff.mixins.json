@@ -2,14 +2,7 @@
 	"required": true,
 	"package": "net.ent.entstupidstuff.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"RaidMixin",
-		"ItemRendererAccessor",
-		"ItemRendererMixin",
-		"PlayerEntityRendererMixin",
-		"BipedEntityModelMixin",
-		"ModelLoaderMixin"
-  	],
+	"mixins": [],
 	"injectors": {
 		"defaultRequire": 1
 	}

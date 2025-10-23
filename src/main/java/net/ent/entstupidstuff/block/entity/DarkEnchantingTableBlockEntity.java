@@ -9,10 +9,12 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.component.ComponentMap.Builder;
+import net.minecraft.component.ComponentsAccess;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.math.BlockPos;
@@ -40,10 +42,10 @@ public class DarkEnchantingTableBlockEntity extends BlockEntity implements Namea
         }
     
         @Override
-        protected void readComponents(BlockEntity.ComponentsAccess components) {
-            super.readComponents(components);
-            this.customName = components.get(DataComponentTypes.CUSTOM_NAME);
-        }
+        protected void readComponents(ComponentsAccess components) {
+      super.readComponents(components);
+      this.customName = (Text)components.get(DataComponentTypes.CUSTOM_NAME);
+   }
     
         @Override
         protected void addComponents(Builder componentMapBuilder) {
@@ -52,8 +54,8 @@ public class DarkEnchantingTableBlockEntity extends BlockEntity implements Namea
         }
     
         @Override
-        public void removeFromCopiedStackNbt(NbtCompound nbt) {
-            nbt.remove("CustomName");
+        public void removeFromCopiedStackData(WriteView view) {
+            view.remove("CustomName");
         }
 
         

@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "wooden_door",
   "key": {
-    "#": {
-      "item": "entstupidstuff:fungal_planks_black"
-    }
+    "#": "entstupidstuff:fungal_planks_black"
   },
   "pattern": [
     "##",

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "entstupidstuff:item/skeleton_pirate_captain_spawn_egg"
+  }
+}

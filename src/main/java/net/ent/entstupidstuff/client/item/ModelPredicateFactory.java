@@ -1,17 +1,18 @@
-package net.ent.entstupidstuff.client.item;
+package net.ent.entstupidstuff.client.item; // TODO 1.21.10 Tracker - This is now done though Texturepacks. PLEASE UPDATE
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.minecraft.client.item.ClampedModelPredicateProvider;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
+//import net.minecraft.client.item.ClampedModelPredicateProvider;
+//import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
+@Deprecated
 public class ModelPredicateFactory {
 
-    public static void onInitialize() {
+    /*public static void onInitialize() {
 
         registerBlocking(ItemFactory.WOODEN_ACACIA_SHIELD);
         registerBlocking(ItemFactory.WOODEN_BAMBOO_SHIELD);
@@ -70,6 +71,6 @@ public class ModelPredicateFactory {
         };
 
         ModelPredicateProviderRegistry.register(item, id, provider);
-    }
+    }*/
     
 }

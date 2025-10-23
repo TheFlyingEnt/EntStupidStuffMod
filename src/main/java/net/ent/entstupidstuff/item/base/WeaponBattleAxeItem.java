@@ -16,16 +16,18 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoneycombItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
-import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -33,7 +35,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -42,7 +43,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
 
-public class WeaponBattleAxeItem extends SwordItem {
+public class WeaponBattleAxeItem extends WeaponUpdatedItem {
     private static final int COOLDOWN_TICKS = 80;
     private static final float ATTACK_RADIUS = 3.5f;
     private static final float KNOCKBACK_STRENGTH = 0.25f;
@@ -54,18 +55,25 @@ public class WeaponBattleAxeItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(), 
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
                 -2.5f, 
                 1, 
                 1, 
                 0.25f
             )
-        ).component(DataComponentTypes.TOOL, toolMaterial.createComponent(BlockTags.AXE_MINEABLE)));
+        ).component(DataComponentTypes.TOOL, new ToolComponent(
+					List.of(
+						ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), -3.4f )
+					),
+					1.0F,
+					1,
+					true
+				)));
 
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-	@Override
+	/*@Override
 	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target.isBlocking() && attacker instanceof PlayerEntity player) {
 			// simulate shield disable similar to vanilla axe bonus
@@ -76,20 +84,20 @@ public class WeaponBattleAxeItem extends SwordItem {
 			target.getWorld().playSound(null, target.getBlockPos(), SoundEvents.ITEM_SHIELD_BREAK, SoundCategory.PLAYERS, 0.8f, 1.0f);
 		}
 		return super.postHit(stack, target, attacker);
-	}
+	}*/
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
 
-        if (!world.isClient) {
+        if (!world.isClient()) {
 
             if (player.isCreative() == true) {
-                player.getItemCooldownManager().set(this, 3);
+                player.getItemCooldownManager().set(player.getMainHandStack(), 3);
             } else {
-                player.getItemCooldownManager().set(this, COOLDOWN_TICKS);
+                player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
             }
 
-            Vec3d playerPos = player.getPos();
+            Vec3d playerPos = player.getEntityPos();
             List<LivingEntity> entities = world.getEntitiesByClass(
                 LivingEntity.class, 
                 new Box(playerPos.add(-ATTACK_RADIUS, -1, -ATTACK_RADIUS), playerPos.add(ATTACK_RADIUS, 2, ATTACK_RADIUS)), 
@@ -97,12 +105,12 @@ public class WeaponBattleAxeItem extends SwordItem {
             );
 
             for (LivingEntity entity : entities) {
-                // Apply Spin Attack Damage - entity.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), getAttackDamage() * 1.3f);
-                entity.damage(player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 1.25f);
+                // Apply Spin Attack Damage - entity.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), attackDamageBonus() * 1.3f);
+                entity.damage((ServerWorld)world, player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 1.25f);
                 System.out.print("Spin Attack");
 
                 // Apply Knockback Effect - Might Remove Knockback
-                Vec3d knockback = entity.getPos().subtract(playerPos).normalize().multiply(KNOCKBACK_STRENGTH);
+                Vec3d knockback = entity.getEntityPos().subtract(playerPos).normalize().multiply(KNOCKBACK_STRENGTH);
                 entity.addVelocity(knockback.x, 0.5, knockback.z);
                 entity.velocityModified = true;
             }
@@ -118,7 +126,7 @@ public class WeaponBattleAxeItem extends SwordItem {
 
         }
 
-        return TypedActionResult.success(player.getStackInHand(hand));
+        return ActionResult.SUCCESS;
 
     }
 
@@ -166,10 +174,10 @@ public class WeaponBattleAxeItem extends SwordItem {
 				world.setBlockState(blockPos, (BlockState)optional.get(), Block.NOTIFY_ALL_AND_REDRAW);
 				world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, (BlockState)optional.get()));
 				if (playerEntity != null) {
-					itemStack.damage(1, playerEntity, LivingEntity.getSlotForHand(context.getHand()));
+					itemStack.damage(1, playerEntity, context.getHand().getEquipmentSlot());
 				}
 
-				return ActionResult.success(world.isClient);
+				return ActionResult.SUCCESS;
 			}
 		}
 	}

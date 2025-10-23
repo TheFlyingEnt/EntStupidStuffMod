@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_stairs",
   "key": {
-    "#": {
-      "item": "entstupidstuff:mangrove_mosaic"
-    }
+    "#": "entstupidstuff:mangrove_mosaic"
   },
   "pattern": [
     "#  ",

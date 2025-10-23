@@ -11,9 +11,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -21,14 +22,15 @@ import net.minecraft.world.World;
 public class KatanaItem  extends WeaponItem implements ITrait{
 
     public KatanaItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.getAttackDamage(), -3.4f, 1, 0, 3)));
+        super(toolMaterial, settings);
+        //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.attackDamageBonus(), -3.4f, 1, 0, 3)));
     }
 
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
         //tooltip.add(Text.translatable("item.entstupidstuff.blunt.tooltip").formatted(Formatting.GRAY));
-    }
+    }*/
 
     private static final int CHARGE_DURATION = 3 * 20; // Charge lasts for 10 ticks (0.5 sec)
     private static final double CHARGE_SPEED = 1.2; // Speed multiplier
@@ -48,36 +50,36 @@ public class KatanaItem  extends WeaponItem implements ITrait{
     }*/
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (!world.isClient && !isCharging(player)) {
+    public ActionResult use(World world, PlayerEntity player, Hand hand) {
+        if (!world.isClient() && !isCharging(player)) {
             startCharging(player);
             checkForCollision(player);
-            return TypedActionResult.success(player.getStackInHand(hand));
+            return ActionResult.SUCCESS;
         }
-        return TypedActionResult.fail(player.getStackInHand(hand));
+        return ActionResult.FAIL;
     }
 
     /*@Override
     public void inventoryTick(ItemStack stack, World world, LivingEntity entity, int slot, boolean selected) {
-        if (!world.isClient && entity instanceof PlayerEntity player && isCharging(player)) {
+        if (!world.isClient() && entity instanceof PlayerEntity player && isCharging(player)) {
             checkForCollision(player, stack);
         }
     }*/
 
     private boolean checkForCollision(PlayerEntity player) {
         Box boundingBox = player.getBoundingBox().expand(1); // Slightly larger hitbox
-        List<LivingEntity> entities = player.getWorld().getEntitiesByClass(LivingEntity.class, boundingBox, e -> e != player);
+        List<LivingEntity> entities = player.getEntityWorld().getEntitiesByClass(LivingEntity.class, boundingBox, e -> e != player);
 
         for (LivingEntity target : entities) {
             if (target.isAlive()) {
-                target.damage(player.getDamageSources().playerAttack(player), 10 * 2); // Double damage
+                target.damage((ServerWorld) player.getEntityWorld(), player.getDamageSources().playerAttack(player), 10 * 2); // Double damage
                 return true;
             }
         }
         return false;
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker instanceof PlayerEntity player) {
             if (isCharging(player)) {
@@ -86,17 +88,17 @@ public class KatanaItem  extends WeaponItem implements ITrait{
             }
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     public static void startCharging(PlayerEntity player) {
-        CHARGING_PLAYERS.put(player.getUuid(), player.getWorld().getTime() + CHARGE_DURATION);
+        CHARGING_PLAYERS.put(player.getUuid(), player.getEntityWorld().getTime() + CHARGE_DURATION);
         Vec3d lookDirection = player.getRotationVec(1.0f).multiply(CHARGE_SPEED);
         player.addVelocity(lookDirection.x, 0, lookDirection.z);
         player.velocityModified = true;
     }
 
     public static boolean isCharging(PlayerEntity player) {
-        return CHARGING_PLAYERS.getOrDefault(player.getUuid(), 0L) > player.getWorld().getTime();
+        return CHARGING_PLAYERS.getOrDefault(player.getUuid(), 0L) > player.getEntityWorld().getTime();
     }
 
     public static void stopCharging(PlayerEntity player) {
@@ -129,7 +131,7 @@ public class KatanaItem  extends WeaponItem implements ITrait{
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             // Define a 2-block radius bounding box around the player
             double radius = 2.0;
             Box box = new Box(

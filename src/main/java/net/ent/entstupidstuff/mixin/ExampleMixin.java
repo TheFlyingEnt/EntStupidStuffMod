@@ -61,7 +61,7 @@ public abstract class PlayerEntityMixin {
             Item mainHandItem = mainHandStack.getItem();
 
             // Pre-Trait Damage:
-            float baseDamage = (float) playerEntity.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            float baseDamage = (float) playerEntity.getAttributeValue(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE);
 
             // : Fix the Sweep Damage as All Weapon (Including Vanilla) does not have it.
 

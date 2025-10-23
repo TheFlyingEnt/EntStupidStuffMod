@@ -1,134 +1,126 @@
 package net.ent.entstupidstuff.block;
 
-import net.minecraft.client.render.RenderLayer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.minecraft.client.render.BlockRenderLayer;
 
 
 public class ModRenderLayers {
-
-    /*
-     * BlockFactoryUpt.callBlock
-     * BlockFactoryUpt.callBlock
-     * 
-     */
-
-    
 
 
     public static void onInitializeClient() {
 
         // Fungal Wood
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fungal" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fungal" + "_glass_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fungal" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fungal" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
 
         // Fungal (Colored) Wood
         for (String color : BlockFactory.COLORS) {
-            BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fungal" + "_glass_door_" + color), RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fungal" + "_glass_trapdoor_" + color), RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fungal" + "_glass_door_" + color), BlockRenderLayer.CUTOUT);
+            BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fungal" + "_glass_trapdoor_" + color), BlockRenderLayer.CUTOUT);
         }
 
         // Modded Wood
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("redwood" + "_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("redwood" + "_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_trapdoor"), BlockRenderLayer.CUTOUT);
 
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("redwood" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("redwood" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("maple" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("maple" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fir" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fir" + "_glass_trapdoor"), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("desert_iron" + "_glass_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("maple" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("maple" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fir" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fir" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("desert_iron" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("potted_" + "maple" + "_sapling"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("maple" + "_sapling"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("potted_" + "fir" + "_sapling"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("fir" + "_sapling"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("potted_" + "maple" + "_sapling"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("maple" + "_sapling"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("potted_" + "fir" + "_sapling"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fir" + "_sapling"), BlockRenderLayer.CUTOUT);
 
         // Phantom Wood
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_planks"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_stairs"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_slab"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_fence"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_fence_gate"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_door"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_trapdoor"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_pressure_plate"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_button"), RenderLayer.getTranslucent());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_planks"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_stairs"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_slab"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_fence"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_fence_gate"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_door"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_trapdoor"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_pressure_plate"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_button"), BlockRenderLayer.TRANSLUCENT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_log"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_log"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_wood"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_wood"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_mosaic"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_stairs"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_slab"), RenderLayer.getTranslucent());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_log"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_log"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_wood"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_wood"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_stairs"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_slab"), BlockRenderLayer.TRANSLUCENT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_glass_door"), RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom" + "_glass_trapdoor"), RenderLayer.getTranslucent());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_glass_door"), BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_glass_trapdoor"), BlockRenderLayer.TRANSLUCENT);
 
         //Vanilla Door and TrapDoors
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("oak" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("spruce" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("jungle" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("birch" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("dark_oak" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("acacia" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("mangrove" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("cherry" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("bamboo" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("warped" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("crimson" + "_glass_door"), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_door"), RenderLayer.getCutout()); //FUTURE UPDATE
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("oak" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("spruce" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("jungle" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("birch" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("dark_oak" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("acacia" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mangrove" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("cherry" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("bamboo" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("warped" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crimson" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_door"), BlockRenderLayer.CUTOUT); //FUTURE UPDATE
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("oak" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("spruce" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("jungle" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("birch" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("dark_oak" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("acacia" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("mangrove" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("cherry" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("bamboo" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("warped" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("crimson" + "_glass_trapdoor"), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_trapdoor"), RenderLayer.getCutout()); //FUTURE UPDATE
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("oak" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("spruce" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("jungle" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("birch" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("dark_oak" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("acacia" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mangrove" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("cherry" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("bamboo" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("warped" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crimson" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT); //FUTURE UPDATE
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("iron" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("exposed_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("oxidized_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("weathered_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_door"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("exposed_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("oxidized_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("weathered_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_door"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("iron" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("exposed_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("oxidized_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("weathered_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_trapdoor"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("exposed_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("oxidized_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("weathered_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_exposed_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_oxidized_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("waxed_weathered_copper" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
 
         //String Blocks
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("string_block"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("string_gate"), RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("string_block"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("string_gate"), BlockRenderLayer.CUTOUT_MIPPED);
 
         //Iron Gates
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("iron_grate"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("iron_grate_slab"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("iron_grate_stairs"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron_grate"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron_grate_slab"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron_grate_stairs"), BlockRenderLayer.CUTOUT);
 
         //Torch
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom_torch"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom_wall_torch"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("phantom_lantern"), RenderLayer.getCutout());
+        //BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom_torch"), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom_wall_torch"), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom_lantern"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactory.callBlock("pointed_ice"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("pointed_ice"), BlockRenderLayer.CUTOUT);
 
 
 
@@ -138,58 +130,58 @@ public class ModRenderLayers {
 
         /*
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("fungal", null), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("fungal_glass", null), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("fungal", null), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("fungal_glass", null), BlockRenderLayer.CUTOUT);
 
         for (String color : BlockFactoryUpt.COLORS) {
-            BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fungal" + "_door_" + color), RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fungal_glass" + "_door_" + color), RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("fungal_glass" + "_trapdoor_" + color), RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("fungal" + "_door_" + color), BlockRenderLayer.CUTOUT);
+            BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("fungal_glass" + "_door_" + color), BlockRenderLayer.CUTOUT);
+            BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("fungal_glass" + "_trapdoor_" + color), BlockRenderLayer.CUTOUT);
         }
 
         for (String base : ModBlocks.V_WOOD_VARIENTS) {
-            BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR(base + "_glass_door", null), RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR(base + "_glass_door", null), BlockRenderLayer.CUTOUT);
         }
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("iron" + "_glass_door", null), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("iron" + "_glass_door", null), BlockRenderLayer.CUTOUT);
 
         for (String base : ModBlocks.COPPER_VARIENTS) {
-            BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR(base + "_glass_door", null), RenderLayer.getCutout());
+            BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR(base + "_glass_door", null), BlockRenderLayer.CUTOUT);
         }
 
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_gate"), RenderLayer.getTranslucent());
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_pane"), RenderLayer.getTranslucent());
-        //BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_gate"), RenderLayer.getCutout());
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("string_gate"), BlockRenderLayer.TRANSLUCENT);
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("string_pane"), BlockRenderLayer.TRANSLUCENT);
+        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("string_gate"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_block"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("string_gate"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("string_block"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("string_gate"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("redwood_glass_door"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("redwood_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("redwood_glass_door"), BlockRenderLayer.CUTOUT);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("desert_iron_glass_door"), RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockFactoryUpt.callBlock("desert_iron_door"), RenderLayer.getCutout());
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("desert_iron_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("desert_iron_door"), BlockRenderLayer.CUTOUT);
 
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("oak_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("spruce_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("birch_glass", null), RenderLayer.getCutout());
-       // BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("jungle_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("acacia_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("dark_oak_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("mangrove_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("cherry_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("crimson_glass", null), RenderLayer.getCutout());
-        //BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_DOOR("warped_glass", null), RenderLayer.getCutout());
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("oak_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("spruce_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("birch_glass", null), BlockRenderLayer.CUTOUT);
+       // BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("jungle_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("acacia_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("dark_oak_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("mangrove_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("cherry_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("crimson_glass", null), BlockRenderLayer.CUTOUT);
+        //BlockRenderLayerMap.putBlock(ModBlocks.MOD_DOOR("warped_glass", null), BlockRenderLayer.CUTOUT);
 
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("oak_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("spruce_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("birch_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("jungle_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("acacia_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("dark_oak_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("mangrove_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("cherry_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("crimson_glass", null), RenderLayer.getCutout());*/
-        /*BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.MOD_TRAPDOOR("warped_glass", null), RenderLayer.getCutout());*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("oak_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("spruce_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("birch_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("jungle_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("acacia_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("dark_oak_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("mangrove_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("cherry_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("crimson_glass", null), BlockRenderLayer.CUTOUT);*/
+        /*BlockRenderLayerMap.putBlock(ModBlocks.MOD_TRAPDOOR("warped_glass", null), BlockRenderLayer.CUTOUT);*/
     }
 }

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "entstupidstuff:fir_log"
-    }
+    "entstupidstuff:fir_log"
   ],
   "result": {
     "count": 4,

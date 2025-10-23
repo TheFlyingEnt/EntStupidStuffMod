@@ -63,10 +63,5 @@ public class StrongShieldEntityModel extends ShieldEntityModel{
 	public ModelPart getSide2(){
 		return root.getChild("side_2");
 	}
-
-	@Override
-	public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
-		this.root.render(matrices, vertices, light, overlay, color);
-	}
     
 }

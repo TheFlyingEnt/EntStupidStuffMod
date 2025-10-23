@@ -16,11 +16,12 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
@@ -64,16 +65,16 @@ public class AncientTridentEntity extends PersistentProjectileEntity {
       int i = (Byte)this.dataTracker.get(LOYALTY);
       if (i > 0 && (this.dealtDamage || this.isNoClip()) && entity != null) {
          if (!this.isOwnerAlive()) {
-            if (!this.getWorld().isClient && this.pickupType == PickupPermission.ALLOWED) {
-               this.dropStack(this.asItemStack(), 0.1F);
-            }
+            if (this.getEntityWorld() instanceof ServerWorld serverWorld && this.pickupType == PersistentProjectileEntity.PickupPermission.ALLOWED) {
+					this.dropStack(serverWorld, this.asItemStack(), 0.1F);
+				}
 
             this.discard();
          } else {
             this.setNoClip(true);
-            Vec3d vec3d = entity.getEyePos().subtract(this.getPos());
+            Vec3d vec3d = entity.getEyePos().subtract(this.getEntityPos());
             this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * (double)i, this.getZ());
-            if (this.getWorld().isClient) {
+            if (this.getEntityWorld().isClient()) {
                this.lastRenderY = this.getY();
             }
 
@@ -113,18 +114,18 @@ public class AncientTridentEntity extends PersistentProjectileEntity {
       float f = 8.0F;
       Entity entity2 = this.getOwner();
       DamageSource damageSource = this.getDamageSources().trident(this, (Entity)(entity2 == null ? this : entity2));
-      World var7 = this.getWorld();
+      World var7 = this.getEntityWorld();
       if (var7 instanceof ServerWorld serverWorld) {
          f = EnchantmentHelper.getDamage(serverWorld, this.getWeaponStack(), entity, damageSource, f);
       }
 
       this.dealtDamage = true;
-      if (entity.damage(damageSource, f)) {
+      if (entity.sidedDamage(damageSource, f)) {
          if (entity.getType() == EntityType.ENDERMAN) {
             return;
          }
 
-         var7 = this.getWorld();
+         var7 = this.getEntityWorld();
          if (var7 instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld)var7;
             EnchantmentHelper.onTargetDamaged(serverWorld, entity, damageSource, this.getWeaponStack());
@@ -152,7 +153,7 @@ public class AncientTridentEntity extends PersistentProjectileEntity {
       }
 
       EnchantmentHelper.onHitBlock(world, weaponStack, var10002, this, (EquipmentSlot)null, vec3d, world.getBlockState(blockHitResult.getBlockPos()), (item) -> {
-         this.kill();
+         this.kill(world);
       });
    }
 
@@ -179,19 +180,21 @@ public class AncientTridentEntity extends PersistentProjectileEntity {
 
    }
 
-   public void readCustomDataFromNbt(NbtCompound nbt) {
-      super.readCustomDataFromNbt(nbt);
-      this.dealtDamage = nbt.getBoolean("DealtDamage");
+   @Override
+   protected void readCustomData(ReadView view) {
+      super.readCustomData(view);
+      this.dealtDamage = view.getBoolean("DealtDamage", false);
       this.dataTracker.set(LOYALTY, this.getLoyalty(this.getItemStack()));
    }
 
-   public void writeCustomDataToNbt(NbtCompound nbt) {
-      super.writeCustomDataToNbt(nbt);
-      nbt.putBoolean("DealtDamage", this.dealtDamage);
+   @Override
+   public void writeCustomData(WriteView view) {
+      super.writeCustomData(view);
+      view.putBoolean("DealtDamage", this.dealtDamage);
    }
 
    private byte getLoyalty(ItemStack stack) {
-      World var3 = this.getWorld();
+      World var3 = this.getEntityWorld();
       if (var3 instanceof ServerWorld serverWorld) {
          return (byte)MathHelper.clamp(EnchantmentHelper.getTridentReturnAcceleration(serverWorld, stack, this), 0, 127);
       } else {

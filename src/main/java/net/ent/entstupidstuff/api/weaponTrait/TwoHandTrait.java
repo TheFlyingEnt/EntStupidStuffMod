@@ -35,7 +35,7 @@ public class TwoHandTrait {
         double damageMultiplier = reduceDamage ? 0.25 : 1.0;
         //float adjustedDamage = baseDamage * (float) damageMultiplier;
 
-        EntityAttributeInstance attackDamageInstance = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        EntityAttributeInstance attackDamageInstance = attacker.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 
         // Remove the existing modifier if it exists
         if (attackDamageInstance != null) {

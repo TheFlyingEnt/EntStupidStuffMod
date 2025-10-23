@@ -23,15 +23,6 @@ public class BleedingEffect extends StatusEffect {
         return true;
     }
 
-    @Override
-    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if (entity.getWorld().isClient()) {
-            entity.damage(entity.getDamageSources().generic(), 0.5f + amplifier);
-            return true;
-        }
-
-        return false;
-    }
 }
 
 

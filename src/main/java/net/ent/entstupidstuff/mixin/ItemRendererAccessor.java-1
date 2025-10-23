@@ -1,0 +1,16 @@
+package net.ent.entstupidstuff.mixin;
+
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.item.model.ItemModel;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+@Mixin(ItemRenderer.class)
+public interface ItemRendererAccessor {
+    @Accessor("models")
+    ItemModel mccourse$getModels();
+
+    //@Accessor("heldItemRenderer")
+    //Entity getHeldItemRenderer();
+}

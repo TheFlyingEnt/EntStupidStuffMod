@@ -5,36 +5,40 @@ import java.util.concurrent.CompletableFuture;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.data.tag.EnchantmentTagProvider;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
+import net.minecraft.registry.RegistryWrapper.WrapperLookup; 
 import net.minecraft.registry.tag.EnchantmentTags;
 
-public class ModEnchantmentTagProvider extends FabricTagProvider.EnchantmentTagProvider {
+public class ModEnchantmentTagProvider extends EnchantmentTagProvider {
     public ModEnchantmentTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> completableFuture) {
         super(output, completableFuture);
     }
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup registryLookup) {
-        /*getOrCreateTagBuilder(ModItemTags.HAMMER_EXCLUSIVE_SET)
+        /*builder((ModItemTags.HAMMER_EXCLUSIVE_SET)
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "gravity"))
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "lightning_striker"))
             .addOptional(Identifier.of("minecraft", "breach"));*/
 
-        this.getOrCreateTagBuilder(EnchantmentTags.DAMAGE_EXCLUSIVE_SET)
+        this.builder(EnchantmentTags.DAMAGE_EXCLUSIVE_SET)
 			.add(
-                Enchantments.SHARPNESS, 
-                Enchantments.SMITE, 
-                Enchantments.BANE_OF_ARTHROPODS, 
-                Enchantments.IMPALING, 
-                Enchantments.DENSITY, 
-                Enchantments.BREACH, 
-                UpdatedEnchantmentFactory.GRAVITY, 
-                UpdatedEnchantmentFactory.LIGHTNING_STRIKER
+                new RegistryKey[]{
+                    Enchantments.SHARPNESS, 
+                    Enchantments.SMITE, 
+                    Enchantments.BANE_OF_ARTHROPODS, 
+                    Enchantments.IMPALING, 
+                    Enchantments.DENSITY, 
+                    Enchantments.BREACH, 
+                    UpdatedEnchantmentFactory.GRAVITY, 
+                    UpdatedEnchantmentFactory.LIGHTNING_STRIKER
+                }
             );
 
-        /*getOrCreateTagBuilder(ModItemTags.HAMMER_ENCHANTABLE)
+        /*builder((ModItemTags.HAMMER_ENCHANTABLE)
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "gravity"))
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "lightning_striker"))
             .addOptional(Identifier.of("minecraft", "breach"))

@@ -62,29 +62,12 @@ public interface Jarredable {
 
 	@Deprecated
 	static void copyDataFromNbt(MobEntity entity, NbtCompound nbt) {
-		if (nbt.contains("NoAI")) {
-			entity.setAiDisabled(nbt.getBoolean("NoAI"));
-		}
-
-		if (nbt.contains("Silent")) {
-			entity.setSilent(nbt.getBoolean("Silent"));
-		}
-
-		if (nbt.contains("NoGravity")) {
-			entity.setNoGravity(nbt.getBoolean("NoGravity"));
-		}
-
-		if (nbt.contains("Glowing")) {
-			entity.setGlowing(nbt.getBoolean("Glowing"));
-		}
-
-		if (nbt.contains("Invulnerable")) {
-			entity.setInvulnerable(nbt.getBoolean("Invulnerable"));
-		}
-
-		if (nbt.contains("Health", NbtElement.NUMBER_TYPE)) {
-			entity.setHealth(nbt.getFloat("Health"));
-		}
+		nbt.getBoolean("NoAI").ifPresent(entity::setAiDisabled);
+		nbt.getBoolean("Silent").ifPresent(entity::setSilent);
+		nbt.getBoolean("NoGravity").ifPresent(entity::setNoGravity);
+		nbt.getBoolean("Glowing").ifPresent(entity::setGlowing);
+		nbt.getBoolean("Invulnerable").ifPresent(entity::setInvulnerable);
+		nbt.getFloat("Health").ifPresent(entity::setHealth);
 	}
 
 	static <T extends LivingEntity & Jarredable> Optional<ActionResult> tryJar(PlayerEntity player, Hand hand, T entity) {
@@ -95,13 +78,13 @@ public interface Jarredable {
 			entity.copyDataToStack(itemStack2);
 			ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, player, itemStack2, false);
 			player.setStackInHand(hand, itemStack3);
-			World world = entity.getWorld();
-			if (!world.isClient) {
+			World world = entity.getEntityWorld();
+			if (!world.isClient()) {
 				Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)player, itemStack2);
 			}
 
 			entity.discard();
-			return Optional.of(ActionResult.success(world.isClient));
+			return Optional.of(ActionResult.SUCCESS);
 		} else {
 			return Optional.empty();
 		}

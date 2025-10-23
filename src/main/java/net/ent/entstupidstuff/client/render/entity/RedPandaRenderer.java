@@ -4,28 +4,26 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
+import net.minecraft.client.render.entity.AgeableMobEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.util.Identifier;
 
-public class RedPandaRenderer extends MobEntityRenderer<RedPandaEntity, RedPandaModel<RedPandaEntity>>{
+@SuppressWarnings("deprecation")
+public class RedPandaRenderer extends AgeableMobEntityRenderer<RedPandaEntity, LivingEntityRenderState, RedPandaModel> {
     private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/red_panda.png");
 
-    public RedPandaRenderer(EntityRendererFactory.Context context) {
-		super(context, new RedPandaModel<>(context.getPart(ModEntityModelLayers.RED_PANDA)), 0.4F);
-		//this.addFeature(new FoxHeldItemFeatureRenderer(this, context.getHeldItemRenderer()));
+	public RedPandaRenderer(EntityRendererFactory.Context context) {
+		super(context, new RedPandaModel(context.getPart(ModEntityModelLayers.RED_PANDA)), new RedPandaModel(context.getPart(ModEntityModelLayers.RED_PANDA)), 0.7F);
+		//this.addFeature(new FoxHeldItemFeatureRenderer(this));
 	}
 
-	protected void setupTransforms(RedPandaEntity redPandaEntity, MatrixStack matrixStack, float f, float g, float h, float i) {
-		super.setupTransforms(redPandaEntity, matrixStack, f, g, h, i);
-		/*if (redPandaEntity.isWalking()) {
-			float j = -MathHelper.lerp(h, redPandaEntity.prevPitch, redPandaEntity.getPitch());
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(j));
-		}*/
-	}
-
-	public Identifier getTexture(RedPandaEntity redPandaEntity) {
+	public Identifier getTexture(LivingEntityRenderState redPandaEntity) {
 		return TEXTURE;
+	}
+
+	@Override
+	public LivingEntityRenderState createRenderState() {
+		return new LivingEntityRenderState();
 	}
 }

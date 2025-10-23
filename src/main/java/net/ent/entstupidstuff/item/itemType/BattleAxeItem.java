@@ -11,19 +11,20 @@ import net.minecraft.text.Text;
 public class BattleAxeItem extends WeaponItem{
 
     public BattleAxeItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(
+        super(toolMaterial, settings);
+        /*super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(
         toolMaterial, //Tool Material
-        5  + toolMaterial.getAttackDamage(), //Attack Damage
+        5  + toolMaterial.attackDamageBonus(), //Attack Damage
          -2.6f,  //Attack Speed
         1, //Reach
         1, //Sweep Ratio
-        1))); //Knockback
+        1))); //Knockback*/
     }
 
     // For 1.20.5+ Adding TwoHanded ToolTip
-    @Override
+    /*@Override
     public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         //tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip").formatted(Formatting.GRAY));
-    }
+    }*/
 
 }

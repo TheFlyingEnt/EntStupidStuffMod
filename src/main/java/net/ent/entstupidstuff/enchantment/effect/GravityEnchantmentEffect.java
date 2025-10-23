@@ -30,7 +30,7 @@ public class GravityEnchantmentEffect implements EnchantmentEntityEffect {
         );
 
         for (LivingEntity target : targets) {
-            Vec3d direction = player.getPos().subtract(target.getPos()).normalize();
+            Vec3d direction = player.getEntityPos().subtract(target.getEntityPos()).normalize();
             double strength = 0.5 + 0.1 * level; // Pull multiplier
 
             target.addVelocity(direction.x * strength, 0.3 * strength, direction.z * strength);

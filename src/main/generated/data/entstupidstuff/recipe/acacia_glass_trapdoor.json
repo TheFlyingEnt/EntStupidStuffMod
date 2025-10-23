@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "wooden_glass_trapdoor",
   "ingredients": [
-    {
-      "item": "minecraft:acacia_trapdoor"
-    },
-    {
-      "item": "minecraft:glass_pane"
-    }
+    "minecraft:acacia_trapdoor",
+    "minecraft:glass_pane"
   ],
   "result": {
     "count": 1,

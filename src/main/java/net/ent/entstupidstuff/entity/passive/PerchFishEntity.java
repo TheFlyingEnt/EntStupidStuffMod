@@ -2,10 +2,13 @@ package net.ent.entstupidstuff.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -18,6 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -39,6 +44,11 @@ public class PerchFishEntity extends SchoolingFishEntity{
         private static final Variant[] VALUES = values();
 		private final int id;
 		private final String name;
+
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
+            Variant::byId,
+            Variant::getId
+        );
 
         Variant(int id, String name) {
 			this.id = id;
@@ -98,9 +108,9 @@ public class PerchFishEntity extends SchoolingFishEntity{
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Variant", this.getVariant().getId());
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Variant", this.getVariant().getId());
     }
 
     public void copyDataToStack(ItemStack stack) {
@@ -117,10 +127,9 @@ public class PerchFishEntity extends SchoolingFishEntity{
    }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.setVariant(Variant.byId(nbt.getInt("Variant")));
-
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+		this.setVariant((PerchFishEntity.Variant)view.read("Variant", PerchFishEntity.Variant.INDEX_CODEC).orElse(PerchFishEntity.Variant.DARK));
     }
 
     public void setVariant(PerchFishEntity.Variant variant) {
@@ -149,10 +158,7 @@ public class PerchFishEntity extends SchoolingFishEntity{
 
     @Override
     public void copyDataFromNbt(NbtCompound nbt) {
-        super.copyDataFromNbt(nbt);
-        if (nbt.contains("BucketVariantTag", NbtElement.INT_TYPE)) {
-            this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
-        }
+        Bucketable.copyDataFromNbt(this, nbt);
     }
     
 }

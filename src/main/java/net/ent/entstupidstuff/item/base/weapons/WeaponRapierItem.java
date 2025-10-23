@@ -10,7 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.*;
 import net.minecraft.util.math.random.Random;
 
-public class WeaponRapierItem extends SwordItem {
+public class WeaponRapierItem extends WeaponUpdatedItem {
     private static final float CRIT_CHANCE = 0.25f;
     private static final double BASE_ATTACK_DAMAGE = 3.5; // fast, low base
     private static double ATTACK_DAMAGE;
@@ -19,17 +19,17 @@ public class WeaponRapierItem extends SwordItem {
         super(toolMaterial, settings.attributeModifiers(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
-                BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage(),
+                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
                 -1.0f,  // quick
                 0,
                 0,
                 0.0f
             )
         ));
-        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.getAttackDamage();
+        ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
     }
 
-    @Override
+    /*@Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker instanceof PlayerEntity player) {
             // magic damage to simulate partial armor penetration
@@ -43,7 +43,7 @@ public class WeaponRapierItem extends SwordItem {
             }
         }
         return super.postHit(stack, target, attacker);
-    }
+    }*/
 
     @Override
     public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
