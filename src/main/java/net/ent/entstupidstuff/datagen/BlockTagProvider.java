@@ -67,6 +67,9 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
         addVanillaGlassDoorM("waxed_exposed_copper");
         addVanillaGlassDoorM("waxed_oxidized_copper");
         addVanillaGlassDoorM("waxed_weathered_copper");
+
+        valueLookupBuilder(BlockTags.MUSHROOM_GROW_BLOCK)
+            .add((BlockFactory.callBlock("shroomium")));
         
     }
 

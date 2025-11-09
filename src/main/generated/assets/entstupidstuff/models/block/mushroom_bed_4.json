@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/flowerbed_4",
+  "textures": {
+    "flowerbed": "entstupidstuff:block/mushroom_bed",
+    "stem": "entstupidstuff:block/mushroom_bed_stem"
+  }
+}

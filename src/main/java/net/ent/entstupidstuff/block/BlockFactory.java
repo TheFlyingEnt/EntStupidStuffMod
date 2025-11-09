@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
@@ -19,21 +18,21 @@ import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.FlowerbedBlock;
 import net.minecraft.block.GrateBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.MushroomBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.OxidizableDoorBlock;
 import net.minecraft.block.OxidizableTrapdoorBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PillarBlock;
-import net.minecraft.block.PointedDripstoneBlock;
 import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.SlabBlock;
+import net.minecraft.block.SporeBlossomBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TransparentBlock;
@@ -276,6 +275,7 @@ public class BlockFactory {
         
     }
     
+    @SuppressWarnings("unused")
     public static void onInitialize() {
 
         onInitializeNewUpdated();
@@ -283,9 +283,8 @@ public class BlockFactory {
         //Blue Mushroom:
         Block BLUE_MUSHROOM = register3(
 		"blue_mushroom",
-		(settings) -> new MushroomPlantBlock(
-			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY,
-			settings
+		(settings) -> new BlueMushroomPlantBlock(
+			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY,settings
 		),
 		AbstractBlock.Settings.create()
 			.mapColor(MapColor.BLUE)
@@ -299,7 +298,7 @@ public class BlockFactory {
 
         Block BLUE_MUSHROOM_BLOCK = register3(
             "blue_mushroom_block",
-            MushroomBlock::new,
+            TransparentMushroomBlock::new,
             AbstractBlock.Settings.create()
                 .mapColor(MapColor.BLUE)
                 .instrument(NoteBlockInstrument.BASS)
@@ -307,6 +306,42 @@ public class BlockFactory {
                 .sounds(BlockSoundGroup.WOOD)
                 .luminance(state -> 5)
                 .burnable()
+                .nonOpaque()
+                        .solidBlock(Blocks::never)
+                        .blockVision(Blocks::never)
+        );
+
+        Block SHROOMIUM_BLOCK = register3(
+            "shroomium",
+            ShroomiumBlock::new,
+            AbstractBlock.Settings.create()
+                .mapColor(MapColor.TEAL)
+                .allowsSpawning(Blocks::always)
+                .solidBlock(Blocks::always)
+                .blockVision(Blocks::always)
+                .suffocates(Blocks::always)
+                .sounds(BlockSoundGroup.MUD)
+        );
+
+        Block MUSHROOM_BED = register3(
+            "mushroom_bed",
+            MushroombedBlock::new,
+            AbstractBlock.Settings.create().mapColor(MapColor.BLUE).noCollision().sounds(BlockSoundGroup.FUNGUS).pistonBehavior(PistonBehavior.DESTROY)
+        );
+
+        Block POTTED_MUSHROOM_BED = register3(
+            "potted_blue_mushroom", settings -> new FlowerPotBlock(BLUE_MUSHROOM, settings), Blocks.createFlowerPotSettings()
+        );
+
+        Block FUNGAL_SPORE_BLOSSOM = register3(
+            "fungal_spore_blossom",
+            MushroomSporeBlossomBlock::new,
+            AbstractBlock.Settings.create()
+                .mapColor(MapColor.DARK_AQUA)
+                .breakInstantly()
+                .noCollision()
+                .sounds(BlockSoundGroup.SPORE_BLOSSOM)
+                .pistonBehavior(PistonBehavior.DESTROY)
         );
         
         // Adding Vanilla Glassdoor and TrapDoors
@@ -1137,7 +1172,7 @@ public class BlockFactory {
 
     public static final Block POINTED_ICE = register3(
 		"pointed_ice",
-		PointedDripstoneBlock::new,
+		PointedIceBlock::new,
 			AbstractBlock.Settings.create()
 				.mapColor(MapColor.PALE_PURPLE)
 				.solid()

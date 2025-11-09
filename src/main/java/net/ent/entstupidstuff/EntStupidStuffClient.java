@@ -2,26 +2,23 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
-import net.ent.entstupidstuff.client.render.BuiltInModelItemRenderer;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
-import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
-import net.ent.entstupidstuff.client.render.shield.DiamondShieldSpecialRenderer;
+import net.ent.entstupidstuff.client.render.ModSpecialModelTypes;
 import net.ent.entstupidstuff.item.ModModelPredicateReg;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 
 public class EntStupidStuffClient implements ClientModInitializer {
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onInitializeClient() {
 
@@ -29,20 +26,11 @@ public class EntStupidStuffClient implements ClientModInitializer {
         ModRenderLayers.onInitializeClient();
         ModModelPredicateReg.onInitialize();
         //ModelPredicateFactory.onInitialize();
-        BuiltInModelItemRenderer.onInitialize();
+        ModSpecialModelTypes.onInit();
         ParticlesClient.initalize();
 
-        //Shield
 
-        /*EntityModelLayerRegistry.registerModelLayer(
-            ModEntityModelLayers.DIAMOND_SHIELD,
-            StrongShieldEntityModel::getTexturedModelData
-        );*/
 
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "diamond_shield"),
-            DiamondShieldSpecialRenderer.Unbaked.CODEC
-        );
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             MinecraftClient client = MinecraftClient.getInstance();

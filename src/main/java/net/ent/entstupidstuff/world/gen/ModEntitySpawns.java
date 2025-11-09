@@ -34,8 +34,8 @@ public class ModEntitySpawns  {
 
         //Lobber
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(BiomeKeys.DRIPSTONE_CAVES, BiomeKeys.LUSH_CAVES),
-            SpawnGroup.MONSTER, EntityFactory.LOBBER_ZOMBIE, 50, 2, 3); //30,2,3
-        SpawnRestriction.register(EntityFactory.LOBBER_ZOMBIE, SpawnLocationTypes.ON_GROUND,
+            SpawnGroup.MONSTER, EntityFactory.ZOMBIE_LOBBER, 50, 2, 3); //30,2,3
+        SpawnRestriction.register(EntityFactory.ZOMBIE_LOBBER, SpawnLocationTypes.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING, HostileEntity::canSpawnInDark);
 
         //SCORCHED

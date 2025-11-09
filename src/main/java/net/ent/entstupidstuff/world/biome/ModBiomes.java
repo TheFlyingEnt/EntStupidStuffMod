@@ -17,17 +17,21 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.UndergroundPlacedFeatures;
 
 public class ModBiomes {
     public static final RegistryKey<Biome> MAPLE_FOREST = RegistryKey.of(RegistryKeys.BIOME,
             Identifier.of(EntStupidStuff.MOD_ID, "maple_forest"));
     public static final RegistryKey<Biome> ICY_CAVES = RegistryKey.of(RegistryKeys.BIOME,
             Identifier.of(EntStupidStuff.MOD_ID, "icy_caves"));
+    public static final RegistryKey<Biome> UNDERGROUND_BLUE_MUSHROOM = RegistryKey.of(RegistryKeys.BIOME,
+            Identifier.of(EntStupidStuff.MOD_ID, "underground_blue_mushroom"));
 
     public static void boostrap(Registerable<Biome> context) {
         //context.register(MAPLE_FOREST, mapleforest(context));
         context.register(ICY_CAVES, icyCaves(context));
         context.register(MAPLE_FOREST, mapleForest(context));
+        context.register(UNDERGROUND_BLUE_MUSHROOM, undergroundBlueMushroom(context));
     }
 
     //biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
@@ -84,6 +88,64 @@ public class ModBiomes {
             .build();
 
     }
+
+    public static Biome undergroundBlueMushroom(Registerable<Biome> context) {
+        SpawnSettings.Builder builder = new SpawnSettings.Builder();
+        DefaultBiomeFeatures.addBatsAndMonsters(builder);
+
+        GenerationSettings.LookupBackedBuilder biomeBuilder =
+            new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
+        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
+
+        addBasicFeatures(biomeBuilder);
+        DefaultBiomeFeatures.addDefaultOres(biomeBuilder);
+
+        //Add Mud Biome Features
+        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, 
+            ModPlacedFeatures.MUD_LAYER_PLACED);
+
+        // Then add shroomium floor on top
+        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, 
+            ModPlacedFeatures.SHROOMIUM_FLOOR_PLACED);
+
+        // Add huge blue mushrooms
+        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+            ModPlacedFeatures.HUGE_BLUE_MUSHROOM_PLACED);
+
+        // Add extra mushroom bed patches
+        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+            ModPlacedFeatures.MUSHROOM_BED_PATCH_PLACED);
+
+        // Add fungal spore blossoms
+        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+            ModPlacedFeatures.FUNGAL_SPORE_BLOSSOM_PLACED);
+
+            
+
+        MusicSound musicSound = MusicType.createIngameMusic(SoundEvents.MUSIC_OVERWORLD_LUSH_CAVES);
+
+        BiomeEffects effects = new BiomeEffects.Builder()
+                .fogColor(12638463)
+                .skyColor(7907327)
+                .waterColor(4375259)
+                .waterFogColor(2710405)
+                //.moodSound(new BiomeMoodSound(RegistryEntry.of(SoundEvents.AMBIENT_CAVE), 6000, 8, 2.0))
+                .music(musicSound)
+        .build();
+
+
+        return new Biome.Builder()
+            .precipitation(true)
+            .temperature(0.4f)
+            .downfall(0.4f)
+            .effects(effects)
+            .spawnSettings(builder.build())
+            .generationSettings(biomeBuilder.build())
+        .build();
+
+
+    }
+
 
     public static Biome icyCaves(Registerable<Biome> context) {
         SpawnSettings.Builder spawnBuilder = new SpawnSettings.Builder();

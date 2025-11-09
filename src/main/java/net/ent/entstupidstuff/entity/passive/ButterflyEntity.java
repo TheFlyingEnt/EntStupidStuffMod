@@ -2,15 +2,20 @@ package net.ent.entstupidstuff.entity.passive;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
+import io.netty.buffer.ByteBuf;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.entity.Jarredable;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModItemTags;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.ComponentsAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.AnimationState;
@@ -28,9 +33,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -42,7 +50,9 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
+import net.minecraft.util.function.ValueLists;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -61,62 +71,54 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     private static final TrackedData<Boolean> FROM_BUCKET = DataTracker.registerData(ButterflyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     // === Variant Enum ===
-    public static enum Variant {
-        /*BIRCH(0, "Birch", true),
-        EMPEROR(1, "Emperor", true),
-        MONARCH(2, "Monarch", true),
-        YELLOW(3, "Yellow", true),
-        LUMINOUS(4, "Luminous", true),
-        REDWOOD(5, "Redwood", true),
-        BLUE(6, "Blue", true),
-        SEELE(7, "Seele", true),
-        CREEPER(8, "Creeper", true);*/
+    public static enum Variant implements StringIdentifiable {
+        BIRCH(0, "birch", true, List.of(ModItemTags.SPAWN_BIRCH_BUTTERFLY)),
+        EMPEROR(1, "emperor", true, List.of(ModItemTags.SPAWN_EMPEROR_BUTTERFLY)),
+        MONARCH(2, "monarch", true, List.of(ModItemTags.SPAWN_MONARCH_BUTTERFLY)),
+        YELLOW(3, "yellow", true, List.of(ModItemTags.SPAWN_YELLOW_BUTTERFLY)),
+        LUMINOUS(4, "luminous", true, List.of(ModItemTags.SPAWN_LUMINOUS_BUTTERFLY)),
+        REDWOOD(5, "redwood", true, List.of(ModItemTags.SPAWN_REDWOOD_BUTTERFLY)),
+        BLUE(6, "blue", true, List.of(ModItemTags.SPAWN_BLUE_BUTTERFLY)),
+        SEELE(7, "seele", false, List.of(ModItemTags.SPAWN_SEELE_BUTTERFLY)),
+        CREEPER(8, "creeper", false, List.of(ModItemTags.SPAWN_CREEPER_BUTTERFLY));
 
-        BIRCH(0, "Birch", true, List.of(ModItemTags.SPAWN_BIRCH_BUTTERFLY)),
-        EMPEROR(1, "Emperor", true, List.of(ModItemTags.SPAWN_EMPEROR_BUTTERFLY)),
-        MONARCH(2, "Monarch", true, List.of(ModItemTags.SPAWN_MONARCH_BUTTERFLY)),
-        YELLOW(3, "Yellow", true, List.of(ModItemTags.SPAWN_YELLOW_BUTTERFLY)),
-        LUMINOUS(4, "Luminous", true, List.of(ModItemTags.SPAWN_LUMINOUS_BUTTERFLY)),
-        REDWOOD(5, "Redwood", true, List.of(ModItemTags.SPAWN_REDWOOD_BUTTERFLY)),
-        BLUE(6, "Blue", true, List.of(ModItemTags.SPAWN_BLUE_BUTTERFLY)),
-        SEELE(7, "Seele", false, List.of(ModItemTags.SPAWN_SEELE_BUTTERFLY)),
-        CREEPER(8, "Creeper", false, List.of(ModItemTags.SPAWN_CREEPER_BUTTERFLY));
+        public static final Variant DEFAULT = BIRCH;
 
-        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
-            Variant::byId,
-            Variant::getId
+        private static final IntFunction<Variant> INDEX_MAPPER = ValueLists.createIndexToValueFunction(
+            Variant::getIndex, values(), ValueLists.OutOfBoundsHandling.ZERO
         );
 
-        private final int id;
-        private final String name;
+        public static final Codec<Variant> CODEC = StringIdentifiable.createCodec(Variant::values);
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(INDEX_MAPPER::apply, Variant::getIndex);
+        public static final PacketCodec<ByteBuf, Variant> PACKET_CODEC = PacketCodecs.indexed(INDEX_MAPPER, Variant::getIndex);
+
+        private final int index;
+        private final String id;
         private final boolean natural;
         private final List<TagKey<Biome>> allowedBiomeTags;
 
-        private Variant(int id, String name, boolean natural, List<TagKey<Biome>> allowedBiomeTags) {
+        private Variant(int index, String id, boolean natural, List<TagKey<Biome>> allowedBiomeTags) {
+            this.index = index;
             this.id = id;
-            this.name = name;
             this.natural = natural;
             this.allowedBiomeTags = allowedBiomeTags;
         }
 
-        public int getId() { return id; }
-        public String getName() { return name; }
-        public boolean isNatural() { return natural; }
+        public int getIndex() { return this.index; }
+        public String getId() { return this.id; }
+        public boolean isNatural() { return this.natural; }
+
         public boolean canSpawnInBiome(ServerWorld world, RegistryKey<Biome> biome) {
             RegistryEntry<Biome> entry = world.getRegistryManager().getOrThrow(RegistryKeys.BIOME).getOrThrow(biome);
             return allowedBiomeTags.stream().anyMatch(tag -> entry.isIn(tag));
         }
 
-        private static final Variant[] VALUES = values();
-
-        public static Variant byId(int id) {
-            return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
+        public static Variant byIndex(int index) {
+            return INDEX_MAPPER.apply(index);
         }
 
         public static Variant getRandomNatural(Random random) {
-            Variant[] list = Arrays.stream(values())
-                .filter(v -> v.natural)
-                .toArray(Variant[]::new);
+            Variant[] list = (Variant[]) Arrays.stream(values()).filter(v -> v.natural).toArray(Variant[]::new);
             return Util.getRandom(list, random);
         }
 
@@ -133,10 +135,16 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
         }
 
         public static Variant getRandom(Random random) {
-            Variant[] list = values(); // no filtering
+            Variant[] list = values();
             return Util.getRandom(list, random);
         }
+
+        @Override
+        public String asString() {
+            return this.id;
+        }
     }
+
 
     public final AnimationState flyingAnimationState = new AnimationState();
     public final AnimationState roostingAnimationState = new AnimationState();
@@ -150,7 +158,7 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     @Override
     public void writeCustomData(WriteView view) {
         super.writeCustomData(view);
-        view.putInt("Variant", this.getVariant().getId());
+        view.put("Variant", ButterflyEntity.Variant.INDEX_CODEC, this.getVariant());
         view.putBoolean("FromJar", this.isFromJar());
     }
 
@@ -163,15 +171,17 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     public void copyDataToStack(ItemStack stack) {
         //super.copyDataToStack(stack);
         Jarredable.copyDataToStack(this, stack);
-        NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
+        stack.copy(ModDataComponentTypes.BUTTERFLY_VARIANT, this);
+        /*NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
         	nbtCompound.putInt("Variant", this.getVariant().getId());
-    	});
+    	});*/
     }
 
     @Override
     public void readCustomData(ReadView view) {
         super.readCustomData(view);
-        this.setVariant((ButterflyEntity.Variant)view.read("Variant", ButterflyEntity.Variant.INDEX_CODEC).orElse(ButterflyEntity.Variant.MONARCH));
+        this.setVariant((ButterflyEntity.Variant) view.read("Variant", ButterflyEntity.Variant.INDEX_CODEC).orElse(ButterflyEntity.Variant.DEFAULT));
+        this.setFromJar(view.getBoolean("FromJar", false));
     }
 
     @Override
@@ -184,14 +194,12 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
 		}*/
 	}
 
-    public void setVariant(ButterflyEntity.Variant variant) {
-        this.variant = variant;
-        this.dataTracker.set(VARIANT, variant.getId());
+    private void setVariant(ButterflyEntity.Variant variant) {
+        this.dataTracker.set(VARIANT, variant.getIndex());
     }
 
-    public Variant getVariant() {
-        int id = this.dataTracker.get(VARIANT);
-        return Variant.byId(id);
+    public ButterflyEntity.Variant getVariant() {
+        return ButterflyEntity.Variant.byIndex(this.dataTracker.get(VARIANT));
     }
 
     @Override
@@ -353,4 +361,26 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     public boolean isInAir() {
         return !this.isOnGround();
     }
+
+    @Nullable
+	@Override
+	public <T> T get(ComponentType<? extends T> type) {
+		return type == ModDataComponentTypes.BUTTERFLY_VARIANT ? castComponentValue((ComponentType<T>)type, this.getVariant()) : super.get(type);
+	}
+
+	@Override
+	protected void copyComponentsFrom(ComponentsAccess from) {
+		this.copyComponentFrom(from, ModDataComponentTypes.BUTTERFLY_VARIANT);
+		super.copyComponentsFrom(from);
+	}
+
+	@Override
+	protected <T> boolean setApplicableComponent(ComponentType<T> type, T value) {
+		if (type == ModDataComponentTypes.BUTTERFLY_VARIANT) {
+			this.setVariant(castComponentValue(ModDataComponentTypes.BUTTERFLY_VARIANT, value));
+			return true;
+		} else {
+			return super.setApplicableComponent(type, value);
+		}
+	}
 }

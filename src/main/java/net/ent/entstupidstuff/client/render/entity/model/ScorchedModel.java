@@ -31,11 +31,11 @@ public class ScorchedModel extends ZombieEntityModel<ZombieEntityRenderState>{
             .cuboid(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F);
 
         ModelPartBuilder leftLeg = ModelPartBuilder.create() //Left Leg
-            .uv(16, 48).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F);
+           .uv(16, 48).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F);
     
         modelData.getRoot().addChild("right_arm", rightArm, ModelTransform.origin(-5.0F, 2.0F, 0.0F));
         modelData.getRoot().addChild("left_arm", leftArm, ModelTransform.origin(5.0F, 2.0F, 0.0F));
-        modelData.getRoot().addChild("left_leg", leftLeg, ModelTransform.origin(2f, 2F, 2F));
+        modelData.getRoot().addChild("left_leg", leftLeg, ModelTransform.origin(1.9F, 12.0F, 0.0F));
     
         return TexturedModelData.of(modelData, 64, 64);
     }

@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.entity.generic;
 import java.util.EnumSet;
 
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Overwrite;
 
 import net.ent.entstupidstuff.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.entity.ai.UnderwaterBowAttackGoal;
@@ -15,6 +16,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.AvoidSunlightGoal;
+import net.minecraft.entity.ai.goal.BowAttackGoal;
 import net.minecraft.entity.ai.goal.EscapeSunlightGoal;
 import net.minecraft.entity.ai.goal.FleeEntityGoal;
 import net.minecraft.entity.ai.goal.Goal;
@@ -26,6 +28,7 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TurtleEntity;
@@ -55,6 +58,8 @@ public class GenericSkeletonBow extends SkeletonEntity{
 
     protected final SwimNavigation waterNavigation;
     protected final MobNavigation landNavigation;
+
+
 
 
     public GenericSkeletonBow(EntityType<? extends GenericSkeletonBow> entityType, World world) {

@@ -3,14 +3,14 @@
     "type": "minecraft:condition",
     "on_false": {
       "type": "minecraft:special",
-      "base": "minecraft:item/shield",
+      "base": "entstupidstuff:item/diamond_shield",
       "model": {
         "type": "entstupidstuff:diamond_shield"
       }
     },
     "on_true": {
       "type": "minecraft:special",
-      "base": "minecraft:item/shield_blocking",
+      "base": "entstupidstuff:item/diamond_shield_blocking",
       "model": {
         "type": "entstupidstuff:diamond_shield"
       }

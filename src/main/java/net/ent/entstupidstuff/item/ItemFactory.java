@@ -1,7 +1,9 @@
 package net.ent.entstupidstuff.item;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
@@ -37,9 +39,12 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BannerPatternsComponent;
+import net.minecraft.component.type.BlocksAttacksComponent;
+import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponents;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.EntityBucketItem;
@@ -54,6 +59,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
@@ -97,7 +103,7 @@ public class ItemFactory {
     public static final Item BUTTERFLY_JAR = registerItem2("butterfly_jar", settings -> new ButterflyJarItem(EntityFactory.BUTTERFLY, SoundEvents.ITEM_BOTTLE_FILL, settings));
     public static final Item BUTTERFLY_SPAWN_EGG = registerItem2("butterfly_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.BUTTERFLY)));
     
-    public static final Item ZOMBIE_LOBBER_SPAWN_EGG = registerItem2("zombie_lobber_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.LOBBER_ZOMBIE)));
+    public static final Item ZOMBIE_LOBBER_SPAWN_EGG = registerItem2("zombie_lobber_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_LOBBER)));
     public static final Item ZOMBIE_SCORCHED_SPAWN_EGG = registerItem2("zombie_scorched_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_SCORCHED)));
     public static final Item ZOMBIE_FROSTBITE_SPAWN_EGG = registerItem2("zombie_frostbite_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_FROSTBITTEN)));
     public static final Item ZOMBIE_SLIMED_SPAWN_EGG = registerItem2("zombie_slimed_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_SLIMED)));
@@ -165,7 +171,7 @@ public class ItemFactory {
     public static final Item COOKED_SNAPPER = registerItem2("cooked_snapper", settings -> new Item((settings).food(FOOD_COOKED_BASS)));
 
     public static final Item RUM = registerItem2("bottle_of_rum", settings -> new BottleOfRumItem(settings));
-    public static final Item CANNON_BALL_ITEM = registerItem2("cannon_ball", settings -> new CannonballItem(settings));
+    public static final Item CANNON_BALL_ITEM = registerItem2("cannon_ball", settings -> new CannonballItem(settings.component(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT)));
     public static final Item CANNON_ITEM = registerItem2("cannon", settings -> new CannonItem(settings));
     public static final Item PRISMERINE_ARROW = registerItem2("prismerine_arrow", settings -> new PrismerineArrowItem(settings));
 
@@ -194,13 +200,52 @@ public class ItemFactory {
 
     // Shields
 
-    public static final Item STONE_SHIELD = registerItem2("stone_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));;
+    public static final Item STONE_SHIELD = registerItem2("stone_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+			.component(
+				DataComponentTypes.BLOCKS_ATTACKS,
+				new BlocksAttacksComponent(
+					0.25F,
+					1.0F,
+					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
+					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
+					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+				)
+			)
+			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));;
     public static final Item STONE_BLACKSTONE_SHIELD = registerItem2("stone_deepslate_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));; //Custom Nether Design
     public static final Item STONE_DEEPSLATE_SHIELD = registerItem2("stone_blackstone_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));; // Custom Cave Design
 
 
-    public static final Item GOLDEN_SHIELD = registerItem2("golden_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));;
-    public static final Item DIAMOND_SHIELD = registerItem2("diamond_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
+    public static final Item GOLDEN_SHIELD = registerItem2("golden_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+			.component(
+				DataComponentTypes.BLOCKS_ATTACKS,
+				new BlocksAttacksComponent(
+					0.25F,
+					1.0F,
+					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
+					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
+					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+				)
+			)
+			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));;
+    public static final Item DIAMOND_SHIELD = registerItem2("diamond_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+			.component(
+				DataComponentTypes.BLOCKS_ATTACKS,
+				new BlocksAttacksComponent(
+					0.25F,
+					1.0F,
+					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
+					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
+					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+				)
+			)
+			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));
     public static final Item BLAZING_SHIELD = null; // Basically Netherite Shield // Custom Model - This has a Shield Bash, set enemys on fire
     public static final Item AMYTHESTH_SHIELD = null; // Basically Cooper  Shield - Low Durrabilty //Custom Model,
 
@@ -233,7 +278,7 @@ public class ItemFactory {
     public static final Item WOODEN_BATTLE_AXE = registerItem2("wooden_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_BATTLE_AXE = registerItem2("stone_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_BATTLE_AXE = registerItem2("golden_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_BATTLE_AXE = registerItem2("copper_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_BATTLE_AXE = registerItem2("copper_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_BATTLE_AXE = registerItem2("iron_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_BATTLE_AXE = registerItem2("diamond_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_BATTLE_AXE = registerItem2("netherite_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.NETHERITE, settings.fireproof()));
@@ -242,7 +287,7 @@ public class ItemFactory {
     public static final Item WOODEN_CLAYMORE = registerItem2("wooden_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_CLAYMORE = registerItem2("stone_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_CLAYMORE = registerItem2("golden_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_CLAYMORE = registerItem2("copper_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_CLAYMORE = registerItem2("copper_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_CLAYMORE = registerItem2("iron_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_CLAYMORE = registerItem2("diamond_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_CLAYMORE = registerItem2("netherite_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.NETHERITE, settings.fireproof()));
@@ -250,7 +295,7 @@ public class ItemFactory {
     public static final Item WOODEN_GLAIVE = registerItem2("wooden_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_GLAIVE = registerItem2("stone_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_GLAIVE = registerItem2("golden_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_GLAIVE = registerItem2("copper_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_GLAIVE = registerItem2("copper_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_GLAIVE = registerItem2("iron_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_GLAIVE = registerItem2("diamond_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_GLAIVE = registerItem2("netherite_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.NETHERITE, settings.fireproof()));
@@ -258,7 +303,7 @@ public class ItemFactory {
     public static final Item WOODEN_HAMMER = registerItem2("wooden_hammer", settings -> new WeaponHammerItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_HAMMER = registerItem2("stone_hammer", settings -> new WeaponHammerItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_HAMMER = registerItem2("golden_hammer", settings -> new WeaponHammerItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_HAMMER = registerItem2("copper_hammer", settings -> new WeaponHammerItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_HAMMER = registerItem2("copper_hammer", settings -> new WeaponHammerItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_HAMMER = registerItem2("iron_hammer", settings -> new WeaponHammerItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_HAMMER = registerItem2("diamond_hammer", settings -> new WeaponHammerItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_HAMMER = registerItem2("netherite_hammer", settings -> new WeaponHammerItem(ToolMaterial.NETHERITE, settings.fireproof()));
@@ -266,7 +311,7 @@ public class ItemFactory {
     public static final Item WOODEN_DAGGER = registerItem2("wooden_dagger", settings -> new DaggerItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_DAGGER = registerItem2("stone_dagger", settings -> new DaggerItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_DAGGER = registerItem2("golden_dagger", settings -> new DaggerItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_DAGGER = registerItem2("copper_dagger", settings -> new DaggerItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_DAGGER = registerItem2("copper_dagger", settings -> new DaggerItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_DAGGER = registerItem2("iron_dagger", settings -> new DaggerItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_DAGGER = registerItem2("diamond_dagger", settings -> new DaggerItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_DAGGER = registerItem2("netherite_dagger", settings -> new DaggerItem(ToolMaterial.NETHERITE, settings.fireproof()));
@@ -274,7 +319,7 @@ public class ItemFactory {
     public static final Item WOODEN_LONG_SWORD = registerItem2("wooden_long_sword", settings -> new LongSwordItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_LONG_SWORD = registerItem2("stone_long_sword", settings -> new LongSwordItem(ToolMaterial.STONE, settings));
     public static final Item GOLDEN_LONG_SWORD = registerItem2("golden_long_sword", settings -> new LongSwordItem(ToolMaterial.GOLD, settings));
-    // public static final Item COPPER_LONG_SWORD = registerItem2("copper_long_sword", settings -> new LongSwordItem(ToolMaterial.COPPER, settings));
+    public static final Item COPPER_LONG_SWORD = registerItem2("copper_long_sword", settings -> new LongSwordItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_LONG_SWORD = registerItem2("iron_long_sword", settings -> new LongSwordItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_LONG_SWORD = registerItem2("diamond_long_sword", settings -> new LongSwordItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_LONG_SWORD = registerItem2("netherite_long_sword", settings -> new LongSwordItem(ToolMaterial.NETHERITE, settings.fireproof()));

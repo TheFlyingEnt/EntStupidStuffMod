@@ -25,8 +25,8 @@ public class AncientDrownedRenderer extends ZombieBaseEntityRenderer<DrownedEnti
    public AncientDrownedRenderer(EntityRendererFactory.Context context) {
 		super(
 			context,
-			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER)),
-			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER)),
+			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED)),
+			new AncientDrownedModel(context.getPart(ModEntityModelLayers.ANCIENT_DROWNED_BABY)),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), AncientDrownedModel::new),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), AncientDrownedModel::new)
 		);

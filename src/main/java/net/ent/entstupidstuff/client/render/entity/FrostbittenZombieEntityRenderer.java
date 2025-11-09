@@ -19,10 +19,11 @@ public class FrostbittenZombieEntityRenderer extends ZombieBaseEntityRenderer<Fr
 		super(
 			context,
 			new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),
-            new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),//TODO 1.21.10 - Add baby Models
+            new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_BABY)),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new)
 		);
+		this.addFeature(new FrostbittenZombieOverlay(this, context.getEntityModels()));
 	}
 
     @Override

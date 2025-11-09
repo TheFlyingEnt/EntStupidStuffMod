@@ -2,6 +2,7 @@ package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
@@ -15,6 +16,8 @@ import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.component.ComponentType;
+import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
@@ -72,6 +75,8 @@ public class EntStupidStuff implements ModInitializer {
 	);
 
 
+
+
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Mod Initializing");
@@ -93,6 +98,10 @@ public class EntStupidStuff implements ModInitializer {
 
 		BlockEntityFactory.onInitialize();
 		ScreenHandlerFactory.registerScreenHandlers();
+
+		ModDataComponentTypes.register();
+
+		//Test Code for DataComponets
 
 
 		

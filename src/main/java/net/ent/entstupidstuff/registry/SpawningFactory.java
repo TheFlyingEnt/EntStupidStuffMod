@@ -16,13 +16,13 @@ import net.minecraft.world.biome.BiomeKeys;
 public class SpawningFactory {
 
     public static void regSpawnLobber() {
-        SpawnRestriction.register(EntityFactory.LOBBER_ZOMBIE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
+        SpawnRestriction.register(EntityFactory.ZOMBIE_LOBBER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
             BiomeModifications.addSpawn(
             BiomeSelectors.foundInOverworld(),
             //BiomeSelectors.excludeByKey(BiomeKeys.MUSHROOM_FIELDS, BiomeKeys.DESERT),
             /*BiomeSelectors.includeByKey(BiomeKeys.PLAINS, BiomeKeys.FOREST, BiomeKeys.SWAMP, BiomeKeys.DESERT),*/
             SpawnGroup.MONSTER,
-            EntityFactory.LOBBER_ZOMBIE,
+            EntityFactory.ZOMBIE_LOBBER,
             95, // Adjusted weight to match or slightly lower than zombies
             1, 
             4
@@ -31,7 +31,7 @@ public class SpawningFactory {
         BiomeModifications.addSpawn(
             BiomeSelectors.includeByKey(BiomeKeys.DRIPSTONE_CAVES, BiomeKeys.LUSH_CAVES),
             SpawnGroup.MONSTER,
-            EntityFactory.LOBBER_ZOMBIE,
+            EntityFactory.ZOMBIE_LOBBER,
             150, // Higher weight for cave biomes
             1,
             4
@@ -80,13 +80,13 @@ public class SpawningFactory {
     //// NEW CODE
 
     public static void spawnLobber() {
-        SpawnRestriction.register(EntityFactory.LOBBER_ZOMBIE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
+        SpawnRestriction.register(EntityFactory.ZOMBIE_LOBBER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
 
         BiomeModifications.addSpawn(
             BiomeSelectors.includeByKey(BiomeKeys.MUSHROOM_FIELDS),
             //BiomeSelectors.tag(BiomeTags.IS_NETHER).and()
             SpawnGroup.MONSTER,
-            EntityFactory.LOBBER_ZOMBIE,
+            EntityFactory.ZOMBIE_LOBBER,
             100,
             1,
             4
@@ -95,7 +95,7 @@ public class SpawningFactory {
         /*BiomeModifications.BiomeModifications.addSpawn(
             BiomeSelectors.foundInOverworld(),
             SpawnGroup.MONSTER,
-            EntityFactory.LOBBER_ZOMBIE,
+            EntityFactory.ZOMBIE_LOBBER,
             100,
             1,
             4

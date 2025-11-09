@@ -26,23 +26,20 @@ public class LobberModel extends ZombieEntityModel<ZombieEntityRenderState> {
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = ZombieEntityModel.getModelData(Dilation.NONE, 0.0F);
     
-        // Define parts using ModelPartBuilder
         ModelPartBuilder modelPartBuilder = ModelPartBuilder.create()
-            .uv(32, 46) // Example: Set UV coordinates
-            .cuboid(-3.0F, -2.0F, -2.0F, 5.0F, 14.0F, 4.0F); // Example: Define cuboid for right arm
+            .uv(32, 46)
+            .cuboid(-3.0F, -2.0F, -2.0F, 5.0F, 14.0F, 4.0F);
 
         ModelPartBuilder modelPartBuilderLeft = ModelPartBuilder.create()
-            .uv(40, 16) // Example: Set UV coordinates
-            //.cuboid(-3.0F, -2.0F, -2.0F, 4.0F, 11.0F, 4.0F);
+            .uv(40, 16)
             .cuboid(-1.0F, -2.0F, -2.0F, 4.0F, 11.0F, 4.0F);
 
-        ModelPartBuilder modelPartBuilderLeg = ModelPartBuilder.create()
-            .uv(16, 48) // Example: Set UV coordinates
-            .cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F);
+        ModelPartBuilder leftLeg = ModelPartBuilder.create() //Left Leg
+           .uv(16, 48).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F);
     
         modelData.getRoot().addChild("right_arm", modelPartBuilder, ModelTransform.origin(-5.0F, 2.0F, 0.0F));
         modelData.getRoot().addChild("left_arm", modelPartBuilderLeft, ModelTransform.origin(5.0F, 2.0F, 0.0F));
-        modelData.getRoot().addChild("left_leg", modelPartBuilderLeg, ModelTransform.origin(2f, 2F, 2F));
+        modelData.getRoot().addChild("left_leg", leftLeg, ModelTransform.origin(1.9F, 12.0F, 0.0F));
     
         return TexturedModelData.of(modelData, 64, 64);
     }

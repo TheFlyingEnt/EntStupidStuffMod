@@ -49,7 +49,7 @@ import net.minecraft.world.World;
 
 public class EntityFactory {
 
-    public static final EntityType<LobberZombieEntity> LOBBER_ZOMBIE = Registry.register(Registries.ENTITY_TYPE,
+    public static final EntityType<LobberZombieEntity> ZOMBIE_LOBBER = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "zombie_lobber"),
         EntityType.Builder.create(LobberZombieEntity::new, SpawnGroup.MONSTER)
         .dimensions(0.6F, 1.95F)
@@ -367,7 +367,7 @@ public class EntityFactory {
 
     public static void onInitialize() {
         
-        FabricDefaultAttributeRegistry.register(LOBBER_ZOMBIE, LobberZombieEntity.createLobberZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ZOMBIE_LOBBER, LobberZombieEntity.createLobberZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SCORCHED, ScorchedZombieEntity.createScorchedZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_SLIMED, SlimedZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());

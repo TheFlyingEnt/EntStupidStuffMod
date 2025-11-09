@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:block/flowerbed_1",
+  "textures": {
+    "flowerbed": "entstupidstuff:block/mushroom_bed",
+    "stem": "entstupidstuff:block/mushroom_bed_stem"
+  },
+  "elements": [
+    {
+      "from": [0, 2.99, 0],
+      "to": [8, 2.99, 8],
+      "faces": {
+        "up": {"uv": [0, 0, 8, 8], "texture": "#flowerbed"},
+        "down": {"uv": [0, 8, 8, 0], "texture": "#flowerbed"}
+      },
+      "shade": false,
+      "light_emission": 6
+    }
+  ]
+}

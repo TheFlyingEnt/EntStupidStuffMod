@@ -40,6 +40,8 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "string_gate", "String Gate");
         translationBuilder.add("item.entstupidstuff." + "string_block", "String Block");
 
+        translationBuilder.add("subtitles.ent.combat." + "hammer.ground", "Ground Smash");
+
         //The Fire of the Hunt Update:
 
         translationBuilder.add("item.entstupidstuff." + "wither_bone", "Wither Bone");
@@ -49,6 +51,8 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "piglin_warrior_spawn_egg", "Piglin Warrior Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "blazing_inferno_spawn_egg", "Blazing Inferno Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "soul_skeleton_spawn_egg", "Soul Skeleton Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "zombie_frostbitten_spawn_egg", "Frostbitten Spawn Egg");
+        translationBuilder.add("item.entstupidstuff." + "zombie_slimed_spawn_egg", "Slimed Spawn Egg");
         
 
         // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)

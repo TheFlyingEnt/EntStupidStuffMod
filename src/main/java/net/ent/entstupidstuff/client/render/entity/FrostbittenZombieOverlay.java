@@ -16,11 +16,10 @@ public class FrostbittenZombieOverlay extends FeatureRenderer<FrostbittenEntityR
    private final FrostbittenZombieModel model;
    private final FrostbittenZombieModel babyModel;
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
    public FrostbittenZombieOverlay(FeatureRendererContext<FrostbittenEntityRenderState, FrostbittenZombieModel> context, LoadedEntityModels loader) {
       super(context);
       this.model = new FrostbittenZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER));
-      this.babyModel = new FrostbittenZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER));  // TODO: 1.21.10 Addition
+      this.babyModel = new FrostbittenZombieModel(loader.getModelPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER_BABY));
    }
 
    @Override

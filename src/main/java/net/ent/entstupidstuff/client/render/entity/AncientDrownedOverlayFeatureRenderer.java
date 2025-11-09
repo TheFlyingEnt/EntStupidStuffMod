@@ -19,7 +19,7 @@ public class AncientDrownedOverlayFeatureRenderer extends FeatureRenderer<Zombie
    public AncientDrownedOverlayFeatureRenderer(FeatureRendererContext<ZombieEntityRenderState, AncientDrownedModel> context, LoadedEntityModels loader) {
       super(context);
       this.model = new AncientDrownedModel(loader.getModelPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER));
-      this.babyModel = new AncientDrownedModel(loader.getModelPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER));
+      this.babyModel = new AncientDrownedModel(loader.getModelPart(ModEntityModelLayers.ANCIENT_DROWNED_OUTER_BABY));
       //this.babyModel = new DrownedEntityModel(loader.getModelPart(EntityModelLayers.DROWNED_BABY_OUTER)); // TODO: 1.21.10 Addition
    }
 

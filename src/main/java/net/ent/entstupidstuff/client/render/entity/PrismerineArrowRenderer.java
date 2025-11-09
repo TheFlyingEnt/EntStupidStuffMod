@@ -13,29 +13,29 @@ import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-public class PrismerineArrowRenderer extends ProjectileEntityRenderer<UnderwaterArrowEntity, ProjectileEntityRenderState> {
-	public static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/projectiles/prismerine_arrow.png");
-	public final ArrowEntityModel model;
+public class PrismerineArrowRenderer extends ProjectileEntityRenderer<UnderwaterArrowEntity, ArrowEntityRenderState> {
 
-	public PrismerineArrowRenderer(EntityRendererFactory.Context context) {
-		super(context);
-		this.model = new ArrowEntityModel(context.getPart(EntityModelLayers.ARROW));
-	}
+    public static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/projectiles/prismerine_arrow.png");
+    public final ArrowEntityModel model;
 
-	public Identifier getTexture(ProjectileEntityRenderState state) {
-		return TEXTURE;
-	}
+    public PrismerineArrowRenderer(EntityRendererFactory.Context context) {
+        super(context);
+        this.model = new ArrowEntityModel(context.getPart(EntityModelLayers.ARROW));
+    }
 
-	@Override
-	public void render(ProjectileEntityRenderState projectileEntityRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState) {
+    @Override
+    public Identifier getTexture(ArrowEntityRenderState state) {
+        return TEXTURE;
+    }
 
-		matrixStack.push();
-		super.render(projectileEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
-		//this.model = new AncientTridentModel(context.getPart(ModEntityModelLayers.ANCIENT_TRIDENT));
+    @Override
+    public void render(ArrowEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, CameraRenderState cameraState) {
+        matrices.push();
+        super.render(state, matrices, commandQueue, cameraState);
+        matrices.pop();
+    }
 
-	}
-
-	private void renderGlowLayer(ProjectileEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue) {
+    private void renderGlowLayer(ArrowEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue) {
         commandQueue.submitCustom(matrices, RenderLayer.getEntityTranslucentEmissive(TEXTURE), (entry, vertexConsumer) -> {
             int light = 0xF000F0;
             int overlay = 0;
@@ -57,13 +57,13 @@ public class PrismerineArrowRenderer extends ProjectileEntityRenderer<Underwater
         });
     }
 
-	@Override
-	public ProjectileEntityRenderState createRenderState() {
-		return new ProjectileEntityRenderState();
-	}
+    @Override
+    public ArrowEntityRenderState createRenderState() {
+        return new ArrowEntityRenderState();
+    }
 
-	public void updateRenderState(UnderwaterArrowEntity arrowEntity, ArrowEntityRenderState arrowEntityRenderState, float f) {
-		super.updateRenderState(arrowEntity, arrowEntityRenderState, f);
-	}
-
+    @Override
+    public void updateRenderState(UnderwaterArrowEntity arrow, ArrowEntityRenderState state, float tickDelta) {
+        super.updateRenderState(arrow, state, tickDelta);
+    }
 }

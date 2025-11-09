@@ -46,7 +46,7 @@ import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
-import net.ent.entstupidstuff.client.render.entity.model.SkeletonGoldModel;
+import net.ent.entstupidstuff.client.render.entity.model.MetalSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
 import net.ent.entstupidstuff.client.render.entity.model.SnapperFishModel;
@@ -57,6 +57,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.render.entity.EntityRendererFactories;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.DrownedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -65,17 +66,23 @@ import net.minecraft.util.Identifier;
 
 public class ModEntityModelLayers {
 
-    public static final EntityModelLayer LOBBER_ZOMBIE =
-    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "lobber_zombie"), "main");
+    public static final EntityModelLayer ZOMBIE_LOBBER =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_lobber"), "main");
+
+    public static final EntityModelLayer ZOMBIE_LOBBER_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_lobber_baby"), "main");
 
     public static final EntityModelLayer ZOMBIE_SCORCHED =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched"), "main");
 
+    public static final EntityModelLayer ZOMBIE_SCORCHED_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_scorched_baby"), "main");
+
     public static final EntityModelLayer ZOMBIE_DEEPCRAWLE =
-    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_deepcrawle"), "main");
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_deepcrawle"), "main"); //Not Added
 
     public static final EntityModelLayer ZOMBIE_ROTSPAWN =
-    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_rotspawn"), "main");
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_rotspawn"), "main"); //Not Added
 
     public static final EntityModelLayer PILLAGER_ARMORED =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "pillager_armored"), "main");
@@ -86,14 +93,26 @@ public class ModEntityModelLayers {
     public static final EntityModelLayer ZOMBIE_SLIMED =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_slimed"), "main");
 
+    public static final EntityModelLayer ZOMBIE_SLIMED_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_slimed_baby"), "main");
+
     public static final EntityModelLayer ZOMBIE_SLIMED_OUTER  =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_slimed"), "outer");
+
+    public static final EntityModelLayer ZOMBIE_SLIMED_OUTER_BABY  =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_slimed_baby"), "outer");
 
     public static final EntityModelLayer ZOMBIE_FROSTBITTEN =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten"), "main");
 
+    public static final EntityModelLayer ZOMBIE_FROSTBITTEN_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten_baby"), "main");
+
     public static final EntityModelLayer ZOMBIE_FROSTBITTEN_OUTER =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten"), "outer");
+
+    public static final EntityModelLayer ZOMBIE_FROSTBITTEN_OUTER_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "zombie_frostbitten_baby"), "outer");
 
     // Fires of the Hunt Update:
 
@@ -126,8 +145,14 @@ public class ModEntityModelLayers {
     public static final EntityModelLayer ANCIENT_DROWNED =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned"), "main");
 
+    public static final EntityModelLayer ANCIENT_DROWNED_BABY =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned_baby"), "main");
+
     public static final EntityModelLayer ANCIENT_DROWNED_OUTER  =
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned"), "outer");
+
+    public static final EntityModelLayer ANCIENT_DROWNED_OUTER_BABY  =
+    new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "ancient_drowned_baby"), "outer");
 
     public static final EntityModelLayer ANCIENT_TRIDENT = 
     new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "ancient_trident"), "main");
@@ -193,26 +218,32 @@ public class ModEntityModelLayers {
 
     public static void onInitialize() {
         
-        EntityRendererFactories.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context));
-        //EntityRendererFactories.register(EntityFactory.LOBBER_ZOMBIE, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context, ModEntityModelLayers.LOBBER_ZOMBIE, ModEntityModelLayers.LOBBER_ZOMBIE, EntityModelLayers.ZOMBIE_EQUIPMENT, EntityModelLayers.ZOMBIE_BABY_EQUIPMENT));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.LOBBER_ZOMBIE, LobberModel::getTexturedModelData);
+        EntityRendererFactories.register(EntityFactory.ZOMBIE_LOBBER, (EntityRendererFactory.Context context) -> new LobberEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_LOBBER, LobberModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_LOBBER_BABY, () -> LobberModel.getTexturedModelData().transform(BipedEntityModel.BABY_TRANSFORMER));
 
         EntityRendererFactories.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context));
-        //EntityRendererFactories.register(EntityFactory.ZOMBIE_SCORCHED, (EntityRendererFactory.Context context) -> new ScorchedEntityRenderer(context, ModEntityModelLayers.ZOMBIE_SCORCHED, ModEntityModelLayers.ZOMBIE_SCORCHED,EntityModelLayers.ZOMBIE_EQUIPMENT, EntityModelLayers.ZOMBIE_BABY_EQUIPMENT));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SCORCHED, ScorchedModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SCORCHED_BABY, () -> ScorchedModel.getTexturedModelData().transform(BipedEntityModel.BABY_TRANSFORMER));
 
         EntityRendererFactories.register(EntityFactory.ZOMBIE_SLIMED, (EntityRendererFactory.Context context) -> new SlimedZombieEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED, () -> SlimedZombieModel.getTexturedModelData(Dilation.NONE));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER, () -> SlimedZombieModel.getTexturedModelData(new Dilation(0.25F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED_BABY, () -> SlimedZombieModel.getTexturedModelData(Dilation.NONE));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER_BABY, () -> SlimedZombieModel.getTexturedModelData(new Dilation(0.25F)));
 
         EntityRendererFactories.register(EntityFactory.ANCIENT_DROWNED, (EntityRendererFactory.Context context) -> new AncientDrownedRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED, () -> AncientDrownedModel.getTexturedModelData(Dilation.NONE));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED_OUTER, () -> AncientDrownedModel.getTexturedModelData(new Dilation(0.5F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED_BABY, () -> ScorchedModel.getTexturedModelData().transform(BipedEntityModel.BABY_TRANSFORMER));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_DROWNED_OUTER_BABY, () -> ScorchedModel.getTexturedModelData().transform(BipedEntityModel.BABY_TRANSFORMER));
 
         EntityRendererFactories.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context));
-        //EntityRendererFactories.register(EntityFactory.ZOMBIE_FROSTBITTEN, (EntityRendererFactory.Context context) -> new FrostbittenZombieEntityRenderer(context, ModEntityModelLayers.ZOMBIE_FROSTBITTEN, ModEntityModelLayers.ZOMBIE_FROSTBITTEN,EntityModelLayers.ZOMBIE_EQUIPMENT, EntityModelLayers.ZOMBIE_BABY_EQUIPMENT));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN, () -> DrownedEntityModel.getTexturedModelData(Dilation.NONE));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER, () -> DrownedEntityModel.getTexturedModelData(new Dilation(0.5F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_BABY, () -> DrownedEntityModel.getTexturedModelData(Dilation.NONE).transform(BipedEntityModel.BABY_TRANSFORMER));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_OUTER_BABY, () -> DrownedEntityModel.getTexturedModelData(new Dilation(0.5F)).transform(BipedEntityModel.BABY_TRANSFORMER));
+        
 
         EntityRendererFactories.register(EntityFactory.ARMORED_PILLAGER, (EntityRendererFactory.Context context) -> new ArmoredPillagerEntityRenderer(context));
 
@@ -253,11 +284,11 @@ public class ModEntityModelLayers {
 
         //EntityRendererFactories.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new MetalSkeletonRenderer(context));
         EntityRendererFactories.register(EntityFactory.METAL_SKELETON, (EntityRendererFactory.Context context) -> new MetalSkeletonRenderer(context, ModEntityModelLayers.METAL_SKELETON, EntityModelLayers.SKELETON_EQUIPMENT));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.METAL_SKELETON, SkeletonGoldModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.METAL_SKELETON, MetalSkeletonModel::getTexturedModelData);
 
         EntityRendererFactories.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context));
         //EntityRendererFactories.register(EntityFactory.PHANTOM_SKELETON, (EntityRendererFactory.Context context) -> new PhantomSkeletonEntityRenderer(context, ModEntityModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_EQUIPMENT));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.PHANTOM_SKELETON, SkeletonGoldModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.PHANTOM_SKELETON, MetalSkeletonModel::getTexturedModelData);
         
         EntityRendererFactories.register(EntityFactory.ALLIGATOR_GAR, (EntityRendererFactory.Context context) -> new AlligatorGarRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ALLIGATOR_GAR, AlligatorGarModel::getTexturedModelData);

@@ -23,7 +23,7 @@ public class ScorchedEntityRenderer extends ZombieBaseEntityRenderer<ScorchedZom
 		super(
 			context,
 			new ScorchedModel(context.getPart(ModEntityModelLayers.ZOMBIE_SCORCHED)),
-            new ScorchedModel(context.getPart(ModEntityModelLayers.ZOMBIE_SCORCHED)),//TODO 1.21.10 - Add baby Models
+            new ScorchedModel(context.getPart(ModEntityModelLayers.ZOMBIE_SCORCHED_BABY)),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), ScorchedModel::new),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), ScorchedModel::new)
 		);
@@ -32,7 +32,7 @@ public class ScorchedEntityRenderer extends ZombieBaseEntityRenderer<ScorchedZom
 
     @Override //Getting Texture of Mob
     public Identifier getTexture(ZombieEntityRenderState entity) {
-        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_scorched.png"); // Path to your texture
+        return Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_scorched.png");
     }
 
     @Override
@@ -41,6 +41,3 @@ public class ScorchedEntityRenderer extends ZombieBaseEntityRenderer<ScorchedZom
     }
 
 }
-
-
-//this.addFeature(new ScorchedGlowRenderer<>(this));

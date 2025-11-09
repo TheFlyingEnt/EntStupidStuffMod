@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;
@@ -11,12 +12,15 @@ import net.ent.entstupidstuff.world.tree.FirFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MushroomBlock;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
@@ -25,6 +29,7 @@ import net.minecraft.structure.rule.TagMatchRuleTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.VerticalSurfaceType;
 import net.minecraft.util.math.floatprovider.ClampedNormalFloatProvider;
 import net.minecraft.util.math.floatprovider.UniformFloatProvider;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
@@ -34,11 +39,14 @@ import net.minecraft.util.math.intprovider.WeightedListIntProvider;
 import net.minecraft.world.gen.blockpredicate.BlockPredicate;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize;
+import net.minecraft.world.gen.feature.util.CaveSurface;
 import net.minecraft.world.gen.foliage.CherryFoliagePlacer;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
 import net.minecraft.world.gen.placementmodifier.EnvironmentScanPlacementModifier;
 import net.minecraft.world.gen.placementmodifier.RandomOffsetPlacementModifier;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
+import net.minecraft.world.gen.stateprovider.PredicatedStateProvider;
+import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 import net.minecraft.world.gen.trunk.CherryTrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
@@ -75,7 +83,12 @@ public class ModConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_spiked_ice");
     public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
 
+	//Blue Mushrom Biome
 	public static final RegistryKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY = registerKey("huge_blue_mushroom");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_KEY = registerKey("shroomium_floor");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> MUD_LAYER_KEY = registerKey("mud_layer");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_VEGETATION_KEY  = registerKey("shroomium_floor_vegetation");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> MUSHROOM_SPORE_KEY  = registerKey("mushroom_spore");
 
 
     // Registry for Features
@@ -100,6 +113,28 @@ public class ModConfiguredFeatures {
             Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
             new SmallSpikedIceFeature(SmallDripstoneFeatureConfig.CODEC)
         );
+
+    /*public static final Feature<SimpleBlockFeatureConfig> BLUE_MUSHROOM_VEGETATION_FEATURE =
+        Registry.register(
+            Registries.FEATURE,
+            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
+            new SimpleBlockFeature(SimpleBlockFeatureConfig.CODEC)
+		);
+    
+
+		/*
+		 * ConfiguredFeatures.register(
+			context,
+			BLUE_MUSHROOM_VEGETATION,
+			Feature.SIMPLE_BLOCK,
+			new SimpleBlockFeatureConfig(
+				new WeightedBlockStateProvider(
+					Pool.<BlockState>builder()
+						.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+				)
+			)
+		);
+		 */
 
 
     public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> context) {
@@ -212,7 +247,7 @@ public class ModConfiguredFeatures {
 		//List.of(OreFeatureConfig.createTarget(, BlockFactoryUpt.callBlock("limestone").getDefaultState()))
 		//BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom").getDefaultState()
 
-		/*ConfiguredFeatures.register(
+		ConfiguredFeatures.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
 			Feature.HUGE_RED_MUSHROOM,
@@ -223,9 +258,9 @@ public class ModConfiguredFeatures {
 				),
 				2
 			)
-		);*/
+		);
 
-		ConfiguredFeatures.register(
+		/*ConfiguredFeatures.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
 			Feature.HUGE_FUNGUS,
@@ -237,7 +272,7 @@ public class ModConfiguredFeatures {
 				blockPredicate,
 				true
 			)
-		);
+		);*/
 
 		ConfiguredFeatures.register(
 			context,
@@ -358,6 +393,109 @@ public class ModConfiguredFeatures {
 				)
 			)
 		);
+
+		//Blue Mushrom Biome
+
+		ConfiguredFeatures.register(context, SHROOMIUM_FLOOR_VEGETATION_KEY, Feature.SIMPLE_BLOCK,
+			new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("mushroom_bed"))));
+
+		ConfiguredFeatures.register(
+			context,
+			SHROOMIUM_FLOOR_KEY,
+			Feature.VEGETATION_PATCH,
+			new VegetationPatchFeatureConfig(
+				BlockTags.BASE_STONE_OVERWORLD,
+				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
+				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
+				new SimpleBlockFeatureConfig(
+					new WeightedBlockStateProvider(
+						Pool.<BlockState>builder()
+							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+					)
+				)),
+				VerticalSurfaceType.FLOOR,
+				ConstantIntProvider.create(1),
+				0.8f, // Coverage
+				5, // Spread
+				0.08f, // Chance
+				UniformIntProvider.create(4, 7), // Range
+				0.7f // Vegetation chance
+			)
+		);
+
+		// 3. Create the mud layer underneath
+		register(context, MUD_LAYER_KEY, Feature.DISK,
+		new DiskFeatureConfig(
+			PredicatedStateProvider.of(Blocks.MUD),
+			BlockPredicate.matchingBlocks(List.of(Blocks.STONE, Blocks.DEEPSLATE, Blocks.DIORITE, 
+				Blocks.ANDESITE, Blocks.GRANITE, BlockFactory.callBlock("shroomium"))), // Blocks to replace
+			UniformIntProvider.create(2, 4), // Radius (2-4 blocks)
+			2 // Half height (2 blocks deep of mud)
+		));
+
+		ConfiguredFeatures.register(
+			context, MUSHROOM_SPORE_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("fungal_spore_blossom")))
+		);
+
+		/*ConfiguredFeatures.register(
+			context,
+			BLUE_MUSHROOM_VEGETATION,
+			Feature.SIMPLE_BLOCK,
+			new SimpleBlockFeatureConfig(
+				new WeightedBlockStateProvider(
+					Pool.<BlockState>builder()
+						.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+				)
+			)
+		);
+
+		ConfiguredFeatures.register(
+			context,
+			SHROOMIUM_FLOOR_KEY,
+			Feature.VEGETATION_PATCH,
+			new VegetationPatchFeatureConfig(
+				BlockTags.MOSS_REPLACEABLE,
+				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
+				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
+				new SimpleBlockFeatureConfig(
+					new WeightedBlockStateProvider(
+						Pool.<BlockState>builder()
+							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+					)
+				)),
+				VerticalSurfaceType.FLOOR,
+				ConstantIntProvider.create(1),
+				0.8f, // Coverage
+				5, // Spread
+				0.08f, // Chance
+				UniformIntProvider.create(4, 7), // Range
+				0.7f // Vegetation chance
+			)
+		);
+
+		ConfiguredFeatures.register(
+			context,
+			UNDERGROUND_MOD_FLOOR_KEY,
+			Feature.VEGETATION_PATCH,
+			new VegetationPatchFeatureConfig(
+				BlockTags.MOSS_REPLACEABLE,
+				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
+				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
+				new SimpleBlockFeatureConfig(
+					new WeightedBlockStateProvider(
+						Pool.<BlockState>builder()
+							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+					)
+				)),
+				VerticalSurfaceType.FLOOR,
+				ConstantIntProvider.create(1),
+				0.8f, // Coverage
+				5, // Spread
+				0.08f, // Chance
+				UniformIntProvider.create(4, 7), // Range
+				0.7f // Vegetation chance
+			)
+		);*/
 
     }
 

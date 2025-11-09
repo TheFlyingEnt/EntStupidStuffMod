@@ -27,8 +27,8 @@ public class LobberEntityRenderer extends ZombieBaseEntityRenderer<LobberZombieE
     public LobberEntityRenderer(EntityRendererFactory.Context context) {
 		super(
 			context,
-			new LobberModel(context.getPart(ModEntityModelLayers.LOBBER_ZOMBIE)),
-            new LobberModel(context.getPart(ModEntityModelLayers.LOBBER_ZOMBIE)),//TODO 1.21.10 - Add baby Models
+			new LobberModel(context.getPart(ModEntityModelLayers.ZOMBIE_LOBBER)),
+            new LobberModel(context.getPart(ModEntityModelLayers.ZOMBIE_LOBBER_BABY)),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), LobberModel::new),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), LobberModel::new)
 		);

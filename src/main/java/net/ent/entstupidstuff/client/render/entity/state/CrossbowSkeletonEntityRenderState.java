@@ -5,12 +5,13 @@ import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.SkeletonEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Arm;
 
-public class CrossbowSkeletonEntityRenderState extends BipedEntityRenderState {
+public class CrossbowSkeletonEntityRenderState extends SkeletonEntityRenderState {
 	public Arm mainArm = Arm.RIGHT;
 	public BipedEntityModel.ArmPose rightArmPose = BipedEntityModel.ArmPose.EMPTY;
 	public final ItemRenderState rightHandItemState = new ItemRenderState();

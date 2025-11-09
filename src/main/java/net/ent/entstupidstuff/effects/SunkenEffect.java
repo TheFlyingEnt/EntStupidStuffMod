@@ -13,6 +13,31 @@ public class SunkenEffect extends StatusEffect {
 
     @Override
     public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
+
+        if (!(entity instanceof PlayerEntity player)) return false;
+
+        //player.addVelocity(0, -0.1, 0);
+        //player.setVelocity(player.getVelocity().multiply(1, 0.5 + (amplifier * 0.1), 1));
+        //player.velocityModified = true;
+
+        if (player.isTouchingWater()) {
+            var vel = player.getVelocity();
+            double sinkForce = 0.02 + amplifier * 0.01;
+
+            if (!player.isSubmergedInWater()) return true;
+
+            if (!player.isJumping()) {
+                player.setVelocity(vel.x, vel.y - sinkForce, vel.z);
+            } else {
+                player.setVelocity(vel.x, vel.y * 0.9, vel.z);
+            }
+
+            player.velocityModified = true;
+        }
+
+        return true;
+
+        /* 
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
 
@@ -29,14 +54,14 @@ public class SunkenEffect extends StatusEffect {
                 player.jump();
                 player.setVelocity(player.getVelocity().multiply(1, 0, 1)); // Nullify upward motion
                 return true;
-            }*/
+            }*
             
         }
-        return false;
+        return false;*/
     }
 
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        return true; // Apply every tick
+        return true;
     }
 }

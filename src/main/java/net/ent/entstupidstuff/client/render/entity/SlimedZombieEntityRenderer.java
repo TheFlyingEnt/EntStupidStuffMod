@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
+import net.ent.entstupidstuff.client.render.entity.state.FrostbittenEntityRenderState;
 import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -11,10 +12,12 @@ import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EquipmentModelData;
 import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.Identifier;
 
 public class SlimedZombieEntityRenderer extends ZombieBaseEntityRenderer<SlimedZombieEntity, ZombieEntityRenderState, SlimedZombieModel>{
+
+   private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_slimed.png");
+
    protected SlimedZombieEntityRenderer(Context context, SlimedZombieModel mainModel, SlimedZombieModel babyMainModel, EquipmentModelData<SlimedZombieModel> equipmentModelData, EquipmentModelData<SlimedZombieModel> equipmentModelData2) {
       super(context, mainModel, babyMainModel, equipmentModelData, equipmentModelData2);
    }
@@ -23,7 +26,7 @@ public class SlimedZombieEntityRenderer extends ZombieBaseEntityRenderer<SlimedZ
 		super(
 			context,
 			new SlimedZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_SLIMED)),
-            new SlimedZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_SLIMED)),//TODO 1.21.10 - Add baby Models
+            new SlimedZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_SLIMED_BABY)),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), SlimedZombieModel::new),
 			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), SlimedZombieModel::new)
 		);
@@ -31,11 +34,11 @@ public class SlimedZombieEntityRenderer extends ZombieBaseEntityRenderer<SlimedZ
 
    
 
-   private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_slimed.png");
 
-   public Identifier getTexture(ZombieEntity zombieEntity) {
-      return TEXTURE;
-   }
+   @Override
+    public Identifier getTexture(ZombieEntityRenderState state) {
+        return TEXTURE;
+    }
 
    @Override
    protected RenderLayer getRenderLayer(ZombieEntityRenderState entity, boolean showBody, boolean translucent, boolean showOutline) {

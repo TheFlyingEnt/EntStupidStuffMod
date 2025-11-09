@@ -71,7 +71,7 @@ public class SunkenSkeletonModel <S extends CrossbowSkeletonEntityRenderState> e
         
 
         modelData.getRoot().addChild(EntityModelPartNames.HEAD, head, ModelTransform.origin(0.0F, 0, 0.0F));
-        modelData.getRoot().addChild(EntityModelPartNames.BODY, body, ModelTransform.origin(0.0F, 12, 0.0F));
+        modelData.getRoot().addChild(EntityModelPartNames.BODY, body, ModelTransform.origin(0.0F, 0F, 0.0F));
         modelData.getRoot().addChild(EntityModelPartNames.RIGHT_LEG, right_leg, ModelTransform.origin(-2.0F, 12.0F, 0.0F));
 
         return TexturedModelData.of(modelData, 64, 32);

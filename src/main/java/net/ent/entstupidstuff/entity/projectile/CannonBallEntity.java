@@ -43,8 +43,7 @@ public class CannonballEntity extends PersistentProjectileEntity {
 
 		if (shotFrom != null) {
 			this.hasFlame =
-			EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantments(owner.getEntityWorld(),
-			Enchantments.FLAME), stack) > 0;
+			EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantmentEntry(owner.getEntityWorld(), Enchantments.FLAME, 99999999), stack) > 0;
 		}
 	}
 

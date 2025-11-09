@@ -7,16 +7,23 @@ import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.ClampedNormalIntProvider;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.blockpredicate.BlockPredicate;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
 import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
 import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
 import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.EnvironmentScanPlacementModifier;
 import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.placementmodifier.RandomOffsetPlacementModifier;
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 
@@ -85,6 +92,30 @@ public class ModPlacedFeatures {
             RegistryKeys.PLACED_FEATURE,
             Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
     );
+
+    public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
+    public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
+    public static final RegistryKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
+    public static final RegistryKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
+    public static final RegistryKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
+    public static final RegistryKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
+    
+
+    public static RegistryKey<PlacedFeature> registerKey(String name) {
+        return RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, name));
+    }
+
+    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
+                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+                                List<PlacementModifier> modifiers) {
+        context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
+    }
+
+    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
+                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+                                PlacementModifier... modifiers) {
+        register(context, key, configuration, List.of(modifiers));
+    }
 
     public static void bootstrap(Registerable<PlacedFeature> context) {
         context.register(MAPLE_TREE_PLACED_KEY, new PlacedFeature(
@@ -244,6 +275,61 @@ public class ModPlacedFeatures {
                 )
             )
         );
+
+        //Blue Mushroom
+
+        register(context, SHROOMIUM_FLOOR_VEGETATION_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
+            List.of()); // Empty list of placement modifiers
+
+        // Mud layer (placed first, so it's underneath)
+        register(context, MUD_LAYER_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUD_LAYER_KEY),
+            CountPlacementModifier.of(150),
+            SquarePlacementModifier.of(),
+            PlacedFeatures.BOTTOM_TO_120_RANGE,
+            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)),
+            BiomePlacementModifier.of());
+
+        // Shroomium floor (placed after mud)
+        register(context, SHROOMIUM_FLOOR_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_KEY),
+            CountPlacementModifier.of(125),
+            SquarePlacementModifier.of(),
+            PlacedFeatures.BOTTOM_TO_120_RANGE,
+            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)),
+            BiomePlacementModifier.of());
+
+        // Huge blue mushrooms
+        register(context, HUGE_BLUE_MUSHROOM_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY),
+            CountPlacementModifier.of(20),
+            SquarePlacementModifier.of(),
+            PlacedFeatures.BOTTOM_TO_120_RANGE,
+            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)),
+            BiomePlacementModifier.of());
+
+        // Additional mushroom bed patches
+        register(context, MUSHROOM_BED_PATCH_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
+            CountPlacementModifier.of(50),
+            SquarePlacementModifier.of(),
+            PlacedFeatures.BOTTOM_TO_120_RANGE,
+            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+            BiomePlacementModifier.of());
+
+        // Fungal spore blossoms (ceiling decoration)
+        register(context, FUNGAL_SPORE_BLOSSOM_PLACED, 
+            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUSHROOM_SPORE_KEY),
+            CountPlacementModifier.of(10),
+            SquarePlacementModifier.of(),
+            PlacedFeatures.BOTTOM_TO_120_RANGE,
+            EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)),
+            BiomePlacementModifier.of());
 
 
     }
