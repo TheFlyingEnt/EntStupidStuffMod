@@ -72,6 +72,19 @@ dependencies {
 
 	// TerraBlender - Need for Biome Support
 	modImplementation 'com.github.glitchfiend:TerraBlender-fabric:1.21.10-21.10.0.0'
+
+	// VLCJ for video playback
+    implementation 'uk.co.caprica:vlcj:4.8.2'
+    include 'uk.co.caprica:vlcj:4.8.2'
+    
+    implementation 'uk.co.caprica:vlcj-natives:4.8.0'
+    include 'uk.co.caprica:vlcj-natives:4.8.0'
+    
+    implementation 'net.java.dev.jna:jna:5.14.0'
+    include 'net.java.dev.jna:jna:5.14.0'
+    
+    implementation 'net.java.dev.jna:jna-platform:5.14.0'
+    include 'net.java.dev.jna:jna-platform:5.14.0'
 	
 }
 

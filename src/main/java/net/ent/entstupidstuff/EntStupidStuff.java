@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff;
 
+import net.ent.entstupidstuff.api.cutscene.CutsceneManager;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
@@ -15,16 +16,20 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mojang.brigadier.arguments.StringArgumentType;
 
 public class EntStupidStuff implements ModInitializer {
 
@@ -101,7 +106,20 @@ public class EntStupidStuff implements ModInitializer {
 
 		ModDataComponentTypes.register();
 
-		//Test Code for DataComponets
+		//Test Code for Screen Support
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(CommandManager.literal("playcutscene")
+                .then(CommandManager.argument("filename", StringArgumentType.string())
+                    .executes(context -> {
+                        String filename = StringArgumentType.getString(context, "filename");
+                        CutsceneManager.playCutscene(filename, true, true);
+                        //context.getSource().sendFeedback(() -> Text.literal("Playing cutscene: " + filename), false);
+                        return 1;
+                    })));
+        });
+
+
 
 
 		

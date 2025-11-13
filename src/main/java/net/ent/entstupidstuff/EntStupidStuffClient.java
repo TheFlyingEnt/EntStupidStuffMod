@@ -1,5 +1,8 @@
 package net.ent.entstupidstuff;
 
+import org.lwjgl.glfw.GLFW;
+
+import net.ent.entstupidstuff.api.cutscene.CutsceneManager;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
@@ -9,14 +12,20 @@ import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 
 public class EntStupidStuffClient implements ClientModInitializer {
+
+    private static KeyBinding skipKeyBinding;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -48,6 +57,25 @@ public class EntStupidStuffClient implements ClientModInitializer {
         });
 
         HandledScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
+
+
+        //Test Code for Screen Support
+
+        skipKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.entcutscene.skip",
+            GLFW.GLFW_KEY_ESCAPE,
+            KeyBinding.Category.MISC
+        ));
+
+        // Client tick event for handling key presses
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (skipKeyBinding.wasPressed()) {
+                if (CutsceneManager.isPlaying()) {
+                    CutsceneManager.stopCutscene();
+                }
+            }
+        });
+
         
     }
 }

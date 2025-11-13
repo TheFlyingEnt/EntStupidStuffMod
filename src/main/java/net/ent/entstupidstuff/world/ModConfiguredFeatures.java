@@ -12,8 +12,11 @@ import net.ent.entstupidstuff.world.tree.FirFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowerbedBlock;
+import net.minecraft.block.LeafLitterBlock;
 import net.minecraft.block.MushroomBlock;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
@@ -23,6 +26,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.structure.rule.RuleTest;
 import net.minecraft.structure.rule.TagMatchRuleTest;
@@ -396,8 +401,32 @@ public class ModConfiguredFeatures {
 
 		//Blue Mushrom Biome
 
-		ConfiguredFeatures.register(context, SHROOMIUM_FLOOR_VEGETATION_KEY, Feature.SIMPLE_BLOCK,
-			new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("mushroom_bed"))));
+		/*ConfiguredFeatures.register(context, SHROOMIUM_FLOOR_VEGETATION_KEY, Feature.SIMPLE_BLOCK,
+			new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("mushroom_bed"))));*/
+		Block MUSHROOM_BED = BlockFactory.callBlock("mushroom_bed");
+
+		ConfiguredFeatures.register(
+			context,
+			SHROOMIUM_FLOOR_VEGETATION_KEY,
+			Feature.FLOWER,
+			new RandomPatchFeatureConfig(
+				96, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))))
+			)
+		);
+
+		/*ConfiguredFeatures.register(
+			context,
+			SHROOMIUM_FLOOR_VEGETATION_KEY,
+			Feature.RANDOM_PATCH,
+			ConfiguredFeatures.createRandomPatchFeatureConfig(
+				32,
+				PlacedFeatures.createEntry(
+					Feature.SIMPLE_BLOCK,
+					new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(VegetationConfiguredFeatures.segmentedBlock(MUSHROOM_BED, 1, 3, LeafLitterBlock.SEGMENT_AMOUNT, LeafLitterBlock.HORIZONTAL_FACING))),
+					BlockPredicate.bothOf(BlockPredicate.IS_AIR, BlockPredicate.matchingBlocks(Direction.DOWN.getVector(), Blocks.GRASS_BLOCK))
+				)
+			)
+		);*/
 
 		ConfiguredFeatures.register(
 			context,
@@ -408,10 +437,7 @@ public class ModConfiguredFeatures {
 				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
 				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
 				new SimpleBlockFeatureConfig(
-					new WeightedBlockStateProvider(
-						Pool.<BlockState>builder()
-							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
-					)
+					new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))
 				)),
 				VerticalSurfaceType.FLOOR,
 				ConstantIntProvider.create(1),
@@ -506,6 +532,18 @@ public class ModConfiguredFeatures {
     private static <FC extends FeatureConfig, F extends Feature<FC>> void register(Registerable<ConfiguredFeature<?, ?>> context, RegistryKey<ConfiguredFeature<?, ?>> key, F feature, FC configuration) {
         context.register(key, new ConfiguredFeature<>(feature, configuration));
     }
+
+	private static Pool.Builder<BlockState> segmentedBlock(Block block, int min, int max, IntProperty amountProperty, EnumProperty<Direction> facingProperty) {
+		Pool.Builder<BlockState> builder = Pool.builder();
+
+		for (int i = min; i <= max; i++) {
+			for (Direction direction : Direction.Type.HORIZONTAL) {
+				builder.add(block.getDefaultState().with(amountProperty, i).with(facingProperty, direction), 1);
+			}
+		}
+
+		return builder;
+	}
 
 
 }
