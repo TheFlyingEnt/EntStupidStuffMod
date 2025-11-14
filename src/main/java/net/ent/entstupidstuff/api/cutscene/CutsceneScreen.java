@@ -48,9 +48,11 @@ public class CutsceneScreen extends Screen {
     private BufferedImage currentFrame = null;
 
     //updated fps: //TBA
-    private double videoFrameDuration; // seconds per frame
-    private long videoStartTime; // System.nanoTime() at start
-    private Frame lastFrame; // last frame displayed
+    private long lastFrameTimeNano = 0; // last time we updated texture
+    private double videoFrameDuration = 0;  // seconds per frame
+    private Frame lastFrame = null;          // last frame displayed
+
+    
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -79,6 +81,10 @@ public class CutsceneScreen extends Screen {
             grabber.setPixelFormat(org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_BGR24);
             
             grabber.start();
+
+            videoFrameDuration = 1.0 / grabber.getFrameRate();
+            lastFrameTimeNano = System.nanoTime();
+            lastFrame = null;
             
             videoWidth = grabber.getImageWidth();
             videoHeight = grabber.getImageHeight();
@@ -240,6 +246,58 @@ public class CutsceneScreen extends Screen {
             close();
             return;
         }
+
+        // TBT: Support for Custom FPS
+        /*
+        long now = System.nanoTime();
+        double elapsed = (now - lastFrameTimeNano) / 1_000_000_000.0;
+
+        if (elapsed >= videoFrameDuration) {
+            // Try to get next frame from queue, non-blocking
+            Frame nextFrame = frameQueue.poll();
+            if (nextFrame != null) {
+                lastFrame = nextFrame;
+                updateTexture(nextFrame);
+            }
+            lastFrameTimeNano = now;
+        }
+
+        // Render black background
+        context.fill(0, 0, width, height, 0xFF000000);
+
+        // Render video frame
+        if (videoTexture != null) {
+            float videoAspect = (float) videoWidth / videoHeight;
+            float screenAspect = (float) width / height;
+
+            int renderWidth, renderHeight, renderX, renderY;
+
+            if (screenAspect > videoAspect) {
+                renderHeight = height;
+                renderWidth = (int) (height * videoAspect);
+                renderX = (width - renderWidth) / 2;
+                renderY = 0;
+            } else {
+                renderWidth = width;
+                renderHeight = (int) (width / videoAspect);
+                renderX = 0;
+                renderY = (height - renderHeight) / 2;
+            }
+
+            context.drawTexture(
+                RenderPipelines.GUI_TEXTURED,
+                TEXTURE_ID,
+                renderX, renderY,
+                0.0f, 0.0f,
+                renderWidth, renderHeight,
+                videoWidth, videoHeight
+            );
+        } */
+
+
+
+
+        //Version Locked to 30fps:
         
         // Process next frame from queue if available (on render thread)
         Frame frame = frameQueue.poll();
