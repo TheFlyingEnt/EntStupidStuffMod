@@ -29,7 +29,7 @@ public class CutsceneScreen extends Screen {
     private final boolean hideHud;
 
     private FFmpegFrameGrabber grabber;
-    private Java2DFrameConverter converter;
+    //private Java2DFrameConverter converter;
     private NativeImageBackedTexture videoTexture;
     private Thread videoThread;
     private volatile boolean running = true;
@@ -41,12 +41,13 @@ public class CutsceneScreen extends Screen {
     private SourceDataLine audioLine;
 
     // Queue of Frames decoded by the worker thread (holds up to 3 frames)
-    private final BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(3);
+    //private final BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(3);
+    private BlockingQueue<RawFrame> frameQueue = new LinkedBlockingQueue<>(3);
 
     // Timing / scheduling fields (time-based scheduler)
     private volatile long frameDurationNano = 33_333_333L; // default ~30 FPS
     private volatile long nextFrameTimeNano = 0L; // when to show next frame (nano)
-    private volatile Frame lastFrame = null; // last frame that was displayed
+    private volatile RawFrame lastFrame = null; // last frame that was displayed
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -89,7 +90,7 @@ public class CutsceneScreen extends Screen {
                     videoWidth, videoHeight, fps,
                     grabber.getAudioChannels(), grabber.getSampleRate());
 
-            converter = new Java2DFrameConverter();
+            //converter = new Java2DFrameConverter();
 
             // Create texture for video frames with proper format
             videoTexture = new NativeImageBackedTexture(() -> "cutscene_frame", videoWidth, videoHeight, false);
@@ -151,14 +152,23 @@ public class CutsceneScreen extends Screen {
 
                 // Process video frame
                 if (frame.image != null) {
-                    // On the first decoded / valid video frame we set the nextFrameTimeNano
-                    if (nextFrameTimeNano == 0L) {
-                        nextFrameTimeNano = System.nanoTime();
-                    }
+                    ByteBuffer src = (ByteBuffer) frame.image[0];
 
-                    // Put a clone into the queue for render thread to consume
+                    RawFrame raw = new RawFrame();
+                    raw.width = frame.imageWidth;
+                    raw.height = frame.imageHeight;
+
+                    // Copy only the byte buffer (BGR24)
+                    ByteBuffer copy = ByteBuffer.allocateDirect(src.remaining());
+                    int oldPos = src.position();
+                    copy.put(src);
+                    copy.flip();
+                    src.position(oldPos); // restore for FFmpeg
+
+                    raw.buffer = copy;
+
                     try {
-                        frameQueue.put(frame.clone());
+                        frameQueue.put(raw); // blocks if full
                     } catch (InterruptedException e) {
                         break;
                     }
@@ -183,24 +193,25 @@ public class CutsceneScreen extends Screen {
      * Convert Frame (BGR24 ByteBuffer in frame.image[0]) into NativeImage texture.
      * This MUST be called from the render thread (we call it there).
      */
-    private void updateTexture(Frame frame) {
+    private void updateTexture(RawFrame frame) {
         if (frame == null || videoTexture == null) return;
 
         try {
             NativeImage nativeImage = videoTexture.getImage();
             if (nativeImage == null) return;
 
-            // frame.image[0] is ByteBuffer containing BGR triplets row-major
-            ByteBuffer buffer = (ByteBuffer) frame.image[0];
+            ByteBuffer buffer = frame.buffer;
             buffer.rewind();
 
-            // NativeImage expects ABGR (big-endian ABGR or little-endian RGBA depending on platform),
-            // here we pack as 0xAABBGGRR to match nativeImage.setColor(...) expectations used previously.
-            for (int y = 0; y < videoHeight; y++) {
-                for (int x = 0; x < videoWidth; x++) {
+            int w = frame.width;
+            int h = frame.height;
+
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
                     int b = buffer.get() & 0xFF;
                     int g = buffer.get() & 0xFF;
                     int r = buffer.get() & 0xFF;
+
                     int abgr = 0xFF000000 | (b << 16) | (g << 8) | r;
                     nativeImage.setColor(x, y, abgr);
                 }
@@ -246,6 +257,9 @@ public class CutsceneScreen extends Screen {
             return;
         }
 
+        // Getting Screen Size
+
+
         final long now = System.nanoTime();
 
         // If we haven't started timing yet (no frames decoded yet), set start to now
@@ -254,7 +268,7 @@ public class CutsceneScreen extends Screen {
         // Advance frame(s) as many times as needed to catch up to "now".
         // This will consume frames from the queue and call updateTexture(...) on render thread.
         while (now >= nextFrameTimeNano) {
-            Frame polled = frameQueue.poll(); // non-blocking
+            RawFrame polled = frameQueue.poll(); // non-blocking
             if (polled != null) {
                 lastFrame = polled;
                 updateTexture(lastFrame);
@@ -339,9 +353,9 @@ public class CutsceneScreen extends Screen {
             }
         }
 
-        if (converter != null) {
+        /*if (converter != null) {
             converter.close();
-        }
+        }*/
 
         if (audioLine != null) {
             audioLine.drain();
@@ -375,4 +389,13 @@ public class CutsceneScreen extends Screen {
     public boolean shouldHideHud() {
         return hideHud;
     }
+
+    private static class RawFrame {
+        ByteBuffer buffer;
+        int width, height;
+    }
+
+
 }
+
+
