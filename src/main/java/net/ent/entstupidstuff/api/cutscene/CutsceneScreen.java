@@ -23,36 +23,30 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class CutsceneScreen extends Screen {
     private static final Identifier TEXTURE_ID = Identifier.of("entstupidstuff", "cutscene_frame");
-    
+
     private final String videoPath;
     private final boolean disableMovement;
     private final boolean hideHud;
-    
+
     private FFmpegFrameGrabber grabber;
-    //private FFmpegFrameGrabber audioGrabber;
     private Java2DFrameConverter converter;
     private NativeImageBackedTexture videoTexture;
     private Thread videoThread;
-    //private Thread audioThread;
     private volatile boolean running = true;
     private volatile boolean hasFinished = false;
-    
+
     private int videoWidth = 1920;
     private int videoHeight = 1080;
-    
+
     private SourceDataLine audioLine;
-    
-    // Queue for frames to be rendered on main thread
-    //private BlockingQueue<BufferedImage> frameQueue = new LinkedBlockingQueue<>(3);
-    private BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(3);
-    private BufferedImage currentFrame = null;
 
-    //updated fps: //TBA
-    private long lastFrameTimeNano = 0; // last time we updated texture
-    private double videoFrameDuration = 0;  // seconds per frame
-    private Frame lastFrame = null;          // last frame displayed
+    // Queue of Frames decoded by the worker thread (holds up to 3 frames)
+    private final BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(3);
 
-    
+    // Timing / scheduling fields (time-based scheduler)
+    private volatile long frameDurationNano = 33_333_333L; // default ~30 FPS
+    private volatile long nextFrameTimeNano = 0L; // when to show next frame (nano)
+    private volatile Frame lastFrame = null; // last frame that was displayed
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -64,7 +58,7 @@ public class CutsceneScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        
+
         try {
             File videoFile = new File(videoPath);
             if (!videoFile.exists()) {
@@ -72,33 +66,35 @@ public class CutsceneScreen extends Screen {
                 close();
                 return;
             }
-            
+
             // Initialize FFmpeg grabber
             grabber = new FFmpegFrameGrabber(videoFile);
-            
-            // CRITICAL: Force pixel format to BGR24 (RGB) instead of YUV
-            // This makes JavaCV convert YUV420p to RGB automatically
+
+            // Force BGR24 so converter gives BufferedImage in a consistent RGB form
             grabber.setPixelFormat(org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_BGR24);
-            
+
             grabber.start();
 
-            videoFrameDuration = 1.0 / grabber.getFrameRate();
-            lastFrameTimeNano = System.nanoTime();
-            lastFrame = null;
-            
             videoWidth = grabber.getImageWidth();
             videoHeight = grabber.getImageHeight();
-            
-            EntStupidStuff.LOGGER.info("Video info: {}x{} @ {}fps, {} audio channels @ {}Hz", 
-                videoWidth, videoHeight, grabber.getFrameRate(), 
-                grabber.getAudioChannels(), grabber.getSampleRate());
-            
+
+            double fps = grabber.getFrameRate();
+            if (fps <= 0 || Double.isNaN(fps) || Double.isInfinite(fps)) {
+                fps = 30.0; // fallback
+            }
+            frameDurationNano = (long) (1_000_000_000.0 / fps);
+            // nextFrameTimeNano is initialized when first frame arrives (below)
+
+            EntStupidStuff.LOGGER.info("Video info: {}x{} @ {}fps, {} audio channels @ {}Hz",
+                    videoWidth, videoHeight, fps,
+                    grabber.getAudioChannels(), grabber.getSampleRate());
+
             converter = new Java2DFrameConverter();
-            
+
             // Create texture for video frames with proper format
             videoTexture = new NativeImageBackedTexture(() -> "cutscene_frame", videoWidth, videoHeight, false);
             MinecraftClient.getInstance().getTextureManager().registerTexture(TEXTURE_ID, videoTexture);
-            
+
             // Initialize with black frame
             NativeImage nativeImage = videoTexture.getImage();
             if (nativeImage != null) {
@@ -109,84 +105,84 @@ public class CutsceneScreen extends Screen {
                 }
                 videoTexture.upload();
             }
-            
+
             EntStupidStuff.LOGGER.info("Created texture: {}x{}", videoWidth, videoHeight);
-            
+
             // Setup audio if available
             if (grabber.getAudioChannels() > 0) {
                 try {
                     AudioFormat audioFormat = new AudioFormat(
-                        (float) grabber.getSampleRate(),
-                        16,
-                        grabber.getAudioChannels(),
-                        true,
-                        false
+                            (float) grabber.getSampleRate(),
+                            16,
+                            grabber.getAudioChannels(),
+                            true,
+                            false
                     );
                     DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
                     audioLine = (SourceDataLine) AudioSystem.getLine(info);
                     audioLine.open(audioFormat);
                     audioLine.start();
-                    EntStupidStuff.LOGGER.info("Audio initialized: {} channels @ {} Hz", 
-                        grabber.getAudioChannels(), grabber.getSampleRate());
+                    EntStupidStuff.LOGGER.info("Audio initialized: {} channels @ {} Hz",
+                            grabber.getAudioChannels(), grabber.getSampleRate());
                 } catch (Exception e) {
                     EntStupidStuff.LOGGER.error("Failed to initialize audio", e);
                     audioLine = null;
                 }
             }
-            
+
             // Start video playback thread
             videoThread = new Thread(this::playVideo, "Cutscene-Video-Thread");
             videoThread.setDaemon(true);
             videoThread.start();
-            
+
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Failed to initialize cutscene", e);
             close();
         }
     }
-    
+
     private void playVideo() {
         try {
             Frame frame;
             int frameCount = 0;
-            
+
             while (running && (frame = grabber.grab()) != null) {
                 frameCount++;
-                
+
                 // Process video frame
                 if (frame.image != null) {
-                    BufferedImage image = converter.convert(frame);
-                    if (image != null) {
-                        if (frameCount == 1) {
-                            EntStupidStuff.LOGGER.info("First frame: {}x{}, type: {}", 
-                                image.getWidth(), image.getHeight(), image.getType());
-                        }
-                        
-                        // Add to queue (will block if queue is full, providing backpressure)
-                        try {
-                            //frameQueue.put(image);
-                            frameQueue.put(frame.clone());
-                        } catch (InterruptedException e) {
-                            break;
-                        }
+                    // On the first decoded / valid video frame we set the nextFrameTimeNano
+                    if (nextFrameTimeNano == 0L) {
+                        nextFrameTimeNano = System.nanoTime();
+                    }
+
+                    // Put a clone into the queue for render thread to consume
+                    try {
+                        frameQueue.put(frame.clone());
+                    } catch (InterruptedException e) {
+                        break;
                     }
                 }
-                
+
                 // Process audio frame
                 if (frame.samples != null && audioLine != null) {
                     playAudioFrame(frame);
                 }
             }
-            
+
             EntStupidStuff.LOGGER.info("Video finished. Processed {} frames", frameCount);
             hasFinished = true;
-            
+
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Error playing video", e);
             hasFinished = true;
         }
     }
-    
+
+    /**
+     * Convert Frame (BGR24 ByteBuffer in frame.image[0]) into NativeImage texture.
+     * This MUST be called from the render thread (we call it there).
+     */
     private void updateTexture(Frame frame) {
         if (frame == null || videoTexture == null) return;
 
@@ -194,11 +190,12 @@ public class CutsceneScreen extends Screen {
             NativeImage nativeImage = videoTexture.getImage();
             if (nativeImage == null) return;
 
-            // frame.image[0] is ByteBuffer containing BGR
+            // frame.image[0] is ByteBuffer containing BGR triplets row-major
             ByteBuffer buffer = (ByteBuffer) frame.image[0];
             buffer.rewind();
 
-            // NativeImage expects ABGR
+            // NativeImage expects ABGR (big-endian ABGR or little-endian RGBA depending on platform),
+            // here we pack as 0xAABBGGRR to match nativeImage.setColor(...) expectations used previously.
             for (int y = 0; y < videoHeight; y++) {
                 for (int x = 0; x < videoWidth; x++) {
                     int b = buffer.get() & 0xFF;
@@ -209,22 +206,24 @@ public class CutsceneScreen extends Screen {
                 }
             }
 
+            // Upload will happen on render thread (this method is called from render thread)
             videoTexture.upload();
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Error updating texture", e);
         }
     }
-    
+
     private void playAudioFrame(Frame frame) {
         try {
             if (audioLine == null || frame.samples == null) return;
-            
+
             int channels = frame.samples.length;
             int sampleCount = ((java.nio.ShortBuffer) frame.samples[0]).remaining();
-            
+
             byte[] audioData = new byte[sampleCount * channels * 2];
             int offset = 0;
-            
+
+            // frame.samples[...] are ShortBuffers per channel
             for (int i = 0; i < sampleCount; i++) {
                 for (int ch = 0; ch < channels; ch++) {
                     java.nio.ShortBuffer channelBuffer = (java.nio.ShortBuffer) frame.samples[ch];
@@ -233,7 +232,7 @@ public class CutsceneScreen extends Screen {
                     audioData[offset++] = (byte) ((sample >> 8) & 0xFF);
                 }
             }
-            
+
             audioLine.write(audioData, 0, audioData.length);
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Error playing audio", e);
@@ -247,25 +246,29 @@ public class CutsceneScreen extends Screen {
             return;
         }
 
-        // TBT: Support for Custom FPS
-        /*
-        long now = System.nanoTime();
-        double elapsed = (now - lastFrameTimeNano) / 1_000_000_000.0;
+        final long now = System.nanoTime();
 
-        if (elapsed >= videoFrameDuration) {
-            // Try to get next frame from queue, non-blocking
-            Frame nextFrame = frameQueue.poll();
-            if (nextFrame != null) {
-                lastFrame = nextFrame;
-                updateTexture(nextFrame);
+        // If we haven't started timing yet (no frames decoded yet), set start to now
+        if (nextFrameTimeNano == 0L) nextFrameTimeNano = now;
+
+        // Advance frame(s) as many times as needed to catch up to "now".
+        // This will consume frames from the queue and call updateTexture(...) on render thread.
+        while (now >= nextFrameTimeNano) {
+            Frame polled = frameQueue.poll(); // non-blocking
+            if (polled != null) {
+                lastFrame = polled;
+                updateTexture(lastFrame);
             }
-            lastFrameTimeNano = now;
+            nextFrameTimeNano += frameDurationNano;
+
+            // If no frames were available this pass, break (we'll try again next render)
+            if (polled == null) break;
         }
 
         // Render black background
         context.fill(0, 0, width, height, 0xFF000000);
 
-        // Render video frame
+        // Draw the last uploaded texture (could be the initial black frame or last decoded)
         if (videoTexture != null) {
             float videoAspect = (float) videoWidth / videoHeight;
             float screenAspect = (float) width / height;
@@ -285,57 +288,12 @@ public class CutsceneScreen extends Screen {
             }
 
             context.drawTexture(
-                RenderPipelines.GUI_TEXTURED,
-                TEXTURE_ID,
-                renderX, renderY,
-                0.0f, 0.0f,
-                renderWidth, renderHeight,
-                videoWidth, videoHeight
-            );
-        } */
-
-
-
-
-        //Version Locked to 30fps:
-        
-        // Process next frame from queue if available (on render thread)
-        Frame frame = frameQueue.poll();
-        if (frame != null) updateTexture(frame);
-
-        
-        // Render black background
-        context.fill(0, 0, width, height, 0xFF000000);
-        
-        // Render video frame
-        if (videoTexture != null) {
-            float videoAspect = (float) videoWidth / videoHeight;
-            float screenAspect = (float) width / height;
-            
-            int renderWidth, renderHeight, renderX, renderY;
-            
-            if (screenAspect > videoAspect) {
-                renderHeight = height;
-                renderWidth = (int) (height * videoAspect);
-                renderX = (width - renderWidth) / 2;
-                renderY = 0;
-            } else {
-                renderWidth = width;
-                renderHeight = (int) (width / videoAspect);
-                renderX = 0;
-                renderY = (height - renderHeight) / 2;
-            }
-            
-            EntStupidStuff.LOGGER.info("Drawing texture at ({}, {}) size {}x{}", 
-                renderX, renderY, renderWidth, renderHeight);
-            
-            context.drawTexture(
-                RenderPipelines.GUI_TEXTURED,
-                TEXTURE_ID,
-                renderX, renderY,
-                0.0f, 0.0f,
-                renderWidth, renderHeight,
-                videoWidth, videoHeight
+                    RenderPipelines.GUI_TEXTURED,
+                    TEXTURE_ID,
+                    renderX, renderY,
+                    0.0f, 0.0f,
+                    renderWidth, renderHeight,
+                    videoWidth, videoHeight
             );
         }
 
@@ -359,10 +317,10 @@ public class CutsceneScreen extends Screen {
         }
         CutsceneManager.stopCutscene();
     }
-    
+
     public void cleanup() {
         running = false;
-        
+
         if (videoThread != null && videoThread.isAlive()) {
             try {
                 videoThread.interrupt();
@@ -371,7 +329,7 @@ public class CutsceneScreen extends Screen {
                 Thread.currentThread().interrupt();
             }
         }
-        
+
         if (grabber != null) {
             try {
                 grabber.stop();
@@ -380,23 +338,23 @@ public class CutsceneScreen extends Screen {
                 EntStupidStuff.LOGGER.error("Error stopping grabber", e);
             }
         }
-        
+
         if (converter != null) {
             converter.close();
         }
-        
+
         if (audioLine != null) {
             audioLine.drain();
             audioLine.stop();
             audioLine.close();
         }
-        
+
         if (videoTexture != null) {
             MinecraftClient.getInstance().getTextureManager().destroyTexture(TEXTURE_ID);
             videoTexture.close();
             videoTexture = null;
         }
-        
+
         frameQueue.clear();
     }
 
@@ -409,11 +367,11 @@ public class CutsceneScreen extends Screen {
     public boolean shouldCloseOnEsc() {
         return true;
     }
-    
+
     public boolean isPlayerMovementDisabled() {
         return disableMovement;
     }
-    
+
     public boolean shouldHideHud() {
         return hideHud;
     }

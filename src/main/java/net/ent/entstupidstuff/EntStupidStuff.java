@@ -24,6 +24,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;
@@ -114,7 +115,7 @@ public class EntStupidStuff implements ModInitializer {
                     .executes(context -> {
                         String filename = StringArgumentType.getString(context, "filename");
                         CutsceneManager.playCutscene(filename, true, true);
-                        //context.getSource().sendFeedback(() -> Text.literal("Playing cutscene: " + filename), false);
+                        context.getSource().sendFeedback(() -> Text.literal("Playing cutscene: " + filename), false);
                         return 1;
                     })));
         });
