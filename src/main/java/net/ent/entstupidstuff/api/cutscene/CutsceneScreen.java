@@ -1,35 +1,53 @@
 package net.ent.entstupidstuff.api.cutscene;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
-import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.embedded.videosurface.CallbackVideoSurface;
-import uk.co.caprica.vlcj.player.embedded.videosurface.VideoSurfaceAdapters;
-import uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormat;
-import uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormatCallback;
-import uk.co.caprica.vlcj.player.embedded.videosurface.callback.RenderCallback;
-import uk.co.caprica.vlcj.player.embedded.videosurface.callback.format.RV32BufferFormat;
+import net.minecraft.util.Identifier;
 
+import org.bytedeco.ffmpeg.global.avutil;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryUtil;
+
+import javax.sound.sampled.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.nio.IntBuffer;
 
 public class CutsceneScreen extends Screen {
+
+    private static final Identifier TEXTURE_ID = Identifier.of("entstupidstuff", "cutscene_frame");
+
     private final String videoPath;
     private final boolean disableMovement;
     private final boolean hideHud;
-    
-    private MediaPlayerFactory mediaPlayerFactory;
-    private EmbeddedMediaPlayer mediaPlayer;
-    private VideoRenderer videoRenderer;
-    private AtomicBoolean finished = new AtomicBoolean(false);
+
+    private FFmpegFrameGrabber grabber;
+    private NativeImageBackedTexture videoTexture;
+    private Thread videoThread;
+    private volatile boolean running = true;
+    private volatile boolean hasFinished = false;
+
+    private int videoWidth = 1920;
+    private int videoHeight = 1080;
+    private double frameRate = 30.0;
+    private long frameDelay;
+
+    private final Java2DFrameConverter converter = new Java2DFrameConverter();
+
+    private SourceDataLine audioLine;
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -41,58 +59,211 @@ public class CutsceneScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+
         try {
-            // Initialize VLC media player
-            mediaPlayerFactory = new MediaPlayerFactory();
-            mediaPlayer = mediaPlayerFactory.mediaPlayers().newEmbeddedMediaPlayer();
-            
-            videoRenderer = new VideoRenderer(width, height);
-            
-            // Set up video surface
-            CallbackVideoSurface videoSurface = new CallbackVideoSurface(
-                videoRenderer,
-                videoRenderer,
-                true,
-                VideoSurfaceAdapters.getVideoSurfaceAdapter()
-            );
-            mediaPlayer.videoSurface().set(videoSurface);
-            
-            // Add event listener to detect when video ends
-            mediaPlayer.events().addMediaPlayerEventListener(new uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter() {
-                @Override
-                public void finished(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer) {
-                    finished.set(true);
-                }
-            });
-            
-            // Start playing
-            mediaPlayer.media().play(videoPath);
-            
+            File videoFile = new File(videoPath);
+            if (!videoFile.exists()) {
+                EntStupidStuff.LOGGER.error("Video file not found: {}", videoPath);
+                close();
+                return;
+            }
+
+            grabber = new FFmpegFrameGrabber(videoFile);
+            grabber.start();
+
+            videoWidth = grabber.getImageWidth();
+            videoHeight = grabber.getImageHeight();
+
+            // Video texture
+            videoTexture = new NativeImageBackedTexture(() -> "cutscene_frame", videoWidth, videoHeight, false);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(TEXTURE_ID, videoTexture);
+
+            // Audio
+            if (grabber.getAudioChannels() > 0) {
+                AudioFormat format = new AudioFormat(
+                        grabber.getSampleRate(),
+                        16,
+                        grabber.getAudioChannels(),
+                        true,
+                        false
+                );
+                audioLine = AudioSystem.getSourceDataLine(format);
+                audioLine.open(format);
+                audioLine.start();
+            }
+
+            // Start decoding thread
+            videoThread = new Thread(this::playVideo, "Cutscene-Video-Thread");
+            videoThread.setDaemon(true);
+            videoThread.start();
+
+            EntStupidStuff.LOGGER.info("Started cutscene: {}x{}", videoWidth, videoHeight);
+
         } catch (Exception e) {
-            EntStupidStuff.LOGGER.error("Failed to initialize video player", e);
+            EntStupidStuff.LOGGER.error("Failed to initialize cutscene", e);
             close();
         }
     }
 
+    // ----------- VIDEO DECODE LOOP -------------------
+
+    private void playVideo() {
+        try {
+            Frame frame;
+            while (running && (frame = grabber.grab()) != null) {
+
+                // -------- VIDEO --------
+                if (frame.image != null) {
+                    BufferedImage img = converter.convert(frame);
+                    if (img != null && videoTexture != null) {
+                        NativeImage nativeImg = videoTexture.getImage();
+                        if (nativeImg != null) {
+                            copyBufferedImageToNativeImage(img, nativeImg);
+
+                            // Schedule texture upload on render thread
+                            MinecraftClient.getInstance().execute(() -> {
+                                if (videoTexture != null) videoTexture.upload();
+                            });
+                        }
+                    }
+                }
+
+                // -------- AUDIO --------
+                if (frame.samples != null && audioLine != null) {
+                    int channels = frame.samples.length;
+                    int sampleCount = ((java.nio.ShortBuffer) frame.samples[0]).remaining();
+                    ByteBuffer audioBytes = ByteBuffer.allocate(sampleCount * 2 * channels);
+
+                    for (int i = 0; i < channels; i++) {
+                        java.nio.ShortBuffer channelBuffer = (java.nio.ShortBuffer) frame.samples[i];
+                        channelBuffer.rewind();
+                        while (channelBuffer.hasRemaining()) {
+                            short s = channelBuffer.get();
+                            audioBytes.put((byte) (s & 0xff));
+                            audioBytes.put((byte) ((s >> 8) & 0xff));
+                        }
+                    }
+                    audioLine.write(audioBytes.array(), 0, audioBytes.position());
+                }
+            }
+
+            hasFinished = true;
+
+        } catch (Exception e) {
+            EntStupidStuff.LOGGER.error("Error playing video", e);
+            hasFinished = true;
+        }
+    }
+
+    // ----------- DIRECT GPU UPLOAD -------------------
+
+    private void copyBufferedImageToNativeImage(BufferedImage bufferedImage, NativeImage nativeImage) {
+    int width = bufferedImage.getWidth();
+    int height = bufferedImage.getHeight();
+
+    if (bufferedImage.getType() == BufferedImage.TYPE_INT_ARGB || 
+        bufferedImage.getType() == BufferedImage.TYPE_INT_RGB) {
+        // Direct copy for int-based BufferedImages
+        int[] data = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+        IntBuffer buffer = MemoryUtil.memIntBuffer(nativeImage.imageId(), width * height); //Same as before
+        for (int i = 0; i < data.length; i++) {
+            int argb = data[i];
+            // Convert ARGB -> ABGR (NativeImage expects ABGR)
+            int abgr = (argb & 0xFF00FF00) | ((argb & 0xFF) << 16) | ((argb >> 16) & 0xFF);
+            buffer.put(i, abgr);
+        }
+    } else {
+        // Fallback for byte-based images (like 3BYTE_BGR)
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int rgb = bufferedImage.getRGB(x, y); // Converts byte-based BGR/YUV to ARGB automatically
+                int abgr = (rgb & 0xFF00FF00) | ((rgb & 0xFF) << 16) | ((rgb >> 16) & 0xFF);
+                nativeImage.setColor(x, y, abgr); //Same as before
+            }
+        }
+    }
+}
+
+    private void updateTextureFromFrame(Frame frame) {
+        if (videoTexture == null || frame == null || frame.image == null) return;
+
+        ByteBuffer buffer = (ByteBuffer) frame.image[0]; // RGBA
+        buffer.rewind();
+
+        NativeImage img = videoTexture.getImage();
+        if (img == null) return;
+
+        int width = frame.imageWidth;
+        int height = frame.imageHeight;
+
+        // Make a copy of the buffer for thread safety
+        byte[] temp = new byte[width * height * 4];
+        buffer.get(temp);
+
+        // Schedule GPU update on render thread
+        MinecraftClient.getInstance().execute(() -> {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int i = (y * width + x) * 4;
+                    int r = temp[i] & 0xFF;
+                    int g = temp[i + 1] & 0xFF;
+                    int b = temp[i + 2] & 0xFF;
+                    int a = temp[i + 3] & 0xFF;
+
+                    // pack ARGB (what NativeImage expects)
+                    int color = (a << 24) | (r << 16) | (g << 8) | b;
+
+                    img.setColor(x, y, color); // 1.21 method
+                }
+            }
+
+            videoTexture.upload();
+        });
+    }
+
+
+    // ----------- RENDERING -------------------
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Check if video finished
-        if (finished.get()) {
+        if (hasFinished) {
             close();
             return;
         }
 
-        // Render black background
         context.fill(0, 0, width, height, 0xFF000000);
-        
-        // Render video frame
-        if (videoRenderer != null && videoRenderer.hasFrame()) {
-            videoRenderer.renderToScreen(context, width, height);
+
+        if (videoTexture != null) {
+            float videoAspect = (float) videoWidth / videoHeight;
+            float screenAspect = (float) width / height;
+
+            int rw, rh, rx, ry;
+            if (screenAspect > videoAspect) {
+                rh = height;
+                rw = (int) (height * videoAspect);
+                rx = (width - rw) / 2;
+                ry = 0;
+            } else {
+                rw = width;
+                rh = (int) (width / videoAspect);
+                rx = 0;
+                ry = (height - rh) / 2;
+            }
+
+            context.drawTexture(
+                    RenderPipelines.GUI,
+                    TEXTURE_ID,
+                    rx, ry,
+                    0, 0,
+                    rw, rh,
+                    videoWidth, videoHeight
+            );
         }
 
         super.render(context, mouseX, mouseY, delta);
     }
 
+    // ESC closes the cutscene
     @Override
     public boolean keyPressed(KeyInput input) {
         if (input.isEscape()) {
@@ -102,77 +273,40 @@ public class CutsceneScreen extends Screen {
         return super.keyPressed(input);
     }
 
+    // ----------- CLEANUP -------------------
+
     @Override
     public void close() {
-        if (mediaPlayer != null) {
-            mediaPlayer.controls().stop();
-            mediaPlayer.release();
+        running = false;
+
+        try {
+            if (videoThread != null && videoThread.isAlive()) videoThread.join(1000);
+        } catch (Exception ignored) {}
+
+        try {
+            if (grabber != null) {
+                grabber.stop();
+                grabber.release();
+            }
+        } catch (Exception ignored) {}
+
+        if (audioLine != null) {
+            audioLine.stop();
+            audioLine.close();
         }
-        if (mediaPlayerFactory != null) {
-            mediaPlayerFactory.release();
+
+        if (videoTexture != null) {
+            MinecraftClient.getInstance().getTextureManager().destroyTexture(TEXTURE_ID);
+            videoTexture.close();
         }
-        if (videoRenderer != null) {
-            videoRenderer.cleanup();
-        }
-        
-        if (client != null) {
-            client.setScreen(null);
-        }
+
+        if (client != null) client.setScreen(null);
+
         CutsceneManager.stopCutscene();
     }
 
     @Override
-    public boolean shouldPause() {
-        return false;
-    }
-
+    public boolean shouldPause() { return false; }
     @Override
-    public boolean shouldCloseOnEsc() {
-        return true;
-    }
-
-    // Video renderer class
-    private static class VideoRenderer implements BufferFormatCallback, RenderCallback {
-        private int width;
-        private int height;
-        private ByteBuffer buffer;
-        private int textureId = -1;
-        private boolean hasFrame = false;
-
-        public VideoRenderer(int screenWidth, int screenHeight) {
-            this.width = screenWidth;
-            this.height = screenHeight;
-        }
-
-        @Override
-        public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
-            return new RV32BufferFormat(sourceWidth, sourceHeight);
-        }
-
-        @Override
-        public void allocatedBuffers(ByteBuffer[] buffers) {
-            this.buffer = buffers[0];
-        }
-
-        @Override
-        public void display(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer, ByteBuffer[] nativeBuffers, BufferFormat bufferFormat) {
-            hasFrame = true;
-        }
-
-        public boolean hasFrame() {
-            return hasFrame;
-        }
-
-        public void renderToScreen(DrawContext context, int screenWidth, int screenHeight) {
-            // Implement OpenGL texture rendering from buffer
-            // This is a simplified version - full implementation would upload buffer to texture
-            // and render it properly scaled to screen
-        }
-
-        public void cleanup() {
-            if (textureId != -1) {
-                //RenderSystem.deleteTexture(textureId);
-            }
-        }
-    }
+    public boolean shouldCloseOnEsc() { return true; }
 }
