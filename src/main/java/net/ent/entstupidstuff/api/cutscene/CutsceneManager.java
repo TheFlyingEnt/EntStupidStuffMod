@@ -22,6 +22,7 @@ public class CutsceneManager {
         // Create and show cutscene screen
         client.execute(() -> {
             currentCutscene = new CutsceneScreen(cutscenePath.toString(), disableMovement, hideHud);
+            //currentCutscene = new CutsceneScreen(cutscenePath.toString());
             client.setScreen(currentCutscene);
         });
     }
@@ -29,12 +30,14 @@ public class CutsceneManager {
     public static void stopCutscene() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client != null && currentCutscene != null) {
+            CutsceneScreen screenToClose = currentCutscene;
+            currentCutscene = null; // Clear reference FIRST to prevent recursion
+            
             client.execute(() -> {
-                if (currentCutscene != null) {
-                    currentCutscene.close();
+                if (screenToClose != null) {
+                    screenToClose.cleanup(); // Use cleanup instead of close
                 }
                 client.setScreen(null);
-                currentCutscene = null;
             });
         }
     }

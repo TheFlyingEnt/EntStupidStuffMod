@@ -25,29 +25,31 @@ import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class CutsceneScreen extends Screen {
-
     private static final Identifier TEXTURE_ID = Identifier.of("entstupidstuff", "cutscene_frame");
-
+    
     private final String videoPath;
     private final boolean disableMovement;
     private final boolean hideHud;
-
+    
     private FFmpegFrameGrabber grabber;
+    private Java2DFrameConverter converter;
     private NativeImageBackedTexture videoTexture;
     private Thread videoThread;
     private volatile boolean running = true;
     private volatile boolean hasFinished = false;
-
+    
     private int videoWidth = 1920;
     private int videoHeight = 1080;
-    private double frameRate = 30.0;
-    private long frameDelay;
-
-    private final Java2DFrameConverter converter = new Java2DFrameConverter();
-
+    
     private SourceDataLine audioLine;
+    
+    // Queue for frames to be rendered on main thread
+    private BlockingQueue<BufferedImage> frameQueue = new LinkedBlockingQueue<>(3);
+    private BufferedImage currentFrame = null;
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -59,170 +61,202 @@ public class CutsceneScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
+        
         try {
             File videoFile = new File(videoPath);
             if (!videoFile.exists()) {
-                EntStupidStuff.LOGGER.error("Video file not found: {}", videoPath);
+                EntStupidStuff.LOGGER.error("Video file not found: " + videoPath);
                 close();
                 return;
             }
-
+            
+            // Initialize FFmpeg grabber
             grabber = new FFmpegFrameGrabber(videoFile);
+            
+            // CRITICAL: Force pixel format to BGR24 (RGB) instead of YUV
+            // This makes JavaCV convert YUV420p to RGB automatically
+            grabber.setPixelFormat(org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_BGR24);
+            
             grabber.start();
-
+            
             videoWidth = grabber.getImageWidth();
             videoHeight = grabber.getImageHeight();
-
-            // Video texture
+            
+            EntStupidStuff.LOGGER.info("Video info: {}x{} @ {}fps, {} audio channels @ {}Hz", 
+                videoWidth, videoHeight, grabber.getFrameRate(), 
+                grabber.getAudioChannels(), grabber.getSampleRate());
+            
+            converter = new Java2DFrameConverter();
+            
+            // Create texture for video frames with proper format
             videoTexture = new NativeImageBackedTexture(() -> "cutscene_frame", videoWidth, videoHeight, false);
             MinecraftClient.getInstance().getTextureManager().registerTexture(TEXTURE_ID, videoTexture);
-
-            // Audio
+            
+            // Initialize with black frame
+            NativeImage nativeImage = videoTexture.getImage();
+            if (nativeImage != null) {
+                for (int y = 0; y < videoHeight; y++) {
+                    for (int x = 0; x < videoWidth; x++) {
+                        nativeImage.setColor(x, y, 0xFF000000); // Black with full alpha
+                    }
+                }
+                videoTexture.upload();
+            }
+            
+            EntStupidStuff.LOGGER.info("Created texture: {}x{}", videoWidth, videoHeight);
+            
+            // Setup audio if available
             if (grabber.getAudioChannels() > 0) {
-                AudioFormat format = new AudioFormat(
-                        grabber.getSampleRate(),
+                try {
+                    AudioFormat audioFormat = new AudioFormat(
+                        (float) grabber.getSampleRate(),
                         16,
                         grabber.getAudioChannels(),
                         true,
                         false
-                );
-                audioLine = AudioSystem.getSourceDataLine(format);
-                audioLine.open(format);
-                audioLine.start();
+                    );
+                    DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+                    audioLine = (SourceDataLine) AudioSystem.getLine(info);
+                    audioLine.open(audioFormat);
+                    audioLine.start();
+                    EntStupidStuff.LOGGER.info("Audio initialized: {} channels @ {} Hz", 
+                        grabber.getAudioChannels(), grabber.getSampleRate());
+                } catch (Exception e) {
+                    EntStupidStuff.LOGGER.error("Failed to initialize audio", e);
+                    audioLine = null;
+                }
             }
-
-            // Start decoding thread
+            
+            // Start video playback thread
             videoThread = new Thread(this::playVideo, "Cutscene-Video-Thread");
             videoThread.setDaemon(true);
             videoThread.start();
-
-            EntStupidStuff.LOGGER.info("Started cutscene: {}x{}", videoWidth, videoHeight);
-
+            
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Failed to initialize cutscene", e);
             close();
         }
     }
-
-    // ----------- VIDEO DECODE LOOP -------------------
-
+    
     private void playVideo() {
         try {
             Frame frame;
+            int frameCount = 0;
+            
             while (running && (frame = grabber.grab()) != null) {
-
-                // -------- VIDEO --------
+                frameCount++;
+                
+                // Process video frame
                 if (frame.image != null) {
-                    BufferedImage img = converter.convert(frame);
-                    if (img != null && videoTexture != null) {
-                        NativeImage nativeImg = videoTexture.getImage();
-                        if (nativeImg != null) {
-                            copyBufferedImageToNativeImage(img, nativeImg);
-
-                            // Schedule texture upload on render thread
-                            MinecraftClient.getInstance().execute(() -> {
-                                if (videoTexture != null) videoTexture.upload();
-                            });
+                    BufferedImage image = converter.convert(frame);
+                    if (image != null) {
+                        if (frameCount == 1) {
+                            EntStupidStuff.LOGGER.info("First frame: {}x{}, type: {}", 
+                                image.getWidth(), image.getHeight(), image.getType());
+                        }
+                        
+                        // Add to queue (will block if queue is full, providing backpressure)
+                        try {
+                            frameQueue.put(image);
+                        } catch (InterruptedException e) {
+                            break;
                         }
                     }
                 }
-
-                // -------- AUDIO --------
+                
+                // Process audio frame
                 if (frame.samples != null && audioLine != null) {
-                    int channels = frame.samples.length;
-                    int sampleCount = ((java.nio.ShortBuffer) frame.samples[0]).remaining();
-                    ByteBuffer audioBytes = ByteBuffer.allocate(sampleCount * 2 * channels);
-
-                    for (int i = 0; i < channels; i++) {
-                        java.nio.ShortBuffer channelBuffer = (java.nio.ShortBuffer) frame.samples[i];
-                        channelBuffer.rewind();
-                        while (channelBuffer.hasRemaining()) {
-                            short s = channelBuffer.get();
-                            audioBytes.put((byte) (s & 0xff));
-                            audioBytes.put((byte) ((s >> 8) & 0xff));
-                        }
-                    }
-                    audioLine.write(audioBytes.array(), 0, audioBytes.position());
+                    playAudioFrame(frame);
                 }
             }
-
+            
+            EntStupidStuff.LOGGER.info("Video finished. Processed {} frames", frameCount);
             hasFinished = true;
-
+            
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Error playing video", e);
             hasFinished = true;
         }
     }
-
-    // ----------- DIRECT GPU UPLOAD -------------------
-
-    private void copyBufferedImageToNativeImage(BufferedImage bufferedImage, NativeImage nativeImage) {
-    int width = bufferedImage.getWidth();
-    int height = bufferedImage.getHeight();
-
-    if (bufferedImage.getType() == BufferedImage.TYPE_INT_ARGB || 
-        bufferedImage.getType() == BufferedImage.TYPE_INT_RGB) {
-        // Direct copy for int-based BufferedImages
-        int[] data = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
-        IntBuffer buffer = MemoryUtil.memIntBuffer(nativeImage.imageId(), width * height); //Same as before
-        for (int i = 0; i < data.length; i++) {
-            int argb = data[i];
-            // Convert ARGB -> ABGR (NativeImage expects ABGR)
-            int abgr = (argb & 0xFF00FF00) | ((argb & 0xFF) << 16) | ((argb >> 16) & 0xFF);
-            buffer.put(i, abgr);
-        }
-    } else {
-        // Fallback for byte-based images (like 3BYTE_BGR)
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int rgb = bufferedImage.getRGB(x, y); // Converts byte-based BGR/YUV to ARGB automatically
-                int abgr = (rgb & 0xFF00FF00) | ((rgb & 0xFF) << 16) | ((rgb >> 16) & 0xFF);
-                nativeImage.setColor(x, y, abgr); //Same as before
+    
+    private void updateTexture(BufferedImage image) {
+        if (videoTexture == null || image == null) return;
+        
+        try {
+            NativeImage nativeImage = videoTexture.getImage();
+            if (nativeImage == null) {
+                EntStupidStuff.LOGGER.error("NativeImage is null!");
+                return;
             }
-        }
-    }
-}
-
-    private void updateTextureFromFrame(Frame frame) {
-        if (videoTexture == null || frame == null || frame.image == null) return;
-
-        ByteBuffer buffer = (ByteBuffer) frame.image[0]; // RGBA
-        buffer.rewind();
-
-        NativeImage img = videoTexture.getImage();
-        if (img == null) return;
-
-        int width = frame.imageWidth;
-        int height = frame.imageHeight;
-
-        // Make a copy of the buffer for thread safety
-        byte[] temp = new byte[width * height * 4];
-        buffer.get(temp);
-
-        // Schedule GPU update on render thread
-        MinecraftClient.getInstance().execute(() -> {
+            
+            int width = image.getWidth();
+            int height = image.getHeight();
+            
+            EntStupidStuff.LOGGER.info("UpdateTexture: BufferedImage={}x{}, NativeImage={}x{}, VideoSize={}x{}", 
+                width, height, nativeImage.getWidth(), nativeImage.getHeight(), videoWidth, videoHeight);
+            
+            // DEBUG: Sample first pixel
+            int sampleARGB = image.getRGB(0, 0);
+            int sampleR = (sampleARGB >> 16) & 0xFF;
+            int sampleG = (sampleARGB >> 8) & 0xFF;
+            int sampleB = sampleARGB & 0xFF;
+            
+            EntStupidStuff.LOGGER.info("First pixel RGB: ({}, {}, {})", sampleR, sampleG, sampleB);
+            
+            // Convert BufferedImage to NativeImage
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    int i = (y * width + x) * 4;
-                    int r = temp[i] & 0xFF;
-                    int g = temp[i + 1] & 0xFF;
-                    int b = temp[i + 2] & 0xFF;
-                    int a = temp[i + 3] & 0xFF;
-
-                    // pack ARGB (what NativeImage expects)
-                    int color = (a << 24) | (r << 16) | (g << 8) | b;
-
-                    img.setColor(x, y, color); // 1.21 method
+                    int argb = image.getRGB(x, y);
+                    
+                    // Extract ARGB components
+                    int a = (argb >> 24) & 0xFF;
+                    int r = (argb >> 16) & 0xFF;
+                    int g = (argb >> 8) & 0xFF;
+                    int b = argb & 0xFF;
+                    
+                    // Force full opacity
+                    if (a == 0) a = 255;
+                    
+                    // Convert to ABGR format for NativeImage
+                    int abgr = (a << 24) | (b << 16) | (g << 8) | r;
+                    
+                    nativeImage.setColor(x, y, abgr);
                 }
             }
-
+            
+            EntStupidStuff.LOGGER.info("Texture conversion complete, uploading...");
             videoTexture.upload();
-        });
+            EntStupidStuff.LOGGER.info("Texture uploaded successfully!");
+        } catch (Exception e) {
+            EntStupidStuff.LOGGER.error("Error updating texture", e);
+            e.printStackTrace();
+        }
     }
-
-
-    // ----------- RENDERING -------------------
+    
+    private void playAudioFrame(Frame frame) {
+        try {
+            if (audioLine == null || frame.samples == null) return;
+            
+            int channels = frame.samples.length;
+            int sampleCount = ((java.nio.ShortBuffer) frame.samples[0]).remaining();
+            
+            byte[] audioData = new byte[sampleCount * channels * 2];
+            int offset = 0;
+            
+            for (int i = 0; i < sampleCount; i++) {
+                for (int ch = 0; ch < channels; ch++) {
+                    java.nio.ShortBuffer channelBuffer = (java.nio.ShortBuffer) frame.samples[ch];
+                    short sample = channelBuffer.get(i);
+                    audioData[offset++] = (byte) (sample & 0xFF);
+                    audioData[offset++] = (byte) ((sample >> 8) & 0xFF);
+                }
+            }
+            
+            audioLine.write(audioData, 0, audioData.length);
+        } catch (Exception e) {
+            EntStupidStuff.LOGGER.error("Error playing audio", e);
+        }
+    }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -230,40 +264,53 @@ public class CutsceneScreen extends Screen {
             close();
             return;
         }
-
+        
+        // Process next frame from queue if available (on render thread)
+        BufferedImage nextFrame = frameQueue.poll();
+        if (nextFrame != null) {
+            currentFrame = nextFrame;
+            EntStupidStuff.LOGGER.info("Rendering new frame from queue");
+            updateTexture(currentFrame);
+        }
+        
+        // Render black background
         context.fill(0, 0, width, height, 0xFF000000);
-
+        
+        // Render video frame
         if (videoTexture != null) {
             float videoAspect = (float) videoWidth / videoHeight;
             float screenAspect = (float) width / height;
-
-            int rw, rh, rx, ry;
+            
+            int renderWidth, renderHeight, renderX, renderY;
+            
             if (screenAspect > videoAspect) {
-                rh = height;
-                rw = (int) (height * videoAspect);
-                rx = (width - rw) / 2;
-                ry = 0;
+                renderHeight = height;
+                renderWidth = (int) (height * videoAspect);
+                renderX = (width - renderWidth) / 2;
+                renderY = 0;
             } else {
-                rw = width;
-                rh = (int) (width / videoAspect);
-                rx = 0;
-                ry = (height - rh) / 2;
+                renderWidth = width;
+                renderHeight = (int) (width / videoAspect);
+                renderX = 0;
+                renderY = (height - renderHeight) / 2;
             }
-
+            
+            EntStupidStuff.LOGGER.info("Drawing texture at ({}, {}) size {}x{}", 
+                renderX, renderY, renderWidth, renderHeight);
+            
             context.drawTexture(
-                    RenderPipelines.GUI,
-                    TEXTURE_ID,
-                    rx, ry,
-                    0, 0,
-                    rw, rh,
-                    videoWidth, videoHeight
+                RenderPipelines.GUI_TEXTURED,
+                TEXTURE_ID,
+                renderX, renderY,
+                0.0f, 0.0f,
+                renderWidth, renderHeight,
+                videoWidth, videoHeight
             );
         }
 
         super.render(context, mouseX, mouseY, delta);
     }
 
-    // ESC closes the cutscene
     @Override
     public boolean keyPressed(KeyInput input) {
         if (input.isEscape()) {
@@ -273,40 +320,70 @@ public class CutsceneScreen extends Screen {
         return super.keyPressed(input);
     }
 
-    // ----------- CLEANUP -------------------
-
     @Override
     public void close() {
+        cleanup();
+        if (client != null) {
+            client.setScreen(null);
+        }
+        CutsceneManager.stopCutscene();
+    }
+    
+    public void cleanup() {
         running = false;
-
-        try {
-            if (videoThread != null && videoThread.isAlive()) videoThread.join(1000);
-        } catch (Exception ignored) {}
-
-        try {
-            if (grabber != null) {
+        
+        if (videoThread != null && videoThread.isAlive()) {
+            try {
+                videoThread.interrupt();
+                videoThread.join(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        
+        if (grabber != null) {
+            try {
                 grabber.stop();
                 grabber.release();
+            } catch (Exception e) {
+                EntStupidStuff.LOGGER.error("Error stopping grabber", e);
             }
-        } catch (Exception ignored) {}
-
+        }
+        
+        if (converter != null) {
+            converter.close();
+        }
+        
         if (audioLine != null) {
+            audioLine.drain();
             audioLine.stop();
             audioLine.close();
         }
-
+        
         if (videoTexture != null) {
             MinecraftClient.getInstance().getTextureManager().destroyTexture(TEXTURE_ID);
             videoTexture.close();
+            videoTexture = null;
         }
-
-        if (client != null) client.setScreen(null);
-
-        CutsceneManager.stopCutscene();
+        
+        frameQueue.clear();
     }
 
     @Override
-    public boolean shouldPause() { return false; }
+    public boolean shouldPause() {
+        return false;
+    }
+
     @Override
-    public boolean shouldCloseOnEsc() { return true; }
+    public boolean shouldCloseOnEsc() {
+        return true;
+    }
+    
+    public boolean isPlayerMovementDisabled() {
+        return disableMovement;
+    }
+    
+    public boolean shouldHideHud() {
+        return hideHud;
+    }
 }
