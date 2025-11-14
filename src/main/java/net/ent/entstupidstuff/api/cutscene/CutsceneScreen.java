@@ -6,25 +6,18 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.MemoryUtil;
-
 import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -36,9 +29,11 @@ public class CutsceneScreen extends Screen {
     private final boolean hideHud;
     
     private FFmpegFrameGrabber grabber;
+    //private FFmpegFrameGrabber audioGrabber;
     private Java2DFrameConverter converter;
     private NativeImageBackedTexture videoTexture;
     private Thread videoThread;
+    //private Thread audioThread;
     private volatile boolean running = true;
     private volatile boolean hasFinished = false;
     
@@ -48,8 +43,14 @@ public class CutsceneScreen extends Screen {
     private SourceDataLine audioLine;
     
     // Queue for frames to be rendered on main thread
-    private BlockingQueue<BufferedImage> frameQueue = new LinkedBlockingQueue<>(3);
+    //private BlockingQueue<BufferedImage> frameQueue = new LinkedBlockingQueue<>(3);
+    private BlockingQueue<Frame> frameQueue = new LinkedBlockingQueue<>(3);
     private BufferedImage currentFrame = null;
+
+    //updated fps: //TBA
+    private double videoFrameDuration; // seconds per frame
+    private long videoStartTime; // System.nanoTime() at start
+    private Frame lastFrame; // last frame displayed
 
     public CutsceneScreen(String videoPath, boolean disableMovement, boolean hideHud) {
         super(Text.literal("Cutscene"));
@@ -157,7 +158,8 @@ public class CutsceneScreen extends Screen {
                         
                         // Add to queue (will block if queue is full, providing backpressure)
                         try {
-                            frameQueue.put(image);
+                            //frameQueue.put(image);
+                            frameQueue.put(frame.clone());
                         } catch (InterruptedException e) {
                             break;
                         }
@@ -179,57 +181,31 @@ public class CutsceneScreen extends Screen {
         }
     }
     
-    private void updateTexture(BufferedImage image) {
-        if (videoTexture == null || image == null) return;
-        
+    private void updateTexture(Frame frame) {
+        if (frame == null || videoTexture == null) return;
+
         try {
             NativeImage nativeImage = videoTexture.getImage();
-            if (nativeImage == null) {
-                EntStupidStuff.LOGGER.error("NativeImage is null!");
-                return;
-            }
-            
-            int width = image.getWidth();
-            int height = image.getHeight();
-            
-            EntStupidStuff.LOGGER.info("UpdateTexture: BufferedImage={}x{}, NativeImage={}x{}, VideoSize={}x{}", 
-                width, height, nativeImage.getWidth(), nativeImage.getHeight(), videoWidth, videoHeight);
-            
-            // DEBUG: Sample first pixel
-            int sampleARGB = image.getRGB(0, 0);
-            int sampleR = (sampleARGB >> 16) & 0xFF;
-            int sampleG = (sampleARGB >> 8) & 0xFF;
-            int sampleB = sampleARGB & 0xFF;
-            
-            EntStupidStuff.LOGGER.info("First pixel RGB: ({}, {}, {})", sampleR, sampleG, sampleB);
-            
-            // Convert BufferedImage to NativeImage
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    int argb = image.getRGB(x, y);
-                    
-                    // Extract ARGB components
-                    int a = (argb >> 24) & 0xFF;
-                    int r = (argb >> 16) & 0xFF;
-                    int g = (argb >> 8) & 0xFF;
-                    int b = argb & 0xFF;
-                    
-                    // Force full opacity
-                    if (a == 0) a = 255;
-                    
-                    // Convert to ABGR format for NativeImage
-                    int abgr = (a << 24) | (b << 16) | (g << 8) | r;
-                    
+            if (nativeImage == null) return;
+
+            // frame.image[0] is ByteBuffer containing BGR
+            ByteBuffer buffer = (ByteBuffer) frame.image[0];
+            buffer.rewind();
+
+            // NativeImage expects ABGR
+            for (int y = 0; y < videoHeight; y++) {
+                for (int x = 0; x < videoWidth; x++) {
+                    int b = buffer.get() & 0xFF;
+                    int g = buffer.get() & 0xFF;
+                    int r = buffer.get() & 0xFF;
+                    int abgr = 0xFF000000 | (b << 16) | (g << 8) | r;
                     nativeImage.setColor(x, y, abgr);
                 }
             }
-            
-            EntStupidStuff.LOGGER.info("Texture conversion complete, uploading...");
+
             videoTexture.upload();
-            EntStupidStuff.LOGGER.info("Texture uploaded successfully!");
         } catch (Exception e) {
             EntStupidStuff.LOGGER.error("Error updating texture", e);
-            e.printStackTrace();
         }
     }
     
@@ -266,12 +242,9 @@ public class CutsceneScreen extends Screen {
         }
         
         // Process next frame from queue if available (on render thread)
-        BufferedImage nextFrame = frameQueue.poll();
-        if (nextFrame != null) {
-            currentFrame = nextFrame;
-            EntStupidStuff.LOGGER.info("Rendering new frame from queue");
-            updateTexture(currentFrame);
-        }
+        Frame frame = frameQueue.poll();
+        if (frame != null) updateTexture(frame);
+
         
         // Render black background
         context.fill(0, 0, width, height, 0xFF000000);
