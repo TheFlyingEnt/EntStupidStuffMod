@@ -13,15 +13,29 @@ public class CutsceneManager {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return;
 
+        filename.replace("\"", "");
+
+        boolean isURL =  filename.startsWith("https://") || filename.startsWith("rtmp://");
+
+        String videoPath;
+        if (isURL) {
+            // Use URL directly
+            videoPath = filename;
+        } else {
+            // Get cutscene file path from config/cutscenes folder
+            Path cutscenePath = Paths.get("config", "cutscenes", filename);
+            videoPath = cutscenePath.toString();
+        }
+
         // Get cutscene file path from config/cutscenes folder
-        Path cutscenePath = Paths.get("config", "cutscenes", filename);
+        //Path cutscenePath = Paths.get("config", "cutscenes", filename);
         
         playerMovementDisabled = disableMovement;
         hideGui = hideHud;
 
         // Create and show cutscene screen
         client.execute(() -> {
-            currentCutscene = new CutsceneScreen(cutscenePath.toString(), disableMovement, hideHud);
+            currentCutscene = new CutsceneScreen(videoPath, disableMovement, hideHud);
             //currentCutscene = new CutsceneScreen(cutscenePath.toString());
             client.setScreen(currentCutscene);
         });

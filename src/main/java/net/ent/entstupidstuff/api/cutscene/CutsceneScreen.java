@@ -34,6 +34,10 @@ public class CutsceneScreen extends Screen {
     private Thread videoThread;
     private volatile boolean running = true;
     private volatile boolean hasFinished = false;
+    private volatile boolean firstVideoFrameSeen = false;
+    
+    private long startClockNanos = -1;
+    private long videoStartTimestampUs = -1;
 
     private int videoWidth = 1920;
     private int videoHeight = 1080;
@@ -61,15 +65,24 @@ public class CutsceneScreen extends Screen {
         super.init();
 
         try {
-            File videoFile = new File(videoPath);
-            if (!videoFile.exists()) {
-                EntStupidStuff.LOGGER.error("Video file not found: " + videoPath);
-                close();
-                return;
+            // Check if videoPath is a URL or local file
+            boolean isURL = videoPath.startsWith("https://") || videoPath.startsWith("rtmp://");
+            
+            if (!isURL) {
+                // Local file - check if it exists
+                File videoFile = new File(videoPath);
+                if (!videoFile.exists()) {
+                    EntStupidStuff.LOGGER.error("Video file not found: " + videoPath);
+                    close();
+                    return;
+                }
+                EntStupidStuff.LOGGER.info("Loading local video: " + videoPath);
+            } else {
+                EntStupidStuff.LOGGER.info("Streaming video from URL: " + videoPath);
             }
 
             // Initialize FFmpeg grabber
-            grabber = new FFmpegFrameGrabber(videoFile);
+            grabber = new FFmpegFrameGrabber(videoPath);
 
             // Force BGR24 so converter gives BufferedImage in a consistent RGB form
             grabber.setPixelFormat(org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_BGR24);
@@ -147,8 +160,39 @@ public class CutsceneScreen extends Screen {
             Frame frame;
             int frameCount = 0;
 
+            long startClockNanos = -1;
+            long videoStartTimestampUs = -1;
+
+            
+
             while (running && (frame = grabber.grab()) != null) {
                 frameCount++;
+
+                if (frame.timestamp >= 0) {
+                    if (videoStartTimestampUs < 0) {
+                        videoStartTimestampUs = frame.timestamp;
+                        startClockNanos = System.nanoTime();
+                    }
+
+                    // Sync clocks
+                    long frameTimestampUs = frame.timestamp - videoStartTimestampUs;
+                    long elapsedUs = (System.nanoTime() - startClockNanos) / 1000;
+
+                    // --------------------------
+                    // 2. If video is ahead → wait
+                    // --------------------------
+                    if (frameTimestampUs > elapsedUs) {
+                        long sleepUs = frameTimestampUs - elapsedUs;
+
+                        // Cap sleep to avoid giant pauses due to network jitter
+                        if (sleepUs > 30000) sleepUs = 30000;
+
+                        try {
+                            Thread.sleep(sleepUs / 1000, (int)(sleepUs % 1000) * 1000);
+                        } catch (InterruptedException ignored) {}
+                    }
+                    // (If video is behind, we just show it immediately)
+                }
 
                 // Process video frame
                 if (frame.image != null) {
@@ -158,9 +202,26 @@ public class CutsceneScreen extends Screen {
                     raw.width = frame.imageWidth;
                     raw.height = frame.imageHeight;
 
-                    // Copy only the byte buffer (BGR24)
-                    ByteBuffer copy = ByteBuffer.allocateDirect(src.remaining());
+                    // Determine stride (bytes per row). FFmpegFrameGrabber sometimes supplies this.
+                    int stride = -1;
+                    try {
+                        stride = frame.imageStride;
+                    } catch (Throwable ignored) {}
+
+                    if (stride <= 0) {
+                        // conservative default: assume 3 bytes per pixel tightly packed
+                        stride = raw.width * 3;
+                    }
+                    raw.stride = stride;
+
+                    // Copy only the byte buffer (BGR24) into a direct buffer we own
+                    // We allocate exactly stride * height to be safe
+                    int expected = stride * raw.height;
+                    ByteBuffer copy = ByteBuffer.allocateDirect(expected);
+
+                    // Save/restore position of src and copy
                     int oldPos = src.position();
+                    src.limit(Math.min(src.limit(), src.position() + expected)); // defensive
                     copy.put(src);
                     copy.flip();
                     src.position(oldPos); // restore for FFmpeg
@@ -168,15 +229,18 @@ public class CutsceneScreen extends Screen {
                     raw.buffer = copy;
 
                     try {
-                        frameQueue.put(raw); // blocks if full
+                        frameQueue.put(raw); // blocks if full (backpressure)
+                        firstVideoFrameSeen = true;
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                         break;
                     }
                 }
 
                 // Process audio frame
-                if (frame.samples != null && audioLine != null) {
-                    playAudioFrame(frame);
+                if (firstVideoFrameSeen && frame.samples != null && audioLine != null) {
+                    //playAudioFrame(frame);
+                    playAudioFrameSynced(frame, startClockNanos, videoStartTimestampUs);
                 }
             }
 
@@ -187,6 +251,29 @@ public class CutsceneScreen extends Screen {
             EntStupidStuff.LOGGER.error("Error playing video", e);
             hasFinished = true;
         }
+    }
+
+    private void playAudioFrameSynced(Frame frame, long startClockNanos, long videoStartTimestampUs) {
+        if (startClockNanos < 0 || videoStartTimestampUs < 0) {
+            // timestamps not ready yet — play immediately (rare)
+            playAudioFrame(frame);
+            return;
+        }
+
+        long audioTimestampUs = frame.timestamp - videoStartTimestampUs;
+        long elapsedUs = (System.nanoTime() - startClockNanos) / 1000;
+
+        // Audio is ahead → wait  
+        if (audioTimestampUs > elapsedUs) {
+            long sleepUs = audioTimestampUs - elapsedUs;
+            if (sleepUs > 30000) sleepUs = 30000;
+
+            try {
+                Thread.sleep(sleepUs / 1000, (int)(sleepUs % 1000) * 1000);
+            } catch (InterruptedException ignored) {}
+        }
+
+        playAudioFrame(frame);
     }
 
     /**
@@ -203,15 +290,24 @@ public class CutsceneScreen extends Screen {
             ByteBuffer buffer = frame.buffer;
             buffer.rewind();
 
-            int w = frame.width;
-            int h = frame.height;
+            int w = Math.min(frame.width, nativeImage.getWidth());
+            int h = Math.min(frame.height, nativeImage.getHeight());
+            int stride = frame.stride;
+            if (stride < w * 3) {
+                // Defensive: if stride is unexpectedly small, treat rows as tightly packed
+                stride = w * 3;
+            }
 
+            // If the copy buffer contains exactly stride*h bytes we can index by row
+            // We'll not change buffer.position permanently (use absolute get).
             for (int y = 0; y < h; y++) {
+                int rowStart = y * stride;
                 for (int x = 0; x < w; x++) {
-                    int b = buffer.get() & 0xFF;
-                    int g = buffer.get() & 0xFF;
-                    int r = buffer.get() & 0xFF;
-
+                    int idx = rowStart + x * 3;
+                    // Use absolute get to avoid changing buffer.position unexpectedly
+                    int b = buffer.get(idx) & 0xFF;
+                    int g = buffer.get(idx + 1) & 0xFF;
+                    int r = buffer.get(idx + 2) & 0xFF;
                     int abgr = 0xFF000000 | (b << 16) | (g << 8) | r;
                     nativeImage.setColor(x, y, abgr);
                 }
@@ -421,6 +517,7 @@ public class CutsceneScreen extends Screen {
     private static class RawFrame {
         ByteBuffer buffer;
         int width, height;
+        int stride;
     }
 
 
