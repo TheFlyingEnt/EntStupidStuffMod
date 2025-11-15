@@ -284,30 +284,58 @@ public class CutsceneScreen extends Screen {
 
         // Draw the last uploaded texture (could be the initial black frame or last decoded)
         if (videoTexture != null) {
+            var client = MinecraftClient.getInstance();
+            var window = client.getWindow();
+
+            int guiWidth = window.getScaledWidth();
+            int guiHeight = window.getScaledHeight();
+
+            NativeImage texImg = videoTexture.getImage();
+            int texW = texImg != null ? texImg.getWidth() : videoWidth;
+            int texH = texImg != null ? texImg.getHeight() : videoHeight;
+
             float videoAspect = (float) videoWidth / videoHeight;
-            float screenAspect = (float) width / height;
+            float screenAspect = (float) guiWidth / height;
 
             int renderWidth, renderHeight, renderX, renderY;
 
             if (screenAspect > videoAspect) {
-                renderHeight = height;
-                renderWidth = (int) (height * videoAspect);
-                renderX = (width - renderWidth) / 2;
+                renderHeight = guiHeight;
+                renderWidth  = (int) (renderHeight * videoAspect);
+                renderX = (guiWidth - renderWidth) / 2;
                 renderY = 0;
             } else {
-                renderWidth = width;
-                renderHeight = (int) (width / videoAspect);
+                renderWidth  = guiWidth;
+                renderHeight = (int) (renderWidth / videoAspect);
                 renderX = 0;
-                renderY = (height - renderHeight) / 2;
+                renderY = (guiHeight - renderHeight) / 2;
             }
 
-            context.drawTexture(
+            EntStupidStuff.LOGGER.debug("Updated GUI scaled: {}x{}, tex: {}x{}, render: {}x{} @ ({},{}) screenAspect={}, videoAspect={}",
+                guiWidth, guiHeight, texW, texH, renderWidth, renderHeight, renderX, renderY, screenAspect, videoAspect);
+
+            /*context.drawTexture(
                     RenderPipelines.GUI_TEXTURED,
                     TEXTURE_ID,
                     renderX, renderY,
                     0.0f, 0.0f,
                     renderWidth, renderHeight,
                     videoWidth, videoHeight
+            );*/
+
+            context.drawTexturedQuad(
+                TEXTURE_ID,
+                // Texture Location
+                renderX,
+                renderY,
+                 // Size of Each Square
+                renderX + renderWidth, // Size of Each Square (with Window Size)
+                renderY + renderHeight, //Size of Each Square (with Window Size)
+                // Screen Scale
+                0.0F, 
+                1,
+                0.0F,
+                1
             );
         }
 
@@ -397,5 +425,4 @@ public class CutsceneScreen extends Screen {
 
 
 }
-
 
