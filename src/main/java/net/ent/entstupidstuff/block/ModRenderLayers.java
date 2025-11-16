@@ -38,6 +38,28 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fir" + "_sapling"), BlockRenderLayer.CUTOUT);
 
         // Phantom Wood
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_planks"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_stairs"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_slab"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_fence"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_fence_gate"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_trapdoor"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_pressure_plate"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_button"), BlockRenderLayer.CUTOUT);
+
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_log"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_log"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_wood"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("stripped_" + "phantom" + "_wood"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_stairs"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_mosaic_slab"), BlockRenderLayer.CUTOUT);
+
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_glass_door"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT);
+
+        // Phantom Wood
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_planks"), BlockRenderLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_stairs"), BlockRenderLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("phantom" + "_slab"), BlockRenderLayer.TRANSLUCENT);

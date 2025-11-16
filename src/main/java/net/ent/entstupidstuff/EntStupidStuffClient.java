@@ -3,6 +3,7 @@ package net.ent.entstupidstuff;
 import org.lwjgl.glfw.GLFW;
 
 import net.ent.entstupidstuff.api.cutscene.CutsceneManager;
+import net.ent.entstupidstuff.api.cutscene.CutsceneNetworkClient;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
@@ -75,6 +76,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
                 }
             }
         });
+
+        CutsceneNetworkClient.registerReceiver();
 
         
     }
