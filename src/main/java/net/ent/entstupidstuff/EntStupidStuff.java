@@ -1,7 +1,5 @@
 package net.ent.entstupidstuff;
 
-import net.ent.entstupidstuff.api.cutscene.CutSceneCommand;
-import net.ent.entstupidstuff.api.cutscene.PlayCutscenePayload;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
@@ -103,20 +101,6 @@ public class EntStupidStuff implements ModInitializer {
 		ScreenHandlerFactory.registerScreenHandlers();
 
 		ModDataComponentTypes.register();
-
-		
-
-		//Test Code for Screen Support
-
-		PayloadTypeRegistry.playS2C().register(
-			PlayCutscenePayload.ID,
-			PlayCutscenePayload.CODEC
-		);
-
-
-		CutSceneCommand.register();
-
-	
 		
 	}
 
