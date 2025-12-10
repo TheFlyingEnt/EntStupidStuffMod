@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.ent.entstupidstuff.api.cutscene.CutsceneManager;
 import net.ent.entstupidstuff.api.cutscene.CutsceneNetworkClient;
+import net.ent.entstupidstuff.api.cutscene.FFmpegNativeLoader;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
 import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
@@ -31,6 +32,17 @@ public class EntStupidStuffClient implements ClientModInitializer {
     @SuppressWarnings("deprecation")
     @Override
     public void onInitializeClient() {
+
+        FFmpegNativeLoader loader = new FFmpegNativeLoader();
+    
+        // Option 1: Sync loading (simple, blocks init)
+        if (loader.loadSync()) {
+            EntStupidStuff.LOGGER.info("FFmpeg loaded successfully");
+        } else {
+            EntStupidStuff.LOGGER.error("Failed to load FFmpeg - some features may not work");
+        }
+
+
 
         ModEntityModelLayers.onInitialize();
         ModRenderLayers.onInitializeClient();

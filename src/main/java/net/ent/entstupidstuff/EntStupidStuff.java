@@ -1,8 +1,6 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.api.cutscene.CutSceneCommand;
-import net.ent.entstupidstuff.api.cutscene.CutsceneManager;
-import net.ent.entstupidstuff.api.cutscene.CutsceneNetworkServer;
 import net.ent.entstupidstuff.api.cutscene.PlayCutscenePayload;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
@@ -19,26 +17,15 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.component.ComponentType;
-import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
 import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mojang.brigadier.arguments.StringArgumentType;
 
 public class EntStupidStuff implements ModInitializer {
 
@@ -95,6 +82,8 @@ public class EntStupidStuff implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Mod Initializing");
 
+
+
 		WeaponEvent.onInitialize(); //To be Removed
 		EntityFactory.onInitialize();
 		ModEffects.registerEffects();
@@ -115,6 +104,8 @@ public class EntStupidStuff implements ModInitializer {
 
 		ModDataComponentTypes.register();
 
+		
+
 		//Test Code for Screen Support
 
 		PayloadTypeRegistry.playS2C().register(
@@ -125,10 +116,9 @@ public class EntStupidStuff implements ModInitializer {
 
 		CutSceneCommand.register();
 
-		//354
-
-
-
+	
 		
 	}
+
+
 }

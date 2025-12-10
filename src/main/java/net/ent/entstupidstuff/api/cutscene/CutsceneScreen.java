@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.api.cutscene;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
@@ -13,10 +12,9 @@ import net.minecraft.util.Identifier;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.Java2DFrameConverter;
 import javax.sound.sampled.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,7 +27,6 @@ public class CutsceneScreen extends Screen {
     private final boolean hideHud;
 
     private FFmpegFrameGrabber grabber;
-    //private Java2DFrameConverter converter;
     private NativeImageBackedTexture videoTexture;
     private Thread videoThread;
     private volatile boolean running = true;
@@ -58,6 +55,7 @@ public class CutsceneScreen extends Screen {
         this.videoPath = videoPath;
         this.disableMovement = disableMovement;
         this.hideHud = hideHud;
+
     }
 
     @Override
@@ -82,6 +80,7 @@ public class CutsceneScreen extends Screen {
             }
 
             // Initialize FFmpeg grabber
+
             grabber = new FFmpegFrameGrabber(videoPath);
 
             // Force BGR24 so converter gives BufferedImage in a consistent RGB form
