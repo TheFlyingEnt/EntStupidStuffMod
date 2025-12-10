@@ -19,7 +19,7 @@ public class BlockEntityFactory<T extends BlockEntity> {
     Registry.register(
         Registries.BLOCK_ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "dark_enchanting_table"),
-        FabricBlockEntityTypeBuilder.create(DarkEnchantingTableBlockEntity::new, BlockFactory.ConceptEnchantment2).build()
+        FabricBlockEntityTypeBuilder.create(DarkEnchantingTableBlockEntity::new, BlockFactory.DARK_ENCHANTMENT_TABLE).build()
     );
 
     public static void registerBlockEntities() {

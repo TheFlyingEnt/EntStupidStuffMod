@@ -16,6 +16,7 @@ import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
+import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FlowerPotBlock;
@@ -23,16 +24,13 @@ import net.minecraft.block.FlowerbedBlock;
 import net.minecraft.block.GrateBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.OxidizableDoorBlock;
 import net.minecraft.block.OxidizableTrapdoorBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.block.PressurePlateBlock;
-import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.block.SporeBlossomBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TransparentBlock;
@@ -54,6 +52,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public class BlockFactory {
 
@@ -113,174 +112,53 @@ public class BlockFactory {
 
     //Start of Code
 
-    public static void onInitializeNewUpdated() {
+    @SuppressWarnings("unused")
+    public static void onInitialize() {
 
+        // # Added REDWOOD Natural + Planks
         Block REDWOOD_PLANKS = register3("redwood" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.DULL_RED))));
-        groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.DULL_RED, MapColor.DULL_RED);
+        BlockGroupFactory.groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.DULL_RED, MapColor.DULL_RED);
 
+        // # Added FIR Natural + Planks
         Block FIR_PLANKS = register3("fir" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
-        groupWoodFamilty("fir", "", FIR_PLANKS, true, MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN);
+        BlockGroupFactory.groupWoodFamilty("fir", "", FIR_PLANKS, true, MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN);
         BlockFactoryHelper.addSaplings("fir", SaplingGeneratorFactory.FIR);
 
+        // # Added MAPLE Natural + Planks
         Block MAPLE_PLANKS = register3("maple" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.SPRUCE_BROWN))));
-        groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT_BROWN, MapColor.SPRUCE_BROWN);
+        BlockGroupFactory.groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT_BROWN, MapColor.SPRUCE_BROWN);
         BlockFactoryHelper.addSaplings("maple", SaplingGeneratorFactory.MAPLE);
-        
         register3("orange_petals", FlowerbedBlock::new,
             AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().sounds(BlockSoundGroup.FLOWERBED).pistonBehavior(PistonBehavior.DESTROY)
         );
-        
-        Block PHANTOM_PLANKS = register3("phantom" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.LICHEN_GREEN)).nonOpaque()));
-        groupWoodFamilty("phantom", "", PHANTOM_PLANKS, true, MapColor.LICHEN_GREEN, MapColor.DARK_GREEN);
 
+        // # Added PHANTOM Natural + Planks + Lantern
+        Block PHANTOM_PLANKS = register3("phantom" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.LICHEN_GREEN)).nonOpaque()));
+        BlockGroupFactory.groupWoodFamilty("phantom", "", PHANTOM_PLANKS, true, MapColor.LICHEN_GREEN, MapColor.DARK_GREEN);
         Block PHANTOM_LANTERN = register3("phantom_lantern", (settings) -> new LanternBlock(settings.mapColor(MapColor.IRON_GRAY).solid().requiresTool().strength(3.5F).sounds(BlockSoundGroup.LANTERN).luminance((state) -> {
             return 10;
         }).nonOpaque().pistonBehavior(PistonBehavior.DESTROY)), AbstractBlock.Settings.create());
 
-        groupFungalFamily("", MapColor.WHITE_GRAY);
-        groupFungalFamily("_white", MapColor.WHITE);
-        groupFungalFamily("_light_gray", MapColor.LIGHT_GRAY);
-        groupFungalFamily("_gray", MapColor.GRAY);
-        groupFungalFamily("_black", MapColor.BLACK);
-        groupFungalFamily("_brown", MapColor.BROWN);
-        groupFungalFamily("_red", MapColor.RED);
-        groupFungalFamily("_orange", MapColor.ORANGE);
-        groupFungalFamily("_yellow", MapColor.YELLOW);
-        groupFungalFamily("_lime", MapColor.LIME);
-        groupFungalFamily("_green", MapColor.GREEN);
-        groupFungalFamily("_cyan", MapColor.CYAN);
-        groupFungalFamily("_light_blue", MapColor.LIGHT_BLUE);
-        groupFungalFamily("_blue", MapColor.BLUE);
-        groupFungalFamily("_purple", MapColor.PURPLE);
-        groupFungalFamily("_magenta", MapColor.MAGENTA);
-        groupFungalFamily("_pink", MapColor.PINK);
+        // # Added Fungal Natural + Planks (Regular + Colored)
+        BlockGroupFactory.groupFungalFamily("", MapColor.WHITE_GRAY);
+        BlockGroupFactory.groupFungalFamily("_white", MapColor.WHITE);
+        BlockGroupFactory.groupFungalFamily("_light_gray", MapColor.LIGHT_GRAY);
+        BlockGroupFactory.groupFungalFamily("_gray", MapColor.GRAY);
+        BlockGroupFactory.groupFungalFamily("_black", MapColor.BLACK);
+        BlockGroupFactory.groupFungalFamily("_brown", MapColor.BROWN);
+        BlockGroupFactory.groupFungalFamily("_red", MapColor.RED);
+        BlockGroupFactory.groupFungalFamily("_orange", MapColor.ORANGE);
+        BlockGroupFactory.groupFungalFamily("_yellow", MapColor.YELLOW);
+        BlockGroupFactory.groupFungalFamily("_lime", MapColor.LIME);
+        BlockGroupFactory.groupFungalFamily("_green", MapColor.GREEN);
+        BlockGroupFactory.groupFungalFamily("_cyan", MapColor.CYAN);
+        BlockGroupFactory.groupFungalFamily("_light_blue", MapColor.LIGHT_BLUE);
+        BlockGroupFactory.groupFungalFamily("_blue", MapColor.BLUE);
+        BlockGroupFactory.groupFungalFamily("_purple", MapColor.PURPLE);
+        BlockGroupFactory.groupFungalFamily("_magenta", MapColor.MAGENTA);
+        BlockGroupFactory.groupFungalFamily("_pink", MapColor.PINK);
 
-        /*BlockFactoryHelper.MosicFamily("oak", "", Blocks.OAK_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("spruce", "", Blocks.SPRUCE_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("jungle", "", Blocks.JUNGLE_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("birch", "", Blocks.BIRCH_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("dark_oak", "", Blocks.DARK_OAK_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("acacia", "", Blocks.ACACIA_PLANKS, true);
-        BlockFactoryHelper. MosicFamily("mangrove", "", Blocks.MANGROVE_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("cherry", "", Blocks.CHERRY_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("warped", "", Blocks.WARPED_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("crimson", "", Blocks.CRIMSON_PLANKS, false);*/
-
-    }
-
-
-
-
-    public static void onInitializeNew() {
-
-        /*Block REDWOOD_PLANKS = register("redwood" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.DULL_RED))));
-        groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.DULL_RED, MapColor.DULL_RED);
-
-        Block FIR_PLANKS = register("fir" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
-        groupWoodFamilty("fir", "", FIR_PLANKS, true, MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN);
-
-        Block MAPLE_PLANKS = register("maple" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.SPRUCE_BROWN))));
-        groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT_BROWN, MapColor.SPRUCE_BROWN);*/
-        
-        
-
-        Block REDWOOD_PLANKS = register3("redwood" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.DULL_RED))));
-        BlockFactoryHelper.BaseFamily("redwood", "", REDWOOD_PLANKS, true);
-        BlockFactoryHelper.InteractionFamily("redwood", "", REDWOOD_PLANKS, MapColor.DULL_RED, true, true);
-        BlockFactoryHelper.NatureFamily("redwood" , "", MapColor.DARK_RED, MapColor.SPRUCE_BROWN, true, true);
-        BlockFactoryHelper.MosicFamily("redwood" , "", REDWOOD_PLANKS, true);
-
-        Block FIR_PLANKS = register3("fir" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
-        BlockFactoryHelper.InteractionFamily("fir", "", FIR_PLANKS, MapColor.SPRUCE_BROWN, true, true);
-        BlockFactoryHelper.BaseFamily("fir", "", FIR_PLANKS, true);
-        BlockFactoryHelper.NatureFamily("fir" , "", MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN, true, true);
-        BlockFactoryHelper.MosicFamily("fir" , "", FIR_PLANKS, true);
-        register3("fir" + "_sapling", (settings) -> new SaplingBlock(SaplingGeneratorFactory.FIR, settings), AbstractBlock.Settings.copy(Blocks.OAK_SAPLING));
-
-        Block MAPLE_PLANKS = register3("maple" + "_planks" + "", Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.SPRUCE_BROWN))));
-        BlockFactoryHelper.InteractionFamily("maple", "", MAPLE_PLANKS, MapColor.SPRUCE_BROWN, true, true);
-        BlockFactoryHelper.BaseFamily("maple", "", MAPLE_PLANKS, true);
-        BlockFactoryHelper.NatureFamily("maple" , "", MapColor.TERRACOTTA_GRAY, MapColor.SPRUCE_BROWN, true, true);
-        BlockFactoryHelper.MosicFamily("maple" , "", MAPLE_PLANKS, true);
-        register3("maple" + "_sapling", (settings) -> new SaplingBlock(SaplingGeneratorFactory.MAPLE, settings), AbstractBlock.Settings.copy(Blocks.OAK_SAPLING));
-
-        /*Block PHANTOM_PLANKS = register("phantom" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.LICHEN_GREEN))));
-        BlockFactoryHelper.InteractionFamily("phantom", "", PHANTOM_PLANKS, MapColor.LICHEN_GREEN, true, true);
-        BlockFactoryHelper.BaseFamily("phantom", "", PHANTOM_PLANKS, true);
-        BlockFactoryHelper.NatureFamily("phantom" , "", MapColor.LICHEN_GREEN, MapColor.LICHEN_GREEN, false, false);
-        BlockFactoryHelper.MosicFamily("phantom" , "", PHANTOM_PLANKS, true);*/
-
-        // Fungal Planks
-
-        //groupFungalFamily("", MapColor.WHITE_GRAY);
-        /*
-        Block FUNGAL_PLANKS = register("fungal" + "_planks" + "", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.WHITE_GRAY))));
-        BlockFactoryHelper.BaseFamily("fungal", "", FUNGAL_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("fungal" , "", FUNGAL_PLANKS, true);
-        
-        Block FUNGAL_PLANKS_WHITE = register("fungal" + "_planks" + "_white", new Block(AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MapColor.OFF_WHITE))));
-        BlockFactoryHelper.BaseFamily("fungal", "_white", FUNGAL_PLANKS_WHITE, true);
-        BlockFactoryHelper.MosicFamily("fungal" , "_white", FUNGAL_PLANKS_WHITE, true);
-         */
-
-    }
-
-    public static void groupFungalFamily(String Varient, MapColor MainColor) {
-
-        Block FUNGAL_PLANKS = register3("fungal" + "_planks" + Varient, Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MainColor))));
-        
-        BlockFactoryHelper.BaseFamily("fungal", Varient, FUNGAL_PLANKS, true);
-        BlockFactoryHelper.InteractionFamily("fungal", Varient, FUNGAL_PLANKS, MainColor, true, true);
-        BlockFactoryHelper.MosicFamily("fungal" , Varient, FUNGAL_PLANKS, true);
-
-        BlockFamilies.register(FUNGAL_PLANKS)
-            .button(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
-            .fence(BlockFactory.callBlock("fungal" + "_" + "fence" + Varient))
-            .fenceGate(BlockFactory.callBlock("fungal" + "_" + "fence_gate" + Varient))
-            .pressurePlate(BlockFactory.callBlock("fungal" + "_" + "pressure_plate" + Varient))
-            .slab(BlockFactory.callBlock("fungal" + "_slab" + Varient))
-            .stairs(BlockFactory.callBlock("fungal" + "_stairs" + Varient))
-            .trapdoor(BlockFactory.callBlock("fungal" + "_" + "trapdoor" + Varient))
-            .trapdoor(BlockFactory.callBlock("fungal" + "_" + "glass_trapdoor" + Varient))
-            .door(BlockFactory.callBlock("fungal" + "_" + "door" + Varient)) 
-            .door(BlockFactory.callBlock("fungal" + "_" + "glass_door" + Varient))
-        .group("wooden")
-        .unlockCriterionName("has_planks")
-        .build();
-
-    }
-
-    public static void groupWoodFamilty(String MainName, String Varient, Block MainBlock, Boolean flamable, MapColor MainColor, MapColor SecondColor) {
-        
-        BlockFactoryHelper.BaseFamily(MainName, Varient, MainBlock, flamable);
-        BlockFactoryHelper.InteractionFamily(MainName, Varient, MainBlock, MainColor, flamable, true);
-        BlockFactoryHelper.NatureFamily(MainName , Varient, MainColor, SecondColor, flamable, true);
-        BlockFactoryHelper.MosicFamily(MainName , Varient, MainBlock, flamable);
-
-
-        BlockFamilies.register(MainBlock)
-            .button(BlockFactory.callBlock(MainName + "_" + "button" + Varient))
-            .fence(BlockFactory.callBlock(MainName + "_" + "fence" + Varient))
-            .fenceGate(BlockFactory.callBlock(MainName + "_" + "fence_gate" + Varient))
-            .pressurePlate(BlockFactory.callBlock(MainName + "_" + "button" + Varient))
-            .slab(BlockFactory.callBlock(MainName + "_slab" + Varient))
-            .stairs(BlockFactory.callBlock(MainName + "_stairs" + Varient))
-            .trapdoor(BlockFactory.callBlock(MainName + "_" + "trapdoor" + Varient))
-            .trapdoor(BlockFactory.callBlock(MainName + "_" + "glass_trapdoor" + Varient))
-            .door(BlockFactory.callBlock(MainName + "_" + "door" + Varient)) 
-            .door(BlockFactory.callBlock(MainName + "_" + "glass_door" + Varient))
-        .group("wooden")
-        .unlockCriterionName("has_planks")
-        .build();
-        
-    }
-    
-    @SuppressWarnings("unused")
-    public static void onInitialize() {
-
-        onInitializeNewUpdated();
-
-        //Blue Mushroom:
+        // # Added Blue Mushroom Family
         Block BLUE_MUSHROOM = register3(
 		"blue_mushroom",
 		(settings) -> new BlueMushroomPlantBlock(
@@ -343,10 +221,102 @@ public class BlockFactory {
                 .sounds(BlockSoundGroup.SPORE_BLOSSOM)
                 .pistonBehavior(PistonBehavior.DESTROY)
         );
-        
-        // Adding Vanilla Glassdoor and TrapDoors
-        OxidizableFamily();
 
+        // # Adding Andersite, Diorite and Granite
+        Block ANDERSITE_BRICKS = register3("andesite_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_ANDESITE));
+        BlockGroupFactory.groupStoneFamily("andesite_brick", ANDERSITE_BRICKS, MapColor.STONE_GRAY, true);
+        register3("polished_andesite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_ANDESITE));
+
+        Block GRANITE_BRICKS = register3("granite_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_GRANITE));
+        BlockGroupFactory.groupStoneFamily("granite_brick", GRANITE_BRICKS, MapColor.DIRT_BROWN, true);
+        register3("polished_granite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_GRANITE));
+
+        Block DIORITE_BRICKS = register3("diorite_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_DIORITE));
+        BlockGroupFactory.groupStoneFamily("diorite_brick", DIORITE_BRICKS, MapColor.OFF_WHITE, true);
+        register3("polished_diorite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_DIORITE));
+
+        // # Adding Limestone and Limestone Bricks
+        Block LIMESTONE = register3("limestone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        BlockGroupFactory.groupStoneFamily("limestone", LIMESTONE, MapColor.TERRACOTTA_LIGHT_GRAY, false);
+
+        Block POLISHED_LIMESTONE = register3("polished_limestone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        BlockGroupFactory.groupStoneFamily("polished_limestone", POLISHED_LIMESTONE, MapColor.TERRACOTTA_LIGHT_GRAY, false);
+
+        Block LIMESTONE_BRICKS = register3("polished_limestone_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        BlockGroupFactory.groupStoneFamily("polished_limestone_brick", LIMESTONE_BRICKS, MapColor.TERRACOTTA_LIGHT_GRAY, true);
+
+        // # Adding IronGates
+        Block IRON_GRATE = register3("iron_grate",
+            (settings) -> new GrateBlock(settings.requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()),
+            AbstractBlock.Settings.create()
+        );
+
+        Block IRON_GRATE_STAIRS = register3("iron_grate_stairs",
+            (settings) -> new GrateStairsBlock(IRON_GRATE.getDefaultState(), settings),
+            AbstractBlock.Settings.copy(IRON_GRATE)
+        );
+
+        Block IRON_GRATE_SLAB = register3("iron_grate_slab",
+            (settings) -> new GrateSlabBlock(settings),
+            AbstractBlock.Settings.copy(IRON_GRATE)
+        );
+
+        // # Adding StringGates
+        Block STRING_GATE = register3("string_gate", 
+            (settings) -> new PaneBlock(settings.nonOpaque()
+                        .allowsSpawning(Blocks::never)
+                        .solidBlock(Blocks::never)
+                        .suffocates(Blocks::never)
+                        .blockVision(Blocks::never)),
+            AbstractBlock.Settings.copy(Blocks.IRON_BARS)
+        );
+
+        Block STRING_BLOCK = register3("string_block", 
+            (settings) -> new TransparentBlock(settings.nonOpaque()
+                        .allowsSpawning(Blocks::never)
+                        .solidBlock(Blocks::never)
+                        .suffocates(Blocks::never)
+                        .blockVision(Blocks::never)),
+            AbstractBlock.Settings.copy(Blocks.WHITE_WOOL)
+        );
+
+        // # Adding Navystone and Navystone Bricks
+        Block NAVYSTONE = register3("navystone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("navystone", NAVYSTONE, MapColor.DARK_AQUA, false);
+
+        Block POLISHED_NAVYSTONE = register3("polished_navystone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("polished_navystone", POLISHED_NAVYSTONE, MapColor.DARK_AQUA, false);
+
+        Block NAVYSTONE_BRICKS = register3("polished_navystone_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("polished_navystone_brick", NAVYSTONE_BRICKS, MapColor.DARK_AQUA, true);
+
+        // # Adding Thalassite Ore and Thalassite Block
+        Block THALASSITE_ORE = register3(
+		    "thalassite_ore",
+		    settings -> new ExperienceDroppingBlock(UniformIntProvider.create(3, 7), settings),
+		    AbstractBlock.Settings.create().mapColor(MapColor.STONE_GRAY).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(3.0F, 3.0F)
+	    );
+
+        Block THALASSITE_BLOCK = register3(
+            "thalassite_block", 
+            (settings) -> new Block(settings), 
+            AbstractBlock.Settings.copy(Blocks.BLACKSTONE).mapColor(MapColor.DARK_AQUA).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)
+        );
+
+        // # Adding Hardend Sandstone
+        Block HARDEND_SANDSTONE = register3("hardend_sandstone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("hardend_sandstone", HARDEND_SANDSTONE, MapColor.PALE_YELLOW, false);
+
+        // # Vanilla Additions
+        addVanilla();
+
+        // # Legacy (Textured Wool)
+        onInitializeOLD();
+
+    }
+
+    public static void addVanilla() {
+        OxidizableFamily();
         register3("iron" + "_glass_door", (settings) -> new DoorBlock(BlockSetType.IRON, settings), AbstractBlock.Settings.copy(Blocks.IRON_DOOR));
         register3("iron" + "_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.IRON, settings), AbstractBlock.Settings.copy(Blocks.IRON_TRAPDOOR));
 
@@ -359,6 +329,7 @@ public class BlockFactory {
         Block MANGROVE_DOOR = register3("mangrove_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.MANGROVE_DOOR));
         Block CHERRY_DOOR = register3("cherry_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.CHERRY_DOOR));
         Block BAMBOO_DOOR = register3("bamboo_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.BAMBOO_DOOR));
+        Block PALE_OAK_DOOR = register3("pale_oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.PALE_OAK_DOOR));
 
         register3("crimson_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.CRIMSON_DOOR));
         register3("warped_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.WARPED_DOOR));
@@ -372,6 +343,7 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(MANGROVE_DOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(CHERRY_DOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(BAMBOO_DOOR, 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add(PALE_OAK_DOOR, 5, 20);
 
         Block OAK_TRAPDOOR = register3("oak_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.OAK_TRAPDOOR));
         Block SPRUCE_TRAPDOOR = register3("spruce_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.SPRUCE_TRAPDOOR));
@@ -382,6 +354,7 @@ public class BlockFactory {
         Block MANGROVE_TRAPDOOR = register3("mangrove_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.MANGROVE_TRAPDOOR));
         Block CHERRY_TRAPDOOR = register3("cherry_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.CHERRY_TRAPDOOR));
         Block BAMBOO_TRAPDOOR = register3("bamboo_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.BAMBOO_TRAPDOOR));
+        Block PALE_OAK_TRAPDOOR = register3("pale_oak_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.PALE_OAK_TRAPDOOR));
 
         register3("crimson_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.CRIMSON_TRAPDOOR));
         register3("warped_glass_trapdoor", (settings) -> new TrapdoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(Blocks.WARPED_TRAPDOOR));
@@ -395,43 +368,25 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(MANGROVE_TRAPDOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(CHERRY_TRAPDOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(BAMBOO_TRAPDOOR, 5, 20);
+        FlammableBlockRegistry.getDefaultInstance().add(PALE_OAK_TRAPDOOR, 5, 20);
 
-        BlockFactoryHelper.MosicFamily("oak", "", Blocks.OAK_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("spruce", "", Blocks.SPRUCE_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("jungle", "", Blocks.JUNGLE_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("birch", "", Blocks.BIRCH_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("dark_oak", "", Blocks.DARK_OAK_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("acacia", "", Blocks.ACACIA_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("mangrove", "", Blocks.MANGROVE_PLANKS, false);
-        BlockFactoryHelper.MosicFamily("cherry", "", Blocks.CHERRY_PLANKS, false);
+        BlockFactoryHelper.MosicFamily("oak", "", Blocks.OAK_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("spruce", "", Blocks.SPRUCE_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("jungle", "", Blocks.JUNGLE_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("birch", "", Blocks.BIRCH_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("dark_oak", "", Blocks.DARK_OAK_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("acacia", "", Blocks.ACACIA_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("mangrove", "", Blocks.MANGROVE_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("cherry", "", Blocks.CHERRY_PLANKS, true);
+        BlockFactoryHelper.MosicFamily("pale_oak", "", Blocks.CHERRY_PLANKS, true);
 
-        BlockFactoryHelper.MosicFamily("crimson", "", Blocks.CRIMSON_PLANKS, true);
-        BlockFactoryHelper.MosicFamily("warped", "", Blocks.WARPED_PLANKS, true);
-
-
-        //Continue - Adding Stone Varients
-
-        StoneSystem("andesite", MapColor.STONE_GRAY, true, Blocks.POLISHED_ANDESITE);
-        StoneSystem("granite", MapColor.DIRT_BROWN, true, Blocks.POLISHED_GRANITE);
-        StoneSystem("diorite", MapColor.OFF_WHITE, true, Blocks.POLISHED_DIORITE);
-        register3("polished_andesite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_ANDESITE));
-        register3("polished_granite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_GRANITE));
-        register3("polished_diorite" + "_wall", (settings) -> new WallBlock(settings), AbstractBlock.Settings.copy(Blocks.POLISHED_DIORITE));
+        BlockFactoryHelper.MosicFamily("crimson", "", Blocks.CRIMSON_PLANKS, false);
+        BlockFactoryHelper.MosicFamily("warped", "", Blocks.WARPED_PLANKS, false);
 
 
-        //BlockFactoryHelper.StoneFamily("andesite", "", Blocks.POLISHED_ANDESITE, false);
-        //BlockFactoryHelper.StoneFamily("granite", "", Blocks.POLISHED_GRANITE, false);
-        //BlockFactoryHelper.StoneFamily("diorite", "", Blocks.POLISHED_DIORITE, false);
-        
-        //BlockFactoryHelper.StoneFamily("andesite_brick", "", Blocks.POLISHED_ANDESITE, false);
-        //BlockFactoryHelper.StoneFamily("granite_brick", "", Blocks.POLISHED_GRANITE, false);
-        //BlockFactoryHelper.StoneFamily("diorite_brick", "", Blocks.POLISHED_DIORITE, false);
+    }
 
-        //StoneFamily()
-
-        //BlockFactoryHelper.StoneFamily("polished_andesite", "", Blocks.POLISHED_ANDESITE, true);
-        //BlockFactoryHelper.StoneFamily("polished_granite", "", Blocks.POLISHED_GRANITE, true);
-        //BlockFactoryHelper.StoneFamily("polished_diorite", "", Blocks.POLISHED_DIORITE, true);
+    public static void onInitializeOLD() {
 
         //Textured Wools
         Block TEXTURED_WHITE_WOOL = register3("textured_wool_white", Block::new, AbstractBlock.Settings.copy(Blocks.WHITE_WOOL));
@@ -467,53 +422,6 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(TEXTURED_PURPLE_WOOL, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(TEXTURED_MAGENTA_WOOL, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(TEXTURED_PINK_WOOL, 30, 60);
-
-        Block STRING_GATE = register3("string_gate", 
-            (settings) -> new PaneBlock(settings.nonOpaque()
-                        .allowsSpawning(Blocks::never)
-                        .solidBlock(Blocks::never)
-                        .suffocates(Blocks::never)
-                        .blockVision(Blocks::never)),
-            AbstractBlock.Settings.copy(Blocks.IRON_BARS)
-        );
-
-        Block STRING_BLOCK = register3("string_block", 
-            (settings) -> new TransparentBlock(settings.nonOpaque()
-                        .allowsSpawning(Blocks::never)
-                        .solidBlock(Blocks::never)
-                        .suffocates(Blocks::never)
-                        .blockVision(Blocks::never)),
-            AbstractBlock.Settings.copy(Blocks.WHITE_WOOL)
-        );
-
-        Block LIMESTONE = register3("limestone",
-            (settings) -> new Block(settings),
-            AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA)
-        );
-
-        Block POLISHED_LIMESTONE = register3("polished_limestone",
-            (settings) -> new Block(settings),
-            AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_TERRACOTTA)
-        );
-
-        StoneSystem("limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, LIMESTONE);
-        StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, false, POLISHED_LIMESTONE);
-        StoneSystem("polished_limestone", MapColor.TERRACOTTA_LIGHT_GRAY, true, POLISHED_LIMESTONE);
-
-        Block IRON_GRATE = register3("iron_grate",
-            (settings) -> new GrateBlock(settings.requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()),
-            AbstractBlock.Settings.create()
-        );
-
-        Block IRON_GRATE_STAIRS = register3("iron_grate_stairs",
-            (settings) -> new GrateStairsBlock(IRON_GRATE.getDefaultState(), settings),
-            AbstractBlock.Settings.copy(IRON_GRATE)
-        );
-
-        Block IRON_GRATE_SLAB = register3("iron_grate_slab",
-            (settings) -> new GrateSlabBlock(settings),
-            AbstractBlock.Settings.copy(IRON_GRATE)
-        );
 
     }
 
@@ -608,6 +516,7 @@ public class BlockFactory {
 
     /* Support */
 
+    @Deprecated
     public static void BlockSystem(Block block, String blockName, String suffix, MapColor mapColor) {
 
         if (suffix == null) {suffix = "";}
@@ -662,7 +571,7 @@ public class BlockFactory {
 
     }
     
-
+    @Deprecated
     public static void WoodSystem(String blockName, String suffix, MapColor mapColor, Boolean isNatural) {
 
         if (suffix == null) {suffix = "";}
@@ -797,7 +706,7 @@ public class BlockFactory {
 
     }
 
-
+    @Deprecated
     public static void MosicFamily(String blockName, String varient, Block baseBlock){
 
         /*if (varient == null) {varient = "";}
@@ -821,7 +730,7 @@ public class BlockFactory {
         //ModGroup.addToDeco(blockName + "_mosaic_slab" + varient);
     }
 
-
+    @Deprecated
     public static void MosicFamily(String blockName, String varient, Block baseBlock, Boolean ent){
 
         /*if (varient == null) {varient = "";}
@@ -929,7 +838,7 @@ public class BlockFactory {
     }
 
 
-
+    @Deprecated
     public static void StoneSystem(String blockName, MapColor mapColor, Boolean isBricksOnly, Block familyBlock) { 
 
         if (isBricksOnly) {
@@ -981,6 +890,7 @@ public class BlockFactory {
         }
     }
 
+    @Deprecated
     public static void CustomPhantomWoodSystem() {
 
         String blockName = "phantom";
@@ -1144,32 +1054,24 @@ public class BlockFactory {
 
     }
 
+
+
+
+
+    // # Adding PHANTOM TORCH
     public static final Block PHANTOM_TORCH = register3(
         "phantom_torch",
         settings -> new TorchBlock(ParticleTypes.FLAME, settings),
 		AbstractBlock.Settings.create().noCollision().breakInstantly().luminance(state -> 14).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)
 	);
 
-    // Phantom Wall Torch
     public static final Block PHANTOM_WALL_TORCH = register3(
         "phantom_wall_torch",
         settings -> new WallTorchBlock(ParticleTypes.FLAME, settings),
 		copyLootTable(PHANTOM_TORCH, true).noCollision().breakInstantly().luminance(state -> 14).sounds(BlockSoundGroup.WOOD).pistonBehavior(PistonBehavior.DESTROY)
 	);
 
-    private static AbstractBlock.Settings copyLootTable(Block block, boolean copyTranslationKey) {
-		AbstractBlock.Settings settings = block.getSettings();
-		AbstractBlock.Settings settings2 = AbstractBlock.Settings.create().lootTable(block.getLootTableKey());
-		if (copyTranslationKey) {
-			settings2 = settings2.overrideTranslationKey(block.getTranslationKey());
-		}
-
-		return settings2;
-	}
-
-
-
-
+    // # Adding POINTED_ICE
     public static final Block POINTED_ICE = register3(
 		"pointed_ice",
 		PointedIceBlock::new,
@@ -1186,6 +1088,40 @@ public class BlockFactory {
 			    .solidBlock((state, world, pos) -> false)
 		
 	);
+
+    // # Adding DARK_ENCHANTMENT_TABLE
+    public static final Block DARK_ENCHANTMENT_TABLE = register3(
+        "dark_enchantment_table", 
+        DarkEnchantingTableBlock::new,
+		    AbstractBlock.Settings.create()
+                .mapColor(MapColor.RED)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresTool().luminance(state -> 7)
+                .strength(5.0F, 1200.0F)
+    );
+
+
+
+
+
+
+
+
+
+    private static AbstractBlock.Settings copyLootTable(Block block, boolean copyTranslationKey) {
+		AbstractBlock.Settings settings = block.getSettings();
+		AbstractBlock.Settings settings2 = AbstractBlock.Settings.create().lootTable(block.getLootTableKey());
+		if (copyTranslationKey) {
+			settings2 = settings2.overrideTranslationKey(block.getTranslationKey());
+		}
+
+		return settings2;
+	}
+
+
+
+
+
 
 
     //Registation:
@@ -1256,9 +1192,7 @@ public class BlockFactory {
 		return Registry.register(Registries.BLOCK, key, block);
 	}
 
-    public static final Block ConceptEnchantment2 = BlockFactory.register3("dark_enchantment_table", DarkEnchantingTableBlock::new,
-		AbstractBlock.Settings.create().mapColor(MapColor.RED).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().luminance(state -> 7).strength(5.0F, 1200.0F)
-    );
+    
 
 
 

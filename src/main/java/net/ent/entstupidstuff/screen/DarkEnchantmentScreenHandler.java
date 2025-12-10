@@ -247,7 +247,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return canUse(this.context, player, BlockFactory.ConceptEnchantment2);
+        return canUse(this.context, player, BlockFactory.DARK_ENCHANTMENT_TABLE);
     }
 
     @Override
