@@ -149,6 +149,9 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom_block"), BlockRenderLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom_block"), BlockRenderLayer.TRANSLUCENT);
 
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crystal_block"), BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crystal_block"), BlockRenderLayer.TRANSLUCENT);
+
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom"), BlockRenderLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mushroom_bed"), BlockRenderLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("potted_blue_mushroom"), BlockRenderLayer.CUTOUT);

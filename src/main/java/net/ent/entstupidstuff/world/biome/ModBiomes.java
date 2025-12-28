@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.world.biome;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.world.ModPlacedFeatures;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -16,8 +17,9 @@ import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarvers;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.feature.UndergroundPlacedFeatures;
+import net.minecraft.world.gen.feature.OceanPlacedFeatures;
 
 public class ModBiomes {
     public static final RegistryKey<Biome> MAPLE_FOREST = RegistryKey.of(RegistryKeys.BIOME,
@@ -26,12 +28,15 @@ public class ModBiomes {
             Identifier.of(EntStupidStuff.MOD_ID, "icy_caves"));
     public static final RegistryKey<Biome> UNDERGROUND_BLUE_MUSHROOM = RegistryKey.of(RegistryKeys.BIOME,
             Identifier.of(EntStupidStuff.MOD_ID, "underground_blue_mushroom"));
+    public static final RegistryKey<Biome> SUNKEN_SEA = RegistryKey.of(RegistryKeys.BIOME,
+            Identifier.of(EntStupidStuff.MOD_ID, "sunken_sea"));
 
     public static void boostrap(Registerable<Biome> context) {
         //context.register(MAPLE_FOREST, mapleforest(context));
         context.register(ICY_CAVES, icyCaves(context));
         context.register(MAPLE_FOREST, mapleForest(context));
         context.register(UNDERGROUND_BLUE_MUSHROOM, undergroundBlueMushroom(context));
+        context.register(SUNKEN_SEA, createSunkenSea(context));
     }
 
     //biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
@@ -45,6 +50,137 @@ public class ModBiomes {
 		DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
 	}
 
+    private static Biome createSunkenSea(Registerable<Biome> context) {
+
+        // === Spawn Settings ===
+        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
+
+        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, 10,
+                new SpawnSettings.SpawnEntry(EntityType.COD, 4, 8));
+        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, 8,
+                new SpawnSettings.SpawnEntry(EntityType.SALMON, 2, 5));
+
+        spawnSettings.spawn(SpawnGroup.MONSTER, 20, 
+                new SpawnSettings.SpawnEntry(EntityType.DROWNED, 1, 3));
+        spawnSettings.spawn(SpawnGroup.MONSTER, 5,
+                new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 2));
+
+        // === Generation Settings ===
+        GenerationSettings.LookupBackedBuilder generation =
+                new GenerationSettings.LookupBackedBuilder(
+                        context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
+                        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER)
+                );
+
+        // Terrain
+        generation.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.THALASSITE_ORE_PLACE_KEY);
+
+        // Coral & vegetation
+        //generation.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.SUNKEN_CORAL);
+        //generation.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.SEAWEED_PATCH);
+
+        addBasicFeatures(generation);
+		DefaultBiomeFeatures.addDefaultOres(generation);
+		DefaultBiomeFeatures.addDefaultDisks(generation);
+		DefaultBiomeFeatures.addWaterBiomeOakTrees(generation);
+		DefaultBiomeFeatures.addDefaultFlowers(generation);
+		DefaultBiomeFeatures.addDefaultGrass(generation);
+		DefaultBiomeFeatures.addDefaultMushrooms(generation);
+		DefaultBiomeFeatures.addDefaultVegetation(generation, true);
+
+		generation
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.WARM_OCEAN_VEGETATION)
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM)
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEA_PICKLE);
+
+        DefaultBiomeFeatures.addLessKelp(generation);
+
+        generation.carver(ConfiguredCarvers.CAVE);
+        generation.carver(ConfiguredCarvers.CAVE_EXTRA_UNDERGROUND);
+
+        /*generation.feature(
+            GenerationStep.Feature.TOP_LAYER_MODIFICATION, // runs after carving
+            ModPlacedFeatures.SUNKEN_WATER_PLACED
+        );*/
+
+        /*generation.feature(
+            GenerationStep.Feature.LAKES,
+            ModPlacedFeatures.SUNKEN_WATER_PLACED
+        );*/
+        
+
+        // === Biome Effects ===
+        BiomeEffects effects = new BiomeEffects.Builder()
+                .waterColor(0x1B4F72)
+                .waterFogColor(0x0A2A43)
+                .fogColor(0x081A2B)
+                .skyColor(0x000000) // underground
+                .build();
+
+        return new Biome.Builder()
+                .precipitation(false)
+                .temperature(0.5f)
+                .downfall(0.0f)
+                .effects(effects)
+                .spawnSettings(spawnSettings.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
+
+
+
+    /* 
+    public static Biome sunkenSea(Registerable<Biome> context) {
+        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
+        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, 15, new SpawnSettings.SpawnEntry(EntityType.PUFFERFISH, 1, 3));
+		DefaultBiomeFeatures.addWarmOceanMobs(spawnSettings, 10, 4); 
+
+        GenerationSettings.LookupBackedBuilder biomeBuilder =
+            new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
+
+        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
+
+        addBasicFeatures(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultOres(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultDisks(biomeBuilder);
+		DefaultBiomeFeatures.addWaterBiomeOakTrees(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultFlowers(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultGrass(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultMushrooms(biomeBuilder);
+		DefaultBiomeFeatures.addDefaultVegetation(biomeBuilder, true);
+
+		biomeBuilder
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.WARM_OCEAN_VEGETATION)
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM)
+			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEA_PICKLE);
+
+        DefaultBiomeFeatures.addLessKelp(biomeBuilder);
+
+        //createOcean(builder, 4566514, 267827, lookupBackedBuilder);
+        //spawnSettings, int waterColor, int waterFogColor, GenerationSettings.biomeBuilder generationSettings
+        //createBiome(true, 0.5F, 0.5F, 4566514, 267827, null, null, null, spawnSettings, generationSettings, DEFAULT_MUSIC);
+
+        BiomeEffects effects = new BiomeEffects.Builder()
+            .waterColor(0x61AEEE)      // Warm Ocean water color
+            .waterFogColor(0x054E81)   // Warm Ocean water fog
+            .fogColor(0xC0D8FF)
+            .skyColor(0x77ADFF)
+            .foliageColor(0xFF8C8C)    // Maple tint
+            .grassColor(0x8BC057)
+        .build();
+
+        return new Biome.Builder()
+            .precipitation(true)
+            .temperature(0.7f)
+            .downfall(0.8f)
+            .effects(effects)
+            .spawnSettings(spawnSettings.build())
+            .generationSettings(biomeBuilder.build())
+            .build();
+		
+    }
+    */
     public static Biome mapleForest(Registerable<Biome> context) {
 
         GenerationSettings.LookupBackedBuilder biomeBuilder =
@@ -93,6 +229,11 @@ public class ModBiomes {
         SpawnSettings.Builder builder = new SpawnSettings.Builder();
         DefaultBiomeFeatures.addBatsAndMonsters(builder);
 
+        //Mushrom Creatures
+        builder.spawn(SpawnGroup.MONSTER, 150, new SpawnSettings.SpawnEntry(EntityFactory.FUNGAL_SKELETON, 1, 4));
+        builder.spawn(SpawnGroup.MONSTER, 150, new SpawnSettings.SpawnEntry(EntityFactory.ZOMBIE_FUNGAL, 1, 4));
+        builder.spawn(SpawnGroup.MONSTER, 100, new SpawnSettings.SpawnEntry(EntityFactory.SPOREPER, 1, 2));
+
         GenerationSettings.LookupBackedBuilder biomeBuilder =
             new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
         context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
@@ -119,6 +260,11 @@ public class ModBiomes {
         // Add fungal spore blossoms
         biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
             ModPlacedFeatures.FUNGAL_SPORE_BLOSSOM_PLACED);
+
+        biomeBuilder.feature(
+            GenerationStep.Feature.UNDERGROUND_DECORATION,
+            ModPlacedFeatures.CRYSTAL_SPIKE_PLACED
+        );
 
             
 

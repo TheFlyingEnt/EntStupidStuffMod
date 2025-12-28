@@ -11,15 +11,12 @@ import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.BlockStateModelGenerator.BlockTexturePool;
 import net.minecraft.client.data.BlockStateVariantMap;
 import net.minecraft.client.data.ItemModelGenerator;
-import net.minecraft.client.data.ItemModels;
-import net.minecraft.client.data.ModelIds;
 import net.minecraft.client.data.Models;
 import net.minecraft.client.data.MultipartBlockModelDefinitionCreator;
 import net.minecraft.client.data.TextureKey;
 import net.minecraft.client.data.TextureMap;
 import net.minecraft.client.data.TexturedModel;
 import net.minecraft.client.data.VariantsBlockModelDefinitionCreator;
-import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.json.WeightedVariant;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
@@ -124,10 +121,23 @@ public class ModelProvider extends FabricModelProvider{
 
         this.blockStateModelGenerator = blockStateModelGenerator2;
 
-        //Fungal Wood Type
+        // # Added REDWOOD Natural + Planks
+        generateGroupWoodFamilty("redwood", "", true); System.out.println("ModProvide: " + "Redwood");
 
-        System.out.println("ModProvide: " + "fungal");
+        // # Added FIR Natural + Planks
+        generateGroupWoodFamilty("fir", "", true);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED); //TintType.NOT_TINTED
 
+        // # Added MAPLE Natural + Planks
+        generateGroupWoodFamilty("maple", "", true);
+        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED);
+
+        // # Added PHANTOM Natural + Planks + Lantern
+        generateGroupWoodFamilty("phantom", "", true); System.out.println("ModProvide: " + "Phantom");
+        blockStateModelGenerator.registerLantern(BlockFactory.callBlock("phantom_lantern"));
+        blockStateModelGenerator.registerTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
+
+        // # Added Fungal Natural + Planks (Regular + Colored)
         generateGroupFungalFamilty("fungal", "");
         generateGroupFungalFamilty("fungal", "white");
         generateGroupFungalFamilty("fungal", "light_gray");
@@ -145,28 +155,45 @@ public class ModelProvider extends FabricModelProvider{
         generateGroupFungalFamilty("fungal", "purple");
         generateGroupFungalFamilty("fungal", "magenta");
         generateGroupFungalFamilty("fungal", "pink");
-        
-        //Phantom Wood Type
 
-        generateGroupWoodFamilty("phantom", "", true); System.out.println("ModProvide: " + "Phantom");
-        
-        //Redwood Wood Type
-        
-        generateGroupWoodFamilty("redwood", "", true); System.out.println("ModProvide: " + "Redwood");
-        
-        //Maple Wood Type
+        // # Added Blue Mushroom Family
+        this.registerMushroomBlockCustom(BlockFactory.callBlock("blue_mushroom_block"));
+        this.registerMudBottomCustomTop(BlockFactory.callBlock("shroomium"));
 
-        generateGroupWoodFamilty("maple", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED);
-        
-        //Fir Wood Type
+        blockStateModelGenerator.registerFlowerbed(BlockFactory.callBlock("mushroom_bed"));
+        blockStateModelGenerator.registerFlowerPotPlantAndItem(BlockFactory.callBlock("blue_mushroom"), BlockFactory.callBlock("potted_blue_mushroom"), BlockStateModelGenerator.CrossType.NOT_TINTED);
 
-        generateGroupWoodFamilty("fir", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED); //TintType.NOT_TINTED
+        blockStateModelGenerator.registerCubeAllModelTexturePool(BlockFactory.callBlock("crystal_block"));
         
-        //Vanilla Wood Type 
+        // # Adding Andersite, Diorite and Granite
+        generateGroupBricksFamilty("andesite", "");
+        generateGroupBricksFamilty("diorite", "");
+        generateGroupBricksFamilty("granite", "");
 
-        generateGroupVanillaAddition("oak");  System.out.println("ModProvide: " + "VANILLA");
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactory.callBlock("polished_" + "andesite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
+        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
+
+        // # Adding Limestone and Limestone Bricks
+        generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactory.callBlock("limestone"));
+        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactory.callBlock("polished_limestone"));
+        generateGroupBricksFamilty("polished_limestone", "");
+
+        // # Adding IronGates
+        generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactory.callBlock("iron_grate"));
+
+        // # Adding StringGates
+        blockStateModelGenerator.registerGlassAndPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
+
+        // # Adding Abyssal Stone and Abyssal Stone Bricks
+        generateBaseAndIntercationFamily("abyssal_stone", "", false, true, BlockFactory.callBlock("abyssal_stone"));
+        generateBaseAndIntercationFamily("polished_abyssal_stone", "", false, true, BlockFactory.callBlock("polished_abyssal_stone"));  
+        generateGroupBricksFamilty("polished_abyssal_stone", "");
+        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("polished_abyssal_stone_seaweed"));
+
+        // # Vanilla Additions
+
+        generateGroupVanillaAddition("oak");
         generateGroupVanillaAddition("spruce");
         generateGroupVanillaAddition("jungle");
         generateGroupVanillaAddition("birch");
@@ -176,44 +203,22 @@ public class ModelProvider extends FabricModelProvider{
         generateGroupVanillaAddition("cherry");
         generateGroupVanillaAddition("warped");
         generateGroupVanillaAddition("crimson");
-        //generateGroupVanillaAddition("bamboo");
         generateGlassIntercation("bamboo", "");
+        generateGroupVanillaAddition("pale_oak");
 
-        // Vanilla Addition for Glass TD and Door
-
-        generateGlassIntercation("iron", ""); System.out.println("ModProvide: " + "METAL");
+        generateGlassIntercation("iron", ""); 
         generateGlassIntercation("copper", "");
         generateGlassIntercation("exposed_copper", "");
         generateGlassIntercation("oxidized_copper", "");
         generateGlassIntercation("weathered_copper", "");
 
-        generateGroupBricksFamilty("andesite", ""); System.out.println("ModProvide: " + "STONE");
-        generateGroupBricksFamilty("diorite", "");
-        generateGroupBricksFamilty("granite", "");
+        registerPointedIce();
 
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactory.callBlock("polished_" + "andesite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
+
+
         
-        registerPointedIce();  System.out.println("ModProvide: " + "ICE");
 
-        generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactory.callBlock("limestone"));
-        generateBaseAndIntercationFamily("polished_limestone", "", false, true, BlockFactory.callBlock("polished_limestone"));  System.out.println("ModProvide: " + "LIMESTONE");
-        generateGroupBricksFamilty("polished_limestone", "");
-
-        blockStateModelGenerator.registerGlassAndPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
-        blockStateModelGenerator.registerLantern(BlockFactory.callBlock("phantom_lantern"));
-        blockStateModelGenerator.registerTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
-
-        // Iron Grate
-        generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactory.callBlock("iron_grate"));
-
-        //Blue Mushrooom
-        this.registerMushroomBlockCustom(BlockFactory.callBlock("blue_mushroom_block"));
-        this.registerMudBottomCustomTop(BlockFactory.callBlock("shroomium"));
-
-        blockStateModelGenerator.registerFlowerbed(BlockFactory.callBlock("mushroom_bed"));
-        blockStateModelGenerator.registerFlowerPotPlantAndItem(BlockFactory.callBlock("blue_mushroom"), BlockFactory.callBlock("potted_blue_mushroom"), BlockStateModelGenerator.CrossType.NOT_TINTED);
+        
 
 
 	}

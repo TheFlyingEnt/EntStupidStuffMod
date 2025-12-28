@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "entstupidstuff:block/polished_abyssal_stone_slab"
+    },
+    "type=double": {
+      "model": "entstupidstuff:block/polished_abyssal_stone"
+    },
+    "type=top": {
+      "model": "entstupidstuff:block/polished_abyssal_stone_slab_top"
+    }
+  }
+}

@@ -93,31 +93,25 @@ public class ModPlacedFeatures {
             Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
     );
 
+    public static final RegistryKey<PlacedFeature> THALASSITE_ORE_PLACE_KEY =
+        RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "thalassite_ore")
+    );
+
     public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
     public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
     public static final RegistryKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
     public static final RegistryKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
     public static final RegistryKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
     public static final RegistryKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
-    
 
-    public static RegistryKey<PlacedFeature> registerKey(String name) {
-        return RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, name));
-    }
+    public static final RegistryKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
 
-    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
-                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
-                                List<PlacementModifier> modifiers) {
-        context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
-    }
-
-    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
-                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
-                                PlacementModifier... modifiers) {
-        register(context, key, configuration, List.of(modifiers));
-    }
+    // # Bootstrap
 
     public static void bootstrap(Registerable<PlacedFeature> context) {
+
+        // # Tree
+
         context.register(MAPLE_TREE_PLACED_KEY, new PlacedFeature(
                 context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_KEY),
                 VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
@@ -134,13 +128,7 @@ public class ModPlacedFeatures {
                 )
         ));
 
-        /*context.register(HUGE_BLUE_MUSHROOM_PLACED_KEY, new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY),
-                VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
-                        PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
-                        BlockFactory.callBlock("fir_sapling")
-                )
-        ));*/
+        // # Icy Biome
 
         context.register(
             ORE_LIMESTONE_PLACED_KEY,
@@ -276,7 +264,35 @@ public class ModPlacedFeatures {
             )
         );
 
-        //Blue Mushroom
+        // # Sunken Sea
+
+        context.register(
+            THALASSITE_ORE_PLACE_KEY,
+            new PlacedFeature(
+                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_THALASSITE),
+                List.of(
+                    CountPlacementModifier.of(10), // "count": 2
+                    SquarePlacementModifier.of(), // "in_square"
+                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
+                    BiomePlacementModifier.of() // "biome"
+                )
+            )
+        );
+
+        // # Underground Mushroom Biome
+
+        context.register(
+            CRYSTAL_SPIKE_PLACED,
+            new PlacedFeature(
+                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.CRYSTAL_SPIKES),
+                List.of(
+                    CountPlacementModifier.of(UniformIntProvider.create(10, 48)),
+                    SquarePlacementModifier.of(),
+                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
+                    BiomePlacementModifier.of()
+                )
+            )
+        );
 
         register(context, SHROOMIUM_FLOOR_VEGETATION_PLACED, 
             context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
@@ -333,4 +349,31 @@ public class ModPlacedFeatures {
 
 
     }
+
+
+
+
+
+
+
+
+    // # Register
+
+    public static RegistryKey<PlacedFeature> registerKey(String name) {
+        return RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, name));
+    }
+
+    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
+                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+                                List<PlacementModifier> modifiers) {
+        context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
+    }
+
+    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
+                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+                                PlacementModifier... modifiers) {
+        register(context, key, configuration, List.of(modifiers));
+    }
+
+    
 }

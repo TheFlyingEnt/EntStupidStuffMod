@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.client.render.entity.state;
 
-import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
 import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
 
 public class FrostbittenEntityRenderState extends ZombieEntityRenderState {

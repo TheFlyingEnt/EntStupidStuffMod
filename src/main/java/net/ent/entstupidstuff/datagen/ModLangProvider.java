@@ -522,6 +522,25 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactory.callBlock("polished_limestone" + "_brick_chiseled"), "Chiseled Polished Limestone Bricks");
         translationBuilder.add(BlockFactory.callBlock("cracked" + "_polished_limestone" + "_bricks"), "Cracked Polished Limestone Brick");
 
+        // Abyssal Stone
+
+        translationBuilder.add(BlockFactory.callBlock("abyssal_stone"), "Abyssal Stone");
+        translationBuilder.add(BlockFactory.callBlock("abyssal_stone" + "_stairs"), "Abyssal Stone Stairs");
+        translationBuilder.add(BlockFactory.callBlock("abyssal_stone" + "_slab"), "Abyssal Stone Slab");
+        translationBuilder.add(BlockFactory.callBlock("abyssal_stone" + "_wall"), "Abyssal Stone Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone"), "Polished Abyssal Stone");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_stairs"), "Polished Abyssal Stone Stairs");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_slab"), "Polished Abyssal Stone Slab");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_wall"), "Polished Abyssal Stone Wall");
+        
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_bricks"), "Polished Abyssal Stone Bricks");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_brick_stairs"), "Polished Abyssal Stone Brick Stairs");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_brick_slab"), "Polished Abyssal Stone Brick Slab");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_brick_wall"), "Polished Abyssal Stone Brick Wall");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone" + "_brick_chiseled"), "Chiseled Polished Abyssal Stone Bricks");
+        translationBuilder.add(BlockFactory.callBlock("cracked" + "_polished_abyssal_stone" + "_bricks"), "Cracked Polished Abyssal Stone Brick");
+        translationBuilder.add(BlockFactory.callBlock("polished_abyssal_stone_seaweed"), "Mossy Polished Abyssal Stone");
+
         translationBuilder.add("item.entstupidstuff.server_group", "Server Group (Only)");
         //translationBuilder.add("item.entstupidstuff.deco_group", "Simple Item Group");
         //translationBuilder.add("item.entstupidstuff.natural_group", "Simple Item Group");

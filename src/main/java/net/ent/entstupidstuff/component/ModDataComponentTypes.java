@@ -5,7 +5,7 @@ import java.util.function.UnaryOperator;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
+import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.network.codec.PacketCodecs;

@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.entity.passive.MahiMahiEntity;
+import net.ent.entstupidstuff.client.entity.passive.MahiMahiEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;

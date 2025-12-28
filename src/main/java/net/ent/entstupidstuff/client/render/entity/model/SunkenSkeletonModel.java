@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
+import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.client.render.entity.state.CrossbowSkeletonEntityRenderState;
-import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;

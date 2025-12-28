@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.sound;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
@@ -17,6 +18,8 @@ public class SoundFactory {
 
     public static final SoundEvent COMBAT_HAMMER_GROUND = registerSoundEvent("combat.hammer.ground");
     public static final SoundEvent COMBAT_CANNON_FIRE = registerSoundEvent("combat.cannon.fire");
+    public static final RegistryEntry.Reference<SoundEvent> ENTITY_SPOREPER_EXPLODE = registerReference("entity.sporeper.explode");
+    public static final RegistryEntry.Reference<SoundEvent> ENTITY_GENERIC_UNDERWATER_EXPLODE = registerReference("entity.generic.underwater_explode");
 
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_AMBIENT = registerSoundEvent("entity.alligator_gar.ambient");
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_DEATH = registerSoundEvent("entity.alligator_gar.death");
@@ -67,6 +70,18 @@ public class SoundFactory {
         Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
     }
+
+    private static RegistryEntry.Reference<SoundEvent> registerReference(String id) {
+		return registerReference(Identifier.of(EntStupidStuff.MOD_ID, id));
+	}
+
+    private static RegistryEntry.Reference<SoundEvent> registerReference(Identifier id) {
+		return registerReference(id, id);
+	}
+
+    private static RegistryEntry.Reference<SoundEvent> registerReference(Identifier id, Identifier soundId) {
+		return Registry.registerReference(Registries.SOUND_EVENT, id, SoundEvent.of(soundId));
+	}
 
     public static void registerSounds() {
         EntStupidStuff.LOGGER.info("Registering Sounds for " + EntStupidStuff.MOD_ID);

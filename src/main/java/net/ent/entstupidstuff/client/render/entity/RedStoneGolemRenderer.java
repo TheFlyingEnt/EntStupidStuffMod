@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.mob.RedStoneGolemEntity;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
-import net.ent.entstupidstuff.entity.mob.RedStoneGolemEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.entity.MobEntityRenderer;

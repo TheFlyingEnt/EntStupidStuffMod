@@ -65,6 +65,22 @@ public class ModBiomeFeatures  {
             GenerationStep.Feature.UNDERGROUND_DECORATION,
             ModPlacedFeatures.LARGE_SPIKED_ICE_PLACED_KEY
         );
+
+        // Spiked CrystalSpikes
+        BiomeModifications.addFeature(
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Feature.UNDERGROUND_DECORATION,
+            ModPlacedFeatures.CRYSTAL_SPIKE_PLACED
+        );
+
+        // THALASSITE
+        BiomeModifications.addFeature(
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Feature.UNDERGROUND_ORES,
+            ModPlacedFeatures.THALASSITE_ORE_PLACE_KEY
+        );
+
+
     }
     
 }

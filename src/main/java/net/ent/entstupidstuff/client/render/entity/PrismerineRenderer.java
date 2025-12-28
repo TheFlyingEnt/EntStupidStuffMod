@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
+import net.ent.entstupidstuff.client.entity.projectile.UnderwaterArrowEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ProjectileEntityRenderer;
 import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;

@@ -9,6 +9,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
 import terrablender.api.ParameterUtils.Continentalness;
 import terrablender.api.ParameterUtils.Depth;
 import terrablender.api.ParameterUtils.Erosion;
@@ -20,6 +21,8 @@ import terrablender.api.Region;
 import terrablender.api.RegionType;
 import terrablender.api.VanillaParameterOverlayBuilder;
 
+//https://minecraft.wiki/w/World_generation#Biomes
+
 public class ModOverworldRegion extends Region {
     public ModOverworldRegion(Identifier name, int weight) {
         super(name, RegionType.OVERWORLD, weight);
@@ -30,14 +33,155 @@ public class ModOverworldRegion extends Region {
 
         VanillaParameterOverlayBuilder builder = new VanillaParameterOverlayBuilder();
 
+        //Sunken Seas
         new ParameterPointListBuilder()
+            .temperature(Temperature.span(Temperature.COOL, Temperature.NEUTRAL))
+            .humidity(Humidity.span(Humidity.WET, Humidity.HUMID))
+            .continentalness(Continentalness.span(
+                Continentalness.DEEP_OCEAN,
+                Continentalness.OCEAN
+            ))
+            .erosion(Erosion.span(
+                    Erosion.EROSION_2,
+                    Erosion.EROSION_2
+            ))
+            .depth(ParameterRange.of(0.2F, 0.5F), ParameterRange.of(0.2F, 0.5F))
+            .weirdness(Weirdness.span(
+                Weirdness.MID_SLICE_NORMAL_ASCENDING, 
+                Weirdness.MID_SLICE_NORMAL_DESCENDING //PEAK_NORMAL
+            ))
+        .build().forEach(point -> builder.add(point, ModBiomes.SUNKEN_SEA)); //0.6f)
+
+        // I need mushroom biomes to spawn in cheese caves
+        
+        //Mushroom
+        /*new ParameterPointListBuilder()
+            .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))
+            .humidity(Humidity.span(Humidity.FULL_RANGE, Humidity.FULL_RANGE)) //How Hot a Biome is
+            .continentalness(Continentalness.INLAND) //TBA
+            .erosion(Erosion.EROSION_3, Erosion.EROSION_4)
+            //.depth(Depth.UNDERGROUND, Depth.FLOOR)
+            .depth(MultiNoiseUtil.ParameterRange.of(0.8F, 0.9F))  // Between Vanilla Caves (Included) and DeepDark (Exclusive)
+            .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.PEAK_NORMAL)//MID_SLICE_NORMAL_ASCENDING)
+        .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));*/
+
+
+        //ChatGPT
+        new ParameterPointListBuilder()
+            // Temperature/humidity: keep full range so biome can appear under many surface biomes
+            .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))
+            .humidity(Humidity.span(Humidity.FULL_RANGE, Humidity.FULL_RANGE))
+
+            // Continentalness: inland / mid-continental areas (not ocean). Cheese caves form in wide pockets,
+            // and INLAND is appropriate if you want them under land biomes rather than ocean.
+            .continentalness(Continentalness.INLAND)
+
+            // Erosion: lower erosion encourages large, smooth chambers (cheese style).
+            // Choose a low-to-mid erosion span so the biome covers smooth big pockets.
+            .erosion(Erosion.span(Erosion.EROSION_0, Erosion.EROSION_2))
+
+            // Depth: bias toward the “mid-to-deep” underground slice where big caverns commonly appear.
+            // If you prefer exact control, you can use a ParameterRange like your old example.
+            .depth(MultiNoiseUtil.ParameterRange.of(0.7F, 0.92F))
+
+            // Weirdness: use the MID_SLICE ascending weirdness — this is the zone where Minecraft's
+            // noise caves often produce large pocket/cheese-style cavities.
+            .weirdness(Weirdness.span(
+                Weirdness.MID_SLICE_NORMAL_ASCENDING,
+                Weirdness.MID_SLICE_NORMAL_ASCENDING
+            ))
+
+        .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));
+
+        /*
+
+        This verison spawn exactly in Deep Dark areas
+        
+        new ParameterPointListBuilder()
+            .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))
+            .humidity(Humidity.span(Humidity.FULL_RANGE, Humidity.FULL_RANGE)) //How Hot a Biome is
+            .continentalness(Continentalness.INLAND) //TBA
+            .erosion(Erosion.EROSION_0, Erosion.EROSION_0) //Deep Dark Values
+            //.depth(Depth.UNDERGROUND, Depth.FLOOR)
+            .depth(MultiNoiseUtil.ParameterRange.of(0.7F, 1.1F))  
+            .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.MID_SLICE_NORMAL_ASCENDING)
+        .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));
+
+        
+        */
+
+        /*
+        | -1 = SKY
+        |
+        |
+        |
+        |
+        | 0 = Surfurace
+        |
+        |
+        |
+        |
+        | 1 = Floor
+        */
+
+        /*
+        D = 0: Surface Biomes
+        D = 0.2~0.9 + Continentalness=0.8~1.0: Dripstone Caves
+        D = 0.2~0.9 + Humidity=0.7~1.0 : Dripstone Caves
+        D = 1.0: Surface biomes 
+        D = 1.1 + Erosion=-1.0~-0.375: Deep Dark
+        */
+
+        //ChatGPT:
+        new ParameterPointListBuilder()
+            // Cold-only biome
+            .temperature(Temperature.span(Temperature.FROZEN, Temperature.FROZEN))
+            .humidity(Humidity.span(Humidity.ARID, Humidity.NEUTRAL))
+
+            // Dripstone caves typically appear inland / mid-continental
+            .continentalness(Continentalness.INLAND)
+
+            // Lower erosion encourages large, smooth caverns (cheese-style),
+            // similar to how dripstone caves form
+            .erosion(Erosion.span(Erosion.EROSION_0, Erosion.EROSION_2))
+
+            // Bias toward mid-to-deep underground where dripstone caves live
+            // This mirrors vanilla behavior much better than Depth.UNDERGROUND
+            //.depth(MultiNoiseUtil.ParameterRange.of(0.65F, 0.9F))
+            .depth(MultiNoiseUtil.ParameterRange.of(0.45F, 0.9F))
+
+            // Mid-slice weirdness = large caverns (cheese caves)
+            .weirdness(Weirdness.span(
+                Weirdness.MID_SLICE_NORMAL_ASCENDING,
+                Weirdness.MID_SLICE_NORMAL_ASCENDING
+            ))
+
+        .build().forEach(point -> builder.add(point, ModBiomes.ICY_CAVES));
+
+
+        //IceSpikes
+        /*new ParameterPointListBuilder()
             .temperature(Temperature.span(Temperature.ICY, Temperature.ICY))
             .humidity(Humidity.span(Humidity.ARID, Humidity.ARID))
             .continentalness(Continentalness.INLAND)
             .erosion(Erosion.EROSION_1, Erosion.EROSION_1)
             .depth(Depth.UNDERGROUND, Depth.UNDERGROUND)
             .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.MID_SLICE_NORMAL_ASCENDING)
-        .build().forEach(point -> builder.add(point, ModBiomes.ICY_CAVES));
+        .build().forEach(point -> builder.add(point, ModBiomes.ICY_CAVES));*/
+
+        /*
+         new ParameterPointListBuilder()
+            .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))
+            .humidity(Humidity.span(Humidity.FULL_RANGE, Humidity.FULL_RANGE))
+            .continentalness(Continentalness.INLAND)
+            .erosion(Erosion.EROSION_1, Erosion.EROSION_1)
+            //.depth(Depth.UNDERGROUND, Depth.FLOOR)
+            .depth(MultiNoiseUtil.ParameterRange.of(0.5F, 0.9F))  
+            .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.MID_SLICE_NORMAL_ASCENDING)
+        .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));
+         */
+
+
 
         /*new ParameterPointListBuilder()
             .temperature(Temperature.span(Temperature.COOL, Temperature.WARM)) // mild, seasonal
@@ -100,4 +244,6 @@ public class ModOverworldRegion extends Region {
             modifiedVanillaOverworldBuilder.replaceBiome(BiomeKeys.FOREST, ModBiomes.MAPLE_FOREST);
         });*/
     }
+
+    
 }

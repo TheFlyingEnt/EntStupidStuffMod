@@ -3,9 +3,9 @@ package net.ent.entstupidstuff.client.render.entity;
 import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.projectile.AncientTridentEntity;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
-import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;

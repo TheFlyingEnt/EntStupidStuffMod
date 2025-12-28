@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 
 import com.mojang.serialization.MapCodec;
 
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

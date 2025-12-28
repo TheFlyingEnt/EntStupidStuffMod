@@ -3,36 +3,39 @@ package net.ent.entstupidstuff.registry;
 import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.entity.mob.AncientDrownedEntity;
-import net.ent.entstupidstuff.entity.mob.ArmoredPillagerEntity;
-import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
-import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
-import net.ent.entstupidstuff.entity.mob.LobberZombieEntity;
-import net.ent.entstupidstuff.entity.mob.MetalSkeletonEntity;
-import net.ent.entstupidstuff.entity.mob.PhantomSkeletonEntity;
-import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
-import net.ent.entstupidstuff.entity.mob.RedStoneGolemEntity;
-import net.ent.entstupidstuff.entity.mob.ScorchedZombieEntity;
-import net.ent.entstupidstuff.entity.mob.SkeletonCrossbowEntity;
-import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
-import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
-import net.ent.entstupidstuff.entity.mob.SoulSkeletonEntity;
-import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
-import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
-import net.ent.entstupidstuff.entity.passive.BassEntity;
-import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
-import net.ent.entstupidstuff.entity.passive.CustomBoatEntity;
-import net.ent.entstupidstuff.entity.passive.FurTroutEntity;
-import net.ent.entstupidstuff.entity.passive.KoiEntity;
-import net.ent.entstupidstuff.entity.passive.MackerelEntity;
-import net.ent.entstupidstuff.entity.passive.MahiMahiEntity;
-import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
-import net.ent.entstupidstuff.entity.passive.RedPandaEntity;
-import net.ent.entstupidstuff.entity.passive.SnapperFishEntity;
-import net.ent.entstupidstuff.entity.passive.ZebraFishEntity;
-import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
-import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
-import net.ent.entstupidstuff.entity.projectile.UnderwaterArrowEntity;
+import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
+import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
+import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.FungalSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.FungalZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.HoveringInfernoEntity;
+import net.ent.entstupidstuff.client.entity.mob.LobberZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.MetalSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.PhantomSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
+import net.ent.entstupidstuff.client.entity.mob.RedStoneGolemEntity;
+import net.ent.entstupidstuff.client.entity.mob.ScorchedZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.SkeletonCrossbowEntity;
+import net.ent.entstupidstuff.client.entity.mob.SkeletonPirateCaptainEntity;
+import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.SoulSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.SporeperEntity;
+import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.passive.AlligatorGarEntity;
+import net.ent.entstupidstuff.client.entity.passive.BassEntity;
+import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
+import net.ent.entstupidstuff.client.entity.passive.CustomBoatEntity;
+import net.ent.entstupidstuff.client.entity.passive.FurTroutEntity;
+import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
+import net.ent.entstupidstuff.client.entity.passive.MackerelEntity;
+import net.ent.entstupidstuff.client.entity.passive.MahiMahiEntity;
+import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
+import net.ent.entstupidstuff.client.entity.passive.RedPandaEntity;
+import net.ent.entstupidstuff.client.entity.passive.SnapperFishEntity;
+import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
+import net.ent.entstupidstuff.client.entity.projectile.AncientTridentEntity;
+import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
+import net.ent.entstupidstuff.client.entity.projectile.UnderwaterArrowEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -114,6 +117,17 @@ public class EntityFactory {
         .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"zombie_frostbitten")))
     );
 
+    public static final EntityType<FungalZombieEntity> ZOMBIE_FUNGAL = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "zombie_fungal"),
+        EntityType.Builder.create(FungalZombieEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.95F)
+		.eyeHeight(1.74F)
+		.passengerAttachments(2.0125F)
+		.vehicleAttachment(-0.7F)
+		.maxTrackingRange(8)
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"zombie_fungal")))
+    );
+
     public static final EntityType<ArmoredPillagerEntity> ARMORED_PILLAGER = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "armored_pillager"),
         EntityType.Builder.create(ArmoredPillagerEntity::new, SpawnGroup.MONSTER)
@@ -134,6 +148,25 @@ public class EntityFactory {
         .maxTrackingRange(8)
         .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"soul_skeleton")))
     );
+
+    public static final EntityType<FungalSkeletonEntity> FUNGAL_SKELETON = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "fungal_skeleton"),
+        EntityType.Builder.create(FungalSkeletonEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.99F)
+        .eyeHeight(1.74F)
+        .vehicleAttachment(-0.7F)
+        .maxTrackingRange(8)
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"fungal_skeleton")))
+    );
+
+    public static final EntityType<SporeperEntity> SPOREPER = Registry.register(Registries.ENTITY_TYPE,
+        Identifier.of(EntStupidStuff.MOD_ID, "sporeper"),
+		EntityType.Builder.create(SporeperEntity::new, SpawnGroup.MONSTER)
+        .dimensions(0.6F, 1.7F)
+        .maxTrackingRange(8).
+        notAllowedInPeaceful()
+        .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(EntStupidStuff.MOD_ID,"sporeper")))
+	);
 
     public static final EntityType<RedStoneGolemEntity> RSGolem = Registry.register(Registries.ENTITY_TYPE,
         Identifier.of(EntStupidStuff.MOD_ID, "redstone_golem"),
@@ -372,6 +405,11 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ZOMBIE_SLIMED, SlimedZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FROSTBITTEN, FrostbittenZombieEntity.createZombieAttributes());
         FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, AncientDrownedEntity.createDrownedAttributes());
+        FabricDefaultAttributeRegistry.register(ZOMBIE_FUNGAL, FungalZombieEntity.createZombieAttributes());
+
+        FabricDefaultAttributeRegistry.register(FUNGAL_SKELETON, FungalSkeletonEntity.createAbstractSkeletonAttributes());
+
+
         FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes/*createPillagerAttributes*/());
         FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes()/*createPillagerAttributes*/);
@@ -405,6 +443,8 @@ public class EntityFactory {
 
         FabricDefaultAttributeRegistry.register(METAL_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
         FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON, SkeletonEntity.createAbstractSkeletonAttributes());
+
+        FabricDefaultAttributeRegistry.register(SPOREPER, SporeperEntity.createCreeperAttributes());
         
 
        

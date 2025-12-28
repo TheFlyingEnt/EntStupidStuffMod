@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.client.render.entity.state;
 
-import net.ent.entstupidstuff.entity.generic.GenericSkeletonCrossbow;
+import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.ArmedEntityRenderState;

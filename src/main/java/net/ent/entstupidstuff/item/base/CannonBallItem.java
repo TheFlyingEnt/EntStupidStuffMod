@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.item.base;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.ent.entstupidstuff.entity.projectile.CannonballEntity;
+import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;

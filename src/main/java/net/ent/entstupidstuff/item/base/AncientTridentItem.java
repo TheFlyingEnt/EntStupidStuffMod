@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.item.base;
 
-import net.ent.entstupidstuff.entity.projectile.AncientTridentEntity;
+import net.ent.entstupidstuff.client.entity.projectile.AncientTridentEntity;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;

@@ -5,6 +5,9 @@ import java.util.List;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModBlocks;
+import net.ent.entstupidstuff.item.ModItemTags;
+import net.ent.entstupidstuff.world.feature.CrystalSpikeFeature;
+import net.ent.entstupidstuff.world.feature.CrystalSpikeFeatureConfig;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;
@@ -36,6 +39,7 @@ import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.VerticalSurfaceType;
 import net.minecraft.util.math.floatprovider.ClampedNormalFloatProvider;
+import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.floatprovider.UniformFloatProvider;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
@@ -44,7 +48,6 @@ import net.minecraft.util.math.intprovider.WeightedListIntProvider;
 import net.minecraft.world.gen.blockpredicate.BlockPredicate;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize;
-import net.minecraft.world.gen.feature.util.CaveSurface;
 import net.minecraft.world.gen.foliage.CherryFoliagePlacer;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
 import net.minecraft.world.gen.placementmodifier.EnvironmentScanPlacementModifier;
@@ -57,7 +60,7 @@ import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
 public class ModConfiguredFeatures {
 
-	//Registry for Placers
+	// # Places
 
 	public static final TrunkPlacerType<ThreexThreeTrunkPlacer> THREE_BY_THREE_TRUNK =
         Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "three_by_three_trunk"), new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
@@ -70,8 +73,8 @@ public class ModConfiguredFeatures {
 
     public static final TrunkPlacerType<FirTrunkPlacer> FIR_TRUNK_PLACER =
         Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "fir_trunk"), new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
-		
-    // Registry for ConfiguredFeatures
+
+    // # ConfiguredFeatures
 
     public static final RegistryKey<ConfiguredFeature<?, ?>> MAPLE_KEY = registerKey("maple");
 	public static final RegistryKey<ConfiguredFeature<?, ?>> FIR_KEY = registerKey("fir");
@@ -89,35 +92,41 @@ public class ModConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
 
 	//Blue Mushrom Biome
+
 	public static final RegistryKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY = registerKey("huge_blue_mushroom");
 	public static final RegistryKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_KEY = registerKey("shroomium_floor");
 	public static final RegistryKey<ConfiguredFeature<?, ?>> MUD_LAYER_KEY = registerKey("mud_layer");
 	public static final RegistryKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_VEGETATION_KEY  = registerKey("shroomium_floor_vegetation");
 	public static final RegistryKey<ConfiguredFeature<?, ?>> MUSHROOM_SPORE_KEY  = registerKey("mushroom_spore");
 
+	public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_THALASSITE = registerKey("ore_thalassite");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> CRYSTAL_SPIKES  = registerKey("crystal_spikes");
 
-    // Registry for Features
+    // # Features
 
-    public static final Feature<DripstoneClusterFeatureConfig> SPIKED_ICE_CLUSTER_FEATURE =
+	public static final Feature<DripstoneClusterFeatureConfig> SPIKED_ICE_CLUSTER_FEATURE = Registry.register(
+			Registries.FEATURE,
+			Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster"),
+			new SpikedIceClusterFeature(DripstoneClusterFeatureConfig.CODEC));
+
+	public static final Feature<LargeDripstoneFeatureConfig> LARGER_SPIKED_ICE_FEATURE = Registry.register(
+			Registries.FEATURE,
+			Identifier.of(EntStupidStuff.MOD_ID, "large_spiked_ice"),
+			new LargerSpikedIceFeature(LargeDripstoneFeatureConfig.CODEC));
+
+	public static final Feature<SmallDripstoneFeatureConfig> SMALL_SPIKED_ICE_FEATURE = Registry.register(
+			Registries.FEATURE,
+			Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
+			new SmallSpikedIceFeature(SmallDripstoneFeatureConfig.CODEC));
+
+	public static final Feature<CrystalSpikeFeatureConfig> CRYSTAL_SPIKES_FEATURE =
         Registry.register(
             Registries.FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster"),
-            new SpikedIceClusterFeature(DripstoneClusterFeatureConfig.CODEC)
+            Identifier.of(EntStupidStuff.MOD_ID, "crystal_spikes"),
+            new CrystalSpikeFeature(CrystalSpikeFeatureConfig.CODEC)
         );
 
-    public static final Feature<LargeDripstoneFeatureConfig> LARGER_SPIKED_ICE_FEATURE =
-        Registry.register(
-            Registries.FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "large_spiked_ice"),
-            new LargerSpikedIceFeature(LargeDripstoneFeatureConfig.CODEC)
-        );
-
-    public static final Feature<SmallDripstoneFeatureConfig> SMALL_SPIKED_ICE_FEATURE =
-        Registry.register(
-            Registries.FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
-            new SmallSpikedIceFeature(SmallDripstoneFeatureConfig.CODEC)
-        );
+    
 
     /*public static final Feature<SimpleBlockFeatureConfig> BLUE_MUSHROOM_VEGETATION_FEATURE =
         Registry.register(
@@ -144,36 +153,6 @@ public class ModConfiguredFeatures {
 
     public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> context) {
 
-        /*register(context, MAPLE_KEY, Feature.TREE, new TreeFeatureConfig.Builder(
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_log")),
-            new StraightTrunkPlacer(5, 4, 3),
-
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_leaves")),
-            new BlobFoliagePlacer(ConstantIntProvider.create(2), ConstantIntProvider.create(1), 2),
-
-            new TwoLayersFeatureSize(1, 0, 2)).build()
-        );*/
-
-        /*register(context, MAPLE_KEY, Feature.TREE, new TreeFeatureConfig.Builder(
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_log")),
-            new LargeOakTrunkPlacer(3, 11, 0),
-    
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_leaves")),
-            new LargeOakFoliagePlacer(ConstantIntProvider.create(2), ConstantIntProvider.create(4), 4),
-    
-            new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4))).build()
-        );*/
-
-        /*register(context, MAPLE_KEY, Feature.TREE, new TreeFeatureConfig.Builder(
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_log")),
-            new GiantTrunkPlacer(10, 2, 19),
-    
-            BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_leaves")),
-            new JungleFoliagePlacer(ConstantIntProvider.create(2), ConstantIntProvider.create(0), 2),
-    
-            new TwoLayersFeatureSize(1, 1, 2)).build()
-        );*/
-
 		RuleTest stoneReplacables = new TagMatchRuleTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateReplacables = new TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         RuleTest netherReplacables = new TagMatchRuleTest(BlockTags.BASE_STONE_NETHER);
@@ -186,6 +165,8 @@ public class ModConfiguredFeatures {
 		ConfiguredFeatures.register(context, ORE_PACKED_ICE_LOWER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.PACKED_ICE.getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_SNOW, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
 		ConfiguredFeatures.register(context, ORE_SNOW_UPPER, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, Blocks.SNOW_BLOCK.getDefaultState())), 64));
+
+		ConfiguredFeatures.register(context, ORE_THALASSITE, Feature.ORE, new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(stoneReplacables, BlockFactory.callBlock("thalassite_ore").getDefaultState())), 7));
 
 		BlockPredicate blockPredicate = BlockPredicate.matchingBlocks(
 			Blocks.OAK_SAPLING,
@@ -247,10 +228,7 @@ public class ModConfiguredFeatures {
 			Blocks.SMALL_DRIPLEAF
 		);
 
-
-
-		//List.of(OreFeatureConfig.createTarget(, BlockFactoryUpt.callBlock("limestone").getDefaultState()))
-		//BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom").getDefaultState()
+		// # Underground Mushroom Biome:
 
 		ConfiguredFeatures.register(
 			context,
@@ -265,83 +243,103 @@ public class ModConfiguredFeatures {
 			)
 		);
 
-		/*ConfiguredFeatures.register(
+		/**ConfiguredFeatures.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
-			Feature.HUGE_FUNGUS,
-			new HugeFungusFeatureConfig(
-				Blocks.GRASS_BLOCK.getDefaultState(),
-				Blocks.MUSHROOM_STEM.getDefaultState(),
-				BlockFactory.callBlock("blue_mushroom_block").getDefaultState(),
-				Blocks.SHROOMLIGHT.getDefaultState(),
-				blockPredicate,
-				true
+			Feature.SIMPLE_RANDOM_SELECTOR,
+			new SimpleRandomFeatureConfig(
+				RegistryEntryList.of(
+					PlacedFeatures.createEntry(
+						Feature.HUGE_RED_MUSHROOM,
+						new HugeMushroomFeatureConfig(
+							BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom_block").getDefaultState().with(MushroomBlock.DOWN, Boolean.valueOf(false))),
+							BlockStateProvider.of(
+								Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, Boolean.valueOf(false)).with(MushroomBlock.DOWN, Boolean.valueOf(false))
+							),
+							2
+						)
+					),
+					PlacedFeatures.createEntry(
+						Feature.HUGE_FUNGUS,
+						new HugeFungusFeatureConfig(
+							BlockFactory.callBlock("shroomium").getDefaultState(),
+							Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, Boolean.valueOf(false)).with(MushroomBlock.DOWN, Boolean.valueOf(false)),
+							BlockFactory.callBlock("blue_mushroom_block").getDefaultState().with(MushroomBlock.DOWN, Boolean.valueOf(false)),
+							null,
+							blockPredicate,
+							false
+						)
+					)
+				)
 			)
 		);*/
+
+		
 
 		ConfiguredFeatures.register(
 			context,
-			FIR_KEY,
-			Feature.TREE,
-			new TreeFeatureConfig.Builder(
-					BlockStateProvider.of(BlockFactory.callBlock("fir_log")),
-					new FirTrunkPlacer(7, 3, 5),
-					BlockStateProvider.of(BlockFactory.callBlock("fir_leaves")),
-                    //new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2), UniformIntProvider.create(1, 2)),
-					new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2)),
-					new TwoLayersFeatureSize(2, 0, 2)
-				)
-				.ignoreVines()
-				.build()
+			CRYSTAL_SPIKES,
+			CRYSTAL_SPIKES_FEATURE,
+			new CrystalSpikeFeatureConfig(
+				BlockFactory.callBlock("crystal_block").getDefaultState(),
+				//Blocks.GLOWSTONE.getDefaultState(),
+                //ModBlocks.BLUE_CRYSTAL.getDefaultState(),
+				BlockTags.STONE_ORE_REPLACEABLES,
+                //ModTags.Blocks.CRYSTAL_REPLACEABLE,
+                UniformIntProvider.create(6, 18),   // spike length
+                UniformIntProvider.create(1, 3),    // base radius
+                UniformFloatProvider.create(0.1F, 0.4F) // taper chance
+            )
 		);
 
-        ConfiguredFeatures.register(
+		Block MUSHROOM_BED = BlockFactory.callBlock("mushroom_bed");
+
+		ConfiguredFeatures.register(
 			context,
-			MAPLE_KEY,
-			Feature.TREE,
-			new TreeFeatureConfig.Builder(
-				BlockStateProvider.of(BlockFactory.callBlock("maple_log")),
-				new CherryTrunkPlacer(
-					7,
-					1,
-					0,
-					new WeightedListIntProvider(
-						Pool.<IntProvider>builder().add(ConstantIntProvider.create(1), 1).add(ConstantIntProvider.create(2), 1).add(ConstantIntProvider.create(3), 1).build()
-					),
-					UniformIntProvider.create(2, 4),
-					UniformIntProvider.create(-4, -3),
-					UniformIntProvider.create(-1, 0)
-				),
-				BlockStateProvider.of(BlockFactory.callBlock("maple_leaves")),
-				new CherryFoliagePlacer(ConstantIntProvider.create(4), ConstantIntProvider.create(0), ConstantIntProvider.create(5), 0.25F, 0.5F, 0.16666667F, 0.33333334F),
-				new TwoLayersFeatureSize(1, 0, 2)
+			SHROOMIUM_FLOOR_VEGETATION_KEY,
+			Feature.FLOWER,
+			new RandomPatchFeatureConfig(
+				96, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))))
 			)
-            .ignoreVines()
-			.build()
 		);
 
-        /*ConfiguredFeatures.register(
+		ConfiguredFeatures.register(
 			context,
-			MAPLE_KEY,
-			Feature.TREE,
-			new TreeFeatureConfig.Builder(
-				BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_log")),
-                ////baseHeight, int firstRandomHeight, int secondRandomHeight
-				new ThreexThreeTrunkPlacer(24, 2, 24),
-				BlockStateProvider.of(BlockFactoryUpt.callBlock("maple_leaves")),
-				//new MegaPineFoliagePlacer(ConstantIntProvider.create(0), ConstantIntProvider.create(0), UniformIntProvider.create(13, 17)),
-                new RedwoodFoliagePlacer(
-                    ConstantIntProvider.create(5),  // radius
-                    ConstantIntProvider.create(0),  // offset
-                    UniformIntProvider.create(4,6)  // crown height
-                ),
-                new TwoLayersFeatureSize(0, 0, 4)   // foliage only top 4 layers
+			SHROOMIUM_FLOOR_KEY,
+			Feature.VEGETATION_PATCH,
+			new VegetationPatchFeatureConfig(
+				BlockTags.BASE_STONE_OVERWORLD,
+				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
+				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
+				new SimpleBlockFeatureConfig(
+					new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))
+				)),
+				VerticalSurfaceType.FLOOR,
+				ConstantIntProvider.create(1),
+				0.8f, // Coverage
+				5, // Spread
+				0.08f, // Chance
+				UniformIntProvider.create(4, 7), // Range
+				0.7f // Vegetation chance
 			)
-			//.decorators(ImmutableList.of(new AlterGroundTreeDecorator(BlockStateProvider.of(Blocks.PODZOL))))
-			.build()
-		);*/
+		);
 
-        ConfiguredFeatures.register(
+		ConfiguredFeatures.register(context, MUD_LAYER_KEY, Feature.DISK,
+		new DiskFeatureConfig(
+			PredicatedStateProvider.of(Blocks.MUD),
+			BlockPredicate.matchingBlocks(List.of(Blocks.STONE, Blocks.DEEPSLATE, Blocks.DIORITE, 
+				Blocks.ANDESITE, Blocks.GRANITE, BlockFactory.callBlock("shroomium"))), // Blocks to replace
+			UniformIntProvider.create(2, 4), // Radius (2-4 blocks)
+			2 // Half height (2 blocks deep of mud)
+		));
+
+		ConfiguredFeatures.register(
+			context, MUSHROOM_SPORE_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("fungal_spore_blossom")))
+		);
+
+		// # ICY CAVE
+
+		ConfiguredFeatures.register(
 			context,
 			SPIKED_ICE_CLUSTER,
 			SPIKED_ICE_CLUSTER_FEATURE,
@@ -399,131 +397,52 @@ public class ModConfiguredFeatures {
 			)
 		);
 
-		//Blue Mushrom Biome
-
-		/*ConfiguredFeatures.register(context, SHROOMIUM_FLOOR_VEGETATION_KEY, Feature.SIMPLE_BLOCK,
-			new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("mushroom_bed"))));*/
-		Block MUSHROOM_BED = BlockFactory.callBlock("mushroom_bed");
+		// # TREES
 
 		ConfiguredFeatures.register(
 			context,
-			SHROOMIUM_FLOOR_VEGETATION_KEY,
-			Feature.FLOWER,
-			new RandomPatchFeatureConfig(
-				96, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))))
-			)
-		);
-
-		/*ConfiguredFeatures.register(
-			context,
-			SHROOMIUM_FLOOR_VEGETATION_KEY,
-			Feature.RANDOM_PATCH,
-			ConfiguredFeatures.createRandomPatchFeatureConfig(
-				32,
-				PlacedFeatures.createEntry(
-					Feature.SIMPLE_BLOCK,
-					new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(VegetationConfiguredFeatures.segmentedBlock(MUSHROOM_BED, 1, 3, LeafLitterBlock.SEGMENT_AMOUNT, LeafLitterBlock.HORIZONTAL_FACING))),
-					BlockPredicate.bothOf(BlockPredicate.IS_AIR, BlockPredicate.matchingBlocks(Direction.DOWN.getVector(), Blocks.GRASS_BLOCK))
+			FIR_KEY,
+			Feature.TREE,
+			new TreeFeatureConfig.Builder(
+					BlockStateProvider.of(BlockFactory.callBlock("fir_log")),
+					new FirTrunkPlacer(7, 3, 5),
+					BlockStateProvider.of(BlockFactory.callBlock("fir_leaves")),
+                    //new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2), UniformIntProvider.create(1, 2)),
+					new FirFoliagePlacer(UniformIntProvider.create(2, 3), UniformIntProvider.create(0, 2)),
+					new TwoLayersFeatureSize(2, 0, 2)
 				)
-			)
-		);*/
-
-		ConfiguredFeatures.register(
-			context,
-			SHROOMIUM_FLOOR_KEY,
-			Feature.VEGETATION_PATCH,
-			new VegetationPatchFeatureConfig(
-				BlockTags.BASE_STONE_OVERWORLD,
-				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
-				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
-				new SimpleBlockFeatureConfig(
-					new WeightedBlockStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerbedBlock.FLOWER_AMOUNT, FlowerbedBlock.HORIZONTAL_FACING))
-				)),
-				VerticalSurfaceType.FLOOR,
-				ConstantIntProvider.create(1),
-				0.8f, // Coverage
-				5, // Spread
-				0.08f, // Chance
-				UniformIntProvider.create(4, 7), // Range
-				0.7f // Vegetation chance
-			)
+				.ignoreVines()
+				.build()
 		);
 
-		// 3. Create the mud layer underneath
-		register(context, MUD_LAYER_KEY, Feature.DISK,
-		new DiskFeatureConfig(
-			PredicatedStateProvider.of(Blocks.MUD),
-			BlockPredicate.matchingBlocks(List.of(Blocks.STONE, Blocks.DEEPSLATE, Blocks.DIORITE, 
-				Blocks.ANDESITE, Blocks.GRANITE, BlockFactory.callBlock("shroomium"))), // Blocks to replace
-			UniformIntProvider.create(2, 4), // Radius (2-4 blocks)
-			2 // Half height (2 blocks deep of mud)
-		));
-
-		ConfiguredFeatures.register(
-			context, MUSHROOM_SPORE_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockFactory.callBlock("fungal_spore_blossom")))
-		);
-
-		/*ConfiguredFeatures.register(
+        ConfiguredFeatures.register(
 			context,
-			BLUE_MUSHROOM_VEGETATION,
-			Feature.SIMPLE_BLOCK,
-			new SimpleBlockFeatureConfig(
-				new WeightedBlockStateProvider(
-					Pool.<BlockState>builder()
-						.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
-				)
+			MAPLE_KEY,
+			Feature.TREE,
+			new TreeFeatureConfig.Builder(
+				BlockStateProvider.of(BlockFactory.callBlock("maple_log")),
+				new CherryTrunkPlacer(
+					7,
+					1,
+					0,
+					new WeightedListIntProvider(
+						Pool.<IntProvider>builder().add(ConstantIntProvider.create(1), 1).add(ConstantIntProvider.create(2), 1).add(ConstantIntProvider.create(3), 1).build()
+					),
+					UniformIntProvider.create(2, 4),
+					UniformIntProvider.create(-4, -3),
+					UniformIntProvider.create(-1, 0)
+				),
+				BlockStateProvider.of(BlockFactory.callBlock("maple_leaves")),
+				new CherryFoliagePlacer(ConstantIntProvider.create(4), ConstantIntProvider.create(0), ConstantIntProvider.create(5), 0.25F, 0.5F, 0.16666667F, 0.33333334F),
+				new TwoLayersFeatureSize(1, 0, 2)
 			)
+            .ignoreVines()
+			.build()
 		);
-
-		ConfiguredFeatures.register(
-			context,
-			SHROOMIUM_FLOOR_KEY,
-			Feature.VEGETATION_PATCH,
-			new VegetationPatchFeatureConfig(
-				BlockTags.MOSS_REPLACEABLE,
-				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
-				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
-				new SimpleBlockFeatureConfig(
-					new WeightedBlockStateProvider(
-						Pool.<BlockState>builder()
-							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
-					)
-				)),
-				VerticalSurfaceType.FLOOR,
-				ConstantIntProvider.create(1),
-				0.8f, // Coverage
-				5, // Spread
-				0.08f, // Chance
-				UniformIntProvider.create(4, 7), // Range
-				0.7f // Vegetation chance
-			)
-		);
-
-		ConfiguredFeatures.register(
-			context,
-			UNDERGROUND_MOD_FLOOR_KEY,
-			Feature.VEGETATION_PATCH,
-			new VegetationPatchFeatureConfig(
-				BlockTags.MOSS_REPLACEABLE,
-				BlockStateProvider.of(BlockFactory.callBlock("shroomium")),
-				PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK,
-				new SimpleBlockFeatureConfig(
-					new WeightedBlockStateProvider(
-						Pool.<BlockState>builder()
-							.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
-					)
-				)),
-				VerticalSurfaceType.FLOOR,
-				ConstantIntProvider.create(1),
-				0.8f, // Coverage
-				5, // Spread
-				0.08f, // Chance
-				UniformIntProvider.create(4, 7), // Range
-				0.7f // Vegetation chance
-			)
-		);*/
 
     }
+
+	// # Registry
 
     public static RegistryKey<ConfiguredFeature<?, ?>> registerKey(String name) {
         return RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, name));

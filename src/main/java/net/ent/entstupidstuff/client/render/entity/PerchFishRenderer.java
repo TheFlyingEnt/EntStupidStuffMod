@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
 import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
 import net.ent.entstupidstuff.client.render.entity.state.PerchFishRenderState;
-import net.ent.entstupidstuff.entity.passive.PerchFishEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;

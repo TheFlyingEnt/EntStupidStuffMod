@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
-import net.ent.entstupidstuff.entity.passive.MackerelEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;

@@ -201,10 +201,26 @@ public class BlockFactory {
                 .sounds(BlockSoundGroup.MUD)
         );
 
+        Block CRYSTAL = register3(
+            "crystal_block",
+            TransparentBlock::new,
+            AbstractBlock.Settings.create()
+                .instrument(NoteBlockInstrument.XYLOPHONE)
+                .strength(0.3F)
+                .nonOpaque()
+                .allowsSpawning(Blocks::never)
+                .solidBlock(Blocks::never)
+                .suffocates(Blocks::never)
+                .blockVision(Blocks::never)
+                .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                .requiresTool()
+                .luminance(state -> 1)
+        );
+
         Block MUSHROOM_BED = register3(
             "mushroom_bed",
             MushroombedBlock::new,
-            AbstractBlock.Settings.create().mapColor(MapColor.BLUE).noCollision().sounds(BlockSoundGroup.FUNGUS).pistonBehavior(PistonBehavior.DESTROY)
+            AbstractBlock.Settings.create().mapColor(MapColor.BLUE).noCollision().sounds(BlockSoundGroup.FUNGUS).pistonBehavior(PistonBehavior.DESTROY).luminance(state -> 1)
         );
 
         Block POTTED_MUSHROOM_BED = register3(
@@ -280,15 +296,20 @@ public class BlockFactory {
             AbstractBlock.Settings.copy(Blocks.WHITE_WOOL)
         );
 
-        // # Adding Navystone and Navystone Bricks
-        Block NAVYSTONE = register3("navystone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
-        BlockGroupFactory.groupStoneFamily("navystone", NAVYSTONE, MapColor.DARK_AQUA, false);
+        // # Adding Abyssal Stone and Abyssal Stone Bricks
+        //Block ABYSSAL_STONE = register3("abyssal_stone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("abyssal_stone", ABYSSAL_STONE, MapColor.DARK_AQUA, false);
 
-        Block POLISHED_NAVYSTONE = register3("polished_navystone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
-        BlockGroupFactory.groupStoneFamily("polished_navystone", POLISHED_NAVYSTONE, MapColor.DARK_AQUA, false);
+        Block POLISHED_ABYSSAL_STONE = register3("polished_abyssal_stone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("polished_abyssal_stone", POLISHED_ABYSSAL_STONE, MapColor.DARK_AQUA, false);
 
-        Block NAVYSTONE_BRICKS = register3("polished_navystone_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
-        BlockGroupFactory.groupStoneFamily("polished_navystone_brick", NAVYSTONE_BRICKS, MapColor.DARK_AQUA, true);
+        Block ABYSSAL_STONE_BRICKS = register3("polished_abyssal_stone_bricks", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        BlockGroupFactory.groupStoneFamily("polished_abyssal_stone_brick", ABYSSAL_STONE_BRICKS, MapColor.DARK_AQUA, true);
+
+        Block POLISHED_ABYSSAL_STONE_SEAWEED = BlockFactory.register3("polished_abyssal_stone_seaweed",
+            (settings) -> new Block(settings),
+            AbstractBlock.Settings.copy(POLISHED_ABYSSAL_STONE)
+        );
 
         // # Adding Thalassite Ore and Thalassite Block
         Block THALASSITE_ORE = register3(
@@ -1101,7 +1122,7 @@ public class BlockFactory {
     );
 
 
-
+    public static final Block ABYSSAL_STONE = register3("abyssal_stone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
 
 
 

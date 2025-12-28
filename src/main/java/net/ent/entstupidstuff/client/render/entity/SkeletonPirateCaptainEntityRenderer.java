@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
-import net.ent.entstupidstuff.client.render.entity.model.SoulSkeletonGlowRender;
-import net.ent.entstupidstuff.entity.mob.SkeletonPirateCaptainEntity;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.mob.SkeletonPirateCaptainEntity;
+import net.ent.entstupidstuff.client.render.entity.feature.SoulSkeletonGlowRender;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "entstupidstuff:block/pale_oak_mosaic",
+    "side": "entstupidstuff:block/pale_oak_mosaic",
+    "top": "entstupidstuff:block/pale_oak_mosaic"
+  }
+}

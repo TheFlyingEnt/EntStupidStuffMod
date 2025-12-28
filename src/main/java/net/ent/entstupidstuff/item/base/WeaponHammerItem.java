@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
+import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.fabricmc.fabric.api.item.v1.FabricItem.Settings;

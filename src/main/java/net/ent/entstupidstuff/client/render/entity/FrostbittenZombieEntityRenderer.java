@@ -1,10 +1,11 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
+import net.ent.entstupidstuff.client.render.entity.feature.FrostbittenZombieOverlay;
 import net.ent.entstupidstuff.client.render.entity.model.FrostbittenZombieModel;
 import net.ent.entstupidstuff.client.render.entity.state.FrostbittenEntityRenderState;
-import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;

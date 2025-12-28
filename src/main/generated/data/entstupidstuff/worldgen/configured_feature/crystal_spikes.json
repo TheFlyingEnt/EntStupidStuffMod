@@ -1,0 +1,24 @@
+{
+  "type": "entstupidstuff:crystal_spikes",
+  "config": {
+    "base_radius": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 3,
+      "min_inclusive": 1
+    },
+    "crystal_block": {
+      "Name": "entstupidstuff:crystal_block"
+    },
+    "length": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 18,
+      "min_inclusive": 6
+    },
+    "replaceable": "#minecraft:stone_ore_replaceables",
+    "taper_chance": {
+      "type": "minecraft:uniform",
+      "max_exclusive": 0.4,
+      "min_inclusive": 0.1
+    }
+  }
+}

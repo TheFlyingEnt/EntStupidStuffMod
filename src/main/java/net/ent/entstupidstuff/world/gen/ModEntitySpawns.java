@@ -1,13 +1,16 @@
 package net.ent.entstupidstuff.world.gen;
 
-import net.ent.entstupidstuff.entity.mob.FrostbittenZombieEntity;
-import net.ent.entstupidstuff.entity.mob.PiglinWarriorEntity;
-import net.ent.entstupidstuff.entity.mob.SlimedZombieEntity;
-import net.ent.entstupidstuff.entity.mob.SunkenSkeletonEntity;
-import net.ent.entstupidstuff.entity.passive.AlligatorGarEntity;
-import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
+import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.FungalSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.FungalZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
+import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.passive.AlligatorGarEntity;
+import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.item.ModItemTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
+import net.ent.entstupidstuff.world.biome.ModBiomes;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.entity.SpawnGroup;
@@ -134,6 +137,18 @@ public class ModEntitySpawns  {
             SpawnGroup.MONSTER, EntityFactory.PIGLIN_WARRIOR, 30, 1, 3);
         SpawnRestriction.register(EntityFactory.PIGLIN_WARRIOR, SpawnLocationTypes.ON_GROUND,
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PiglinWarriorEntity::canSpawn);
+
+        //Fungal Skeleton
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(ModBiomes.UNDERGROUND_BLUE_MUSHROOM),
+            SpawnGroup.MONSTER, EntityFactory.FUNGAL_SKELETON, 30, 1, 3);
+        SpawnRestriction.register(EntityFactory.FUNGAL_SKELETON, SpawnLocationTypes.ON_GROUND,
+            Heightmap.Type.MOTION_BLOCKING, FungalSkeletonEntity::canSpawnInDark);
+
+        //Zombie Fungal
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(ModBiomes.UNDERGROUND_BLUE_MUSHROOM),
+            SpawnGroup.MONSTER, EntityFactory.ZOMBIE_FUNGAL, 30, 1, 3);
+        SpawnRestriction.register(EntityFactory.ZOMBIE_FUNGAL, SpawnLocationTypes.ON_GROUND,
+            Heightmap.Type.MOTION_BLOCKING, FungalZombieEntity::canSpawnInDark);
 
 
         // Add Lobber Zombie

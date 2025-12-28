@@ -318,5 +318,17 @@
       "entstupidstuff:lizard_button"
     ],
     "subtitle": "subtitles.ent.random.button.lizard"
+  },
+  "entity.generic.underwater_explode": {
+    "sounds": [
+      "entstupidstuff:large_underwater-explosion_1"
+    ],
+    "subtitle": "subtitles.ent.entity.explode.underwater"
+  },
+  "entity.sporeper.explode": {
+    "sounds": [
+      "entstupidstuff:large_underwater-explosion_1"
+    ],
+    "subtitle": "subtitles.ent.entity.bass.explode"
   }
 }

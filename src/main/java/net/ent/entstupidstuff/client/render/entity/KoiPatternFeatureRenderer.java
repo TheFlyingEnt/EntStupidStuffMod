@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
+import net.ent.entstupidstuff.client.entity.passive.KoiPatternSecondary;
+import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
-import net.ent.entstupidstuff.entity.passive.KoiBaseColor;
-import net.ent.entstupidstuff.entity.passive.KoiPatternSecondary;
-import net.ent.entstupidstuff.entity.passive.KoiVariant;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;

@@ -3,12 +3,12 @@ package net.ent.entstupidstuff.client.render.entity;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
+import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
+import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
+import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
-import net.ent.entstupidstuff.entity.passive.KoiBaseColor;
-import net.ent.entstupidstuff.entity.passive.KoiEntity;
-import net.ent.entstupidstuff.entity.passive.KoiVariant;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;

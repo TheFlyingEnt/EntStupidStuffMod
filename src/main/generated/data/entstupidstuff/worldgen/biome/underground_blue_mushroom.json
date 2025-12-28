@@ -68,7 +68,8 @@
     ],
     [
       "entstupidstuff:mud_layer_placed",
-      "entstupidstuff:shroomium_floor_placed"
+      "entstupidstuff:shroomium_floor_placed",
+      "entstupidstuff:crystal_spike"
     ],
     [
       "minecraft:spring_water",
@@ -146,6 +147,18 @@
         "maxCount": 1,
         "minCount": 1,
         "weight": 5
+      },
+      {
+        "type": "entstupidstuff:fungal_skeleton",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 150
+      },
+      {
+        "type": "entstupidstuff:zombie_fungal",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 150
       }
     ],
     "underground_water_creature": [

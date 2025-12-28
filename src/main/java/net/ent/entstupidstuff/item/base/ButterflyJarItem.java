@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.client.entity.Jarredable;
+import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.ent.entstupidstuff.entity.Jarredable;
-import net.ent.entstupidstuff.entity.passive.ButterflyEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;

@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.registry;
 //SpawnLocationTypes
 
-import net.ent.entstupidstuff.entity.mob.ScorchedZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.ScorchedZombieEntity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.entity.SpawnGroup;

@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
-import net.ent.entstupidstuff.entity.animation.HVAnimation;
-import net.ent.entstupidstuff.entity.mob.HoveringInfernoEntity;
+import net.ent.entstupidstuff.client.entity.animation.HVAnimation;
+import net.ent.entstupidstuff.client.entity.mob.HoveringInfernoEntity;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
