@@ -1,10 +1,9 @@
 package net.ent.entstupidstuff.client.entity.passive;
 
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.util.StringIdentifiable;
-
-public class KoiVariant implements StringIdentifiable {
+public class KoiVariant implements StringRepresentable {
 
     private final KoiBaseColor baseColor;
     private final @Nullable KoiPatternSecondary secondaryPattern;
@@ -36,7 +35,7 @@ public class KoiVariant implements StringIdentifiable {
     }
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.id;
     }
 }

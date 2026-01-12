@@ -2,21 +2,21 @@ package net.ent.entstupidstuff.client.entity.passive;
 
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.SchoolingFishEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.AbstractSchoolingFish;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class SnapperFishEntity extends SchoolingFishEntity{
+public class SnapperFishEntity extends AbstractSchoolingFish{
 
-    public SnapperFishEntity(EntityType<? extends SchoolingFishEntity> entityType, World world) {
+    public SnapperFishEntity(EntityType<? extends AbstractSchoolingFish> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public ItemStack getBucketItem() {
+    public ItemStack getBucketItemStack() {
         return new ItemStack(ItemFactory.SNAPPER_BUCKET);
     }
 

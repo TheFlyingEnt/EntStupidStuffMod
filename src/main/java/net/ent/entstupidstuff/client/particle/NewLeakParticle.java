@@ -2,29 +2,29 @@ package net.ent.entstupidstuff.client.particle;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.BillboardParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
-public class NewLeakParticle extends BillboardParticle {
+public class NewLeakParticle extends SingleQuadParticle {
 	private final Fluid fluid;
 	protected boolean obsidianTear;
 
-	NewLeakParticle(ClientWorld world, double x, double y, double z, Fluid fluid, Sprite sprite) {
+	NewLeakParticle(ClientLevel world, double x, double y, double z, Fluid fluid, TextureAtlasSprite sprite) {
 		super(world, x, y, z, sprite);
-		this.setBoundingBoxSpacing(0.01F, 0.01F);
-		this.gravityStrength = 0.06F;
+		this.setSize(0.01F, 0.01F);
+		this.gravity = 0.06F;
 		this.fluid = fluid;
 	}
 
@@ -33,35 +33,35 @@ public class NewLeakParticle extends BillboardParticle {
 	}
 
 	@Override
-	public BillboardParticle.RenderType getRenderType() {
-		return BillboardParticle.RenderType.PARTICLE_ATLAS_OPAQUE;
+	public SingleQuadParticle.Layer getLayer() {
+		return SingleQuadParticle.Layer.OPAQUE;
 	}
 
 	@Override
-	public int getBrightness(float tint) {
+	public int getLightColor(float tint) {
 		//return this.obsidianTear ? 240 : super.getBrightness(tint);
 		return 240;
 	}
 
 	@Override
 	public void tick() {
-		this.lastX = this.x;
-		this.lastY = this.y;
-		this.lastZ = this.z;
+		this.xo = this.x;
+		this.yo = this.y;
+		this.zo = this.z;
 		this.updateAge();
-		if (!this.dead) {
-			this.velocityY = this.velocityY - this.gravityStrength;
-			this.move(this.velocityX, this.velocityY, this.velocityZ);
+		if (!this.removed) {
+			this.yd = this.yd - this.gravity;
+			this.move(this.xd, this.yd, this.zd);
 			this.updateVelocity();
-			if (!this.dead) {
-				this.velocityX *= 0.98F;
-				this.velocityY *= 0.98F;
-				this.velocityZ *= 0.98F;
+			if (!this.removed) {
+				this.xd *= 0.98F;
+				this.yd *= 0.98F;
+				this.zd *= 0.98F;
 				if (this.fluid != Fluids.EMPTY) {
-					BlockPos blockPos = BlockPos.ofFloored(this.x, this.y, this.z);
-					FluidState fluidState = this.world.getFluidState(blockPos);
-					if (fluidState.getFluid() == this.fluid && this.y < blockPos.getY() + fluidState.getHeight(this.world, blockPos)) {
-						this.markDead();
+					BlockPos blockPos = BlockPos.containing(this.x, this.y, this.z);
+					FluidState fluidState = this.level.getFluidState(blockPos);
+					if (fluidState.getType() == this.fluid && this.y < blockPos.getY() + fluidState.getHeight(this.level, blockPos)) {
+						this.remove();
 					}
 				}
 			}
@@ -69,8 +69,8 @@ public class NewLeakParticle extends BillboardParticle {
 	}
 
 	protected void updateAge() {
-		if (this.maxAge-- <= 0) {
-			this.markDead();
+		if (this.lifetime-- <= 0) {
+			this.remove();
 		}
 	}
 
@@ -79,9 +79,9 @@ public class NewLeakParticle extends BillboardParticle {
 
 	@Environment(EnvType.CLIENT)
 	static class ContinuousFalling extends NewLeakParticle.Falling {
-		protected final ParticleEffect nextParticle;
+		protected final ParticleOptions nextParticle;
 
-		ContinuousFalling(ClientWorld world, double x, double y, double z, Fluid fluid, ParticleEffect nextParticle, Sprite sprite) {
+		ContinuousFalling(ClientLevel world, double x, double y, double z, Fluid fluid, ParticleOptions nextParticle, TextureAtlasSprite sprite) {
 			super(world, x, y, z, fluid, sprite);
 			this.nextParticle = nextParticle;
 		}
@@ -89,36 +89,36 @@ public class NewLeakParticle extends BillboardParticle {
 		@Override
 		protected void updateVelocity() {
 			if (this.onGround) {
-				this.markDead();
-				this.world.addParticleClient(this.nextParticle, this.x, this.y, this.z, 0.0, 0.0, 0.0);
+				this.remove();
+				this.level.addParticle(this.nextParticle, this.x, this.y, this.z, 0.0, 0.0, 0.0);
 			}
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	static class Dripping extends NewLeakParticle {
-		private final ParticleEffect nextParticle;
+		private final ParticleOptions nextParticle;
 
-		Dripping(ClientWorld world, double x, double y, double z, Fluid fluid, ParticleEffect nextParticle, Sprite sprite) {
+		Dripping(ClientLevel world, double x, double y, double z, Fluid fluid, ParticleOptions nextParticle, TextureAtlasSprite sprite) {
 			super(world, x, y, z, fluid, sprite);
 			this.nextParticle = nextParticle;
-			this.gravityStrength *= 0.02F;
-			this.maxAge = 40;
+			this.gravity *= 0.02F;
+			this.lifetime = 40;
 		}
 
 		@Override
 		protected void updateAge() {
-			if (this.maxAge-- <= 0) {
-				this.markDead();
-				this.world.addParticleClient(this.nextParticle, this.x, this.y, this.z, this.velocityX, this.velocityY, this.velocityZ);
+			if (this.lifetime-- <= 0) {
+				this.remove();
+				this.level.addParticle(this.nextParticle, this.x, this.y, this.z, this.xd, this.yd, this.zd);
 			}
 		}
 
 		@Override
 		protected void updateVelocity() {
-			this.velocityX *= 0.02;
-			this.velocityY *= 0.02;
-			this.velocityZ *= 0.02;
+			this.xd *= 0.02;
+			this.yd *= 0.02;
+			this.zd *= 0.02;
 		}
 	}
 
@@ -126,37 +126,37 @@ public class NewLeakParticle extends BillboardParticle {
 
 	@Environment(EnvType.CLIENT)
 	static class Falling extends NewLeakParticle {
-		Falling(ClientWorld clientWorld, double d, double e, double f, Fluid fluid, Sprite sprite) {
+		Falling(ClientLevel clientWorld, double d, double e, double f, Fluid fluid, TextureAtlasSprite sprite) {
 			this(clientWorld, d, e, f, fluid, (int)(64.0 / (Math.random() * 0.8 + 0.2)), sprite);
 		}
 
-		Falling(ClientWorld world, double x, double y, double z, Fluid fluid, int maxAge, Sprite sprite) {
+		Falling(ClientLevel world, double x, double y, double z, Fluid fluid, int maxAge, TextureAtlasSprite sprite) {
 			super(world, x, y, z, fluid, sprite);
-			this.maxAge = maxAge;
+			this.lifetime = maxAge;
 		}
 
 		@Override
 		protected void updateVelocity() {
 			if (this.onGround) {
-				this.markDead();
+				this.remove();
 			}
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static class FallingMushroomSporeBlossomFactory implements ParticleFactory<SimpleParticleType> {
-		private final SpriteProvider spriteProvider;
+	public static class FallingMushroomSporeBlossomFactory implements ParticleProvider<SimpleParticleType> {
+		private final SpriteSet spriteProvider;
 
-		public FallingMushroomSporeBlossomFactory(SpriteProvider spriteProvider) {
+		public FallingMushroomSporeBlossomFactory(SpriteSet spriteProvider) {
 			this.spriteProvider = spriteProvider;
 		}
 
 		public Particle createParticle(
-			SimpleParticleType simpleParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, Random random
+			SimpleParticleType simpleParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, RandomSource random
 		) {
-			int j = (int)(64.0F / MathHelper.nextBetween(clientWorld.getRandom(), 0.1F, 0.9F));
-			NewLeakParticle NewLeave = new NewLeakParticle.Falling(clientWorld, d, e, f, Fluids.EMPTY, j, this.spriteProvider.getSprite(random));
-			NewLeave.gravityStrength = 0.005F;
+			int j = (int)(64.0F / Mth.randomBetween(clientWorld.getRandom(), 0.1F, 0.9F));
+			NewLeakParticle NewLeave = new NewLeakParticle.Falling(clientWorld, d, e, f, Fluids.EMPTY, j, this.spriteProvider.get(random));
+			NewLeave.gravity = 0.005F;
 			NewLeave.setColor(0.34F, 0.90F, 0.94F);
 			return NewLeave;
 		}
@@ -165,9 +165,9 @@ public class NewLeakParticle extends BillboardParticle {
 
 	@Environment(EnvType.CLIENT)
 	static class Landing extends NewLeakParticle {
-		Landing(ClientWorld clientWorld, double d, double e, double f, Fluid fluid, Sprite sprite) {
+		Landing(ClientLevel clientWorld, double d, double e, double f, Fluid fluid, TextureAtlasSprite sprite) {
 			super(clientWorld, d, e, f, fluid, sprite);
-			this.maxAge = (int)(16.0 / (Math.random() * 0.8 + 0.2));
+			this.lifetime = (int)(16.0 / (Math.random() * 0.8 + 0.2));
 		}
 	}
 

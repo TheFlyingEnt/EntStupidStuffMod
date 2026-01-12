@@ -6,10 +6,10 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.enchantment.effect.FrostbiteEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.GravityEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.LightningStrikerEnchantmentEffect;
-import net.minecraft.enchantment.effect.EnchantmentEntityEffect;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 
 public class UpdatedEnchantmentEffects {
 
@@ -24,7 +24,7 @@ public class UpdatedEnchantmentEffects {
 
 
     private static MapCodec<? extends EnchantmentEntityEffect> registerEntityEffect(String name, MapCodec<? extends EnchantmentEntityEffect> codec) {
-        return Registry.register(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, Identifier.of(EntStupidStuff.MOD_ID, name), codec);
+        return Registry.register(BuiltInRegistries.ENCHANTMENT_ENTITY_EFFECT_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name), codec);
     }
 
     public static void registerEnchantmentEffects() {

@@ -1,34 +1,33 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.SporeperEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.SporeperChargeFeatureRenderer;
 import net.ent.entstupidstuff.client.render.entity.feature.SporeperGlowRender;
 import net.ent.entstupidstuff.client.render.entity.model.SporeperModel;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.state.CreeperEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.CreeperRenderState;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public class SporeperRenderer extends MobEntityRenderer<SporeperEntity, CreeperEntityRenderState, SporeperModel>{
-	private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/sporeper/sporeper.png");
+public class SporeperRenderer extends MobRenderer<SporeperEntity, CreeperRenderState, SporeperModel>{
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/sporeper/sporeper.png");
     //private static final Identifier TEXTURE_C = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/sporeper/sporeper_charged.png");
 
-	public SporeperRenderer(EntityRendererFactory.Context context) {
-		super(context, new SporeperModel(context.getPart(ModEntityModelLayers.SPOREPER)), 0.5F);
+	public SporeperRenderer(EntityRendererProvider.Context context) {
+		super(context, new SporeperModel(context.bakeLayer(ModEntityModelLayers.SPOREPER)), 0.5F);
 		//this.addFeature(new SporeperGlowRender(this));
-		this.addFeature(new SporeperChargeFeatureRenderer(this, context.getEntityModels()));
+		this.addLayer(new SporeperChargeFeatureRenderer(this, context.getModelSet()));
 	}
 
-	protected void scale(CreeperEntityRenderState creeperEntityRenderState, MatrixStack matrixStack) {
-		float f = creeperEntityRenderState.fuseTime;
-		float g = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
-		f = MathHelper.clamp(f, 0.0F, 1.0F);
+	protected void scale(CreeperRenderState creeperEntityRenderState, PoseStack matrixStack) {
+		float f = creeperEntityRenderState.swelling;
+		float g = 1.0F + Mth.sin(f * 100.0F) * f * 0.01F;
+		f = Mth.clamp(f, 0.0F, 1.0F);
 		f *= f;
 		f *= f;
 		float h = (1.0F + f * 0.4F) * g;
@@ -36,24 +35,24 @@ public class SporeperRenderer extends MobEntityRenderer<SporeperEntity, CreeperE
 		matrixStack.scale(h, i, h);
 	}
 
-	protected float getAnimationCounter(CreeperEntityRenderState creeperEntityRenderState) {
-		float f = creeperEntityRenderState.fuseTime;
-		return (int)(f * 10.0F) % 2 == 0 ? 0.0F : MathHelper.clamp(f, 0.5F, 1.0F);
+	protected float getAnimationCounter(CreeperRenderState creeperEntityRenderState) {
+		float f = creeperEntityRenderState.swelling;
+		return (int)(f * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(f, 0.5F, 1.0F);
 	}
 
-	public Identifier getTexture(CreeperEntityRenderState creeperEntityRenderState) {
-        if (creeperEntityRenderState.charged) 
+	public ResourceLocation getTextureLocation(CreeperRenderState creeperEntityRenderState) {
+        if (creeperEntityRenderState.isPowered) 
             return TEXTURE;
 		return TEXTURE;
 	}
 
-	public CreeperEntityRenderState createRenderState() {
-		return new CreeperEntityRenderState();
+	public CreeperRenderState createRenderState() {
+		return new CreeperRenderState();
 	}
 
-	public void updateRenderState(SporeperEntity creeperEntity, CreeperEntityRenderState creeperEntityRenderState, float f) {
-		super.updateRenderState(creeperEntity, creeperEntityRenderState, f);
-		creeperEntityRenderState.fuseTime = creeperEntity.getLerpedFuseTime(f);
-		creeperEntityRenderState.charged = creeperEntity.isCharged();
+	public void extractRenderState(SporeperEntity creeperEntity, CreeperRenderState creeperEntityRenderState, float f) {
+		super.extractRenderState(creeperEntity, creeperEntityRenderState, f);
+		creeperEntityRenderState.swelling = creeperEntity.getLerpedFuseTime(f);
+		creeperEntityRenderState.isPowered = creeperEntity.isCharged();
 	}
 }

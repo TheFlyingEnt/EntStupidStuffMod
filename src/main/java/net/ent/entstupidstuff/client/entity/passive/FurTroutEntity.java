@@ -2,21 +2,21 @@ package net.ent.entstupidstuff.client.entity.passive;
 
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.CodEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Cod;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class FurTroutEntity extends CodEntity{
+public class FurTroutEntity extends Cod{
 
-    public FurTroutEntity(EntityType<? extends CodEntity> entityType, World world) {
+    public FurTroutEntity(EntityType<? extends Cod> entityType, Level world) {
         super(entityType, world);
     }
     
     @Override
-	public ItemStack getBucketItem() {
+	public ItemStack getBucketItemStack() {
 		return new ItemStack(ItemFactory.FUR_TROUT_BUCKET);
 	}
 

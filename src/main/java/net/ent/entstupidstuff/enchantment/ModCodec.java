@@ -4,9 +4,9 @@ import com.mojang.serialization.MapCodec;
 
 import net.ent.entstupidstuff.enchantment.effects.BerserkEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effects.OldFrostbiteEnchantmentEffect;
-import net.minecraft.enchantment.effect.EnchantmentEntityEffect;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 
 public class ModCodec {
 
@@ -27,7 +27,7 @@ public class ModCodec {
     //public static MapCodec<FrostbiteEnchantmentEffect> SCORCHING = register("scorching", FrostbiteEnchantmentEffect.CODEC);
 
     private static <T extends EnchantmentEntityEffect> MapCodec<T> register(String id, MapCodec<T> codec) {
-        return Registry.register(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, id, codec);
+        return Registry.register(BuiltInRegistries.ENCHANTMENT_ENTITY_EFFECT_TYPE, id, codec);
     }
 
     public static void onInitialize() {

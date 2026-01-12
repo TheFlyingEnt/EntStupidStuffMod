@@ -1,22 +1,21 @@
 package net.ent.entstupidstuff.client.entity;
 
 import java.util.Optional;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
 
 public interface Jarredable {
 
@@ -26,30 +25,30 @@ public interface Jarredable {
 
 	void copyDataToStack(ItemStack stack);
 
-	void copyDataFromNbt(NbtCompound nbt);
+	void copyDataFromNbt(CompoundTag nbt);
 
 	ItemStack getJarItem();
 
 	SoundEvent getJarFillSound();
 
 	@Deprecated
-	static void copyDataToStack(MobEntity entity, ItemStack stack) {
-		stack.set(DataComponentTypes.CUSTOM_NAME, entity.getCustomName());
-		NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, nbtCompound -> {
-			if (entity.isAiDisabled()) {
-				nbtCompound.putBoolean("NoAI", entity.isAiDisabled());
+	static void copyDataToStack(Mob entity, ItemStack stack) {
+		stack.set(DataComponents.CUSTOM_NAME, entity.getCustomName());
+		CustomData.update(DataComponents.BUCKET_ENTITY_DATA, stack, nbtCompound -> {
+			if (entity.isNoAi()) {
+				nbtCompound.putBoolean("NoAI", entity.isNoAi());
 			}
 
 			if (entity.isSilent()) {
 				nbtCompound.putBoolean("Silent", entity.isSilent());
 			}
 
-			if (entity.hasNoGravity()) {
-				nbtCompound.putBoolean("NoGravity", entity.hasNoGravity());
+			if (entity.isNoGravity()) {
+				nbtCompound.putBoolean("NoGravity", entity.isNoGravity());
 			}
 
-			if (entity.isGlowingLocal()) {
-				nbtCompound.putBoolean("Glowing", entity.isGlowingLocal());
+			if (entity.hasGlowingTag()) {
+				nbtCompound.putBoolean("Glowing", entity.hasGlowingTag());
 			}
 
 			if (entity.isInvulnerable()) {
@@ -61,30 +60,30 @@ public interface Jarredable {
 	}
 
 	@Deprecated
-	static void copyDataFromNbt(MobEntity entity, NbtCompound nbt) {
-		nbt.getBoolean("NoAI").ifPresent(entity::setAiDisabled);
+	static void copyDataFromNbt(Mob entity, CompoundTag nbt) {
+		nbt.getBoolean("NoAI").ifPresent(entity::setNoAi);
 		nbt.getBoolean("Silent").ifPresent(entity::setSilent);
 		nbt.getBoolean("NoGravity").ifPresent(entity::setNoGravity);
-		nbt.getBoolean("Glowing").ifPresent(entity::setGlowing);
+		nbt.getBoolean("Glowing").ifPresent(entity::setGlowingTag);
 		nbt.getBoolean("Invulnerable").ifPresent(entity::setInvulnerable);
 		nbt.getFloat("Health").ifPresent(entity::setHealth);
 	}
 
-	static <T extends LivingEntity & Jarredable> Optional<ActionResult> tryJar(PlayerEntity player, Hand hand, T entity) {
-		ItemStack itemStack = player.getStackInHand(hand);
+	static <T extends LivingEntity & Jarredable> Optional<InteractionResult> tryJar(Player player, InteractionHand hand, T entity) {
+		ItemStack itemStack = player.getItemInHand(hand);
 		if (itemStack.getItem() == Items.GLASS_BOTTLE && entity.isAlive()) {
 			entity.playSound(entity.getJarFillSound(), 1.0F, 1.0F);
 			ItemStack itemStack2 = entity.getJarItem();
 			entity.copyDataToStack(itemStack2);
-			ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, player, itemStack2, false);
-			player.setStackInHand(hand, itemStack3);
-			World world = entity.getEntityWorld();
-			if (!world.isClient()) {
-				Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)player, itemStack2);
+			ItemStack itemStack3 = ItemUtils.createFilledResult(itemStack, player, itemStack2, false);
+			player.setItemInHand(hand, itemStack3);
+			Level world = entity.level();
+			if (!world.isClientSide()) {
+				CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, itemStack2);
 			}
 
 			entity.discard();
-			return Optional.of(ActionResult.SUCCESS);
+			return Optional.of(InteractionResult.SUCCESS);
 		} else {
 			return Optional.empty();
 		}

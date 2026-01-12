@@ -4,23 +4,23 @@ import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.enums.Thickness;
-import net.minecraft.client.data.BlockStateModelGenerator;
-import net.minecraft.client.data.BlockStateModelGenerator.BlockTexturePool;
-import net.minecraft.client.data.BlockStateVariantMap;
-import net.minecraft.client.data.ItemModelGenerator;
-import net.minecraft.client.data.Models;
-import net.minecraft.client.data.MultipartBlockModelDefinitionCreator;
-import net.minecraft.client.data.TextureKey;
-import net.minecraft.client.data.TextureMap;
-import net.minecraft.client.data.TexturedModel;
-import net.minecraft.client.data.VariantsBlockModelDefinitionCreator;
-import net.minecraft.client.render.model.json.WeightedVariant;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.BlockModelGenerators.BlockFamilyProvider;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 
 public class ModelProvider extends FabricModelProvider{
 
@@ -28,74 +28,74 @@ public class ModelProvider extends FabricModelProvider{
         super(output);
     }
     
-    BlockStateModelGenerator blockStateModelGenerator;
-    ItemModelGenerator itemModelGenerator;
+    BlockModelGenerators blockStateModelGenerator;
+    ItemModelGenerators itemModelGenerator;
     
 
     @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator2) {
+    public void generateItemModels(ItemModelGenerators itemModelGenerator2) {
         this.itemModelGenerator = itemModelGenerator2;
 
-        itemModelGenerator.register(ItemFactory.MARSHMELLOW_RAW, Models.HANDHELD);
-        itemModelGenerator.register(ItemFactory.MARSHMELLOW_TOASTED, Models.HANDHELD);
+        itemModelGenerator.generateFlatItem(ItemFactory.MARSHMELLOW_RAW, ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MARSHMELLOW_TOASTED, ModelTemplates.FLAT_HANDHELD_ITEM);
         //BAGGUETTE is done via Manually
 
-        itemModelGenerator.register(ItemFactory.BUTTERFLY_JAR, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.BUTTERFLY_SPAWN_EGG, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.BUTTERFLY_JAR, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.BUTTERFLY_SPAWN_EGG, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.WITHER_BONE, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.ANCIENT_DEBRIS_NUGGET, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.WITHER_BONE, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.ANCIENT_DEBRIS_NUGGET, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.PIGLIN_WARRIOR_SPAWN, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.BLAZING_INFERNO_SPAWN, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.SOUL_SKELETON_SPAWN, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.PIGLIN_WARRIOR_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.BLAZING_INFERNO_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.SOUL_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.ZEBRA_FISH_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.ZEBRA_FISH, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.ZEBRA_FISH_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.ZEBRA_FISH, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.ALLIGATOR_GAR_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.ALLIGATOR_GAR, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_ALLIGATOR_GAR, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.ALLIGATOR_GAR_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.ALLIGATOR_GAR, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_ALLIGATOR_GAR, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.MACKEREL_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.MACKEREL, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_MACKEREL, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.MACKEREL_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MACKEREL, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_MACKEREL, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.BASS_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.BASS, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_BASS, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.BASS_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.BASS, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_BASS, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.FUR_TROUT_BUCKET, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.FUR_TROUT_BUCKET, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.KOI_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.KOI, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.KOI_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.KOI, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.PERCH_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.PERCH, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_PERCH, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.PERCH_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.PERCH, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_PERCH, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.MAHIMAHI_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.MAHIMAHI, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_MAHIMAHI, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.MAHIMAHI_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MAHIMAHI, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_MAHIMAHI, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.SNAPPER_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.SNAPPER, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.COOKED_SNAPPER, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.SNAPPER_BUCKET, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.SNAPPER, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.COOKED_SNAPPER, ModelTemplates.FLAT_ITEM);
 
         //RUM is done via Manually
-        itemModelGenerator.register(ItemFactory.CANNON_BALL_ITEM, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.CANNON_ITEM, Models.CROSSBOW);
-        itemModelGenerator.register(ItemFactory.PRISMERINE_ARROW, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.CANNON_BALL_ITEM, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.CANNON_ITEM, ModelTemplates.CROSSBOW);
+        itemModelGenerator.generateFlatItem(ItemFactory.PRISMERINE_ARROW, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.SUNKEN_SKELETON_SPAWN, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.SUNKEN_SKELETON2_SPAWN, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.SKELETON_PIRATE_CAPTAIN_SPAWN, Models.GENERATED);
-        itemModelGenerator.register(ItemFactory.METAL_SKELETON_SPAWN, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.SUNKEN_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.SUNKEN_SKELETON2_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.SKELETON_PIRATE_CAPTAIN_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.METAL_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.register(ItemFactory.ANCIENT_DROWN_SPAWN, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.ANCIENT_DROWN_SPAWN, ModelTemplates.FLAT_ITEM);
         //ANCIENT_TRIDENT is done via Manually
 
-        itemModelGenerator.register(ItemFactory.PHANTOM_SKELETON_SPAWN, Models.GENERATED);
+        itemModelGenerator.generateFlatItem(ItemFactory.PHANTOM_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
 
         //itemModelGenerator2.register(ItemFactory.DIAMOND_SHIELD, Models.);
 
@@ -117,7 +117,7 @@ public class ModelProvider extends FabricModelProvider{
     }
 
     @Override
-    public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator2) {
+    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator2) {
 
         this.blockStateModelGenerator = blockStateModelGenerator2;
 
@@ -126,16 +126,16 @@ public class ModelProvider extends FabricModelProvider{
 
         // # Added FIR Natural + Planks
         generateGroupWoodFamilty("fir", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED); //TintType.NOT_TINTED
+        blockStateModelGenerator2.createPlant(BlockFactory.callBlock("fir_sapling"), BlockFactory.callBlock("potted_fir_sapling"), BlockModelGenerators.PlantType.NOT_TINTED); //TintType.NOT_TINTED
 
         // # Added MAPLE Natural + Planks
         generateGroupWoodFamilty("maple", "", true);
-        blockStateModelGenerator2.registerFlowerPotPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockStateModelGenerator.CrossType.NOT_TINTED);
+        blockStateModelGenerator2.createPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockModelGenerators.PlantType.NOT_TINTED);
 
         // # Added PHANTOM Natural + Planks + Lantern
         generateGroupWoodFamilty("phantom", "", true); System.out.println("ModProvide: " + "Phantom");
-        blockStateModelGenerator.registerLantern(BlockFactory.callBlock("phantom_lantern"));
-        blockStateModelGenerator.registerTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
+        blockStateModelGenerator.createLantern(BlockFactory.callBlock("phantom_lantern"));
+        blockStateModelGenerator.createNormalTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
 
         // # Added Fungal Natural + Planks (Regular + Colored)
         generateGroupFungalFamilty("fungal", "");
@@ -160,19 +160,19 @@ public class ModelProvider extends FabricModelProvider{
         this.registerMushroomBlockCustom(BlockFactory.callBlock("blue_mushroom_block"));
         this.registerMudBottomCustomTop(BlockFactory.callBlock("shroomium"));
 
-        blockStateModelGenerator.registerFlowerbed(BlockFactory.callBlock("mushroom_bed"));
-        blockStateModelGenerator.registerFlowerPotPlantAndItem(BlockFactory.callBlock("blue_mushroom"), BlockFactory.callBlock("potted_blue_mushroom"), BlockStateModelGenerator.CrossType.NOT_TINTED);
+        blockStateModelGenerator.createFlowerBed(BlockFactory.callBlock("mushroom_bed"));
+        blockStateModelGenerator.createPlantWithDefaultItem(BlockFactory.callBlock("blue_mushroom"), BlockFactory.callBlock("potted_blue_mushroom"), BlockModelGenerators.PlantType.NOT_TINTED);
 
-        blockStateModelGenerator.registerCubeAllModelTexturePool(BlockFactory.callBlock("crystal_block"));
+        blockStateModelGenerator.family(BlockFactory.callBlock("crystal_block"));
         
         // # Adding Andersite, Diorite and Granite
         generateGroupBricksFamilty("andesite", "");
         generateGroupBricksFamilty("diorite", "");
         generateGroupBricksFamilty("granite", "");
 
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_ANDESITE).wall(BlockFactory.callBlock("polished_" + "andesite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
-        blockStateModelGenerator.registerCubeAllModelTexturePool(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
+        blockStateModelGenerator.family(Blocks.POLISHED_ANDESITE).wall(BlockFactory.callBlock("polished_" + "andesite" + "_wall"));
+        blockStateModelGenerator.family(Blocks.POLISHED_DIORITE).wall(BlockFactory.callBlock("polished_" + "diorite" + "_wall"));
+        blockStateModelGenerator.family(Blocks.POLISHED_GRANITE).wall(BlockFactory.callBlock("polished_" + "granite" + "_wall"));
 
         // # Adding Limestone and Limestone Bricks
         generateBaseAndIntercationFamily("limestone", "", false, true, BlockFactory.callBlock("limestone"));
@@ -183,13 +183,13 @@ public class ModelProvider extends FabricModelProvider{
         generateBaseAndIntercationFamily("iron_grate", "", false, false, BlockFactory.callBlock("iron_grate"));
 
         // # Adding StringGates
-        blockStateModelGenerator.registerGlassAndPane(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
+        blockStateModelGenerator.createGlassBlocks(BlockFactory.callBlock("string_block"), BlockFactory.callBlock("string_gate"));
 
         // # Adding Abyssal Stone and Abyssal Stone Bricks
         generateBaseAndIntercationFamily("abyssal_stone", "", false, true, BlockFactory.callBlock("abyssal_stone"));
         generateBaseAndIntercationFamily("polished_abyssal_stone", "", false, true, BlockFactory.callBlock("polished_abyssal_stone"));  
         generateGroupBricksFamilty("polished_abyssal_stone", "");
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("polished_abyssal_stone_seaweed"));
+        blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock("polished_abyssal_stone_seaweed"));
 
         // # Vanilla Additions
 
@@ -224,36 +224,36 @@ public class ModelProvider extends FabricModelProvider{
 	}
  
     public final void registerMudBottomCustomTop(Block block) {
-		TextureMap textureMap = new TextureMap()
-			.put(TextureKey.BOTTOM, TextureMap.getId(Blocks.MUD))
-			.put(TextureKey.TOP, TextureMap.getId(block))
-			.put(TextureKey.SIDE, TextureMap.getSubId(block, "_side"));
-		blockStateModelGenerator.blockStateCollector
-			.accept(BlockStateModelGenerator.createSingletonBlockState(block, BlockStateModelGenerator.createWeightedVariant(Models.CUBE_BOTTOM_TOP.upload(block, textureMap, blockStateModelGenerator.modelCollector))));
+		TextureMapping textureMap = new TextureMapping()
+			.put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.MUD))
+			.put(TextureSlot.TOP, TextureMapping.getBlockTexture(block))
+			.put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"));
+		blockStateModelGenerator.blockStateOutput
+			.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(ModelTemplates.CUBE_BOTTOM_TOP.create(block, textureMap, blockStateModelGenerator.modelOutput))));
 	}
 
     public final void registerMushroomBlockCustom(Block mushroomBlock) {
-		WeightedVariant weightedVariant = BlockStateModelGenerator.createWeightedVariant(
-			Models.TEMPLATE_SINGLE_FACE.upload(mushroomBlock, TextureMap.texture(mushroomBlock), blockStateModelGenerator.modelCollector)
+		MultiVariant weightedVariant = BlockModelGenerators.plainVariant(
+			ModelTemplates.SINGLE_FACE.create(mushroomBlock, TextureMapping.defaultTexture(mushroomBlock), blockStateModelGenerator.modelOutput)
 		);
-		WeightedVariant weightedVariant2 = BlockStateModelGenerator.createWeightedVariant(Identifier.of("entstupidstuff", "block/blue_mushroom_block_inside"));
-		blockStateModelGenerator.blockStateCollector
+		MultiVariant weightedVariant2 = BlockModelGenerators.plainVariant(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "block/blue_mushroom_block_inside"));
+		blockStateModelGenerator.blockStateOutput
 			.accept(
-				MultipartBlockModelDefinitionCreator.create(mushroomBlock)
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.NORTH, true), weightedVariant)
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.EAST, true), weightedVariant.apply(BlockStateModelGenerator.ROTATE_Y_90).apply(BlockStateModelGenerator.UV_LOCK))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.SOUTH, true), weightedVariant.apply(BlockStateModelGenerator.ROTATE_Y_180).apply(BlockStateModelGenerator.UV_LOCK))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.WEST, true), weightedVariant.apply(BlockStateModelGenerator.ROTATE_Y_270).apply(BlockStateModelGenerator.UV_LOCK))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.UP, true), weightedVariant.apply(BlockStateModelGenerator.ROTATE_X_270).apply(BlockStateModelGenerator.UV_LOCK))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.DOWN, true), weightedVariant.apply(BlockStateModelGenerator.ROTATE_X_90).apply(BlockStateModelGenerator.UV_LOCK))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.NORTH, false), weightedVariant2)
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.EAST, false), weightedVariant2.apply(BlockStateModelGenerator.ROTATE_Y_90))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.SOUTH, false), weightedVariant2.apply(BlockStateModelGenerator.ROTATE_Y_180))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.WEST, false), weightedVariant2.apply(BlockStateModelGenerator.ROTATE_Y_270))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.UP, false), weightedVariant2.apply(BlockStateModelGenerator.ROTATE_X_270))
-					.with(BlockStateModelGenerator.createMultipartConditionBuilder().put(Properties.DOWN, false), weightedVariant2.apply(BlockStateModelGenerator.ROTATE_X_90))
+				MultiPartGenerator.multiPart(mushroomBlock)
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.NORTH, true), weightedVariant)
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.EAST, true), weightedVariant.with(BlockModelGenerators.Y_ROT_90).with(BlockModelGenerators.UV_LOCK))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.SOUTH, true), weightedVariant.with(BlockModelGenerators.Y_ROT_180).with(BlockModelGenerators.UV_LOCK))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.WEST, true), weightedVariant.with(BlockModelGenerators.Y_ROT_270).with(BlockModelGenerators.UV_LOCK))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.UP, true), weightedVariant.with(BlockModelGenerators.X_ROT_270).with(BlockModelGenerators.UV_LOCK))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.DOWN, true), weightedVariant.with(BlockModelGenerators.X_ROT_90).with(BlockModelGenerators.UV_LOCK))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.NORTH, false), weightedVariant2)
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.EAST, false), weightedVariant2.with(BlockModelGenerators.Y_ROT_90))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.SOUTH, false), weightedVariant2.with(BlockModelGenerators.Y_ROT_180))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.WEST, false), weightedVariant2.with(BlockModelGenerators.Y_ROT_270))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.UP, false), weightedVariant2.with(BlockModelGenerators.X_ROT_270))
+					.with(BlockModelGenerators.condition().term(BlockStateProperties.DOWN, false), weightedVariant2.with(BlockModelGenerators.X_ROT_90))
 			);
-		blockStateModelGenerator.registerParentedItemModel(mushroomBlock, TexturedModel.CUBE_ALL.upload(mushroomBlock, "_inventory", blockStateModelGenerator.modelCollector));
+		blockStateModelGenerator.registerSimpleItemModel(mushroomBlock, TexturedModel.CUBE.createWithSuffix(mushroomBlock, "_inventory", blockStateModelGenerator.modelOutput));
 	}
 
     
@@ -297,8 +297,8 @@ public class ModelProvider extends FabricModelProvider{
 
         Block BricksTexture = BlockFactory.callBlock(blockName + "_bricks" + suffix);
         generateBaseAndIntercationFamily(blockName + "_brick", suffix, false, true, BricksTexture);
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("cracked_" + blockName + "_bricks" + suffix));
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(blockName + "_brick_chiseled" + suffix));
+        blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock("cracked_" + blockName + "_bricks" + suffix));
+        blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock(blockName + "_brick_chiseled" + suffix));
     }
 
     public void generateGroupVanillaAddition(String blockName) {
@@ -312,12 +312,12 @@ public class ModelProvider extends FabricModelProvider{
         else if (suffix == "_") {suffix = "";}
 
         if (withLeaves) {
-            blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
+            blockStateModelGenerator.createTrivialBlock(BlockFactory.callBlock(blockName + "_leaves" + suffix), TexturedModel.LEAVES);
             
         }
 
-        blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock(blockName + "_log" + suffix)).log(BlockFactory.callBlock(blockName + "_log" + suffix)).wood(BlockFactory.callBlock(blockName + "_wood" + suffix));
-        blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).log(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix));
+        blockStateModelGenerator.woodProvider(BlockFactory.callBlock(blockName + "_log" + suffix)).logWithHorizontal(BlockFactory.callBlock(blockName + "_log" + suffix)).wood(BlockFactory.callBlock(blockName + "_wood" + suffix));
+        blockStateModelGenerator.woodProvider(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).logWithHorizontal(BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)).wood(BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix));
         
     }
 
@@ -327,7 +327,7 @@ public class ModelProvider extends FabricModelProvider{
         else if (suffix == "") {suffix = "";}
         else if (suffix == "_") {suffix = "";}
 
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+        BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
 
         blockPool
             .stairs(BlockFactory.callBlock(blockName + "_stairs" + suffix))
@@ -340,8 +340,8 @@ public class ModelProvider extends FabricModelProvider{
                 .fence(BlockFactory.callBlock(blockName + "_fence" + suffix))
             .fenceGate(BlockFactory.callBlock(blockName + "_fence_gate" + suffix));
 
-            blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(blockName + "_trapdoor" + suffix));
-            blockStateModelGenerator.registerDoor(BlockFactory.callBlock(blockName + "_door" + suffix));
+            blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(blockName + "_trapdoor" + suffix));
+            blockStateModelGenerator.createDoor(BlockFactory.callBlock(blockName + "_door" + suffix));
             generateGlassIntercation(blockName, suffix);
         }
         else if (generateStoneBase) {
@@ -353,8 +353,8 @@ public class ModelProvider extends FabricModelProvider{
     }
 
     public void generateGlassIntercation(String blockName, String suffix) {
-        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix));
-        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(blockName + "_glass_door" + suffix));
+        blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix));
+        blockStateModelGenerator.createDoor(BlockFactory.callBlock(blockName + "_glass_door" + suffix));
     }
 
 
@@ -363,34 +363,34 @@ public class ModelProvider extends FabricModelProvider{
     /* OLD */ 
 
     private void registerPointedIce() {
-      BlockStateVariantMap.DoubleProperty<WeightedVariant, Direction, Thickness> doubleProperty = BlockStateVariantMap.models(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
-      Thickness[] var2 = Thickness.values();
+      PropertyDispatch.C2<MultiVariant, Direction, DripstoneThickness> doubleProperty = PropertyDispatch.initial(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
+      DripstoneThickness[] var2 = DripstoneThickness.values();
       int var3 = var2.length;
 
       int var4;
-      Thickness thickness;
+      DripstoneThickness thickness;
       for(var4 = 0; var4 < var3; ++var4) {
          thickness = var2[var4];
-         doubleProperty.register(Direction.UP, thickness, this.getDripstoneVariant(Direction.UP, thickness));
+         doubleProperty.select(Direction.UP, thickness, this.getDripstoneVariant(Direction.UP, thickness));
       }
 
-      var2 = Thickness.values();
+      var2 = DripstoneThickness.values();
       var3 = var2.length;
 
       for(var4 = 0; var4 < var3; ++var4) {
          thickness = var2[var4];
-         doubleProperty.register(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
+         doubleProperty.select(Direction.DOWN, thickness, this.getDripstoneVariant(Direction.DOWN, thickness));
       }
 
-      blockStateModelGenerator.blockStateCollector.accept(VariantsBlockModelDefinitionCreator.of(BlockFactory.callBlock("pointed_ice")).with(doubleProperty));
+      blockStateModelGenerator.blockStateOutput.accept(MultiVariantGenerator.dispatch(BlockFactory.callBlock("pointed_ice")).with(doubleProperty));
    }
 
-    public final WeightedVariant getDripstoneVariant(Direction direction, Thickness thickness) {
-      String var10000 = direction.asString();
-      String string = "_" + var10000 + "_" + thickness.asString();
-      TextureMap textureMap = TextureMap.cross(TextureMap.getSubId(BlockFactory.POINTED_ICE, string)); 
+    public final MultiVariant getDripstoneVariant(Direction direction, DripstoneThickness thickness) {
+      String var10000 = direction.getSerializedName();
+      String string = "_" + var10000 + "_" + thickness.getSerializedName();
+      TextureMapping textureMap = TextureMapping.cross(TextureMapping.getBlockTexture(BlockFactory.POINTED_ICE, string)); 
       //return createWeightedVariant(Models.POINTED_DRIPSTONE.upload(BlockFactory.POINTED_ICE, string, textureMap, blockStateModelGenerator.modelCollector));
-      return blockStateModelGenerator.createWeightedVariant(Models.POINTED_DRIPSTONE.upload(BlockFactory.POINTED_ICE, string, textureMap, blockStateModelGenerator.modelCollector));
+      return blockStateModelGenerator.plainVariant(ModelTemplates.POINTED_DRIPSTONE.createWithSuffix(BlockFactory.POINTED_ICE, string, textureMap, blockStateModelGenerator.modelOutput));
    }
 
 
@@ -398,7 +398,7 @@ public class ModelProvider extends FabricModelProvider{
     public void createMosaic(String Familybase, String varient) {
 
         Block MainTexture = BlockFactory.callBlock(Familybase + "_mosaic" + varient);
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+        BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
 
         blockPool
             .stairs(BlockFactory.callBlock(Familybase + "_mosaic_stairs" + varient))
@@ -410,7 +410,7 @@ public class ModelProvider extends FabricModelProvider{
         if (varient == null) {varient = "";}
         else {varient = "_" + varient;}
 
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+        BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
         blockPool
             .stairs(BlockFactory.callBlock(Familybase + "_stairs" + varient))
             .slab(BlockFactory.callBlock(Familybase + "_slab" + varient))
@@ -428,17 +428,17 @@ public class ModelProvider extends FabricModelProvider{
         else {varient = "_" + varient;}
 
         if (isNatural) {       
-            blockStateModelGenerator.registerSingleton(BlockFactory.callBlock(Familybase + "_leaves" + varient), TexturedModel.LEAVES);
+            blockStateModelGenerator.createTrivialBlock(BlockFactory.callBlock(Familybase + "_leaves" + varient), TexturedModel.LEAVES);
         }
         if (enableLogs) {
 
-            blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock(Familybase + "_log" + varient));
-            blockStateModelGenerator.createLogTexturePool(BlockFactory.callBlock("stripped_" + Familybase + "_log" + varient));
+            blockStateModelGenerator.woodProvider(BlockFactory.callBlock(Familybase + "_log" + varient));
+            blockStateModelGenerator.woodProvider(BlockFactory.callBlock("stripped_" + Familybase + "_log" + varient));
         }
 
 
         Block MainTexture = BlockFactory.callBlock(Familybase + "_planks" + varient);
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+        BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
 
         blockPool
             .stairs(BlockFactory.callBlock(Familybase + "_stairs" + varient))
@@ -448,10 +448,10 @@ public class ModelProvider extends FabricModelProvider{
             .fence(BlockFactory.callBlock(Familybase + "_fence" + varient))
             .fenceGate(BlockFactory.callBlock(Familybase + "_fence_gate" + varient));
             
-        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_trapdoor" + varient));
-        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor" + varient));
-        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_door" + varient));
-        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_glass_door" + varient));
+        blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(Familybase + "_trapdoor" + varient));
+        blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor" + varient));
+        blockStateModelGenerator.createDoor(BlockFactory.callBlock(Familybase + "_door" + varient));
+        blockStateModelGenerator.createDoor(BlockFactory.callBlock(Familybase + "_glass_door" + varient));
 
         createMosaic(Familybase, varient);
     }
@@ -459,8 +459,8 @@ public class ModelProvider extends FabricModelProvider{
     @Deprecated
     public void createVanillaGlassDoor(String Familybase) {
 
-        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(Familybase + "_glass_door"));
-        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor"));
+        blockStateModelGenerator.createDoor(BlockFactory.callBlock(Familybase + "_glass_door"));
+        blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(Familybase + "_glass_trapdoor"));
 
         /*if (Familybase == "waxed_copper") {}
         else if (Familybase == "waxed_exposed_copper") {} 
@@ -473,26 +473,26 @@ public class ModelProvider extends FabricModelProvider{
     }
 
     public void addWoolFamily(String FamilyBase, String color) {
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(FamilyBase + "_" + color));
+        blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock(FamilyBase + "_" + color));
     }
 
     public void addStoneAlt(String FamilyBase, Boolean isBricksOnly) {
 
         if (isBricksOnly) {
             Block MainTexture = BlockFactory.callBlock(FamilyBase + "_bricks");
-            BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+            BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
 
             blockPool
                 .stairs(BlockFactory.callBlock(FamilyBase + "_brick_stairs"))
                 .slab(BlockFactory.callBlock(FamilyBase + "_brick_slab"))
                 .wall(BlockFactory.callBlock(FamilyBase + "_brick_wall"));
 
-            blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock("cracked_" + FamilyBase + "_bricks"));
-            blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(FamilyBase + "_brick_chiseled"));
+            blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock("cracked_" + FamilyBase + "_bricks"));
+            blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock(FamilyBase + "_brick_chiseled"));
 
         } else {
             Block MainTexture = BlockFactory.callBlock(FamilyBase);
-            BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(MainTexture);
+            BlockFamilyProvider blockPool = blockStateModelGenerator.family(MainTexture);
 
             blockPool
                 .stairs(BlockFactory.callBlock(FamilyBase + "_stairs"))
@@ -512,16 +512,16 @@ public class ModelProvider extends FabricModelProvider{
      */
 
     @Deprecated
-    public void createColorT(String name, BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerSimpleCubeAll(BlockFactory.callBlock(name));
+    public void createColorT(String name, BlockModelGenerators blockStateModelGenerator) {
+        blockStateModelGenerator.createTrivialCube(BlockFactory.callBlock(name));
     }
 
     @Deprecated
-    public void createWoodTexG(String name, BlockStateModelGenerator blockStateModelGenerator, String endTag) { //TODO: Sign, Hanging Sign
+    public void createWoodTexG(String name, BlockModelGenerators blockStateModelGenerator, String endTag) { //TODO: Sign, Hanging Sign
 
         System.out.println("Model: " + name + "_[Type]" + endTag);
         Block block = BlockFactory.callBlock(name + "_planks" + endTag);
-        BlockTexturePool blockPool = blockStateModelGenerator.registerCubeAllModelTexturePool(block);
+        BlockFamilyProvider blockPool = blockStateModelGenerator.family(block);
 
         blockPool.stairs(BlockFactory.callBlock(name + "_stairs" + endTag));
         blockPool.slab(BlockFactory.callBlock(name + "_slab" + endTag));
@@ -529,8 +529,8 @@ public class ModelProvider extends FabricModelProvider{
         blockPool.pressurePlate(BlockFactory.callBlock(name + "_pressure_plate" + endTag));
         blockPool.fence(BlockFactory.callBlock(name + "_fence" + endTag));
         blockPool.fenceGate(BlockFactory.callBlock(name + "_fence_gate" + endTag));
-        blockStateModelGenerator.registerTrapdoor(BlockFactory.callBlock(name + "_trapdoor" + endTag));
-        blockStateModelGenerator.registerDoor(BlockFactory.callBlock(name + "_door" + endTag));
+        blockStateModelGenerator.createTrapdoor(BlockFactory.callBlock(name + "_trapdoor" + endTag));
+        blockStateModelGenerator.createDoor(BlockFactory.callBlock(name + "_door" + endTag));
         //blockPool.sign(block)
     }
 

@@ -2,8 +2,7 @@ package net.ent.entstupidstuff.client.entity.passive.LegacyKoi;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.RandomSource;
 
 public class LegacyKoiVariantRegistry {
     private static final List<LegacyKoiVariant> VARIANTS = new ArrayList<>();
@@ -40,7 +39,7 @@ public class LegacyKoiVariantRegistry {
         return VARIANTS.indexOf(variant);
     }
 
-    public static LegacyKoiVariant getRandom(Random random) {
+    public static LegacyKoiVariant getRandom(RandomSource random) {
         return VARIANTS.get(random.nextInt(VARIANTS.size()));
     }
 

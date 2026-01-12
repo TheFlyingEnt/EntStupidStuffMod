@@ -2,19 +2,19 @@ package net.ent.entstupidstuff.client.entity.passive;
 
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.FishEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class AlligatorGarEntity extends FishEntity {
-   public AlligatorGarEntity(EntityType<? extends AlligatorGarEntity> entityType, World world) {
+public class AlligatorGarEntity extends AbstractFish {
+   public AlligatorGarEntity(EntityType<? extends AlligatorGarEntity> entityType, Level world) {
       super(entityType, world);
    }
 
-   public ItemStack getBucketItem() {
+   public ItemStack getBucketItemStack() {
       return new ItemStack(ItemFactory.callItem("alligator_gar_bucket"));
    }
 

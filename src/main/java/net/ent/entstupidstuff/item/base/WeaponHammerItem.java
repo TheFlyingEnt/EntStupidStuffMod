@@ -10,42 +10,37 @@ import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.fabricmc.fabric.api.item.v1.FabricItem.Settings;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ToolComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.PiglinEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class WeaponHammerItem extends WeaponUpdatedItem{
     private static final int COOLDOWN_TICKS = 60;
     private static final double BASE_ATTACK_DAMAGE = 6.5;
     private static double ATTACK_DAMAGE;
 
-    public WeaponHammerItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(
+    public WeaponHammerItem(ToolMaterial toolMaterial, Properties settings) {
+        super(toolMaterial, settings.attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
@@ -54,9 +49,9 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                 0, 
                 1.25f //Handled in Code
             )
-        ).component(DataComponentTypes.TOOL, new ToolComponent(
+        ).component(DataComponents.TOOL, new Tool(
 					List.of(
-						ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), -3.4f )
+						Tool.Rule.minesAndDrops(BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE), -3.4f )
 					),
 					1.0F,
 					1,
@@ -122,56 +117,56 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
     }*/
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
-        PlayerEntity player = context.getPlayer();
-        ItemStack stack = context.getStack();
-        BlockPos pos = context.getBlockPos();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
+        ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
         final int radius = 3;
 
-        if (!world.isClient() && player != null) {
+        if (!world.isClientSide() && player != null) {
 
             //Adding Cooldown & Durability Damage
-            player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
-            stack.damage(2, player, EquipmentSlot.MAINHAND);
+            player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
+            stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
 
             //Getting Attack Pos
-            Vec3d attackPos = pos.toCenterPos();
+            Vec3 attackPos = pos.getCenter();
 
             //Playing Sound
-            world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, pos, SoundFactory.COMBAT_HAMMER_GROUND, SoundSource.PLAYERS, 1.0f, 1.0f);
             
             //AOE Attack
-            List<LivingEntity> entities = world.getEntitiesByClass(
+            List<LivingEntity> entities = world.getEntitiesOfClass(
                 LivingEntity.class, 
-                new Box(attackPos.add(-radius, -1, -radius), attackPos.add(radius, 2, radius)), 
+                new AABB(attackPos.add(-radius, -1, -radius), attackPos.add(radius, 2, radius)), 
                 e -> e != player
             );
 
             float DamangeMutiplyer = 0.25f;
 
-            if (player.getOffHandStack().isEmpty() || player.getMainHandStack().isEmpty()) {
+            if (player.getOffhandItem().isEmpty() || player.getMainHandItem().isEmpty()) {
                 DamangeMutiplyer = 0.5f;
             }
 
             for (LivingEntity targetEntity : entities) {
 
-                targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
-                targetEntity.damage((ServerWorld) world, player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
+                targetEntity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 100, 1));
+                targetEntity.hurtServer((ServerLevel) world, player.damageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
 
-                Vec3d knockback = targetEntity.getEntityPos().subtract(attackPos).normalize().multiply(0.5);
-                targetEntity.addVelocity(knockback.x, 0.3, knockback.z);
-                targetEntity.velocityModified = true;
+                Vec3 knockback = targetEntity.position().subtract(attackPos).normalize().scale(0.5);
+                targetEntity.push(knockback.x, 0.3, knockback.z);
+                targetEntity.hurtMarked = true;
 
-                world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 6.0f, 0.1f);
+                world.playSound(null, pos, SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 6.0f, 0.1f);
                  
             }
         }
 
         //Effects
-        BlockState blockState = world.getBlockState(context.getBlockPos());
-        if (world instanceof ServerWorld serverWorld) {
-            serverWorld.spawnParticles(
+        BlockState blockState = world.getBlockState(context.getClickedPos());
+        if (world instanceof ServerLevel serverWorld) {
+            serverWorld.sendParticles(
                 ParticleTypesFactory.HAMMER_BOOM,
                 pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5,
                 1, 0.0, 0.0, 0.0, 0.0 // count, offsetX, offsetY, offsetZ, speed
@@ -185,9 +180,9 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                     double py = pos.getY() + 1;
                     double pz = pos.getZ() + 1 + dz;
 
-                    if (world instanceof ServerWorld serverWorld) {
-                        serverWorld.spawnParticles(
-                            new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState),
+                    if (world instanceof ServerLevel serverWorld) {
+                        serverWorld.sendParticles(
+                            new BlockParticleOption(ParticleTypes.BLOCK, blockState),
                             px, py, pz,
                             3, 0.25, 0.25, 0.25, 0.05 // count & spread for variation
                         );
@@ -196,13 +191,13 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             }
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
     
 
     @Override
-	public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		stack.damage(1, attacker, EquipmentSlot.MAINHAND);
+	public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 	}
     
 }

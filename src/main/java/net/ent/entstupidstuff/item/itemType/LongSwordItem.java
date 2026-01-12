@@ -8,20 +8,7 @@ import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
 import net.ent.entstupidstuff.api.weaponTrait.CircleSlashTrait;
 import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ToolMaterial;
 
 
 
@@ -30,7 +17,7 @@ public class LongSwordItem extends WeaponUpdatedItem {
 
     //public float attack = 4;
 
-    public LongSwordItem(ToolMaterial toolMaterial, Settings settings) {
+    public LongSwordItem(ToolMaterial toolMaterial, Properties settings) {
         super(toolMaterial, settings);
         //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (5/*3.5*/)  + toolMaterial.attackDamageBonus(), -2.6f, 1, 1, 0)));
         

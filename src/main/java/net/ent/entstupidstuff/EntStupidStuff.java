@@ -14,12 +14,11 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShieldDecorationRecipe;
-import net.minecraft.recipe.SpecialCraftingRecipe.SpecialRecipeSerializer;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
+import net.minecraft.world.level.block.DispenserBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,45 +29,45 @@ public class EntStupidStuff implements ModInitializer {
 
 	public static final Boolean DEV_MODE = true;
 
-	public static final Identifier id(String path) {
-        return Identifier.of(MOD_ID, path);
+	public static final ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 		
     }
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_OAK_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_oak_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_OAK_SHIELD))
+		"crafting_special_wooden_oak_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_OAK_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_SPRUCE_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_spruce_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_SPRUCE_SHIELD))
+		"crafting_special_wooden_spruce_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_SPRUCE_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_BIRCH_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_birch_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_BIRCH_SHIELD))
+		"crafting_special_wooden_birch_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_BIRCH_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_JUNGLE_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_jungle_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_JUNGLE_SHIELD))
+		"crafting_special_wooden_jungle_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_JUNGLE_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_BAMBOO_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_bambo_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_BAMBOO_SHIELD))
+		"crafting_special_wooden_bambo_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_BAMBOO_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_ACAICA_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_acacia_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_ACACIA_SHIELD))
+		"crafting_special_wooden_acacia_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_ACACIA_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_DARK_OAK_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_dark_oak_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_DARK_OAK_SHIELD))
+		"crafting_special_wooden_dark_oak_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_DARK_OAK_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_MANGROVE_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_mangrove_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_MANGROVE_SHIELD))
+		"crafting_special_wooden_mangrove_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_MANGROVE_SHIELD))
 	);
 
 	public static RecipeSerializer<ShieldDecorationRecipe> WOODEN_CHERRY_SHIELD_DECORATION = RecipeSerializer.register(
-		"crafting_special_wooden_cherry_shielddecoration", new SpecialRecipeSerializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_CHERRY_SHIELD))
+		"crafting_special_wooden_cherry_shielddecoration", new Serializer<>((category) -> new ShieldDecorationRecipeExtra(category, ItemFactory.WOODEN_CHERRY_SHIELD))
 	);
 
 

@@ -3,15 +3,13 @@ package net.ent.entstupidstuff.client.entity.passive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
-
+import net.minecraft.Util;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.RandomSource;
 import com.mojang.serialization.Codec;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Util;
-import net.minecraft.util.function.ValueLists;
-import net.minecraft.util.math.random.Random;
 
 public final class KoiVariantRegistry {
 
@@ -99,8 +97,8 @@ public final class KoiVariantRegistry {
         );
 
     /** Used for network sync */
-    public static final PacketCodec<ByteBuf, KoiVariant> PACKET_CODEC =
-        PacketCodecs.indexed(
+    public static final StreamCodec<ByteBuf, KoiVariant> PACKET_CODEC =
+        ByteBufCodecs.idMapper(
             INDEX_MAPPER,
             KoiVariantRegistry::getIndex
         );
@@ -109,7 +107,7 @@ public final class KoiVariantRegistry {
      *  UTIL
      * ------------------------------------------------------------ */
 
-    public static KoiVariant getRandom(Random random) {
+    public static KoiVariant getRandom(RandomSource random) {
         return Util.getRandom(VARIANTS, random);
     }
 

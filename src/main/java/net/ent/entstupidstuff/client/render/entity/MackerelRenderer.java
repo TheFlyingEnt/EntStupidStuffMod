@@ -1,38 +1,38 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.MackerelEntity;
 import net.ent.entstupidstuff.client.render.entity.model.MackerelModel;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public class MackerelRenderer extends MobEntityRenderer<MackerelEntity, LivingEntityRenderState, MackerelModel> {
-   private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/mackerel.png");
+public class MackerelRenderer extends MobRenderer<MackerelEntity, LivingEntityRenderState, MackerelModel> {
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/mackerel.png");
 
-   public MackerelRenderer(EntityRendererFactory.Context context) {
-      super(context, new MackerelModel(context.getPart(ModEntityModelLayers.MACKEREL)), 0.3F);
+   public MackerelRenderer(EntityRendererProvider.Context context) {
+      super(context, new MackerelModel(context.bakeLayer(ModEntityModelLayers.MACKEREL)), 0.3F);
    }
 
    @Override
-	protected void setupTransforms(LivingEntityRenderState state, MatrixStack matrices, float bodyYaw,
+	protected void setupRotations(LivingEntityRenderState state, PoseStack matrices, float bodyYaw,
 			float baseHeight) {
-		super.setupTransforms(state, matrices, bodyYaw, baseHeight);
-		float f = 4.3F * MathHelper.sin(0.6F * state.age);
-		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(f));
-		if (!state.touchingWater) {
+		super.setupRotations(state, matrices, bodyYaw, baseHeight);
+		float f = 4.3F * Mth.sin(0.6F * state.ageInTicks);
+		matrices.mulPose(Axis.YP.rotationDegrees(f));
+		if (!state.isInWater) {
 			matrices.translate(0.1F, 0.1F, -0.1F);
-			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
+			matrices.mulPose(Axis.ZP.rotationDegrees(90.0F));
 		}
 	}
 
    @Override
-   public Identifier getTexture(LivingEntityRenderState state) {
+   public ResourceLocation getTextureLocation(LivingEntityRenderState state) {
       return TEXTURE;
    }
 

@@ -1,9 +1,9 @@
 package net.ent.entstupidstuff.api.legacy;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 
 public class BluntTrait {
@@ -13,7 +13,7 @@ public class BluntTrait {
     }*/
 
     public static void applyBluntEffect(Entity entity) {
-        ((LivingEntity) entity).addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 20, 4));
+        ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 20, 4));
     }
 
 }

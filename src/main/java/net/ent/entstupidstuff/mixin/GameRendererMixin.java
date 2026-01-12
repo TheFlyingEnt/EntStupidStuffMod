@@ -2,10 +2,10 @@ package net.ent.entstupidstuff.mixin;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.effects.ModEffects;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameRendererMixin {
     
     @Shadow @Final
-    private MinecraftClient client;
+    private Minecraft minecraft;
     
     @Shadow
-    private boolean postProcessorEnabled;
+    private boolean effectActive;
     
     @Shadow
-    protected abstract void setPostProcessor(Identifier id);
+    protected abstract void setPostEffect(ResourceLocation resourceLocation); //private void setPostEffect(ResourceLocation resourceLocation)
     
     @Shadow
-    protected abstract void clearPostProcessor();
+    protected abstract void clearPostEffect(); //public void clearPostEffect() {
 
     
     /**
@@ -51,19 +51,19 @@ public abstract class GameRendererMixin {
         }*/
 
 
-        if (this.client.getCameraEntity() instanceof LivingEntity livingEntity) {
-            if (livingEntity.hasStatusEffect(ModEffects.RGB_SHIFT)) {
+        if (this.minecraft.getCameraEntity() instanceof LivingEntity livingEntity) {
+            if (livingEntity.hasEffect(ModEffects.RGB_SHIFT)) {
                 // Apply RGB shift post-processor
-                this.setPostProcessor(Identifier.of(EntStupidStuff.MOD_ID, "rgb_shift"));
-            } else if (livingEntity.hasStatusEffect(ModEffects.BLUR)) {
+                this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "rgb_shift"));
+            } else if (livingEntity.hasEffect(ModEffects.BLUR)) {
                 // Apply RGB shift post-processor
-                this.setPostProcessor(Identifier.of(EntStupidStuff.MOD_ID, "blur"));
-            } else if (livingEntity.hasStatusEffect(ModEffects.CREEPER)) {
+                this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "blur"));
+            } else if (livingEntity.hasEffect(ModEffects.CREEPER)) {
                 // Apply RGB shift post-processor
-                this.setPostProcessor(Identifier.of(EntStupidStuff.MOD_ID, "creeper"));
-            } else if (this.postProcessorEnabled) {
+                this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "creeper"));
+            } else if (this.effectActive) {
                 // Clear if we had it enabled but effect is gone
-                this.clearPostProcessor();
+                this.clearPostEffect();
             }
         }
 

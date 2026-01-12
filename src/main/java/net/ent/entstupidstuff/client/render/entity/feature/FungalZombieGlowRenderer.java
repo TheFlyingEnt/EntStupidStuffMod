@@ -1,25 +1,25 @@
 package net.ent.entstupidstuff.client.render.entity.feature;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.ZombieEntityModel;
-import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.ZombieModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EyesLayer;
+import net.minecraft.client.renderer.entity.state.ZombieRenderState;
+import net.minecraft.resources.ResourceLocation;
 
-public class FungalZombieGlowRenderer extends EyesFeatureRenderer<ZombieEntityRenderState, ZombieEntityModel<ZombieEntityRenderState>> {
+public class FungalZombieGlowRenderer extends EyesLayer<ZombieRenderState, ZombieModel<ZombieRenderState>> {
 
-    private static final RenderLayer SKIN = RenderLayer.getEyes(
-        Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_fungal_e.png")
+    private static final RenderType SKIN = RenderType.eyes(
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_fungal_e.png")
     );
 
-    public FungalZombieGlowRenderer(FeatureRendererContext<ZombieEntityRenderState, ZombieEntityModel<ZombieEntityRenderState>> featureRendererContext) {
+    public FungalZombieGlowRenderer(RenderLayerParent<ZombieRenderState, ZombieModel<ZombieRenderState>> featureRendererContext) {
         super(featureRendererContext);
     }
 
     @Override
-    public RenderLayer getEyesTexture() {
+    public RenderType renderType() {
         return SKIN;
     }
     

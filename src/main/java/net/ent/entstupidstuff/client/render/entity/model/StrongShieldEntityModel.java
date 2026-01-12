@@ -1,18 +1,16 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
-import net.minecraft.client.model.Dilation;
-import net.minecraft.client.model.ModelData;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelPartData;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.ShieldEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.model.ShieldModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 
 @SuppressWarnings("unused")
-public class StrongShieldEntityModel extends ShieldEntityModel{
+public class StrongShieldEntityModel extends ShieldModel{
 
     /**
 	 * The key of the plate model part, whose value is {@value}.
@@ -36,23 +34,23 @@ public class StrongShieldEntityModel extends ShieldEntityModel{
 		this.handle = root.getChild("handle");
 	}
 
-	public static TexturedModelData getTexturedModelData() {
-		ModelData modelData = new ModelData();
-		ModelPartData modelPartData = modelData.getRoot();
-		modelPartData.addChild("plate", ModelPartBuilder.create().uv(0, 0).cuboid(-6.0F, -11.0F, -2.0F, 12.0F, 22.0F, 1.0F), ModelTransform.NONE);
+	public static LayerDefinition createLayer() {
+		MeshDefinition modelData = new MeshDefinition();
+		PartDefinition modelPartData = modelData.getRoot();
+		modelPartData.addOrReplaceChild("plate", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -11.0F, -2.0F, 12.0F, 22.0F, 1.0F), PartPose.ZERO);
 
-        modelPartData.addChild("side_1", ModelPartBuilder.create().uv(54, 0).mirrored().cuboid(0.0F, -11.0F, 0.0F, 3.0F, 22.0F, 1.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.of(-5.5F, 0.0F, -1.1F, 0.0F, 22.5F, 0.0F));
-        modelPartData.addChild("side_2", ModelPartBuilder.create().uv(54, 0).cuboid(-3.0F, -11.0F, 0.0F, 3.0F, 22.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(5.5F, 0.0F, -1.1F, 0.0F, -22.5F, 0.0F));
+        modelPartData.addOrReplaceChild("side_1", CubeListBuilder.create().texOffs(54, 0).mirror().addBox(0.0F, -11.0F, 0.0F, 3.0F, 22.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-5.5F, 0.0F, -1.1F, 0.0F, 22.5F, 0.0F));
+        modelPartData.addOrReplaceChild("side_2", CubeListBuilder.create().texOffs(54, 0).addBox(-3.0F, -11.0F, 0.0F, 3.0F, 22.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.5F, 0.0F, -1.1F, 0.0F, -22.5F, 0.0F));
         
-		modelPartData.addChild("handle", ModelPartBuilder.create().uv(26, 0).cuboid(-1.0F, -3.0F, -1.0F, 2.0F, 6.0F, 6.0F), ModelTransform.NONE);
-		return TexturedModelData.of(modelData, 64, 64);
+		modelPartData.addOrReplaceChild("handle", CubeListBuilder.create().texOffs(26, 0).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 6.0F, 6.0F), PartPose.ZERO);
+		return LayerDefinition.create(modelData, 64, 64);
 	}
 
-	public ModelPart getPlate() {
+	public ModelPart plate() {
 		return this.plate;
 	}
 
-	public ModelPart getHandle() {
+	public ModelPart handle() {
 		return this.handle;
 	}
 

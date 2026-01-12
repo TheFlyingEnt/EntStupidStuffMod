@@ -5,20 +5,20 @@ import java.util.function.Consumer;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.EntityBucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.material.Fluid;
 
-public class PerchBucketItem extends EntityBucketItem{
+public class PerchBucketItem extends MobBucketItem{
 
-    public PerchBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
+    public PerchBucketItem(EntityType<? extends Mob> type, Fluid fluid, SoundEvent emptyingSound, Properties settings) {
         super(type, fluid, emptyingSound, settings);
     }
     
@@ -37,7 +37,7 @@ public class PerchBucketItem extends EntityBucketItem{
     }*/
 
         @Override
-        public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
             PerchFishEntity.Variant variant2 = stack.getOrDefault(ModDataComponentTypes.PERCH_FISH_VARIANT, PerchFishEntity.Variant.DEFAULT);
             
             PerchFishEntity.Variant variant = stack.get(ModDataComponentTypes.PERCH_FISH_VARIANT);
@@ -46,8 +46,8 @@ public class PerchBucketItem extends EntityBucketItem{
                 String variantName = variant.getId();
                 String formattedName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1);
                 textConsumer.accept(
-                    Text.literal(formattedName)
-                        .formatted(Formatting.GRAY, Formatting.ITALIC)
+                    Component.literal(formattedName)
+                        .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
                 );
                 return;
             }

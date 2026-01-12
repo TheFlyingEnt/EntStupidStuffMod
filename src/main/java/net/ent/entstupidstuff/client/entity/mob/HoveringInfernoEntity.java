@@ -1,22 +1,22 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.BlazeEntity;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.level.Level;
 
-public class HoveringInfernoEntity extends BlazeEntity{
+public class HoveringInfernoEntity extends Blaze{
 
-    public HoveringInfernoEntity(EntityType<? extends BlazeEntity> entityType, World world) {
+    public HoveringInfernoEntity(EntityType<? extends Blaze> entityType, Level world) {
         super(entityType, world);
     }
 
-    private static final TrackedData<Boolean> ATTACKING =
-	DataTracker.registerData(HoveringInfernoEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ATTACKING =
+	SynchedEntityData.defineId(HoveringInfernoEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final  AnimationState attackAnimationState = new AnimationState();
 	public int attackAnimationTimeout = 0;
@@ -27,7 +27,7 @@ public class HoveringInfernoEntity extends BlazeEntity{
     @Override
     public void tick() {
         super.tick();
-        if(this.getEntityWorld().isClient()) {
+        if(this.level().isClientSide()) {
             setupAnimationStates();
         }
     }
@@ -48,16 +48,16 @@ public class HoveringInfernoEntity extends BlazeEntity{
 
         if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = this.random.nextInt(40) + 80;
-            this.idleAnimationState.start(this.age);
+            this.idleAnimationState.start(this.tickCount);
           }
         else
             --this.idleAnimationTimeout;
 
 
-        if(this.isAttacking() && attackAnimationTimeout <= 0) {
+        if(this.isAggressive() && attackAnimationTimeout <= 0) {
             attackAnimationTimeout = 25;
 			System.out.println("Attacking");
-            attackAnimationState.start(this.age);
+            attackAnimationState.start(this.tickCount);
         } else {
             --this.attackAnimationTimeout;
         }
@@ -73,26 +73,26 @@ public class HoveringInfernoEntity extends BlazeEntity{
         }*/
     }
 
-    public void setAttacking(boolean attacking) {
-        this.dataTracker.set(ATTACKING, attacking);
+    public void setAggressive(boolean attacking) {
+        this.entityData.set(ATTACKING, attacking);
     }
 
     @Override
-    public boolean isAttacking() {
-        return this.dataTracker.get(ATTACKING);
+    public boolean isAggressive() {
+        return this.entityData.get(ATTACKING);
     }
 
     @Override
-    public void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         
-		builder.add(ATTACKING, false);
+		builder.define(ATTACKING, false);
     }
 
     @Override
-    protected void updateLimbs(float posDelta) {
-        float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
-        this.limbAnimator.updateLimbs(f, 0.2f, 1);
+    protected void updateWalkAnimation(float posDelta) {
+        float f = this.getPose() == Pose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
+        this.walkAnimation.update(f, 0.2f, 1);
     }
 
 }

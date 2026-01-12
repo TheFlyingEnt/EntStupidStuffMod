@@ -10,69 +10,69 @@ import org.joml.Vector3f;
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ChargedProjectilesComponent;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.consume.UseAction;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
-public class CannonItem extends RangedWeaponItem{
+public class CannonItem extends ProjectileWeaponItem{
 
-    public CannonItem(Item.Settings settings) {
-        super(settings.maxCount(1).maxDamage(465).component(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT));
+    public CannonItem(Item.Properties settings) {
+        super(settings.stacksTo(1).durability(465).component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY));
     }
 
     @Override
-    public Predicate<ItemStack> getProjectiles() {
-        return stack -> stack.isOf(ItemFactory.CANNON_BALL_ITEM);
+    public Predicate<ItemStack> getAllSupportedProjectiles() {
+        return stack -> stack.is(ItemFactory.CANNON_BALL_ITEM);
     }
 
     @Override
-	public int getRange() {
+	public int getDefaultProjectileRange() {
 		return 8;
 	}
 
     @Override
-	protected void shoot(LivingEntity shooter, ProjectileEntity projectile, int index, float speed, float divergence, float yaw, @Nullable LivingEntity target) {
+	protected void shootProjectile(LivingEntity shooter, Projectile projectile, int index, float speed, float divergence, float yaw, @Nullable LivingEntity target) {
 		Vector3f vector3f;
 		if (target != null) {
 			double d = target.getX() - shooter.getX();
 			double e = target.getZ() - shooter.getZ();
 			double f = Math.sqrt(d * d + e * e);
-			double g = target.getBodyY(0.3333333333333333) - projectile.getY() + f * 0.2F;
-			vector3f = calcVelocity(shooter, new Vec3d(d, g, e), yaw);
+			double g = target.getY(0.3333333333333333) - projectile.getY() + f * 0.2F;
+			vector3f = calcVelocity(shooter, new Vec3(d, g, e), yaw);
 		} else {
-			Vec3d vec3d = shooter.getOppositeRotationVector(1.0F);
+			Vec3 vec3d = shooter.getUpVector(1.0F);
 			Quaternionf quaternionf = new Quaternionf().setAngleAxis((double)(yaw * (float) (Math.PI / 180.0)), vec3d.x, vec3d.y, vec3d.z);
-			Vec3d vec3d2 = shooter.getRotationVec(1.0F);
+			Vec3 vec3d2 = shooter.getViewVector(1.0F);
 			vector3f = vec3d2.toVector3f().rotate(quaternionf);
 		}
 
-		projectile.setVelocity((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), speed, divergence);
+		projectile.shoot((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), speed, divergence);
 
-		shooter.getEntityWorld().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_HAMMER_GROUND, shooter.getSoundCategory(), 1.0f, 1.0f); 
+		shooter.level().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_HAMMER_GROUND, shooter.getSoundSource(), 1.0f, 1.0f); 
 
 	}
 
-    private static Vector3f calcVelocity(LivingEntity shooter, Vec3d direction, float yaw) {
+    private static Vector3f calcVelocity(LivingEntity shooter, Vec3 direction, float yaw) {
 		Vector3f vector3f = direction.toVector3f().normalize();
 		Vector3f vector3f2 = new Vector3f(vector3f).cross(new Vector3f(0.0F, 1.0F, 0.0F));
 		if ((double)vector3f2.lengthSquared() <= 1.0E-7) {
-			Vec3d vec3d = shooter.getOppositeRotationVector(1.0F);
+			Vec3 vec3d = shooter.getUpVector(1.0F);
 			vector3f2 = new Vector3f(vector3f).cross(vec3d.toVector3f());
 		}
 
@@ -81,8 +81,8 @@ public class CannonItem extends RangedWeaponItem{
 	}
 
     @Override
-	protected ProjectileEntity createArrowEntity(World world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical) {
-		if (projectileStack.isOf(ItemFactory.CANNON_BALL_ITEM)) {
+	protected Projectile createProjectile(Level world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical) {
+		if (projectileStack.is(ItemFactory.CANNON_BALL_ITEM)) {
 			return new CannonballEntity(world, shooter, projectileStack, weaponStack);
 		} else {
 			return new CannonballEntity(world, shooter, projectileStack, weaponStack);
@@ -92,47 +92,47 @@ public class CannonItem extends RangedWeaponItem{
     ////
 
     @Override
-	public boolean isUsedOnRelease(ItemStack stack) {
-		return stack.isOf(this);
+	public boolean useOnRelease(ItemStack stack) {
+		return stack.is(this);
 	}
 
     private boolean charged = false;
 	private boolean loaded = false;
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand)
+    public InteractionResult use(Level world, Player user, InteractionHand hand)
     {
 
-        ItemStack itemStack = user.getStackInHand(hand);
-		ChargedProjectilesComponent chargedProjectilesComponent = itemStack.get(DataComponentTypes.CHARGED_PROJECTILES);
+        ItemStack itemStack = user.getItemInHand(hand);
+		ChargedProjectiles chargedProjectilesComponent = itemStack.get(DataComponents.CHARGED_PROJECTILES);
 		if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {
 			this.shootAll(world, user, hand, itemStack, getSpeed(chargedProjectilesComponent), 1.0F, null);
-			return ActionResult.CONSUME;
-		} else if (!user.getProjectileType(itemStack).isEmpty()) {
+			return InteractionResult.CONSUME;
+		} else if (!user.getProjectile(itemStack).isEmpty()) {
 			this.charged = false;
 			this.loaded = false;
-			user.setCurrentHand(hand);
-			return ActionResult.CONSUME;
+			user.startUsingItem(hand);
+			return InteractionResult.CONSUME;
 		} else {
-			return ActionResult.FAIL;
+			return InteractionResult.FAIL;
 		}
 
     }
 
-    private static float getSpeed(ChargedProjectilesComponent stack) {
+    private static float getSpeed(ChargedProjectiles stack) {
 		return stack.contains(ItemFactory.CANNON_BALL_ITEM) ? 1.6F : 3.15F;
 	}
 
     @Override
-	public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
-		int i = this.getMaxUseTime(stack, user) - remainingUseTicks;
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
+		int i = this.getUseDuration(stack, user) - remainingUseTicks;
 		return getPullProgress(i, stack, user) >= 1.0F && isCharged(stack);
 	}
 
     private static boolean loadProjectiles(LivingEntity shooter, ItemStack crossbow) {
-		List<ItemStack> list = load(crossbow, shooter.getProjectileType(crossbow), shooter);
+		List<ItemStack> list = draw(crossbow, shooter.getProjectile(crossbow), shooter);
 		if (!list.isEmpty()) {
-			crossbow.set(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.of(list));
+			crossbow.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(list));
 			return true;
 		} else {
 			return false;
@@ -140,7 +140,7 @@ public class CannonItem extends RangedWeaponItem{
 	}
 
 	public static boolean isCharged(ItemStack stack) {
-		ChargedProjectilesComponent chargedProjectilesComponent = stack.getOrDefault(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT);
+		ChargedProjectiles chargedProjectilesComponent = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
 		return !chargedProjectilesComponent.isEmpty();
 	}
 
@@ -154,33 +154,33 @@ public class CannonItem extends RangedWeaponItem{
 	}
 
     public static int getPullTime(ItemStack stack, LivingEntity user) {
-		float f = EnchantmentHelper.getCrossbowChargeTime(stack, user, 1.25F);
-		return MathHelper.floor(f * 20.0F);
+		float f = EnchantmentHelper.modifyCrossbowChargingTime(stack, user, 1.25F);
+		return Mth.floor(f * 20.0F);
 	}
 
-    public void shootAll(World world, LivingEntity shooter, Hand hand, ItemStack stack, float speed, float divergence, @Nullable LivingEntity target) {
-		if (world instanceof ServerWorld serverWorld) {
-			ChargedProjectilesComponent chargedProjectilesComponent = stack.set(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT);
+    public void shootAll(Level world, LivingEntity shooter, InteractionHand hand, ItemStack stack, float speed, float divergence, @Nullable LivingEntity target) {
+		if (world instanceof ServerLevel serverWorld) {
+			ChargedProjectiles chargedProjectilesComponent = stack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
 			if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {
-				this.shootAll(serverWorld, shooter, hand, stack, chargedProjectilesComponent.getProjectiles(), speed, divergence, shooter instanceof PlayerEntity, target);
-				if (shooter instanceof ServerPlayerEntity serverPlayerEntity) {
-					Criteria.SHOT_CROSSBOW.trigger(serverPlayerEntity, stack);
-					serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
+				this.shoot(serverWorld, shooter, hand, stack, chargedProjectilesComponent.getItems(), speed, divergence, shooter instanceof Player, target);
+				if (shooter instanceof ServerPlayer serverPlayerEntity) {
+					CriteriaTriggers.SHOT_CROSSBOW.trigger(serverPlayerEntity, stack);
+					serverPlayerEntity.awardStat(Stats.ITEM_USED.get(stack.getItem()));
 
 				}
 
-				if (shooter instanceof PlayerEntity player && !player.isCreative()) {
+				if (shooter instanceof Player player && !player.isCreative()) {
 	
-					player.getItemCooldownManager().set(player.getMainHandStack(), (20 * 15));
+					player.getCooldowns().addCooldown(player.getMainHandItem(), (20 * 15));
 				}
 			}
 		}
 	}
 
     @Override
-	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-		if (!world.isClient()) {
-			float f = (float)(stack.getMaxUseTime(user) - remainingUseTicks) / (float)getPullTime(stack, user);
+	public void onUseTick(Level world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+		if (!world.isClientSide()) {
+			float f = (float)(stack.getUseDuration(user) - remainingUseTicks) / (float)getPullTime(stack, user);
 			if (f < 0.2F) {
 				this.charged = false;
 				this.loaded = false;
@@ -200,13 +200,13 @@ public class CannonItem extends RangedWeaponItem{
 	}
 
     @Override
-	public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+	public int getUseDuration(ItemStack stack, LivingEntity user) {
 		return getPullTime(stack, user) + 3;
 	}
 
     @Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.CROSSBOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.CROSSBOW;
 	}
 
     

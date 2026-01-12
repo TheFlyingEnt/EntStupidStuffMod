@@ -6,17 +6,17 @@ import net.ent.entstupidstuff.block.BlockFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.tags.BlockTags;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
 
-    public BlockTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> registriesFuture) {
+    public BlockTagProvider(FabricDataOutput output, CompletableFuture<Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(WrapperLookup wrapperLookup) {
+    protected void addTags(Provider wrapperLookup) {
 
         //Fungal Planks
         addWoodFamily("fungal", null, false, false);
@@ -81,51 +81,51 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
         if (isNatural) {
              valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));  
              valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
 
              valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));  
              valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
 
              valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));  
              valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
 
              valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));  
              valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.AXE_MINEABLE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
+             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
              valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
 
             if (alsoLeaves) {
                  valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient)));
-                 valueLookupBuilder(BlockTags.HOE_MINEABLE).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient))); 
+                 valueLookupBuilder(BlockTags.MINEABLE_WITH_HOE).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient))); 
                  valueLookupBuilder(BlockTags.LEAVES).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient))); 
             }
 
@@ -156,28 +156,28 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
             .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
 
         
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_planks" + varient)));
         
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_button" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_door" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_fence" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_slab" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_stairs" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)));
-         valueLookupBuilder(BlockTags.AXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
         
         //Add Hanging Sign + Sign 
@@ -233,13 +233,13 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
          valueLookupBuilder(BlockTags.DOORS)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
 
          valueLookupBuilder(BlockTags.TRAPDOORS)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
 
         if (FamilyBase != "iron"){ //For Copper Doors
@@ -276,17 +276,17 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
          valueLookupBuilder(BlockTags.WALLS)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_chiseled")));
     }
 
@@ -301,11 +301,11 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
          valueLookupBuilder(BlockTags.WALLS)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
 
         FamilyBase = "polished_limestone";
@@ -317,11 +317,11 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
          valueLookupBuilder(BlockTags.WALLS)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
 
         FamilyBase = "polished_limestone_brick";
@@ -337,17 +337,17 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
 
 
 
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
             .add((BlockFactory.callBlock(FamilyBase + "_chiseled")));
     }
 

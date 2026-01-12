@@ -1,50 +1,49 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.entity.projectile.UnderwaterArrowEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
-import net.minecraft.client.render.entity.model.ArrowEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.state.ArrowEntityRenderState;
-import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-public class PrismerineArrowRenderer extends ProjectileEntityRenderer<UnderwaterArrowEntity, ArrowEntityRenderState> {
+import net.minecraft.client.model.ArrowModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.TippableArrowRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.resources.ResourceLocation;
+public class PrismerineArrowRenderer extends ArrowRenderer<UnderwaterArrowEntity, TippableArrowRenderState> {
 
-    public static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/projectiles/prismerine_arrow.png");
-    public final ArrowEntityModel model;
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/projectiles/prismerine_arrow.png");
+    public final ArrowModel model;
 
-    public PrismerineArrowRenderer(EntityRendererFactory.Context context) {
+    public PrismerineArrowRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.model = new ArrowEntityModel(context.getPart(EntityModelLayers.ARROW));
+        this.model = new ArrowModel(context.bakeLayer(ModelLayers.ARROW));
     }
 
     @Override
-    public Identifier getTexture(ArrowEntityRenderState state) {
+    public ResourceLocation getTextureLocation(TippableArrowRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public void render(ArrowEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, CameraRenderState cameraState) {
-        matrices.push();
-        super.render(state, matrices, commandQueue, cameraState);
-        matrices.pop();
+    public void submit(TippableArrowRenderState state, PoseStack matrices, SubmitNodeCollector commandQueue, CameraRenderState cameraState) {
+        matrices.pushPose();
+        super.submit(state, matrices, commandQueue, cameraState);
+        matrices.popPose();
     }
 
-    private void renderGlowLayer(ArrowEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue) {
-        commandQueue.submitCustom(matrices, RenderLayer.getEntityTranslucentEmissive(TEXTURE), (entry, vertexConsumer) -> {
+    private void renderGlowLayer(TippableArrowRenderState state, PoseStack matrices, SubmitNodeCollector commandQueue) {
+        commandQueue.submitCustomGeometry(matrices, RenderType.entityTranslucentEmissive(TEXTURE), (entry, vertexConsumer) -> {
             int light = 0xF000F0;
             int overlay = 0;
             int outlineColor = 0;
 
             commandQueue.submitModelPart(
-                    this.model.getRootPart(),
+                    this.model.root(),
                     matrices,
-                    RenderLayer.getEntityTranslucentEmissive(TEXTURE),
+                    RenderType.entityTranslucentEmissive(TEXTURE),
                     light,
                     overlay,
                     null,
@@ -58,12 +57,12 @@ public class PrismerineArrowRenderer extends ProjectileEntityRenderer<Underwater
     }
 
     @Override
-    public ArrowEntityRenderState createRenderState() {
-        return new ArrowEntityRenderState();
+    public TippableArrowRenderState createRenderState() {
+        return new TippableArrowRenderState();
     }
 
     @Override
-    public void updateRenderState(UnderwaterArrowEntity arrow, ArrowEntityRenderState state, float tickDelta) {
-        super.updateRenderState(arrow, state, tickDelta);
+    public void extractRenderState(UnderwaterArrowEntity arrow, TippableArrowRenderState state, float tickDelta) {
+        super.extractRenderState(arrow, state, tickDelta);
     }
 }

@@ -4,21 +4,21 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.RedPandaEntity;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
-import net.minecraft.client.render.entity.AgeableMobEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.AgeableMobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("deprecation")
-public class RedPandaRenderer extends AgeableMobEntityRenderer<RedPandaEntity, LivingEntityRenderState, RedPandaModel> {
-    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/red_panda.png");
+public class RedPandaRenderer extends AgeableMobRenderer<RedPandaEntity, LivingEntityRenderState, RedPandaModel> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/red_panda.png");
 
-	public RedPandaRenderer(EntityRendererFactory.Context context) {
-		super(context, new RedPandaModel(context.getPart(ModEntityModelLayers.RED_PANDA)), new RedPandaModel(context.getPart(ModEntityModelLayers.RED_PANDA)), 0.7F);
+	public RedPandaRenderer(EntityRendererProvider.Context context) {
+		super(context, new RedPandaModel(context.bakeLayer(ModEntityModelLayers.RED_PANDA)), new RedPandaModel(context.bakeLayer(ModEntityModelLayers.RED_PANDA)), 0.7F);
 		//this.addFeature(new FoxHeldItemFeatureRenderer(this));
 	}
 
-	public Identifier getTexture(LivingEntityRenderState redPandaEntity) {
+	public ResourceLocation getTextureLocation(LivingEntityRenderState redPandaEntity) {
 		return TEXTURE;
 	}
 

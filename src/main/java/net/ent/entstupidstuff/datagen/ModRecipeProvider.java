@@ -8,31 +8,31 @@ import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.recipe.CookingRecipeJsonBuilder;
-import net.minecraft.data.recipe.CraftingRecipeJsonBuilder;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.CampfireCookingRecipe;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SmokingRecipe;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class ModRecipeProvider extends FabricRecipeProvider{
 
-    public ModRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public ModRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
-    public static RecipeExporter exporter;
+    public static RecipeOutput exporter;
 
     //A way to enable and disable shit //TODO: Implement
     Boolean enableWeapons = true;
@@ -70,11 +70,11 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
 
     @Override
-    protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter recipeExporter) {
-        return new RecipeGenerator(wrapperLookup, recipeExporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
+        return new RecipeProvider(wrapperLookup, recipeExporter) {
 
             @Override
-            public void generate() {
+            public void buildRecipes() {
 
                 if (enableWeapons) {
 
@@ -86,7 +86,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                         createClaymore(Items.DIAMOND, ItemFactory.callItem("diamond" + "_claymore"));
 
                         if (enableNetherite)
-                            offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_claymore"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_claymore"));
+                            netheriteSmithing(ItemFactory.callItem("diamond_claymore"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_claymore"));
                     }
 
                     if (enableGlaive) {
@@ -97,7 +97,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                         createGlaive(Items.DIAMOND, ItemFactory.callItem("diamond" + "_glaive"));
 
                         if (enableNetherite)
-                            offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_glaive"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_glaive"));
+                            netheriteSmithing(ItemFactory.callItem("diamond_glaive"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_glaive"));
                     }
 
                     if (enableHammer) {
@@ -108,7 +108,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                         createHammerUpdated(Items.DIAMOND, ItemFactory.callItem("diamond" + "_hammer"));
 
                         if (enableHammer)
-                            offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_hammer"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_hammer"));
+                            netheriteSmithing(ItemFactory.callItem("diamond_hammer"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_hammer"));
                     }
 
                     if (enableBattleAxe) {
@@ -119,7 +119,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                         createBattleAxeUpdated(Items.DIAMOND, ItemFactory.callItem("diamond" + "_battleaxe"));
 
                         if (enableNetherite)
-                            offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_battleaxe"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_battleaxe"));
+                            netheriteSmithing(ItemFactory.callItem("diamond_battleaxe"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_battleaxe"));
                     }
 
                     if (enableLongSword) {
@@ -130,7 +130,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                         createLongSwordUpdated(Items.DIAMOND, ItemFactory.callItem("diamond" + "_long_sword"));
 
                         if (enableNetherite)
-                            offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_long_sword"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_long_sword"));
+                            netheriteSmithing(ItemFactory.callItem("diamond_long_sword"), RecipeCategory.COMBAT, ItemFactory.callItem("netherite_long_sword"));
                     }
 
                     if (enableCannon) {
@@ -223,53 +223,53 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 // Modded: Logs -> Planks
                 if (enableFungal) {
                     Item FUNGAL_PLANK = BlockFactory.callBlock("fungal_planks").asItem();
-                    createShapeless(RecipeCategory.BUILDING_BLOCKS, FUNGAL_PLANK, 4)
-                        .input(Ingredient.ofItems(Blocks.MUSHROOM_STEM, Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK, BlockFactory.callBlock("blue_mushroom_block")))
+                    shapeless(RecipeCategory.BUILDING_BLOCKS, FUNGAL_PLANK, 4)
+                        .requires(Ingredient.of(Blocks.MUSHROOM_STEM, Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK, BlockFactory.callBlock("blue_mushroom_block")))
                         .group("planks")
-                        .criterion(hasItem(Blocks.MUSHROOM_STEM), conditionsFromItem(Blocks.MUSHROOM_STEM))
-                        .criterion(hasItem(Blocks.RED_MUSHROOM_BLOCK), conditionsFromItem(Blocks.RED_MUSHROOM_BLOCK))
-                        .criterion(hasItem(Blocks.BROWN_MUSHROOM_BLOCK), conditionsFromItem(Blocks.BROWN_MUSHROOM_BLOCK))
-                    .offerTo(exporter);
+                        .unlockedBy(getHasName(Blocks.MUSHROOM_STEM), has(Blocks.MUSHROOM_STEM))
+                        .unlockedBy(getHasName(Blocks.RED_MUSHROOM_BLOCK), has(Blocks.RED_MUSHROOM_BLOCK))
+                        .unlockedBy(getHasName(Blocks.BROWN_MUSHROOM_BLOCK), has(Blocks.BROWN_MUSHROOM_BLOCK))
+                    .save(output);
                 }
 
                 if (enableRedwood) {
                     Item REDWOOD_PLANK = BlockFactory.callBlock("redwood_planks").asItem();
                     Block REDWOOD_LOG = BlockFactory.callBlock("redwood_log");
-                    createShapeless(RecipeCategory.BUILDING_BLOCKS, REDWOOD_PLANK, 4)
-                        .input(REDWOOD_LOG.asItem())
+                    shapeless(RecipeCategory.BUILDING_BLOCKS, REDWOOD_PLANK, 4)
+                        .requires(REDWOOD_LOG.asItem())
                         .group("planks")
-                        .criterion(hasItem(REDWOOD_LOG), conditionsFromItem(REDWOOD_LOG))
-                    .offerTo(exporter);
+                        .unlockedBy(getHasName(REDWOOD_LOG), has(REDWOOD_LOG))
+                    .save(output);
                 }
 
                 if (enableFir) {
                     Item FIR_PLANK = BlockFactory.callBlock("fir_planks").asItem();
                     Block FIR_LOG = BlockFactory.callBlock("fir_log");
-                    createShapeless(RecipeCategory.BUILDING_BLOCKS, FIR_PLANK, 4)
-                        .input(FIR_LOG.asItem())
+                    shapeless(RecipeCategory.BUILDING_BLOCKS, FIR_PLANK, 4)
+                        .requires(FIR_LOG.asItem())
                         .group("planks")
-                        .criterion(hasItem(FIR_LOG), conditionsFromItem(FIR_LOG))
-                    .offerTo(exporter);
+                        .unlockedBy(getHasName(FIR_LOG), has(FIR_LOG))
+                    .save(output);
                 }
 
                 if (enableMaple) {
                     Item MAPLE_PLANK = BlockFactory.callBlock("maple_planks").asItem();
                     Block MAPLE_LOG = BlockFactory.callBlock("maple_log");
-                    createShapeless(RecipeCategory.BUILDING_BLOCKS, MAPLE_PLANK, 4)
-                        .input(MAPLE_LOG.asItem())
+                    shapeless(RecipeCategory.BUILDING_BLOCKS, MAPLE_PLANK, 4)
+                        .requires(MAPLE_LOG.asItem())
                         .group("planks")
-                        .criterion(hasItem(MAPLE_LOG), conditionsFromItem(MAPLE_LOG))
-                    .offerTo(exporter);
+                        .unlockedBy(getHasName(MAPLE_LOG), has(MAPLE_LOG))
+                    .save(output);
                 }
 
                 if (enablePhantom) {
                     Item PHANTOM_PLANK = BlockFactory.callBlock("phantom_planks").asItem();
                     Block PHATOM_LOG = BlockFactory.callBlock("phantom_log");
-                    createShapeless(RecipeCategory.BUILDING_BLOCKS, PHANTOM_PLANK, 4)
-                        .input(PHATOM_LOG.asItem())
+                    shapeless(RecipeCategory.BUILDING_BLOCKS, PHANTOM_PLANK, 4)
+                        .requires(PHATOM_LOG.asItem())
                         .group("planks")
-                        .criterion(hasItem(PHATOM_LOG), conditionsFromItem(PHATOM_LOG))
-                    .offerTo(exporter);
+                        .unlockedBy(getHasName(PHATOM_LOG), has(PHATOM_LOG))
+                    .save(output);
                 }
                 
                 if (enableAdditionalStone) {
@@ -340,36 +340,36 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 
 
                 //Food
-                createShaped(RecipeCategory.FOOD, ItemFactory.callItem("baguette"))
-                    .input('#', Items.BREAD)
+                shaped(RecipeCategory.FOOD, ItemFactory.callItem("baguette"))
+                    .define('#', Items.BREAD)
                     .pattern("#")
                     .pattern("#")
                     .pattern("#")
-                    .criterion("has_bread", conditionsFromItem(Items.BREAD))
-                .offerTo(exporter);
+                    .unlockedBy("has_bread", has(Items.BREAD))
+                .save(output);
 
                 Item MARSHMELLOW_TOASTED = ItemFactory.callItem("toasted_marshmellow");
                 Item MARSHMELLOW_RAW = ItemFactory.callItem("raw_marshmellow"); 
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(MARSHMELLOW_RAW), RecipeCategory.FOOD, MARSHMELLOW_TOASTED, 0.35F, 200)
-                    .criterion("has_marshmellow", conditionsFromItem(MARSHMELLOW_RAW))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(MARSHMELLOW_RAW), RecipeCategory.FOOD, MARSHMELLOW_TOASTED, 0.35F, 200)
+                    .unlockedBy("has_marshmellow", has(MARSHMELLOW_RAW))
+                .save(output);
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, MARSHMELLOW_RAW, MARSHMELLOW_TOASTED, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, MARSHMELLOW_RAW, MARSHMELLOW_TOASTED, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, MARSHMELLOW_RAW, MARSHMELLOW_TOASTED, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, MARSHMELLOW_RAW, MARSHMELLOW_TOASTED, 0.35F);
 
-                createShapeless(RecipeCategory.FOOD, ItemFactory.MARSHMELLOW_RAW, 1)
-                    .input(Items.STICK,1)
-                    .input(Items.HONEYCOMB,1)
-                    .input(Items.SUGAR, 1)
-                    .criterion(hasItem(Items.STICK), conditionsFromItem(Items.STICK))
-                    .criterion(hasItem(Items.HONEY_BLOCK), conditionsFromItem(Items.HONEY_BLOCK))
-                    .criterion(hasItem(Items.SUGAR), conditionsFromItem(Items.SUGAR))
-                .offerTo(exporter);
+                shapeless(RecipeCategory.FOOD, ItemFactory.MARSHMELLOW_RAW, 1)
+                    .requires(Items.STICK,1)
+                    .requires(Items.HONEYCOMB,1)
+                    .requires(Items.SUGAR, 1)
+                    .unlockedBy(getHasName(Items.STICK), has(Items.STICK))
+                    .unlockedBy(getHasName(Items.HONEY_BLOCK), has(Items.HONEY_BLOCK))
+                    .unlockedBy(getHasName(Items.SUGAR), has(Items.SUGAR))
+                .save(output);
 
                 Item ANCIENT_DEBRIS_NUGGET = ItemFactory.callItem("ancient_debris_nugget");
 
-                offerReversibleCompactingRecipesWithCompactingRecipeGroup(
+                nineBlockStorageRecipesWithCustomPacking(
                     RecipeCategory.MISC, ANCIENT_DEBRIS_NUGGET, RecipeCategory.MISC, Items.ANCIENT_DEBRIS, "ancient_debris_from_nuggets", "ancient_debris"
                 );
 
@@ -379,58 +379,58 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
                 //Alligator Gar
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.ALLIGATOR_GAR, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.ALLIGATOR_GAR), RecipeCategory.FOOD, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F, 200)
-                    .criterion("has_alligator_gar", conditionsFromItem(ItemFactory.ALLIGATOR_GAR))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.ALLIGATOR_GAR), RecipeCategory.FOOD, ItemFactory.COOKED_ALLIGATOR_GAR, 0.35F, 200)
+                    .unlockedBy("has_alligator_gar", has(ItemFactory.ALLIGATOR_GAR))
+                .save(output);
 
                 //Mackerel
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.MACKEREL, ItemFactory.COOKED_MACKEREL, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MACKEREL), RecipeCategory.FOOD, ItemFactory.COOKED_MACKEREL, 0.35F, 200)
-                    .criterion("has_mackerel", conditionsFromItem(ItemFactory.MACKEREL))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.MACKEREL), RecipeCategory.FOOD, ItemFactory.COOKED_MACKEREL, 0.35F, 200)
+                    .unlockedBy("has_mackerel", has(ItemFactory.MACKEREL))
+                .save(output);
             
                 //Bass
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.BASS, ItemFactory.COOKED_BASS, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.BASS), RecipeCategory.FOOD, ItemFactory.COOKED_BASS, 0.35F, 200)
-                    .criterion("has_bass", conditionsFromItem(ItemFactory.BASS))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.BASS), RecipeCategory.FOOD, ItemFactory.COOKED_BASS, 0.35F, 200)
+                    .unlockedBy("has_bass", has(ItemFactory.BASS))
+                .save(output);
             
                 //Perch
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.PERCH, ItemFactory.COOKED_PERCH, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.PERCH), RecipeCategory.FOOD, ItemFactory.COOKED_PERCH, 0.35F, 200)
-                    .criterion("has_perch", conditionsFromItem(ItemFactory.PERCH))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.PERCH), RecipeCategory.FOOD, ItemFactory.COOKED_PERCH, 0.35F, 200)
+                    .unlockedBy("has_perch", has(ItemFactory.PERCH))
+                .save(output);
 
             
                 //Snapper
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.SNAPPER, ItemFactory.COOKED_SNAPPER, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.SNAPPER), RecipeCategory.FOOD, ItemFactory.COOKED_SNAPPER, 0.35F, 200)
-                    .criterion("has_snapper", conditionsFromItem(ItemFactory.SNAPPER))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.SNAPPER), RecipeCategory.FOOD, ItemFactory.COOKED_SNAPPER, 0.35F, 200)
+                    .unlockedBy("has_snapper", has(ItemFactory.SNAPPER))
+                .save(output);
             
                 //MahiMahi
 
-                offerFoodCookingRecipe("smoker", RecipeSerializer.SMOKING, SmokingRecipe::new, 100, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
-                offerFoodCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING, CampfireCookingRecipe::new, 600, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
+                simpleCookingRecipe("smoker", RecipeSerializer.SMOKING_RECIPE, SmokingRecipe::new, 100, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
+                simpleCookingRecipe("campfire_cooking", RecipeSerializer.CAMPFIRE_COOKING_RECIPE, CampfireCookingRecipe::new, 600, ItemFactory.MAHIMAHI, ItemFactory.COOKED_MAHIMAHI, 0.35F);
 
-                CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(ItemFactory.MAHIMAHI), RecipeCategory.FOOD, ItemFactory.COOKED_MAHIMAHI, 0.35F, 200)
-                    .criterion("has_mahimahi", conditionsFromItem(ItemFactory.MAHIMAHI))
-                .offerTo(exporter);
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemFactory.MAHIMAHI), RecipeCategory.FOOD, ItemFactory.COOKED_MAHIMAHI, 0.35F, 200)
+                    .unlockedBy("has_mahimahi", has(ItemFactory.MAHIMAHI))
+                .save(output);
 
 
 
@@ -470,7 +470,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                     createShield(Items.GOLD_INGOT, ItemFactory.GOLDEN_SHIELD);
                     createShield(Items.DIAMOND, ItemFactory.DIAMOND_SHIELD);
 
-                    offerNetheriteUpgradeRecipe(ItemFactory.callItem("diamond_shield"), RecipeCategory.COMBAT, ItemFactory.callItem("stone_shield"));
+                    netheriteSmithing(ItemFactory.callItem("diamond_shield"), RecipeCategory.COMBAT, ItemFactory.callItem("stone_shield"));
 
                 }
 
@@ -621,67 +621,67 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
             public void createGlassDoorRecipe(Block GLASSDOOR, Block DOOR, Item UNLOCK_Item, Boolean wooden) {
                 if (wooden) {
-                    createShapeless(RecipeCategory.REDSTONE, GLASSDOOR, 1)
-                    .input(DOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                    shapeless(RecipeCategory.REDSTONE, GLASSDOOR, 1)
+                    .requires(DOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("wooden_glass_door")
-                    .criterion(hasItem(DOOR.asItem()), conditionsFromItem(DOOR.asItem()))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(DOOR.asItem()), has(DOOR.asItem()))
+                    .save(output);
                 }
                 else {
-                    createShapeless(RecipeCategory.REDSTONE, GLASSDOOR, 1)
-                    .input(DOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                    shapeless(RecipeCategory.REDSTONE, GLASSDOOR, 1)
+                    .requires(DOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("glass_door")
-                    .criterion(hasItem(DOOR.asItem()), conditionsFromItem(DOOR.asItem()))
-                    .offerTo(exporter);  
+                    .unlockedBy(getHasName(DOOR.asItem()), has(DOOR.asItem()))
+                    .save(output);  
                 }
 
             }
 
             public void createGlassTrapDoorRecipe(Block GLASSTRAPDOOR, Block TRAPDOOR, Item UNLOCK_Item, Boolean wooden) {
                 if (wooden) {
-                    createShapeless(RecipeCategory.REDSTONE, GLASSTRAPDOOR, 1)
-                    .input(TRAPDOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                    shapeless(RecipeCategory.REDSTONE, GLASSTRAPDOOR, 1)
+                    .requires(TRAPDOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("wooden_glass_trapdoor")
-                    .criterion(hasItem(TRAPDOOR.asItem()), conditionsFromItem(TRAPDOOR.asItem()))
-                    .offerTo(exporter); 
+                    .unlockedBy(getHasName(TRAPDOOR.asItem()), has(TRAPDOOR.asItem()))
+                    .save(output); 
                 }
                 else {
-                    createShapeless(RecipeCategory.REDSTONE, GLASSTRAPDOOR, 1)
-                    .input(TRAPDOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                    shapeless(RecipeCategory.REDSTONE, GLASSTRAPDOOR, 1)
+                    .requires(TRAPDOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("glass_trapdoor")
-                    .criterion(hasItem(TRAPDOOR.asItem()), conditionsFromItem(TRAPDOOR.asItem()))
-                    .offerTo(exporter); 
+                    .unlockedBy(getHasName(TRAPDOOR.asItem()), has(TRAPDOOR.asItem()))
+                    .save(output); 
                 }
 
 
             }
 
-            public void createShield(TagKey<Item> UNLOCK_Item, ItemConvertible result) {
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('X', ItemTags.PLANKS)
-                .input('#', UNLOCK_Item)
+            public void createShield(TagKey<Item> UNLOCK_Item, ItemLike result) {
+                shaped(RecipeCategory.COMBAT, result)
+                .define('X', ItemTags.PLANKS)
+                .define('#', UNLOCK_Item)
                 .pattern("X#X")
                 .pattern("XXX")
                 .pattern(" X ")
                 //.group("long_sword")
-                .criterion("has_log", conditionsFromTag(ItemTags.PLANKS))
-                .offerTo(exporter);
+                .unlockedBy("has_log", has(ItemTags.PLANKS))
+                .save(output);
             }
 
-            public void createShield(Item material, ItemConvertible result) {
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('X', ItemTags.PLANKS)
-                .input('#', material)
+            public void createShield(Item material, ItemLike result) {
+                shaped(RecipeCategory.COMBAT, result)
+                .define('X', ItemTags.PLANKS)
+                .define('#', material)
                 .pattern("X#X")
                 .pattern("XXX")
                 .pattern(" X ")
                 //.group("long_sword")
-                .criterion(hasItem(material), conditionsFromTag(ItemTags.PLANKS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(material), has(ItemTags.PLANKS))
+                .save(output);
             }
 
             public void createCombat(Item UNLOCK, String MatName, TagKey<Item> matTag) {
@@ -705,255 +705,255 @@ public class ModRecipeProvider extends FabricRecipeProvider{
             }
 
             /* Updated Weapon Recipes */
-            public void createClaymore(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('S', Items.STICK)
+            public void createClaymore(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('S', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern("#S#")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createClaymore(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('S', Items.STICK)
+            public void createClaymore(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('S', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern("#S#")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
             }
 
-            public void createHammerUpdated(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('S', Items.STICK)
+            public void createHammerUpdated(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('S', Items.STICK)
                 .pattern("###")
                 .pattern("###")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createHammerUpdated(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('S', Items.STICK)
+            public void createHammerUpdated(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('S', Items.STICK)
                 .pattern("###")
                 .pattern("###")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
             }
 
-            public void createLongSwordUpdated(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('S', Items.STICK)
+            public void createLongSwordUpdated(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('S', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createLongSwordUpdated(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('S', Items.STICK)
+            public void createLongSwordUpdated(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('S', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
             }
 
-            public void createGlaive(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('S', Items.STICK)
+            public void createGlaive(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('S', Items.STICK)
                 .pattern("  #")
                 .pattern(" S ")
                 .pattern("S  ")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createGlaive(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('S', Items.STICK)
+            public void createGlaive(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('S', Items.STICK)
                 .pattern("  #")
                 .pattern(" S ")
                 .pattern("S  ")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
             }
 
-            public  void createBattleAxeUpdated(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('S', Items.STICK)
+            public  void createBattleAxeUpdated(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('S', Items.STICK)
                 .pattern("###")
                 .pattern("#S#")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createBattleAxeUpdated(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('S', Items.STICK)
+            public void createBattleAxeUpdated(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('S', Items.STICK)
                 .pattern("###")
                 .pattern("#S#")
                 .pattern(" S ")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
             }
 
             /*Legacy Weapons Recipes */
 
-            public void createLongSword(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('X', Items.STICK)
+            public void createLongSword(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('X', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern("#X#")
                 //.group("long_sword")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
 
             }
 
-            public void createLongSword(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('X', Items.STICK)
+            public void createLongSword(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('X', Items.STICK)
                 .pattern(" # ")
                 .pattern("###")
                 .pattern("#X#")
                 //.group("long_sword")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
 
                 
             }
 
-            public void createBattleAxe(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('X', Items.STICK)
+            public void createBattleAxe(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('X', Items.STICK)
                 .pattern("###")
                 .pattern("#X#")
                 .pattern(" X ")
                 //.group("battle_axe")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createBattleAxe(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('X', Items.STICK)
+            public void createBattleAxe(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('X', Items.STICK)
                 .pattern("###")
                 .pattern("#X#")
                 .pattern(" X ")
                 //.group("battle_axe")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
 
                 
             }
 
-            public void createKatana(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('X', Items.STICK)
+            public void createKatana(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('X', Items.STICK)
                 .pattern("  #")
                 .pattern(" # ")
                 .pattern("X  ")
                 //.group("katana")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createKatana(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('X', Items.STICK)
+            public void createKatana(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('X', Items.STICK)
                 .pattern("  #")
                 .pattern(" # ")
                 .pattern("X  ")
                 //.group("katana")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
 
                 
             }
 
-            public void createDagger(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('X', Items.STICK)
+            public void createDagger(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('X', Items.STICK)
                 .pattern("  #")
                 .pattern(" X ")
                 .pattern("   ")
                 //.group("dagger")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createDagger(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('X', Items.STICK)
+            public void createDagger(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('X', Items.STICK)
                 .pattern("  #")
                 .pattern(" X ")
                 .pattern("   ")
                 //.group("dagger")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
 
                 
             }
 
-            public void createHammer(Item UNLOCK, ItemConvertible result, TagKey<Item> ITEMTAGS){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', ITEMTAGS)
-                .input('X', Items.STICK)
+            public void createHammer(Item UNLOCK, ItemLike result, TagKey<Item> ITEMTAGS){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', ITEMTAGS)
+                .define('X', Items.STICK)
                 .pattern("###")
                 .pattern("###")
                 .pattern(" X ")
                 //.group("hammer")
-                .criterion(hasItem(UNLOCK), conditionsFromTag(ITEMTAGS))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(UNLOCK), has(ITEMTAGS))
+                .save(output);
             }
 
-            public void createHammer(Item MATERIAL, ItemConvertible result){
-                createShaped(RecipeCategory.COMBAT, result)
-                .input('#', MATERIAL)
-                .input('X', Items.STICK)
+            public void createHammer(Item MATERIAL, ItemLike result){
+                shaped(RecipeCategory.COMBAT, result)
+                .define('#', MATERIAL)
+                .define('X', Items.STICK)
                 .pattern("###")
                 .pattern("###")
                 .pattern(" X ")
                 //.group("hammer")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .save(output);
 
                 
             }
@@ -964,17 +964,17 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Item Iron2 = ItemFactory.callItem("iron_long_sword");
                 Item Iron3 = ItemFactory.callItem("iron_long_sword");
                 
-                CookingRecipeJsonBuilder.createSmelting(
-                    Ingredient.ofItems(Iron1, Iron2, Iron3),
+                SimpleCookingRecipeBuilder.smelting(
+                    Ingredient.of(Iron1, Iron2, Iron3),
                     RecipeCategory.MISC,
                     Items.IRON_NUGGET,
                     0.1F,
                     200
                 )
-                .criterion(hasItem(Iron1), conditionsFromItem(Iron1))
-                .criterion(hasItem(Iron2), conditionsFromItem(Iron2))
-                .criterion(hasItem(Iron3), conditionsFromItem(Iron3))
-                .offerTo(exporter, getSmeltingItemPath(Items.IRON_NUGGET));
+                .unlockedBy(getHasName(Iron1), has(Iron1))
+                .unlockedBy(getHasName(Iron2), has(Iron2))
+                .unlockedBy(getHasName(Iron3), has(Iron3))
+                .save(output, getSmeltingRecipeName(Items.IRON_NUGGET));
 
             }
 
@@ -984,34 +984,34 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Item Gold2 = ItemFactory.callItem("golden_long_sword");
                 Item Gold3 = ItemFactory.callItem("golden_long_sword");
                 
-                CookingRecipeJsonBuilder.createSmelting(
-                    Ingredient.ofItems(Gold1, Gold2, Gold3),
+                SimpleCookingRecipeBuilder.smelting(
+                    Ingredient.of(Gold1, Gold2, Gold3),
                     RecipeCategory.MISC,
                     Items.GOLD_NUGGET,
                     0.1F,
                     200
                 )
-                .criterion(hasItem(Gold1), conditionsFromItem(Gold1))
-                .criterion(hasItem(Gold2), conditionsFromItem(Gold2))
-                .criterion(hasItem(Gold3), conditionsFromItem(Gold3))
-                .offerTo(exporter, getSmeltingItemPath(Items.GOLD_NUGGET));
+                .unlockedBy(getHasName(Gold1), has(Gold1))
+                .unlockedBy(getHasName(Gold2), has(Gold2))
+                .unlockedBy(getHasName(Gold3), has(Gold3))
+                .save(output, getSmeltingRecipeName(Items.GOLD_NUGGET));
 
             }
 
 
             public void generateMosaic(String FamilyBase, Block Blocks, Block BlockSlab) {
 
-                offerMosaicRecipe(RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic"), BlockSlab);
+                mosaicBuilder(RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic"), BlockSlab);
                 
-                createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs").asItem(), Ingredient.ofItems(Blocks))
+                stairBuilder(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs").asItem(), Ingredient.of(Blocks))
                     .group("wooden_stairs")
-                    .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic")))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(BlockFactory.callBlock(FamilyBase + "_mosaic")), has(BlockFactory.callBlock(FamilyBase + "_mosaic")))
+                    .save(output);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab").asItem(), Ingredient.ofItems(Blocks))
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab").asItem(), Ingredient.of(Blocks))
                     .group("wooden_slab")
-                    .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic")), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic")))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(BlockFactory.callBlock(FamilyBase + "_mosaic")), has(BlockFactory.callBlock(FamilyBase + "_mosaic")))
+                    .save(output);
 
             }
 
@@ -1024,54 +1024,54 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 else {varient = "_" + varient;}
 
                 Item FamilyHead = BlockFactory.callBlock(FamilyBase + "_planks" + varient).asItem();
-                Ingredient FamilyI = Ingredient.ofItems(FamilyHead);
+                Ingredient FamilyI = Ingredient.of(FamilyHead);
 
-                createTrapdoorRecipe(BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem(), FamilyI)
+                trapdoorBuilder(BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem(), FamilyI)
                     .group("wooden_trapdoor")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
 
-                createFenceRecipe(BlockFactory.callBlock(FamilyBase + "_fence" + varient).asItem(), FamilyI)
+                fenceBuilder(BlockFactory.callBlock(FamilyBase + "_fence" + varient).asItem(), FamilyI)
                     .group("wooden_fence")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                createFenceGateRecipe(BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient).asItem(), FamilyI)
+                fenceGateBuilder(BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient).asItem(), FamilyI)
                     .group("wooden_fence_gate")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient).asItem(), FamilyI)
+                pressurePlateBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient).asItem(), FamilyI)
                     .group("wooden_pressure_plate")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_slab" + varient).asItem(), FamilyI)
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_slab" + varient).asItem(), FamilyI)
                     .group("wooden_slab")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_stairs" + varient).asItem(), FamilyI)
+                stairBuilder(BlockFactory.callBlock(FamilyBase + "_stairs" + varient).asItem(), FamilyI)
                     .group("wooden_stairs")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                createButtonRecipe(BlockFactory.callBlock(FamilyBase + "_button" + varient).asItem(), FamilyI)
+                buttonBuilder(BlockFactory.callBlock(FamilyBase + "_button" + varient).asItem(), FamilyI)
                     .group("wooden_button")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             
-                offerMosaicRecipe(RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic" + varient), BlockFactory.callBlock(FamilyBase + "_slab" + varient));
+                mosaicBuilder(RecipeCategory.DECORATIONS,  BlockFactory.callBlock(FamilyBase + "_mosaic" + varient), BlockFactory.callBlock(FamilyBase + "_slab" + varient));
                 
-                createStairsRecipe(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs" + varient).asItem(), FamilyI)
+                stairBuilder(BlockFactory.callBlock(FamilyBase + "_mosaic_stairs" + varient).asItem(), FamilyI)
                     .group("wooden_stairs")
-                    .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), has(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
+                    .save(output);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab" + varient).asItem(), FamilyI)
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_mosaic_slab" + varient).asItem(), FamilyI)
                     .group("wooden_slab")
-                    .criterion(hasItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), conditionsFromItem(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)), has(BlockFactory.callBlock(FamilyBase + "_mosaic" + varient)))
+                    .save(output);
 
                 //createGlassDoorRecipe(FamilyBase, varient, "wooden");
 
@@ -1081,29 +1081,29 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Item GLASS_TRAPDOOR = BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient).asItem();
                 Item TRAPDOOR = BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem();
 
-                createShapeless(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
-                    .input(DOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
+                    .requires(DOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("wooden_glass_door")
-                    .criterion(hasItem(DOOR), conditionsFromItem(DOOR))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(DOOR), has(DOOR))
+                    .save(output);
 
-                createShapeless(RecipeCategory.REDSTONE, GLASS_TRAPDOOR, 1)
-                    .input(TRAPDOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.REDSTONE, GLASS_TRAPDOOR, 1)
+                    .requires(TRAPDOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("wooden_glass_trapdoor")
-                    .criterion(hasItem(TRAPDOOR), conditionsFromItem(TRAPDOOR))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(TRAPDOOR), has(TRAPDOOR))
+                    .save(output);
 
 
-                createDoorRecipe(BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem(), FamilyI)
+                doorBuilder(BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem(), FamilyI)
                     .group("wooden_door")
-                    .criterion(hasItem(FamilyHead), conditionsFromItem(FamilyHead))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(FamilyHead), has(FamilyHead))
+                    .save(output);
             }
 
-            public CraftingRecipeJsonBuilder createGlassDoorRecipeTODO(ItemConvertible output, Ingredient input) {
-                return createShaped(RecipeCategory.REDSTONE, output, 3).input('#', input)
+            public RecipeBuilder createGlassDoorRecipeTODO(ItemLike output, Ingredient input) {
+                return shaped(RecipeCategory.REDSTONE, output, 3).define('#', input)
                 .pattern("##")
                 .pattern("##")
                 .pattern("##");
@@ -1115,16 +1115,16 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Item MATERIAL = BlockFactory.callBlock("fungal_planks").asItem();
                 Item DYE = BlockFactory.getDye(color).asItem();
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, result, 8)
-                .input('#', MATERIAL)
-                .input('D', DYE)
+                shaped(RecipeCategory.BUILDING_BLOCKS, result, 8)
+                .define('#', MATERIAL)
+                .define('D', DYE)
                 .pattern("###")
                 .pattern("#D#")
                 .pattern("###")
                 .group("colored_planks")
-                .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                .criterion(hasItem(DYE), conditionsFromItem(DYE))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                .unlockedBy(getHasName(DYE), has(DYE))
+                .save(output);
 
                 //Dyable Plank System
 
@@ -1139,7 +1139,7 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                     }
                 }
 
-                Ingredient cplankI = Ingredient.ofItems(
+                Ingredient cplankI = Ingredient.of(
                     plankFinal.get(0),
                     plankFinal.get(1),
                     plankFinal.get(2),
@@ -1158,12 +1158,12 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 );;
 
 
-                createShapeless(RecipeCategory.BUILDING_BLOCKS, result, 1)
-                    .input(cplankI,1)
-                    .input(DYE, 1)
+                shapeless(RecipeCategory.BUILDING_BLOCKS, result, 1)
+                    .requires(cplankI,1)
+                    .requires(DYE, 1)
                     .group("colored_planks")
-                    .criterion(hasItem(MATERIAL), conditionsFromItem(MATERIAL))
-                    .offerTo(exporter, "dye" + getItemPath(result));   
+                    .unlockedBy(getHasName(MATERIAL), has(MATERIAL))
+                    .save(output, "dye" + getItemName(result));   
 
 
             }
@@ -1172,14 +1172,14 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
                 Item wool = BlockFactory.getWoolColor(varient).asItem();
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_" + varient))
-                    .input('#', wool)
+                shaped(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(FamilyBase + "_" + varient))
+                    .define('#', wool)
                     .pattern(" ##")
                     .pattern(" ##")
                     .pattern("   ")
                     .group("textured_wool")
-                    .criterion(hasItem(wool), conditionsFromItem(wool))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(wool), has(wool))
+                    .save(output);
                 //Add Carpets
             }
 
@@ -1187,19 +1187,19 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Item GLASS_DOOR = BlockFactory.callBlock(ModdedFam + "_glass_door").asItem();
                 Item GLASS_TRAPDOOR = BlockFactory.callBlock(ModdedFam + "_glass_trapdoor").asItem();
 
-                createShapeless(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
-                    .input(DOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.REDSTONE, GLASS_DOOR, 1)
+                    .requires(DOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group(GROUP)
-                    .criterion(hasItem(PLANK), conditionsFromItem(PLANK))
-                    .offerTo(exporter, getItemPath(GLASS_DOOR));
+                    .unlockedBy(getHasName(PLANK), has(PLANK))
+                    .save(output, getItemName(GLASS_DOOR));
 
-                createShapeless(RecipeCategory.REDSTONE, GLASS_TRAPDOOR, 1)
-                    .input(TRAPDOOR,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.REDSTONE, GLASS_TRAPDOOR, 1)
+                    .requires(TRAPDOOR,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group(GROUP)
-                    .criterion(hasItem(PLANK), conditionsFromItem(PLANK))
-                    .offerTo(exporter, getItemPath(GLASS_TRAPDOOR));
+                    .unlockedBy(getHasName(PLANK), has(PLANK))
+                    .save(output, getItemName(GLASS_TRAPDOOR));
             }
 
 
@@ -1210,46 +1210,46 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Block PLANK = ModBlocks.VANILLA_DOOR(FamilyBase);
                 Block DOOR = ModBlocks.MOD_DOOR(FamilyBase + "_glass", null);
 
-                createShapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
-                    .input(PLANK,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
+                    .requires(PLANK,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("colored_planks")
-                    .criterion(hasItem(PLANK), conditionsFromItem(PLANK))
-                    .offerTo(exporter, getItemPath(DOOR)); 
+                    .unlockedBy(getHasName(PLANK), has(PLANK))
+                    .save(output, getItemName(DOOR)); 
             }
 
             public void createVanillaGlassDoorC(String FamilyBase) {
                 Block PLANK = ModBlocks.COPPER_DOOR(FamilyBase);
                 Block DOOR = ModBlocks.MOD_DOOR(FamilyBase + "_glass", null);
 
-                createShapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
-                    .input(PLANK,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
+                    .requires(PLANK,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("cooper_doors")
-                    .criterion(hasItem(PLANK), conditionsFromItem(PLANK))
-                    .offerTo(exporter, getItemPath(DOOR)); 
+                    .unlockedBy(getHasName(PLANK), has(PLANK))
+                    .save(output, getItemName(DOOR)); 
             }
 
             public void createVanillaGlassDoorI() {
                 Block PLANK = Blocks.IRON_DOOR;
                 Block DOOR = ModBlocks.MOD_DOOR("iron" + "_glass", null);
 
-                createShapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
-                    .input(PLANK,1)
-                    .input(Blocks.GLASS_PANE, 1)
+                shapeless(RecipeCategory.BUILDING_BLOCKS, DOOR, 1)
+                    .requires(PLANK,1)
+                    .requires(Blocks.GLASS_PANE, 1)
                     .group("colored_planks")
-                    .criterion(hasItem(PLANK), conditionsFromItem(PLANK))
-                    .offerTo(exporter, getItemPath(DOOR)); 
+                    .unlockedBy(getHasName(PLANK), has(PLANK))
+                    .save(output, getItemName(DOOR)); 
             }
 
             public void createPlanks(Block Planks, Ingredient Log){
-                createShapeless(RecipeCategory.BUILDING_BLOCKS, Planks, 4)
-                    .input(Log)
+                shapeless(RecipeCategory.BUILDING_BLOCKS, Planks, 4)
+                    .requires(Log)
                     .group("planks")
-                    .criterion(hasItem(Blocks.MUSHROOM_STEM), conditionsFromItem(Blocks.MUSHROOM_STEM))
-                    .criterion(hasItem(Blocks.RED_MUSHROOM_BLOCK), conditionsFromItem(Blocks.RED_MUSHROOM_BLOCK))
-                    .criterion(hasItem(Blocks.BROWN_MUSHROOM_BLOCK), conditionsFromItem(Blocks.BROWN_MUSHROOM_BLOCK))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(Blocks.MUSHROOM_STEM), has(Blocks.MUSHROOM_STEM))
+                    .unlockedBy(getHasName(Blocks.RED_MUSHROOM_BLOCK), has(Blocks.RED_MUSHROOM_BLOCK))
+                    .unlockedBy(getHasName(Blocks.BROWN_MUSHROOM_BLOCK), has(Blocks.BROWN_MUSHROOM_BLOCK))
+                    .save(output);
             }
 
             public void createLimestoneVarients() {
@@ -1261,64 +1261,64 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
                 //Limestone (Stonecutter)
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "stairs").asItem(), LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
 
                 //Limestone (Crafting Table)
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), 
-                    Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
-                .offerTo(exporter);
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("limestone_" + "slab").asItem(), 
+                    Ingredient.of(LIMESTONE.asItem())).unlockedBy(getHasName(LIMESTONE.asItem()), has(LIMESTONE.asItem()))
+                .save(output);
 
-                createStairsRecipe(BlockFactory.callBlock("limestone_" + "stairs").asItem(), 
-                    Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
-                .offerTo(exporter);
+                stairBuilder(BlockFactory.callBlock("limestone_" + "stairs").asItem(), 
+                    Ingredient.of(LIMESTONE.asItem())).unlockedBy(getHasName(LIMESTONE.asItem()), has(LIMESTONE.asItem()))
+                .save(output);
 
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("limestone_" + "wall").asItem(), LIMESTONE.asItem());
 
                 //Polished Limestone (Stonecutter)
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone").asItem(), LIMESTONE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone").asItem(), LIMESTONE);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);;
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);;
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
 
                 //Polished Limestone (Crafting Table)
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), 
-                    Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
-                .offerTo(exporter);
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_" + "slab").asItem(), 
+                    Ingredient.of(LIMESTONE.asItem())).unlockedBy(getHasName(LIMESTONE.asItem()), has(LIMESTONE.asItem()))
+                .save(output);
 
-                createStairsRecipe(BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), 
-                    Ingredient.ofItems(LIMESTONE.asItem())).criterion(hasItem(LIMESTONE.asItem()), conditionsFromItem(LIMESTONE.asItem()))
-                .offerTo(exporter);
+                stairBuilder(BlockFactory.callBlock("polished_limestone_" + "stairs").asItem(), 
+                    Ingredient.of(LIMESTONE.asItem())).unlockedBy(getHasName(LIMESTONE.asItem()), has(LIMESTONE.asItem()))
+                .save(output);
 
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_limestone_" + "wall").asItem(), LIMESTONE.asItem());
                 
 
                 // Limestone Bricks
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), POLISHED_LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), POLISHED_LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIMESTONE_BRICKS.asItem(), LIMESTONE.asItem());
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE_BRICKS.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), LIMESTONE.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), POLISHED_LIMESTONE_BRICKS.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "slab").asItem(), LIMESTONE.asItem(), 2);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "stairs").asItem(), LIMESTONE.asItem());
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), POLISHED_LIMESTONE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_" + "wall").asItem(), LIMESTONE.asItem());
 
                 /*CookingRecipeJsonBuilder.createSmelting(
                     Ingredient.ofItems(POLISHED_LIMESTONE_BRICKS.asItem()), RecipeCategory.BUILDING_BLOCKS, BlockFactoryUpt.callBlock("cracked_polished_limestone_brick").asItem(), 0.1F, 200
@@ -1326,9 +1326,9 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 .criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()))
                 .offerTo(exporter, "smelted_" + "cracked_polished_limestone_brick");*/
 
-                createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("polished_limestone_brick_slab")))
-                .criterion(hasItem(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), conditionsFromItem(POLISHED_LIMESTONE_BRICKS.asItem()))
-                .offerTo(exporter);
+                chiseledBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("polished_limestone_brick_chiseled"), Ingredient.of(BlockFactory.callBlock("polished_limestone_brick_slab")))
+                .unlockedBy(getHasName(POLISHED_LIMESTONE_BRICKS.asItem().asItem()), has(POLISHED_LIMESTONE_BRICKS.asItem()))
+                .save(output);
 
 
             }
@@ -1340,146 +1340,146 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 Block GRANITE_BRICKS = BlockFactory.callBlock("granite_bricks");
 
                 //Andesite
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.ANDESITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.POLISHED_ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS.asItem(), Blocks.POLISHED_ANDESITE);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), ANDERSITE_BRICKS.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.ANDESITE, 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.POLISHED_ANDESITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), ANDERSITE_BRICKS.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.ANDESITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Blocks.POLISHED_ANDESITE, 2);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), ANDERSITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.ANDESITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.POLISHED_ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), ANDERSITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_stairs").asItem(), Blocks.POLISHED_ANDESITE);
                 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.ANDESITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.POLISHED_ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), Blocks.POLISHED_ANDESITE);
 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), ANDERSITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.ANDESITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.POLISHED_ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), ANDERSITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_chiseled").asItem(), Blocks.POLISHED_ANDESITE);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                createStairsRecipe(BlockFactory.callBlock("andesite_brick_stairs").asItem(), Ingredient.ofItems(ANDERSITE_BRICKS.asItem())).criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_slab").asItem(), Ingredient.of(ANDERSITE_BRICKS.asItem())).unlockedBy(getHasName(ANDERSITE_BRICKS.asItem()), has(ANDERSITE_BRICKS.asItem()))
+                .save(output);
+                stairBuilder(BlockFactory.callBlock("andesite_brick_stairs").asItem(), Ingredient.of(ANDERSITE_BRICKS.asItem())).unlockedBy(getHasName(ANDERSITE_BRICKS.asItem()), has(ANDERSITE_BRICKS.asItem()))
+                .save(output);
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("andesite_brick_wall").asItem(), ANDERSITE_BRICKS.asItem());
 
-                CookingRecipeJsonBuilder.createSmelting(
-                    Ingredient.ofItems(ANDERSITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_andesite_bricks").asItem(), 0.1F, 200
+                SimpleCookingRecipeBuilder.smelting(
+                    Ingredient.of(ANDERSITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_andesite_bricks").asItem(), 0.1F, 200
                 )
-                .criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS.asItem()))
-                .offerTo(exporter, "smelted_" + "cracked_andesite_bricks");
+                .unlockedBy(getHasName(ANDERSITE_BRICKS.asItem()), has(ANDERSITE_BRICKS.asItem()))
+                .save(output, "smelted_" + "cracked_andesite_bricks");
 
-                createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("andesite_brick_slab")))
-                .criterion(hasItem(ANDERSITE_BRICKS.asItem()), conditionsFromItem(ANDERSITE_BRICKS))
-                .offerTo(exporter);
+                chiseledBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("andesite_brick_chiseled"), Ingredient.of(BlockFactory.callBlock("andesite_brick_slab")))
+                .unlockedBy(getHasName(ANDERSITE_BRICKS.asItem()), has(ANDERSITE_BRICKS))
+                .save(output);
 
 
                 //Granite
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.GRANITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.POLISHED_GRANITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.GRANITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS.asItem(), Blocks.POLISHED_GRANITE);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), GRANITE_BRICKS.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.GRANITE, 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.POLISHED_GRANITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), GRANITE_BRICKS.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.GRANITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Blocks.POLISHED_GRANITE, 2);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), GRANITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.GRANITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.POLISHED_GRANITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), GRANITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.GRANITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_stairs").asItem(), Blocks.POLISHED_GRANITE);
                 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.GRANITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.POLISHED_GRANITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.GRANITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), Blocks.POLISHED_GRANITE);
 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), GRANITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.GRANITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.POLISHED_GRANITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), GRANITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.GRANITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_chiseled").asItem(), Blocks.POLISHED_GRANITE);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                createStairsRecipe(BlockFactory.callBlock("granite_brick_stairs").asItem(), Ingredient.ofItems(GRANITE_BRICKS.asItem())).criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_slab").asItem(), Ingredient.of(GRANITE_BRICKS.asItem())).unlockedBy(getHasName(GRANITE_BRICKS.asItem()), has(GRANITE_BRICKS.asItem()))
+                .save(output);
+                stairBuilder(BlockFactory.callBlock("granite_brick_stairs").asItem(), Ingredient.of(GRANITE_BRICKS.asItem())).unlockedBy(getHasName(GRANITE_BRICKS.asItem()), has(GRANITE_BRICKS.asItem()))
+                .save(output);
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("granite_brick_wall").asItem(), GRANITE_BRICKS.asItem());
 
-                CookingRecipeJsonBuilder.createSmelting(
-                    Ingredient.ofItems(GRANITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_granite_bricks").asItem(), 0.1F, 200
+                SimpleCookingRecipeBuilder.smelting(
+                    Ingredient.of(GRANITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_granite_bricks").asItem(), 0.1F, 200
                 )
-                .criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS.asItem()))
-                .offerTo(exporter, "smelted_" + "cracked_granite_bricks");
+                .unlockedBy(getHasName(GRANITE_BRICKS.asItem()), has(GRANITE_BRICKS.asItem()))
+                .save(output, "smelted_" + "cracked_granite_bricks");
 
-                createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("granite_brick_slab")))
-                .criterion(hasItem(GRANITE_BRICKS.asItem()), conditionsFromItem(GRANITE_BRICKS))
-                .offerTo(exporter);
+                chiseledBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("granite_brick_chiseled"), Ingredient.of(BlockFactory.callBlock("granite_brick_slab")))
+                .unlockedBy(getHasName(GRANITE_BRICKS.asItem()), has(GRANITE_BRICKS))
+                .save(output);
                 
 
                 //Diorite
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.DIORITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.POLISHED_DIORITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.DIORITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS.asItem(), Blocks.POLISHED_DIORITE);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), DIORITE_BRICKS.asItem(), 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.DIORITE, 2);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.POLISHED_DIORITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), DIORITE_BRICKS.asItem(), 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.DIORITE, 2);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Blocks.POLISHED_DIORITE, 2);
 
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), DIORITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.DIORITE);
-                offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.POLISHED_DIORITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), DIORITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.DIORITE);
+                stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_stairs").asItem(), Blocks.POLISHED_DIORITE);
                 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.DIORITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.POLISHED_DIORITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.DIORITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), Blocks.POLISHED_DIORITE);
 
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), DIORITE_BRICKS.asItem());
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.DIORITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.POLISHED_DIORITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), DIORITE_BRICKS.asItem());
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.DIORITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_chiseled").asItem(), Blocks.POLISHED_DIORITE);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                createStairsRecipe(BlockFactory.callBlock("diorite_brick_stairs").asItem(), Ingredient.ofItems(DIORITE_BRICKS.asItem())).criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
-                .offerTo(exporter);
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_slab").asItem(), Ingredient.of(DIORITE_BRICKS.asItem())).unlockedBy(getHasName(DIORITE_BRICKS.asItem()), has(DIORITE_BRICKS.asItem()))
+                .save(output);
+                stairBuilder(BlockFactory.callBlock("diorite_brick_stairs").asItem(), Ingredient.of(DIORITE_BRICKS.asItem())).unlockedBy(getHasName(DIORITE_BRICKS.asItem()), has(DIORITE_BRICKS.asItem()))
+                .save(output);
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("diorite_brick_wall").asItem(), DIORITE_BRICKS.asItem());
 
-                CookingRecipeJsonBuilder.createSmelting(
-                    Ingredient.ofItems(DIORITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_diorite_bricks").asItem(), 0.1F, 200
+                SimpleCookingRecipeBuilder.smelting(
+                    Ingredient.of(DIORITE_BRICKS), RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("cracked_diorite_bricks").asItem(), 0.1F, 200
                 )
-                .criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS.asItem()))
-                .offerTo(exporter, "smelted_" + "cracked_diorite_bricks");
+                .unlockedBy(getHasName(DIORITE_BRICKS.asItem()), has(DIORITE_BRICKS.asItem()))
+                .save(output, "smelted_" + "cracked_diorite_bricks");
 
-                createChiseledBlockRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_chiseled"), Ingredient.ofItems(BlockFactory.callBlock("diorite_brick_slab")))
-                    .criterion(hasItem(DIORITE_BRICKS.asItem()), conditionsFromItem(DIORITE_BRICKS))
-                .offerTo(exporter);
-
-
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE.asItem());
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE.asItem());
-                offerWallRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE.asItem());
-
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE);
-                offerStonecuttingRecipe(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE);
+                chiseledBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("diorite_brick_chiseled"), Ingredient.of(BlockFactory.callBlock("diorite_brick_slab")))
+                    .unlockedBy(getHasName(DIORITE_BRICKS.asItem()), has(DIORITE_BRICKS))
+                .save(output);
 
 
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE.asItem());
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE.asItem());
+                wall(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE.asItem());
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS, 4)
-                    .input('#', Blocks.POLISHED_ANDESITE)
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_andesite_wall").asItem(), Blocks.POLISHED_ANDESITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_granite_wall").asItem(), Blocks.POLISHED_GRANITE);
+                stonecutterResultFromBase(RecipeCategory.DECORATIONS, BlockFactory.callBlock("polished_diorite_wall").asItem(), Blocks.POLISHED_DIORITE);
+
+
+
+                shaped(RecipeCategory.BUILDING_BLOCKS, ANDERSITE_BRICKS, 4)
+                    .define('#', Blocks.POLISHED_ANDESITE)
                     .pattern("##")
                     .pattern("##")
-                    .criterion(hasItem(Blocks.POLISHED_ANDESITE), conditionsFromItem(Blocks.POLISHED_ANDESITE))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(Blocks.POLISHED_ANDESITE), has(Blocks.POLISHED_ANDESITE))
+                    .save(output);
                 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS, 4)
-                    .input('#', Blocks.POLISHED_DIORITE)
+                shaped(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS, 4)
+                    .define('#', Blocks.POLISHED_DIORITE)
                     .pattern("##")
                     .pattern("##")
-                    .criterion(hasItem(Blocks.POLISHED_DIORITE), conditionsFromItem(Blocks.POLISHED_DIORITE))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(Blocks.POLISHED_DIORITE), has(Blocks.POLISHED_DIORITE))
+                    .save(output);
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS, 4)
-                    .input('#', Blocks.POLISHED_GRANITE)
+                shaped(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS, 4)
+                    .define('#', Blocks.POLISHED_GRANITE)
                     .pattern("##")
                     .pattern("##")
-                    .criterion(hasItem(Blocks.POLISHED_GRANITE), conditionsFromItem(Blocks.POLISHED_GRANITE))
-                    .offerTo(exporter);
+                    .unlockedBy(getHasName(Blocks.POLISHED_GRANITE), has(Blocks.POLISHED_GRANITE))
+                    .save(output);
                     
             }
 
@@ -1487,64 +1487,64 @@ public class ModRecipeProvider extends FabricRecipeProvider{
 
             @Deprecated
             public void createWoodGroup(String baseItemName, String endTag){
-                Ingredient baseItemI = Ingredient.ofItems(BlockFactory.callBlock(baseItemName + "_planks" + endTag).asItem());
+                Ingredient baseItemI = Ingredient.of(BlockFactory.callBlock(baseItemName + "_planks" + endTag).asItem());
                 Item baseItem = (BlockFactory.callBlock(baseItemName + "_planks" + endTag).asItem());
 
-                createTrapdoorRecipe(BlockFactory.callBlock(baseItemName + "_trapdoor" + endTag).asItem(), baseItemI)
+                trapdoorBuilder(BlockFactory.callBlock(baseItemName + "_trapdoor" + endTag).asItem(), baseItemI)
                 .group("wooden_trapdoor")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createFenceRecipe(BlockFactory.callBlock(baseItemName + "_fence" + endTag).asItem(), baseItemI)
+                fenceBuilder(BlockFactory.callBlock(baseItemName + "_fence" + endTag).asItem(), baseItemI)
                 .group("wooden_fence")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createFenceGateRecipe(BlockFactory.callBlock(baseItemName + "_fence_gate" + endTag).asItem(), baseItemI)
+                fenceGateBuilder(BlockFactory.callBlock(baseItemName + "_fence_gate" + endTag).asItem(), baseItemI)
                 .group("wooden_fence_gate")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createPressurePlateRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_pressure_plate" + endTag).asItem(), baseItemI)
+                pressurePlateBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_pressure_plate" + endTag).asItem(), baseItemI)
                 .group("wooden_pressure_plate")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_slab" + endTag).asItem(), baseItemI)
+                slabBuilder(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock(baseItemName + "_slab" + endTag).asItem(), baseItemI)
                 .group("wooden_slab")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createStairsRecipe(BlockFactory.callBlock(baseItemName + "_stairs" + endTag).asItem(), baseItemI)
+                stairBuilder(BlockFactory.callBlock(baseItemName + "_stairs" + endTag).asItem(), baseItemI)
                 .group("wooden_stairs")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createButtonRecipe(BlockFactory.callBlock(baseItemName + "_button" + endTag).asItem(), baseItemI)
+                buttonBuilder(BlockFactory.callBlock(baseItemName + "_button" + endTag).asItem(), baseItemI)
                 .group("wooden_button")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
 
-                createDoorRecipe(BlockFactory.callBlock(baseItemName + "_door" + endTag).asItem(), baseItemI)
+                doorBuilder(BlockFactory.callBlock(baseItemName + "_door" + endTag).asItem(), baseItemI)
                 .group("wooden_door")
-                .criterion(hasItem(baseItem), conditionsFromItem(baseItem))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(baseItem), has(baseItem))
+                .save(output);
             }
 
             //Recipe Create for Color Planks
             @Deprecated
-            public void createColorPlanks(Item dye, ItemConvertible output, String color) {
+            public void createColorPlanks(Item dye, ItemLike outputItem, String color) {
 
-                createShaped(RecipeCategory.BUILDING_BLOCKS, output, 8)
-                .input('#', BlockFactory.callBlock("fungal_planks").asItem())
-                .input('D', dye)
+                shaped(RecipeCategory.BUILDING_BLOCKS, outputItem, 8)
+                .define('#', BlockFactory.callBlock("fungal_planks").asItem())
+                .define('D', dye)
                 .pattern("###")
                 .pattern("#D#")
                 .pattern("###")
                 .group("colored_planks")
-                .criterion(hasItem(BlockFactory.callBlock("fungal_planks").asItem()), conditionsFromItem(BlockFactory.callBlock("fungal_planks").asItem()))
-                .criterion(hasItem(dye), conditionsFromItem(dye))
-                .offerTo(exporter);
+                .unlockedBy(getHasName(BlockFactory.callBlock("fungal_planks").asItem()), has(BlockFactory.callBlock("fungal_planks").asItem()))
+                .unlockedBy(getHasName(dye), has(dye))
+                .save(output);
                 
                 createWoodGroup("fungal", "_" + color);
             }
@@ -1570,14 +1570,14 @@ public class ModRecipeProvider extends FabricRecipeProvider{
                 boolean Enabled = false;
 
                 if ("iron" == baseMat && Enabled){
-                    generateMeltIron(Ingredient.ofItems(
+                    generateMeltIron(Ingredient.of(
                         ItemFactory.callItem(baseMat + "_long_sword"),
                         ItemFactory.callItem(baseMat + "_dagger"),
                         ItemFactory.callItem(baseMat + "_hammer")
                     ));   
                 } 
                 else if ("golden" == baseMat && Enabled){
-                    generateMeltGold(Ingredient.ofItems(
+                    generateMeltGold(Ingredient.of(
                         ItemFactory.callItem(baseMat + "_long_sword"),
                         ItemFactory.callItem(baseMat + "_dagger"),
                         ItemFactory.callItem(baseMat + "_hammer")
@@ -1589,33 +1589,33 @@ public class ModRecipeProvider extends FabricRecipeProvider{
             //Recipe Melt to Gold Nuggets
             @Deprecated
             public void generateMeltGold(Ingredient SmeltItems) {
-                CookingRecipeJsonBuilder.createSmelting(
+                SimpleCookingRecipeBuilder.smelting(
                     SmeltItems,
                     RecipeCategory.MISC,
                     Items.GOLD_NUGGET,
                     0.1F,
                     200
                 )
-                .criterion(hasItem(ItemFactory.callItem(Items.GOLD_INGOT + "_long_sword")), conditionsFromItem(ItemFactory.callItem(Items.GOLD_INGOT + "_long_sword")))
-                .criterion(hasItem(ItemFactory.callItem(Items.GOLD_INGOT + "_dagger")), conditionsFromItem(ItemFactory.callItem(Items.GOLD_INGOT + "_dagger")))
-                .criterion(hasItem(ItemFactory.callItem(Items.GOLD_INGOT + "_hammer")), conditionsFromItem(ItemFactory.callItem(Items.GOLD_INGOT + "_hammer")))
-                .offerTo(exporter, getSmeltingItemPath(Items.GOLD_NUGGET));
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.GOLD_INGOT + "_long_sword")), has(ItemFactory.callItem(Items.GOLD_INGOT + "_long_sword")))
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.GOLD_INGOT + "_dagger")), has(ItemFactory.callItem(Items.GOLD_INGOT + "_dagger")))
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.GOLD_INGOT + "_hammer")), has(ItemFactory.callItem(Items.GOLD_INGOT + "_hammer")))
+                .save(output, getSmeltingRecipeName(Items.GOLD_NUGGET));
             }
 
             //Recipe Melt to Iron Nuggets
             @Deprecated
             public void generateMeltIron(Ingredient SmeltItems) {
-                CookingRecipeJsonBuilder.createSmelting(
+                SimpleCookingRecipeBuilder.smelting(
                     SmeltItems,
                     RecipeCategory.MISC,
                     Items.IRON_NUGGET,
                     0.1F,
                     200
                 )
-                .criterion(hasItem(ItemFactory.callItem(Items.IRON_INGOT + "_long_sword")), conditionsFromItem(ItemFactory.callItem(Items.IRON_INGOT + "_long_sword")))
-                .criterion(hasItem(ItemFactory.callItem(Items.IRON_INGOT + "_dagger")), conditionsFromItem(ItemFactory.callItem(Items.IRON_INGOT + "_dagger")))
-                .criterion(hasItem(ItemFactory.callItem(Items.IRON_INGOT + "_hammer")), conditionsFromItem(ItemFactory.callItem(Items.IRON_INGOT + "_hammer")))
-                .offerTo(exporter, getSmeltingItemPath(Items.IRON_NUGGET));
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.IRON_INGOT + "_long_sword")), has(ItemFactory.callItem(Items.IRON_INGOT + "_long_sword")))
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.IRON_INGOT + "_dagger")), has(ItemFactory.callItem(Items.IRON_INGOT + "_dagger")))
+                .unlockedBy(getHasName(ItemFactory.callItem(Items.IRON_INGOT + "_hammer")), has(ItemFactory.callItem(Items.IRON_INGOT + "_hammer")))
+                .save(output, getSmeltingRecipeName(Items.IRON_NUGGET));
             }
         
         };

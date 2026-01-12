@@ -1,9 +1,5 @@
 package net.ent.entstupidstuff.particle;
 
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.world.ClientWorld;
-
 public class MapleLeavesParticle {//extends SpriteBillboardParticle {
 	/*private static final float field_43372 = 0.0025F;
 	private static final int field_43373 = 300;

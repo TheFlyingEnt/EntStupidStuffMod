@@ -2,14 +2,14 @@ package net.ent.entstupidstuff.world.feature;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class CrystalSpikeFeatureConfig implements FeatureConfig {
+public class CrystalSpikeFeatureConfig implements FeatureConfiguration {
 
     public static final Codec<CrystalSpikeFeatureConfig> CODEC =
         RecordCodecBuilder.create(instance -> instance.group(
@@ -20,22 +20,22 @@ public class CrystalSpikeFeatureConfig implements FeatureConfig {
                 .forGetter(config -> config.crystalBlock),
 
             // Blocks the spike can replace (stone, deepslate, abyssal, etc.)
-            TagKey.codec(net.minecraft.registry.RegistryKeys.BLOCK)
+            TagKey.hashedCodec(net.minecraft.core.registries.Registries.BLOCK)
                 .fieldOf("replaceable")
                 .forGetter(config -> config.replaceable),
 
             // Length of the spike
-            IntProvider.createValidatingCodec(1, 64)
+            IntProvider.codec(1, 64)
                 .fieldOf("length")
                 .forGetter(config -> config.length),
 
             // Thickness at base
-            IntProvider.createValidatingCodec(1, 6)
+            IntProvider.codec(1, 6)
                 .fieldOf("base_radius")
                 .forGetter(config -> config.baseRadius),
 
             // How quickly it tapers
-            FloatProvider.createValidatedCodec(0.0F, 1.0F)
+            FloatProvider.codec(0.0F, 1.0F)
                 .fieldOf("taper_chance")
                 .forGetter(config -> config.taperChance)
 

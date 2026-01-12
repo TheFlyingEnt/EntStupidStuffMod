@@ -1,14 +1,14 @@
 package net.ent.entstupidstuff.world.feature;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
 
@@ -17,11 +17,11 @@ public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
     }
 
     @Override
-    public boolean generate(FeatureContext<CrystalSpikeFeatureConfig> context) {
-        StructureWorldAccess world = context.getWorld();
-        BlockPos origin = context.getOrigin();
-        Random random = context.getRandom();
-        CrystalSpikeFeatureConfig config = context.getConfig();
+    public boolean place(FeaturePlaceContext<CrystalSpikeFeatureConfig> context) {
+        WorldGenLevel world = context.level();
+        BlockPos origin = context.origin();
+        RandomSource random = context.random();
+        CrystalSpikeFeatureConfig config = context.config();
 
         // Try to find a suitable starting position nearby if current isn't valid
         BlockPos startPos = findValidStartPos(world, origin, config, random);
@@ -38,18 +38,18 @@ public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
             direction = Direction.DOWN;
         } else {
             // Occasionally horizontal
-            direction = Direction.Type.HORIZONTAL.random(random);
+            direction = Direction.Plane.HORIZONTAL.getRandomDirection(random);
         }
 
-        int length = config.length.get(random);
-        int baseRadius = config.baseRadius.get(random);
-        float taperChance = config.taperChance.get(random);
+        int length = config.length.sample(random);
+        int baseRadius = config.baseRadius.sample(random);
+        float taperChance = config.taperChance.sample(random);
 
-        BlockPos.Mutable mutable = startPos.mutableCopy();
+        BlockPos.MutableBlockPos mutable = startPos.mutable();
         int placedBlocks = 0;
 
         for (int step = 0; step < length; step++) {
-            if (world.isOutOfHeightLimit(mutable)) break;
+            if (world.isOutsideBuildHeight(mutable)) break;
 
             int radius = Math.max(0, baseRadius - step / 3);
             int placed = placeDisk(world, mutable, radius, config.crystalBlock, config);
@@ -71,25 +71,25 @@ public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
      * Tries to find a valid starting position near the origin
      */
     private BlockPos findValidStartPos(
-        StructureWorldAccess world,
+        WorldGenLevel world,
         BlockPos origin,
         CrystalSpikeFeatureConfig config,
-        Random random
+        RandomSource random
     ) {
         // First try the origin
-        if (world.getBlockState(origin).isIn(config.replaceable)) {
+        if (world.getBlockState(origin).is(config.replaceable)) {
             return origin;
         }
 
         // Try nearby positions
         for (int attempt = 0; attempt < 8; attempt++) {
-            BlockPos offset = origin.add(
+            BlockPos offset = origin.offset(
                 random.nextInt(7) - 3,
                 random.nextInt(7) - 3,
                 random.nextInt(7) - 3
             );
 
-            if (world.getBlockState(offset).isIn(config.replaceable)) {
+            if (world.getBlockState(offset).is(config.replaceable)) {
                 return offset;
             }
         }
@@ -102,13 +102,13 @@ public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
      * Returns the number of blocks placed
      */
     private int placeDisk(
-        StructureWorldAccess world,
+        WorldGenLevel world,
         BlockPos center,
         int radius,
         BlockState crystal,
         CrystalSpikeFeatureConfig config
     ) {
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         int placed = 0;
 
         for (int x = -radius; x <= radius; x++) {
@@ -119,13 +119,13 @@ public class CrystalSpikeFeature extends Feature<CrystalSpikeFeatureConfig> {
 
                     pos.set(center.getX() + x, center.getY() + y, center.getZ() + z);
 
-                    if (world.isOutOfHeightLimit(pos)) continue;
+                    if (world.isOutsideBuildHeight(pos)) continue;
 
                     BlockState state = world.getBlockState(pos);
 
                     // Place if replaceable OR if it's air (for cave generation)
-                    if (state.isIn(config.replaceable) || state.isAir()) {
-                        world.setBlockState(pos, crystal, Block.NOTIFY_ALL);
+                    if (state.is(config.replaceable) || state.isAir()) {
+                        world.setBlock(pos, crystal, Block.UPDATE_ALL);
                         placed++;
                     }
                 }

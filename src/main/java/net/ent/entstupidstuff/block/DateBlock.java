@@ -5,87 +5,85 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.MapCodec;
-
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Fertilizable;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.tick.ScheduledTickView;
-
 import java.util.List;
 import java.util.stream.IntStream;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class DateBlock extends HorizontalFacingBlock implements Fertilizable {
+public class DateBlock extends HorizontalDirectionalBlock implements BonemealableBlock {
 
-   public static final MapCodec<DateBlock> CODEC = createCodec(DateBlock::new);
+   public static final MapCodec<DateBlock> CODEC = simpleCodec(DateBlock::new);
    public static final int MAX_AGE = 2;
-   public static final IntProperty AGE;
+   public static final IntegerProperty AGE;
    private static final List<Map<Direction, VoxelShape>> SHAPES;
 
-   public MapCodec<DateBlock> getCodec() {
+   public MapCodec<DateBlock> codec() {
       return CODEC;
    }
 
-   public DateBlock(AbstractBlock.Settings settings) {
+   public DateBlock(BlockBehaviour.Properties settings) {
       super(settings);
-      this.setDefaultState((BlockState)((BlockState)((BlockState)this.stateManager.getDefaultState()).with(FACING, Direction.NORTH)).with(AGE, 0));
+      this.registerDefaultState((BlockState)((BlockState)((BlockState)this.stateDefinition.any()).setValue(FACING, Direction.NORTH)).setValue(AGE, 0));
    }
 
-   protected boolean hasRandomTicks(BlockState state) {
-      return (Integer)state.get(AGE) < 2;
+   protected boolean isRandomlyTicking(BlockState state) {
+      return (Integer)state.getValue(AGE) < 2;
    }
 
-   protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+   protected void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
       if (world.random.nextInt(5) == 0) {
-         int i = (Integer)state.get(AGE);
+         int i = (Integer)state.getValue(AGE);
          if (i < 2) {
-            world.setBlockState(pos, (BlockState)state.with(AGE, i + 1), 2);
+            world.setBlock(pos, (BlockState)state.setValue(AGE, i + 1), 2);
          }
       }
 
    }
 
-   protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-      BlockState blockState = world.getBlockState(pos.offset((Direction)state.get(FACING)));
-      return blockState.isIn(BlockTags.JUNGLE_LOGS);
+   protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+      BlockState blockState = world.getBlockState(pos.relative((Direction)state.getValue(FACING)));
+      return blockState.is(BlockTags.JUNGLE_LOGS);
    }
 
-   protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-      return (VoxelShape)((Map)SHAPES.get((Integer)state.get(AGE))).get(state.get(FACING));
+   protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+      return (VoxelShape)((Map)SHAPES.get((Integer)state.getValue(AGE))).get(state.getValue(FACING));
    }
 
    @Nullable
-   public BlockState getPlacementState(ItemPlacementContext ctx) {
-      BlockState blockState = this.getDefaultState();
-      WorldView worldView = ctx.getWorld();
-      BlockPos blockPos = ctx.getBlockPos();
-      Direction[] var5 = ctx.getPlacementDirections();
+   public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+      BlockState blockState = this.defaultBlockState();
+      LevelReader worldView = ctx.getLevel();
+      BlockPos blockPos = ctx.getClickedPos();
+      Direction[] var5 = ctx.getNearestLookingDirections();
       int var6 = var5.length;
 
       for(int var7 = 0; var7 < var6; ++var7) {
          Direction direction = var5[var7];
          if (direction.getAxis().isHorizontal()) {
-            blockState = (BlockState)blockState.with(FACING, direction);
-            if (blockState.canPlaceAt(worldView, blockPos)) {
+            blockState = (BlockState)blockState.setValue(FACING, direction);
+            if (blockState.canSurvive(worldView, blockPos)) {
                return blockState;
             }
          }
@@ -94,34 +92,34 @@ public class DateBlock extends HorizontalFacingBlock implements Fertilizable {
       return null;
    }
 
-   protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
-      return direction == state.get(FACING) && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
+   protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+      return direction == state.getValue(FACING) && !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, world, tickView, pos, direction, neighborPos, neighborState, random);
    }
 
-   public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state) {
-      return (Integer)state.get(AGE) < 2;
+   public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
+      return (Integer)state.getValue(AGE) < 2;
    }
 
-   public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
+   public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
       return true;
    }
 
-   public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
-      world.setBlockState(pos, (BlockState)state.with(AGE, (Integer)state.get(AGE) + 1), 2);
+   public void performBonemeal(ServerLevel world, RandomSource random, BlockPos pos, BlockState state) {
+      world.setBlock(pos, (BlockState)state.setValue(AGE, (Integer)state.getValue(AGE) + 1), 2);
    }
 
-   protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
       builder.add(new Property[]{FACING, AGE});
    }
 
-   protected boolean canPathfindThrough(BlockState state, NavigationType type) {
+   protected boolean isPathfindable(BlockState state, PathComputationType type) {
       return false;
    }
 
    static {
-      AGE = Properties.AGE_2;
+      AGE = BlockStateProperties.AGE_2;
       SHAPES = IntStream.rangeClosed(0, 2).mapToObj((age) -> {
-         return VoxelShapes.createHorizontalFacingShapeMap(Block.createColumnShape((double)(4 + age * 2), (double)(7 - age * 2), 12.0).offset(0.0, 0.0, (double)(age - 5) / 16.0).simplify());
+         return Shapes.rotateHorizontal(Block.column((double)(4 + age * 2), (double)(7 - age * 2), 12.0).move(0.0, 0.0, (double)(age - 5) / 16.0).optimize());
       }).toList();
    }
 }

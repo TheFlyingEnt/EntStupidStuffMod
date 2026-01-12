@@ -1,22 +1,21 @@
 package net.ent.entstupidstuff.enchantment.effect;
 
 import com.mojang.serialization.MapCodec;
-
-import net.minecraft.enchantment.EnchantmentEffectContext;
-import net.minecraft.enchantment.effect.EnchantmentEntityEffect;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.EnchantedItemInUse;
+import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
+import net.minecraft.world.phys.Vec3;
 
 public record FrostbiteEnchantmentEffect() implements EnchantmentEntityEffect {
 
     public static final MapCodec<FrostbiteEnchantmentEffect> CODEC = MapCodec.unit(FrostbiteEnchantmentEffect::new);
 
     @Override
-    public void apply(ServerWorld world, int level, EnchantmentEffectContext context, Entity user, Vec3d pos) {
+    public void apply(ServerLevel world, int level, EnchantedItemInUse context, Entity user, Vec3 pos) {
 
         int duration = 100;
         int amplifier = 1;
@@ -24,15 +23,15 @@ public record FrostbiteEnchantmentEffect() implements EnchantmentEntityEffect {
         if (user instanceof LivingEntity victim){ //Will only be Frostbite I and II
             if (context.owner() != null){
 
-                victim.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, duration * level, amplifier));
-                victim.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, duration * level, amplifier));
-                victim.setFrozenTicks(duration * level);
+                victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, duration * level, amplifier));
+                victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, duration * level, amplifier));
+                victim.setTicksFrozen(duration * level);
             }
         }
     }
 
     @Override
-    public MapCodec<? extends EnchantmentEntityEffect> getCodec() {
+    public MapCodec<? extends EnchantmentEntityEffect> codec() {
         return CODEC;
     }
     

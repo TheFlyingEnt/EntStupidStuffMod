@@ -2,75 +2,73 @@ package net.ent.entstupidstuff.screen;
 
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.util.math.random.Random;
-
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.EnchantingTableBlock;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.Property;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.IdMap;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.level.block.EnchantingTableBlock;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.util.collection.IndexedIterable;
-import net.minecraft.util.math.BlockPos;
 
 /*
  * EnchantmentScreen
  * TODO: Implement
  */
 
-public class DarkEnchantmentScreenHandler extends ScreenHandler {
-    static final Identifier EMPTY_ECHO_SHARD_SLOT_TEXTURE =
-            Identifier.of("entstupidstuff", "item/empty_slot_echo_shard");
+public class DarkEnchantmentScreenHandler extends AbstractContainerMenu {
+    static final ResourceLocation EMPTY_ECHO_SHARD_SLOT_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "item/empty_slot_echo_shard");
 
-    private final Inventory inventory = new SimpleInventory(2) {
+    private final Container inventory = new SimpleContainer(2) {
         @Override
-        public void markDirty() {
-            super.markDirty();
-            DarkEnchantmentScreenHandler.this.onContentChanged(this);
+        public void setChanged() {
+            super.setChanged();
+            DarkEnchantmentScreenHandler.this.slotsChanged(this);
         }
     };
 
-    private final ScreenHandlerContext context;
-    private final Random random = Random.create();
-    private final Property seed = Property.create();
+    private final ContainerLevelAccess context;
+    private final RandomSource random = RandomSource.create();
+    private final DataSlot seed = DataSlot.standalone();
     public final int[] enchantmentPower = new int[3];
     public final int[] enchantmentId = new int[]{-1, -1, -1};
     public final int[] enchantmentLevel = new int[]{-1, -1, -1};
 
-    public DarkEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
+    public DarkEnchantmentScreenHandler(int syncId, Inventory playerInventory) {
+        this(syncId, playerInventory, ContainerLevelAccess.NULL);
     }
 
-    public DarkEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+    public DarkEnchantmentScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
         super(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, syncId);
         this.context = context;
 
         // Slot 0: Item to enchant
         this.addSlot(new Slot(this.inventory, 0, 15, 47) {
             @Override
-            public int getMaxItemCount() {
+            public int getMaxStackSize() {
                 return 1;
             }
         });
@@ -78,12 +76,12 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
         // Slot 1: Echo Shards
         this.addSlot(new Slot(this.inventory, 1, 35, 47) {
             @Override
-            public boolean canInsert(ItemStack stack) {
-                return stack.isOf(Items.ECHO_SHARD);
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(Items.ECHO_SHARD);
             }
 
             @Override
-            public Identifier getBackgroundSprite() {
+            public ResourceLocation getNoItemIcon() {
                 return EMPTY_ECHO_SHARD_SLOT_TEXTURE;
             }
         });
@@ -99,29 +97,29 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
         }
 
         // Sync props
-        this.addProperty(Property.create(this.enchantmentPower, 0));
-        this.addProperty(Property.create(this.enchantmentPower, 1));
-        this.addProperty(Property.create(this.enchantmentPower, 2));
-        this.addProperty(this.seed).set(playerInventory.player.getEnchantingTableSeed());
-        this.addProperty(Property.create(this.enchantmentId, 0));
-        this.addProperty(Property.create(this.enchantmentId, 1));
-        this.addProperty(Property.create(this.enchantmentId, 2));
-        this.addProperty(Property.create(this.enchantmentLevel, 0));
-        this.addProperty(Property.create(this.enchantmentLevel, 1));
-        this.addProperty(Property.create(this.enchantmentLevel, 2));
+        this.addDataSlot(DataSlot.shared(this.enchantmentPower, 0));
+        this.addDataSlot(DataSlot.shared(this.enchantmentPower, 1));
+        this.addDataSlot(DataSlot.shared(this.enchantmentPower, 2));
+        this.addDataSlot(this.seed).set(playerInventory.player.getEnchantmentSeed());
+        this.addDataSlot(DataSlot.shared(this.enchantmentId, 0));
+        this.addDataSlot(DataSlot.shared(this.enchantmentId, 1));
+        this.addDataSlot(DataSlot.shared(this.enchantmentId, 2));
+        this.addDataSlot(DataSlot.shared(this.enchantmentLevel, 0));
+        this.addDataSlot(DataSlot.shared(this.enchantmentLevel, 1));
+        this.addDataSlot(DataSlot.shared(this.enchantmentLevel, 2));
     }
 
     @Override
-	public void onContentChanged(Inventory inventory) {
+	public void slotsChanged(Container inventory) {
 		if (inventory == this.inventory) {
-			ItemStack itemStack = inventory.getStack(0);
+			ItemStack itemStack = inventory.getItem(0);
 			if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
-				this.context.run((world, pos) -> {
-					IndexedIterable<RegistryEntry<Enchantment>> indexedIterable = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getIndexedEntries();
+				this.context.execute((world, pos) -> {
+					IdMap<Holder<Enchantment>> indexedIterable = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).asHolderIdMap();
 					int ix = 0;
 
-					for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
-						if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
+					for (BlockPos blockPos : EnchantingTableBlock.BOOKSHELF_OFFSETS) {
+						if (EnchantingTableBlock.isValidBookShelf(world, pos, blockPos)) {
 							ix++;
 						}
 					}
@@ -129,7 +127,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 					this.random.setSeed((long)this.seed.get());
 
 					for (int j = 0; j < 3; j++) {
-						this.enchantmentPower[j] = EnchantmentHelper.calculateRequiredExperienceLevel(this.random, j, ix, itemStack);
+						this.enchantmentPower[j] = EnchantmentHelper.getEnchantmentCost(this.random, j, ix, itemStack);
 						this.enchantmentId[j] = -1;
 						this.enchantmentLevel[j] = -1;
 						if (this.enchantmentPower[j] < j + 1) {
@@ -139,16 +137,16 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 
 					for (int jx = 0; jx < 3; jx++) {
 						if (this.enchantmentPower[jx] > 0) {
-							List<EnchantmentLevelEntry> list = this.generateEnchantments(world.getRegistryManager(), itemStack, jx, this.enchantmentPower[jx]);
+							List<EnchantmentInstance> list = this.generateEnchantments(world.registryAccess(), itemStack, jx, this.enchantmentPower[jx]);
 							if (list != null && !list.isEmpty()) {
-								EnchantmentLevelEntry enchantmentLevelEntry = (EnchantmentLevelEntry)list.get(this.random.nextInt(list.size()));
-								this.enchantmentId[jx] = indexedIterable.getRawId(enchantmentLevelEntry.enchantment());
+								EnchantmentInstance enchantmentLevelEntry = (EnchantmentInstance)list.get(this.random.nextInt(list.size()));
+								this.enchantmentId[jx] = indexedIterable.getId(enchantmentLevelEntry.enchantment());
 								this.enchantmentLevel[jx] = enchantmentLevelEntry.level();
 							}
 						}
 					}
 
-					this.sendContentUpdates();
+					this.broadcastChanges();
 				});
 			} else {
 				for (int i = 0; i < 3; i++) {
@@ -161,46 +159,46 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
 	}
 
     @Override
-    public boolean onButtonClick(PlayerEntity player, int id) {
+    public boolean clickMenuButton(Player player, int id) {
         if (id >= 0 && id < this.enchantmentPower.length) {
-            ItemStack itemStack = this.inventory.getStack(0);
-            ItemStack shardStack = this.inventory.getStack(1);
+            ItemStack itemStack = this.inventory.getItem(0);
+            ItemStack shardStack = this.inventory.getItem(1);
             int cost = id + 1; // cost in shards
 
-            if ((shardStack.isEmpty() || shardStack.getCount() < cost) && !player.isInCreativeMode()) {
+            if ((shardStack.isEmpty() || shardStack.getCount() < cost) && !player.hasInfiniteMaterials()) {
                 return false;
             } else if (this.enchantmentPower[id] <= 0 || itemStack.isEmpty()) {
                 return false;
             } else {
-                this.context.run((world, pos) -> {
-                    List<EnchantmentLevelEntry> list = this.generateEnchantments(world.getRegistryManager(), itemStack, id, this.enchantmentPower[id]);
+                this.context.execute((world, pos) -> {
+                    List<EnchantmentInstance> list = this.generateEnchantments(world.registryAccess(), itemStack, id, this.enchantmentPower[id]);
                     if (!list.isEmpty()) {
-                        if (!player.getAbilities().creativeMode) {
-                            shardStack.decrement(cost);
+                        if (!player.getAbilities().instabuild) {
+                            shardStack.shrink(cost);
                             if (shardStack.isEmpty()) {
-                                this.inventory.setStack(1, ItemStack.EMPTY);
+                                this.inventory.setItem(1, ItemStack.EMPTY);
                             }
                         }
 
                         ItemStack enchanted = itemStack;
-                        if (itemStack.isOf(Items.BOOK)) {
-                            enchanted = itemStack.withItem(Items.ENCHANTED_BOOK);
-                            this.inventory.setStack(0, enchanted);
+                        if (itemStack.is(Items.BOOK)) {
+                            enchanted = itemStack.transmuteCopy(Items.ENCHANTED_BOOK);
+                            this.inventory.setItem(0, enchanted);
                         }
 
-                        for (EnchantmentLevelEntry entry : list) {
-                            enchanted.addEnchantment(entry.enchantment(), entry.level());
+                        for (EnchantmentInstance entry : list) {
+                            enchanted.enchant(entry.enchantment(), entry.level());
                         }
 
-                        player.incrementStat(Stats.ENCHANT_ITEM);
-                        if (player instanceof ServerPlayerEntity spe) {
-                            Criteria.ENCHANTED_ITEM.trigger(spe, enchanted, cost);
+                        player.awardStat(Stats.ENCHANT_ITEM);
+                        if (player instanceof ServerPlayer spe) {
+                            CriteriaTriggers.ENCHANTED_ITEM.trigger(spe, enchanted, cost);
                         }
 
-                        this.inventory.markDirty();
-                        this.seed.set(player.getEnchantingTableSeed());
-                        this.onContentChanged(this.inventory);
-                        world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F,
+                        this.inventory.setChanged();
+                        this.seed.set(player.getEnchantmentSeed());
+                        this.slotsChanged(this.inventory);
+                        world.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F,
                                 world.random.nextFloat() * 0.1F + 0.9F);
                     }
                 });
@@ -210,20 +208,20 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
         return false;
     }
 
-    private List<EnchantmentLevelEntry> generateEnchantments(DynamicRegistryManager registryManager, ItemStack stack, int slot, int level) {
+    private List<EnchantmentInstance> generateEnchantments(RegistryAccess registryManager, ItemStack stack, int slot, int level) {
         this.random.setSeed((long) (this.seed.get() + slot));
 
         // 🔽 Vanilla enchantments only (for now)
-        Optional<RegistryEntryList.Named<Enchantment>> optional =
-                registryManager.getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(EnchantmentTags.IN_ENCHANTING_TABLE);
+        Optional<HolderSet.Named<Enchantment>> optional =
+                registryManager.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.IN_ENCHANTING_TABLE);
         if (optional.isEmpty()) {
             return List.of();
         }
 
-        List<EnchantmentLevelEntry> list =
-                EnchantmentHelper.generateEnchantments((net.minecraft.util.math.random.Random) this.random, stack, level, optional.get().stream());
+        List<EnchantmentInstance> list =
+                EnchantmentHelper.selectEnchantment((net.minecraft.util.RandomSource) this.random, stack, level, optional.get().stream());
 
-        if (stack.isOf(Items.BOOK) && list.size() > 1) {
+        if (stack.is(Items.BOOK) && list.size() > 1) {
             list.remove(this.random.nextInt(list.size()));
         }
 
@@ -231,7 +229,7 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
     }
 
     public int getEchoShardCount() {
-        ItemStack stack = this.inventory.getStack(1);
+        ItemStack stack = this.inventory.getItem(1);
         return stack.isEmpty() ? 0 : stack.getCount();
     }
 
@@ -240,56 +238,56 @@ public class DarkEnchantmentScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.context.run((world, pos) -> this.dropInventory(player, this.inventory));
+    public void removed(Player player) {
+        super.removed(player);
+        this.context.execute((world, pos) -> this.clearContainer(player, this.inventory));
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
-        return canUse(this.context, player, BlockFactory.DARK_ENCHANTMENT_TABLE);
+    public boolean stillValid(Player player) {
+        return stillValid(this.context, player, BlockFactory.DARK_ENCHANTMENT_TABLE);
     }
 
     @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
+    public ItemStack quickMoveStack(Player player, int slot) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot2 = this.slots.get(slot);
-        if (slot2 != null && slot2.hasStack()) {
-            ItemStack itemStack2 = slot2.getStack();
+        if (slot2 != null && slot2.hasItem()) {
+            ItemStack itemStack2 = slot2.getItem();
             itemStack = itemStack2.copy();
 
             if (slot == 0) {
-                if (!this.insertItem(itemStack2, 2, 38, true)) {
+                if (!this.moveItemStackTo(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slot == 1) {
-                if (!this.insertItem(itemStack2, 2, 38, true)) {
+                if (!this.moveItemStackTo(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (itemStack2.isOf(Items.ECHO_SHARD)) {
-                if (!this.insertItem(itemStack2, 1, 2, true)) {
+            } else if (itemStack2.is(Items.ECHO_SHARD)) {
+                if (!this.moveItemStackTo(itemStack2, 1, 2, true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (this.slots.get(0).hasStack() || !this.slots.get(0).canInsert(itemStack2)) {
+                if (this.slots.get(0).hasItem() || !this.slots.get(0).mayPlace(itemStack2)) {
                     return ItemStack.EMPTY;
                 }
                 ItemStack single = itemStack2.copyWithCount(1);
-                itemStack2.decrement(1);
-                this.slots.get(0).setStack(single);
+                itemStack2.shrink(1);
+                this.slots.get(0).setByPlayer(single);
             }
 
             if (itemStack2.isEmpty()) {
-                slot2.setStack(ItemStack.EMPTY);
+                slot2.setByPlayer(ItemStack.EMPTY);
             } else {
-                slot2.markDirty();
+                slot2.setChanged();
             }
 
             if (itemStack2.getCount() == itemStack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
-            slot2.onTakeItem(player, itemStack2);
+            slot2.onTake(player, itemStack2);
         }
 
         return itemStack;

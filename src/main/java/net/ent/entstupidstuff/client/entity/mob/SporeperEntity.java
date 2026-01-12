@@ -8,56 +8,54 @@ import net.ent.entstupidstuff.client.entity.ai.SporeperIgniteGoal;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.CreeperIgniteGoal;
-import net.minecraft.entity.ai.goal.FleeEntityGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.CatEntity;
-import net.minecraft.entity.passive.GoatEntity;
-import net.minecraft.entity.passive.OcelotEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootTables;
-import net.minecraft.particle.BlockParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.collection.Pool;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.core.particles.ExplosionParticleInfo;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.goat.Goat;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
-public class SporeperEntity extends HostileEntity {
-	private static final TrackedData<Integer> FUSE_SPEED = DataTracker.registerData(SporeperEntity.class, TrackedDataHandlerRegistry.INTEGER);
-	private static final TrackedData<Boolean> CHARGED = DataTracker.registerData(SporeperEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<Boolean> IGNITED = DataTracker.registerData(SporeperEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+public class SporeperEntity extends Monster {
+	private static final EntityDataAccessor<Integer> FUSE_SPEED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> CHARGED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IGNITED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final boolean DEFAULT_CHARGED = false;
 	private static final boolean DEFAULT_IGNITED = false;
 	private static final short DEFAULT_FUSE = 30;
@@ -68,38 +66,38 @@ public class SporeperEntity extends HostileEntity {
 	private int explosionRadius = 3;
 	private boolean headsDropped;
 
-	public SporeperEntity(EntityType<? extends SporeperEntity> entityType, World world) {
+	public SporeperEntity(EntityType<? extends SporeperEntity> entityType, Level world) {
 		super(entityType, world);
 
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-	protected void initGoals() {
-		this.goalSelector.add(1, new SwimGoal(this));
-		this.goalSelector.add(2, new SporeperIgniteGoal(this));
-		this.goalSelector.add(3, new FleeEntityGoal(this, OcelotEntity.class, 6.0F, 1.0, 1.2));
-		this.goalSelector.add(3, new FleeEntityGoal(this, CatEntity.class, 6.0F, 1.0, 1.2));
-		this.goalSelector.add(4, new MeleeAttackGoal(this, 1.0, false));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.targetSelector.add(1, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this));
+	protected void registerGoals() {
+		this.goalSelector.addGoal(1, new FloatGoal(this));
+		this.goalSelector.addGoal(2, new SporeperIgniteGoal(this));
+		this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Ocelot.class, 6.0F, 1.0, 1.2));
+		this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Cat.class, 6.0F, 1.0, 1.2));
+		this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, false));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 
-	public static DefaultAttributeContainer.Builder createCreeperAttributes() {
-		return HostileEntity.createHostileAttributes().add(EntityAttributes.MOVEMENT_SPEED, 0.25);
-	}
-
-	@Override
-	public int getSafeFallDistance() {
-		return this.getTarget() == null ? this.getSafeFallDistance(0.0F) : this.getSafeFallDistance(this.getHealth() - 1.0F);
+	public static AttributeSupplier.Builder createCreeperAttributes() {
+		return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.25);
 	}
 
 	@Override
-	public boolean handleFallDamage(double fallDistance, float damagePerDistance, DamageSource damageSource) {
-		boolean bl = super.handleFallDamage(fallDistance, damagePerDistance, damageSource);
+	public int getMaxFallDistance() {
+		return this.getTarget() == null ? this.getComfortableFallDistance(0.0F) : this.getComfortableFallDistance(this.getHealth() - 1.0F);
+	}
+
+	@Override
+	public boolean causeFallDamage(double fallDistance, float damagePerDistance, DamageSource damageSource) {
+		boolean bl = super.causeFallDamage(fallDistance, damagePerDistance, damageSource);
 		this.currentFuseTime += (int)(fallDistance * 1.5);
 		if (this.currentFuseTime > this.fuseTime - 5) {
 			this.currentFuseTime = this.fuseTime - 5;
@@ -109,16 +107,16 @@ public class SporeperEntity extends HostileEntity {
 	}
 
 	@Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
-		builder.add(FUSE_SPEED, -1);
-		builder.add(CHARGED, false);
-		builder.add(IGNITED, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(FUSE_SPEED, -1);
+		builder.define(CHARGED, false);
+		builder.define(IGNITED, false);
 	}
 
 	@Override
-	protected void writeCustomData(WriteView view) {
-		super.writeCustomData(view);
+	protected void addAdditionalSaveData(ValueOutput view) {
+		super.addAdditionalSaveData(view);
 		view.putBoolean("powered", this.isCharged());
 		view.putShort("Fuse", (short)this.fuseTime);
 		view.putByte("ExplosionRadius", (byte)this.explosionRadius);
@@ -126,12 +124,12 @@ public class SporeperEntity extends HostileEntity {
 	}
 
 	@Override
-	protected void readCustomData(ReadView view) {
-		super.readCustomData(view);
-		this.dataTracker.set(CHARGED, view.getBoolean("powered", false));
-		this.fuseTime = view.getShort("Fuse", (short)30);
-		this.explosionRadius = view.getByte("ExplosionRadius", (byte)3);
-		if (view.getBoolean("ignited", false)) {
+	protected void readAdditionalSaveData(ValueInput view) {
+		super.readAdditionalSaveData(view);
+		this.entityData.set(CHARGED, view.getBooleanOr("powered", false));
+		this.fuseTime = view.getShortOr("Fuse", (short)30);
+		this.explosionRadius = view.getByteOr("ExplosionRadius", (byte)3);
+		if (view.getBooleanOr("ignited", false)) {
 			this.ignite();
 		}
 	}
@@ -146,8 +144,8 @@ public class SporeperEntity extends HostileEntity {
 
 			int i = this.getFuseSpeed();
 			if (i > 0 && this.currentFuseTime == 0) {
-				this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-				this.emitGameEvent(GameEvent.PRIME_FUSE);
+				this.playSound(SoundEvents.CREEPER_PRIMED, 1.0F, 0.5F);
+				this.gameEvent(GameEvent.PRIME_FUSE);
 			}
 
 			this.currentFuseTime += i;
@@ -166,102 +164,102 @@ public class SporeperEntity extends HostileEntity {
 
 	@Override
 	public void setTarget(@Nullable LivingEntity target) {
-		if (!(target instanceof GoatEntity)) {
+		if (!(target instanceof Goat)) {
 			super.setTarget(target);
 		}
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.ENTITY_CREEPER_HURT;
+		return SoundEvents.CREEPER_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_CREEPER_DEATH;
+		return SoundEvents.CREEPER_DEATH;
 	}
 
 	@Override
-	public boolean onKilledOther(ServerWorld world, LivingEntity other, DamageSource damageSource) {
+	public boolean killedEntity(ServerLevel world, LivingEntity other, DamageSource damageSource) {
 		if (this.shouldDropLoot(world) && this.isCharged() && !this.headsDropped) {
-			other.generateLoot(world, damageSource, false, LootTables.ROOT_CHARGED_CREEPER, stack -> {
-				other.dropStack(world, stack);
+			other.dropFromLootTable(world, damageSource, false, BuiltInLootTables.CHARGED_CREEPER, stack -> {
+				other.spawnAtLocation(world, stack);
 				this.headsDropped = true;
 			});
 		}
 
-		return super.onKilledOther(world, other, damageSource);
+		return super.killedEntity(world, other, damageSource);
 	}
 
 	@Override
-	public boolean tryAttack(ServerWorld world, Entity target) {
+	public boolean doHurtTarget(ServerLevel world, Entity target) {
 		return true;
 	}
 
 	public boolean isCharged() {
-		return this.dataTracker.get(CHARGED);
+		return this.entityData.get(CHARGED);
 	}
 
 	public float getLerpedFuseTime(float tickProgress) {
-		return MathHelper.lerp(tickProgress, (float)this.lastFuseTime, (float)this.currentFuseTime) / (this.fuseTime - 2);
+		return Mth.lerp(tickProgress, (float)this.lastFuseTime, (float)this.currentFuseTime) / (this.fuseTime - 2);
 	}
 
 	public int getFuseSpeed() {
-		return this.dataTracker.get(FUSE_SPEED);
+		return this.entityData.get(FUSE_SPEED);
 	}
 
 	public void setFuseSpeed(int fuseSpeed) {
-		this.dataTracker.set(FUSE_SPEED, fuseSpeed);
+		this.entityData.set(FUSE_SPEED, fuseSpeed);
 	}
 
 	@Override
-	public void onStruckByLightning(ServerWorld world, LightningEntity lightning) {
-		super.onStruckByLightning(world, lightning);
-		this.dataTracker.set(CHARGED, true);
+	public void thunderHit(ServerLevel world, LightningBolt lightning) {
+		super.thunderHit(world, lightning);
+		this.entityData.set(CHARGED, true);
 	}
 
 	@Override
-	protected ActionResult interactMob(PlayerEntity player, Hand hand) {
-		ItemStack itemStack = player.getStackInHand(hand);
-		if (itemStack.isIn(ItemTags.CREEPER_IGNITERS)) {
-			SoundEvent soundEvent = itemStack.isOf(Items.FIRE_CHARGE) ? SoundEvents.ITEM_FIRECHARGE_USE : SoundEvents.ITEM_FLINTANDSTEEL_USE;
-			this.getEntityWorld()
-				.playSound(player, this.getX(), this.getY(), this.getZ(), soundEvent, this.getSoundCategory(), 1.0F, this.random.nextFloat() * 0.4F + 0.8F);
-			if (!this.getEntityWorld().isClient()) {
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+		ItemStack itemStack = player.getItemInHand(hand);
+		if (itemStack.is(ItemTags.CREEPER_IGNITERS)) {
+			SoundEvent soundEvent = itemStack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE;
+			this.level()
+				.playSound(player, this.getX(), this.getY(), this.getZ(), soundEvent, this.getSoundSource(), 1.0F, this.random.nextFloat() * 0.4F + 0.8F);
+			if (!this.level().isClientSide()) {
 				this.ignite();
-				if (!itemStack.isDamageable()) {
-					itemStack.decrement(1);
+				if (!itemStack.isDamageableItem()) {
+					itemStack.shrink(1);
 				} else {
-					itemStack.damage(1, player, hand.getEquipmentSlot());
+					itemStack.hurtAndBreak(1, player, hand.asEquipmentSlot());
 				}
 			}
 
-			return ActionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		} else {
-			return super.interactMob(player, hand);
+			return super.mobInteract(player, hand);
 		}
 	}
 
-    private static final Pool<BlockParticleEffect> EXPLOSION_BLOCK_PARTICLES = Pool.<BlockParticleEffect>builder()
-		.add(new BlockParticleEffect(ParticleTypes.POOF, 0.5F, 1.0F))
-		.add(new BlockParticleEffect(ParticleTypes.SMOKE, 1.0F, 1.0F))
-		.add(new BlockParticleEffect(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, 1.0F, 1.0F))
+    private static final WeightedList<ExplosionParticleInfo> EXPLOSION_BLOCK_PARTICLES = WeightedList.<ExplosionParticleInfo>builder()
+		.add(new ExplosionParticleInfo(ParticleTypes.POOF, 0.5F, 1.0F))
+		.add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
+		.add(new ExplosionParticleInfo(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, 1.0F, 1.0F))
 		.build();
 
 	private void explode() {
-		if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
+		if (this.level() instanceof ServerLevel serverWorld) {
 			float f = this.isCharged() ? 2.0F : 1.0F;
 			this.dead = true;
-            serverWorld.createExplosion(
-			this.getEntity(),
-			Explosion.createDamageSource(serverWorld, this.getEntity()),
+            serverWorld.explode(
+			this.asLivingEntity(),
+			Explosion.getDefaultDamageSource(serverWorld, this.asLivingEntity()),
 			null,
 			this.getX(),
 			this.getY(),
 			this.getZ(),
 			this.explosionRadius * f,
 			false,
-			World.ExplosionSourceType.MOB,
+			Level.ExplosionInteraction.MOB,
 			ParticleTypes.EXPLOSION,
 			ParticleTypes.EXPLOSION_EMITTER,
 			EXPLOSION_BLOCK_PARTICLES,
@@ -270,38 +268,38 @@ public class SporeperEntity extends HostileEntity {
 
 
 			this.spawnEffectsCloud();
-			this.onRemoval(serverWorld, Entity.RemovalReason.KILLED);
+			this.triggerOnDeathMobEffects(serverWorld, Entity.RemovalReason.KILLED);
 			this.discard();
 		}
 	}
 
 	private void spawnEffectsCloud() {
-		Collection<StatusEffectInstance> collection = this.getStatusEffects();
+		Collection<MobEffectInstance> collection = this.getActiveEffects();
 		//collection.add(new StatusEffectInstance(ModEffects.RGB_SHIFT, 140 * 1));
 		//collection.add(new StatusEffectInstance(StatusEffects.NAUSEA, 140 * 1));
 		if (!collection.isEmpty()) {
-			AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(this.getEntityWorld(), this.getX(), this.getY(), this.getZ());
+			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
 			areaEffectCloudEntity.setRadius(2.5F);
 			areaEffectCloudEntity.setRadiusOnUse(-0.5F);
 			areaEffectCloudEntity.setWaitTime(10);
 			areaEffectCloudEntity.setDuration(300);
 			areaEffectCloudEntity.setPotionDurationScale(0.25F);
-			areaEffectCloudEntity.setRadiusGrowth(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+			areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
 
-			for (StatusEffectInstance statusEffectInstance : collection) {
-				areaEffectCloudEntity.addEffect(new StatusEffectInstance(statusEffectInstance));
+			for (MobEffectInstance statusEffectInstance : collection) {
+				areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
 			}
 
-			this.getEntityWorld().spawnEntity(areaEffectCloudEntity);
+			this.level().addFreshEntity(areaEffectCloudEntity);
 		}
 	}
 
 	public boolean isIgnited() {
-		return this.dataTracker.get(IGNITED);
+		return this.entityData.get(IGNITED);
 	}
 
 	public void ignite() {
-		this.dataTracker.set(IGNITED, true);
+		this.entityData.set(IGNITED, true);
 	}
 }
 

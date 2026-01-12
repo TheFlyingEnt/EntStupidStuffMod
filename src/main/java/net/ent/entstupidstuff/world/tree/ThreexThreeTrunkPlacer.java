@@ -8,18 +8,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.TestableWorld;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
-import net.minecraft.world.gen.foliage.FoliagePlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 public class ThreexThreeTrunkPlacer extends TrunkPlacer {
     public static final MapCodec<ThreexThreeTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(
-		instance -> fillTrunkPlacerFields(instance).apply(instance, ThreexThreeTrunkPlacer::new)
+		instance -> trunkPlacerParts(instance).apply(instance, ThreexThreeTrunkPlacer::new)
 	);
 
 	public ThreexThreeTrunkPlacer(int i, int j, int k) {
@@ -27,31 +27,31 @@ public class ThreexThreeTrunkPlacer extends TrunkPlacer {
 	}
 
 	@Override
-	protected TrunkPlacerType<?> getType() {
+	protected TrunkPlacerType<?> type() {
 		return ModConfiguredFeatures.THREE_BY_THREE_TRUNK;
 	}
 
 	private void setLog(
-		TestableWorld world,
+		LevelSimulatedReader world,
 		BiConsumer<BlockPos, BlockState> replacer,
-		Random random,
-		BlockPos.Mutable tmpPos,
-		TreeFeatureConfig config,
+		RandomSource random,
+		BlockPos.MutableBlockPos tmpPos,
+		TreeConfiguration config,
 		BlockPos startPos,
 		int dx,
 		int dy,
 		int dz
 	) {
-		tmpPos.set(startPos, dx, dy, dz);
-		this.trySetState(world, replacer, random, tmpPos, config);
+		tmpPos.setWithOffset(startPos, dx, dy, dz);
+		this.placeLogIfFree(world, replacer, random, tmpPos, config);
 	}
 
     @Override
-    public List<FoliagePlacer.TreeNode> generate(
-        TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random,
-        int height, BlockPos startPos, TreeFeatureConfig config
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(
+        LevelSimulatedReader world, BiConsumer<BlockPos, BlockState> replacer, RandomSource random,
+        int height, BlockPos startPos, TreeConfiguration config
     ) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
         // --- 1) Build jagged 3x3 trunk ---
         for (int y = 0; y < height; y++) {
@@ -75,7 +75,7 @@ public class ThreexThreeTrunkPlacer extends TrunkPlacer {
         }
 
         // --- 2) Generate branches along upper trunk ---
-        ImmutableList.Builder<FoliagePlacer.TreeNode> nodes = ImmutableList.builder();
+        ImmutableList.Builder<FoliagePlacer.FoliageAttachment> nodes = ImmutableList.builder();
         int minBranchHeight = height / 4;
         int maxBranchHeight = height - 2;
         int numBranches = Math.max(3, height / 3);
@@ -90,30 +90,30 @@ public class ThreexThreeTrunkPlacer extends TrunkPlacer {
             int offsetZ = (random.nextBoolean() ? 1 : -1) * (1 + random.nextInt(maxOffset));
 
             int dy = 1 + random.nextInt(3); // slight upward tilt
-            BlockPos branchStart = startPos.add(1, y, 1); // trunk center
-            BlockPos branchEnd = branchStart.add(offsetX, dy, offsetZ);
+            BlockPos branchStart = startPos.offset(1, y, 1); // trunk center
+            BlockPos branchEnd = branchStart.offset(offsetX, dy, offsetZ);
 
             // Place angled branch logs
             placeBranchLogs(world, replacer, random, mutable, config, branchStart, branchEnd);
 
             // Add foliage node at branch tip
-            nodes.add(new FoliagePlacer.TreeNode(branchEnd, 0, false));
+            nodes.add(new FoliagePlacer.FoliageAttachment(branchEnd, 0, false));
         }
 
         // --- 3) Top foliage node ---
-        BlockPos topCenter = startPos.add(1, height, 1);
-        nodes.add(new FoliagePlacer.TreeNode(topCenter, 0, true));
+        BlockPos topCenter = startPos.offset(1, height, 1);
+        nodes.add(new FoliagePlacer.FoliageAttachment(topCenter, 0, true));
 
         return nodes.build();
     }
 
     // --- helper to place angled branch logs ---
     private void placeBranchLogs(
-        TestableWorld world,
+        LevelSimulatedReader world,
         BiConsumer<BlockPos, BlockState> replacer,
-        Random random,
-        BlockPos.Mutable mutable,
-        TreeFeatureConfig config,
+        RandomSource random,
+        BlockPos.MutableBlockPos mutable,
+        TreeConfiguration config,
         BlockPos start,
         BlockPos end
     ) {
@@ -128,7 +128,7 @@ public class ThreexThreeTrunkPlacer extends TrunkPlacer {
             int y = start.getY() + dy * i / steps;
             int z = start.getZ() + dz * i / steps;
             mutable.set(x, y, z);
-            this.trySetState(world, replacer, random, mutable, config);
+            this.placeLogIfFree(world, replacer, random, mutable, config);
         }
     }
 

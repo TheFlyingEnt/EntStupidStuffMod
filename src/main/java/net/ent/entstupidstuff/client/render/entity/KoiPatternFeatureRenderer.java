@@ -1,31 +1,31 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
 import net.ent.entstupidstuff.client.entity.passive.KoiPatternSecondary;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
 
 public class KoiPatternFeatureRenderer
-        extends FeatureRenderer<KoiEntityRenderState, KoiModel> {
+        extends RenderLayer<KoiEntityRenderState, KoiModel> {
 
     public KoiPatternFeatureRenderer(
-            FeatureRendererContext<KoiEntityRenderState, KoiModel> ctx) {
+            RenderLayerParent<KoiEntityRenderState, KoiModel> ctx) {
         super(ctx);
     }
 
     @Override
-    public void render(
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
+    public void submit(
+            PoseStack matrices,
+            SubmitNodeCollector queue,
             int light,
             KoiEntityRenderState state,
             float limbAngle,
@@ -43,20 +43,20 @@ public class KoiPatternFeatureRenderer
         if (variant.getBaseColor() == KoiBaseColor.WHITE
                 && variant.getMainPattern() != null) {
 
-            Identifier tex = Identifier.of(
+            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath(
                     "entstupidstuff",
                     "textures/entity/koi/pattern_kohaku_"
                             + variant.getMainPattern().getName().toLowerCase()
                             + ".png"
             );
 
-            queue.getBatchingQueue(1).submitModel(
-                    this.getContextModel(),
+            queue.order(1).submitModel(
+                    this.getParentModel(),
                     state,
                     matrices,
-                    RenderLayer.getEntityTranslucent(tex),
+                    RenderType.entityTranslucent(tex),
                     light,
-                    OverlayTexture.DEFAULT_UV,
+                    OverlayTexture.NO_OVERLAY,
                     -1,
                     null,
                     state.outlineColor,
@@ -71,14 +71,14 @@ public class KoiPatternFeatureRenderer
         if (variant.getSecondaryPattern() != null) {
             KoiPatternSecondary sec = variant.getSecondaryPattern();
 
-            Identifier tex = switch (sec.getType()) {
-                case "sanke" -> Identifier.of(
+            ResourceLocation tex = switch (sec.getType()) {
+                case "sanke" -> ResourceLocation.fromNamespaceAndPath(
                         "entstupidstuff",
                         "textures/entity/koi/pattern_sanke_"
                                 + sec.getName().toLowerCase()
                                 + ".png"
                 );
-                case "showa" -> Identifier.of(
+                case "showa" -> ResourceLocation.fromNamespaceAndPath(
                         "entstupidstuff",
                         "textures/entity/koi/pattern_showa_"
                                 + sec.getName().toLowerCase()
@@ -88,13 +88,13 @@ public class KoiPatternFeatureRenderer
             };
 
             if (tex != null) {
-                queue.getBatchingQueue(1).submitModel(
-                        this.getContextModel(),
+                queue.order(1).submitModel(
+                        this.getParentModel(),
                         state,
                         matrices,
-                        RenderLayer.getEntityTranslucent(tex),
+                        RenderType.entityTranslucent(tex),
                         light,
-                        OverlayTexture.DEFAULT_UV,
+                        OverlayTexture.NO_OVERLAY,
                         -1,
                         null,
                         state.outlineColor,
@@ -114,7 +114,7 @@ public class KoiPatternFeatureRenderer
     }
 
     @Override
-    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, KoiEntityRenderState state, float limbAngle, float limbDistance) {
+    public void submit(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, KoiEntityRenderState state, float limbAngle, float limbDistance) {
         if (state.invisible) return;
 
         KoiVariant variant = state.variant;
@@ -152,7 +152,7 @@ public class KoiPatternFeatureRenderer
     /*
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, KoiEntity koi, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) 
+    public void submit(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, KoiEntity koi, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) 
     {
         if (koi.isInvisible()) 
             return;

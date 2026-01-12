@@ -6,27 +6,27 @@ import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.state.ButterflyRenderState;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.ResourceLocation;
 
-public class ButterflyRenderer extends MobEntityRenderer<ButterflyEntity, ButterflyRenderState, ButterflyModel> {
+public class ButterflyRenderer extends MobRenderer<ButterflyEntity, ButterflyRenderState, ButterflyModel> {
 
-    private static final Identifier BIRCH = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_birch.png");
-    private static final Identifier EMPEROR = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_emperor.png");
-    private static final Identifier MONARCH = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_monarch.png");
-    private static final Identifier YELLOW = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_yellow.png");
-    private static final Identifier LUMINOUS = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_luminous.png");
-    private static final Identifier REDWOOD = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_redwood.png");
-    private static final Identifier BLUE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_blue.png");
-    private static final Identifier SEELE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_seele.png");
-    private static final Identifier CREEPER = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_creeper.png");
+    private static final ResourceLocation BIRCH = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_birch.png");
+    private static final ResourceLocation EMPEROR = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_emperor.png");
+    private static final ResourceLocation MONARCH = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_monarch.png");
+    private static final ResourceLocation YELLOW = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_yellow.png");
+    private static final ResourceLocation LUMINOUS = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_luminous.png");
+    private static final ResourceLocation REDWOOD = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_redwood.png");
+    private static final ResourceLocation BLUE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_blue.png");
+    private static final ResourceLocation SEELE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_seele.png");
+    private static final ResourceLocation CREEPER = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/butterfly/butterfly_creeper.png");
 
-    public ButterflyRenderer(EntityRendererFactory.Context context) {
-		super(context, new ButterflyModel(context.getPart(ModEntityModelLayers.BUTTERFLY)), 0.15F);
+    public ButterflyRenderer(EntityRendererProvider.Context context) {
+		super(context, new ButterflyModel(context.bakeLayer(ModEntityModelLayers.BUTTERFLY)), 0.15F);
 	}
 
-	public Identifier getTexture(ButterflyRenderState state) {
+	public ResourceLocation getTextureLocation(ButterflyRenderState state) {
         return switch (state.variant) {
 			case BIRCH -> BIRCH;
 			case EMPEROR -> EMPEROR;
@@ -47,8 +47,8 @@ public class ButterflyRenderer extends MobEntityRenderer<ButterflyEntity, Butter
 	}
 
 	@Override
-	public void updateRenderState(ButterflyEntity entity, ButterflyRenderState state, float tickDelta) {
-		super.updateRenderState(entity, state, tickDelta);
+	public void extractRenderState(ButterflyEntity entity, ButterflyRenderState state, float tickDelta) {
+		super.extractRenderState(entity, state, tickDelta);
 		state.variant = entity.getVariant();
 	}
 }

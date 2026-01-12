@@ -1,21 +1,21 @@
 package net.ent.entstupidstuff.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerbedBlock;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerBedBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class MushroombedBlock extends FlowerbedBlock{
+public class MushroombedBlock extends FlowerBedBlock{
 
-    public MushroombedBlock(Settings settings) {
+    public MushroombedBlock(Properties settings) {
         super(settings);
     }
 
     @Override
-    protected boolean canPlantOnTop(BlockState floor, BlockView world, BlockPos pos) {
-		return floor.isIn(BlockTags.DIRT) || floor.isOf(Blocks.FARMLAND) || floor.getBlock() == BlockFactory.callBlock("shroomium");
+    protected boolean mayPlaceOn(BlockState floor, BlockGetter world, BlockPos pos) {
+		return floor.is(BlockTags.DIRT) || floor.is(Blocks.FARMLAND) || floor.getBlock() == BlockFactory.callBlock("shroomium");
 	}
     
 }

@@ -14,61 +14,61 @@ import net.ent.entstupidstuff.client.entity.Jarredable;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModItemTags;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.ComponentsAccess;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Flutterer;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.FlightMoveControl;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.Util;
-import net.minecraft.util.function.ValueLists;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
-public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarredable {
+public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarredable {
 
     private Variant variant;
-    private static final TrackedData<Integer> VARIANT = DataTracker.registerData(ButterflyEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Boolean> FROM_BUCKET = DataTracker.registerData(ButterflyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ButterflyEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(ButterflyEntity.class, EntityDataSerializers.BOOLEAN);
 
     // === Variant Enum ===
-    public static enum Variant implements StringIdentifiable {
+    public static enum Variant implements StringRepresentable {
         BIRCH(0, "birch", true, List.of(ModItemTags.SPAWN_BIRCH_BUTTERFLY)),
         EMPEROR(1, "emperor", true, List.of(ModItemTags.SPAWN_EMPEROR_BUTTERFLY)),
         MONARCH(2, "monarch", true, List.of(ModItemTags.SPAWN_MONARCH_BUTTERFLY)),
@@ -81,13 +81,13 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
 
         public static final Variant DEFAULT = BIRCH;
 
-        private static final IntFunction<Variant> INDEX_MAPPER = ValueLists.createIndexToValueFunction(
-            Variant::getIndex, values(), ValueLists.OutOfBoundsHandling.ZERO
+        private static final IntFunction<Variant> INDEX_MAPPER = ByIdMap.continuous(
+            Variant::getIndex, values(), ByIdMap.OutOfBoundsStrategy.ZERO
         );
 
-        public static final Codec<Variant> CODEC = StringIdentifiable.createCodec(Variant::values);
+        public static final Codec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
         public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(INDEX_MAPPER::apply, Variant::getIndex);
-        public static final PacketCodec<ByteBuf, Variant> PACKET_CODEC = PacketCodecs.indexed(INDEX_MAPPER, Variant::getIndex);
+        public static final StreamCodec<ByteBuf, Variant> PACKET_CODEC = ByteBufCodecs.idMapper(INDEX_MAPPER, Variant::getIndex);
 
         private final int index;
         private final String id;
@@ -105,21 +105,21 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
         public String getId() { return this.id; }
         public boolean isNatural() { return this.natural; }
 
-        public boolean canSpawnInBiome(ServerWorld world, RegistryKey<Biome> biome) {
-            RegistryEntry<Biome> entry = world.getRegistryManager().getOrThrow(RegistryKeys.BIOME).getOrThrow(biome);
-            return allowedBiomeTags.stream().anyMatch(tag -> entry.isIn(tag));
+        public boolean canSpawnInBiome(ServerLevel world, ResourceKey<Biome> biome) {
+            Holder<Biome> entry = world.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(biome);
+            return allowedBiomeTags.stream().anyMatch(tag -> entry.is(tag));
         }
 
         public static Variant byIndex(int index) {
             return INDEX_MAPPER.apply(index);
         }
 
-        public static Variant getRandomNatural(Random random) {
+        public static Variant getRandomNatural(RandomSource random) {
             Variant[] list = (Variant[]) Arrays.stream(values()).filter(v -> v.natural).toArray(Variant[]::new);
             return Util.getRandom(list, random);
         }
 
-        public static Variant getRandomForBiome(Random random, ServerWorld world, RegistryKey<Biome> biomeKey) {
+        public static Variant getRandomForBiome(RandomSource random, ServerLevel world, ResourceKey<Biome> biomeKey) {
             Variant[] validVariants = Arrays.stream(values())
                 .filter(v -> biomeKey == null || v.canSpawnInBiome(world, biomeKey))
                 .toArray(Variant[]::new);
@@ -131,13 +131,13 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
             return Util.getRandom(validVariants, random);
         }
 
-        public static Variant getRandom(Random random) {
+        public static Variant getRandom(RandomSource random) {
             Variant[] list = values();
             return Util.getRandom(list, random);
         }
 
         @Override
-        public String asString() {
+        public String getSerializedName() {
             return this.id;
         }
     }
@@ -146,16 +146,16 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     public final AnimationState flyingAnimationState = new AnimationState();
     public final AnimationState roostingAnimationState = new AnimationState();
 
-    public ButterflyEntity(EntityType<? extends ButterflyEntity> entityType, World world) {
+    public ButterflyEntity(EntityType<? extends ButterflyEntity> entityType, Level world) {
         super(entityType, world);
-        this.moveControl = new FlightMoveControl(this, 20, true);
+        this.moveControl = new FlyingMoveControl(this, 20, true);
     }
 
     // === Data NBT ===
     @Override
-    public void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
-        view.put("Variant", ButterflyEntity.Variant.INDEX_CODEC, this.getVariant());
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
+        view.store("Variant", ButterflyEntity.Variant.INDEX_CODEC, this.getVariant());
         view.putBoolean("FromJar", this.isFromJar());
     }
 
@@ -168,21 +168,21 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     public void copyDataToStack(ItemStack stack) {
         //super.copyDataToStack(stack);
         Jarredable.copyDataToStack(this, stack);
-        stack.copy(ModDataComponentTypes.BUTTERFLY_VARIANT, this);
+        stack.copyFrom(ModDataComponentTypes.BUTTERFLY_VARIANT, this);
         /*NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
         	nbtCompound.putInt("Variant", this.getVariant().getId());
     	});*/
     }
 
     @Override
-    public void readCustomData(ReadView view) {
-        super.readCustomData(view);
+    public void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
         this.setVariant((ButterflyEntity.Variant) view.read("Variant", ButterflyEntity.Variant.INDEX_CODEC).orElse(ButterflyEntity.Variant.DEFAULT));
-        this.setFromJar(view.getBoolean("FromJar", false));
+        this.setFromJar(view.getBooleanOr("FromJar", false));
     }
 
     @Override
-	public void copyDataFromNbt(NbtCompound nbt) {
+	public void copyDataFromNbt(CompoundTag nbt) {
 		Jarredable.copyDataFromNbt(this, nbt);
 		/*if (nbt.contains("BucketVariantTag", 3)) { // INT_TYPE
 			this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
@@ -192,33 +192,33 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
 	}
 
     private void setVariant(ButterflyEntity.Variant variant) {
-        this.dataTracker.set(VARIANT, variant.getIndex());
+        this.entityData.set(VARIANT, variant.getIndex());
     }
 
     public ButterflyEntity.Variant getVariant() {
-        return ButterflyEntity.Variant.byIndex(this.dataTracker.get(VARIANT));
+        return ButterflyEntity.Variant.byIndex(this.entityData.get(VARIANT));
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
-        builder.add(VARIANT, 0);
-        builder.add(FROM_BUCKET, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(FROM_BUCKET, false);
     }
 
     @Override
     public boolean isFromJar() {
-        return this.dataTracker.get(FROM_BUCKET);
+        return this.entityData.get(FROM_BUCKET);
     }
 
     @Override
     public void setFromJar(boolean fromBucket) {
-        this.dataTracker.set(FROM_BUCKET, fromBucket);
+        this.entityData.set(FROM_BUCKET, fromBucket);
     }
 
     @Override
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        return Jarredable.tryJar(player, hand, this).orElse(super.interactMob(player, hand));
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        return Jarredable.tryJar(player, hand, this).orElse(super.mobInteract(player, hand));
     }
 
     @Override
@@ -228,41 +228,41 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
 
     @Override
     public SoundEvent getJarFillSound() {
-        return SoundEvents.ITEM_BOTTLE_FILL;
+        return SoundEvents.BOTTLE_FILL;
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
 		
-        if (spawnReason != SpawnReason.BUCKET) {
+        if (spawnReason != EntitySpawnReason.BUCKET) {
             Variant variant;
 
             // SpawnEgg or Spawner ignores biome
-            if (spawnReason == SpawnReason.SPAWN_ITEM_USE || spawnReason == SpawnReason.SPAWNER) {
+            if (spawnReason == EntitySpawnReason.SPAWN_ITEM_USE || spawnReason == EntitySpawnReason.SPAWNER) {
                 variant = Variant.getRandom(world.getRandom()); // no biome restriction
             } else {
                 // Get biome key for biome-restricted spawning
-                ServerWorld serverWorld = (ServerWorld) world;
-                RegistryKey<Biome> biomeKey = world.getBiome(getBlockPos()).getKey().orElse(null);
+                ServerLevel serverWorld = (ServerLevel) world;
+                ResourceKey<Biome> biomeKey = world.getBiome(blockPosition()).unwrapKey().orElse(null);
                 variant = Variant.getRandomForBiome(random, serverWorld, biomeKey);
             }
 
             this.setVariant(variant);
         }
-		return super.initialize(world, difficulty, spawnReason, entityData);
+		return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
-    public static DefaultAttributeContainer.Builder createButterflyAttributes() {
-        return MobEntity.createMobAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 8.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.2)
-            .add(EntityAttributes.FLYING_SPEED, 0.35);
+    public static AttributeSupplier.Builder createButterflyAttributes() {
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 8.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.2)
+            .add(Attributes.FLYING_SPEED, 0.35);
     }
 
     @Override
-    protected void initGoals() {
-        this.goalSelector.add(1, new BFWanderAroundGoal(this));
-        this.goalSelector.add(2, new LookAroundGoal(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new BFWanderAroundGoal(this));
+        this.goalSelector.addGoal(2, new RandomLookAroundGoal(this));
     }
 
     @Override
@@ -270,7 +270,7 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
         super.tick();
 
         if (this.horizontalCollision || this.verticalCollision) {
-            this.getMoveControl().moveTo(
+            this.getMoveControl().setWantedPosition(
                 this.getX() + this.random.nextGaussian() * 2,
                 this.getY() + 1.0,
                 this.getZ() + this.random.nextGaussian() * 2,
@@ -282,70 +282,70 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
     }
 
     private void updateAnimations() {
-        if (!this.isOnGround()) {
+        if (!this.onGround()) {
             this.roostingAnimationState.stop();
-            this.flyingAnimationState.startIfNotRunning(this.age);
+            this.flyingAnimationState.startIfStopped(this.tickCount);
         } else {
             this.flyingAnimationState.stop();
-            this.roostingAnimationState.startIfNotRunning(this.age);
+            this.roostingAnimationState.startIfStopped(this.tickCount);
         }
     }
 
-    public static boolean isValidNaturalSpawn(EntityType<? extends ButterflyEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        boolean lightCheck = world.getBaseLightLevel(pos, 0) > 8;
-        return lightCheck && world.getBlockState(pos.down()).isIn(net.minecraft.registry.tag.BlockTags.ANIMALS_SPAWNABLE_ON);
+    public static boolean isValidNaturalSpawn(EntityType<? extends ButterflyEntity> type, LevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        boolean lightCheck = world.getRawBrightness(pos, 0) > 8;
+        return lightCheck && world.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.ANIMALS_SPAWNABLE_ON);
     }
 
     // === Wander AI Goal ===
     class BFWanderAroundGoal extends Goal {
         private final ButterflyEntity butterfly;
-        private Vec3d target;
+        private Vec3 target;
         private int cooldown = 0;
 
         public BFWanderAroundGoal(ButterflyEntity butterfly) {
             this.butterfly = butterfly;
-            this.setControls(EnumSet.of(Control.MOVE));
+            this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
         @Override
-        public boolean canStart() {
+        public boolean canUse() {
             return true;
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             return true;
         }
 
         @Override
         public void tick() {
-            if (--cooldown <= 0 || target == null || butterfly.squaredDistanceTo(target) < 1.5) {
+            if (--cooldown <= 0 || target == null || butterfly.distanceToSqr(target) < 1.5) {
                 setNewTarget();
                 cooldown = 40 + butterfly.random.nextInt(60);
             }
 
-            butterfly.getMoveControl().moveTo(target.x, target.y, target.z, 1.0);
+            butterfly.getMoveControl().setWantedPosition(target.x, target.y, target.z, 1.0);
 
-            Vec3d direction = target.subtract(butterfly.getEntityPos());
+            Vec3 direction = target.subtract(butterfly.position());
             double dx = direction.x;
             double dz = direction.z;
-            butterfly.setYaw((float)(Math.toDegrees(Math.atan2(dz, dx)) - 90));
-            butterfly.setBodyYaw(butterfly.getYaw());
-            butterfly.setHeadYaw(butterfly.getYaw());
+            butterfly.setYRot((float)(Math.toDegrees(Math.atan2(dz, dx)) - 90));
+            butterfly.setYBodyRot(butterfly.getYRot());
+            butterfly.setYHeadRot(butterfly.getYRot());
         }
 
         private void setNewTarget() {
             double dx = (butterfly.random.nextDouble() - 0.5) * 20;
             double dz = (butterfly.random.nextDouble() - 0.5) * 20;
 
-            int topY = butterfly.getEntityWorld().getTopY(Heightmap.Type.WORLD_SURFACE, butterfly.getBlockX(), butterfly.getBlockZ());
+            int topY = butterfly.level().getHeight(Heightmap.Types.WORLD_SURFACE, butterfly.getBlockX(), butterfly.getBlockZ());
 
             double minY = topY + 1;
             double maxY = topY + 10;
             double dy = butterfly.getY() + (butterfly.random.nextDouble() - 0.5) * 6.0;
-            double y = MathHelper.clamp(dy, minY, maxY);
+            double y = Mth.clamp(dy, minY, maxY);
 
-            this.target = new Vec3d(
+            this.target = new Vec3(
                 butterfly.getX() + dx,
                 y,
                 butterfly.getZ() + dz
@@ -355,29 +355,29 @@ public class ButterflyEntity extends PathAwareEntity implements Flutterer, Jarre
 
     // Flutterer method
     @Override
-    public boolean isInAir() {
-        return !this.isOnGround();
+    public boolean isFlying() {
+        return !this.onGround();
     }
 
     @Nullable
 	@Override
-	public <T> T get(ComponentType<? extends T> type) {
-		return type == ModDataComponentTypes.BUTTERFLY_VARIANT ? castComponentValue((ComponentType<T>)type, this.getVariant()) : super.get(type);
+	public <T> T get(DataComponentType<? extends T> type) {
+		return type == ModDataComponentTypes.BUTTERFLY_VARIANT ? castComponentValue((DataComponentType<T>)type, this.getVariant()) : super.get(type);
 	}
 
 	@Override
-	protected void copyComponentsFrom(ComponentsAccess from) {
-		this.copyComponentFrom(from, ModDataComponentTypes.BUTTERFLY_VARIANT);
-		super.copyComponentsFrom(from);
+	protected void applyImplicitComponents(DataComponentGetter from) {
+		this.applyImplicitComponentIfPresent(from, ModDataComponentTypes.BUTTERFLY_VARIANT);
+		super.applyImplicitComponents(from);
 	}
 
 	@Override
-	protected <T> boolean setApplicableComponent(ComponentType<T> type, T value) {
+	protected <T> boolean applyImplicitComponent(DataComponentType<T> type, T value) {
 		if (type == ModDataComponentTypes.BUTTERFLY_VARIANT) {
 			this.setVariant(castComponentValue(ModDataComponentTypes.BUTTERFLY_VARIANT, value));
 			return true;
 		} else {
-			return super.setApplicableComponent(type, value);
+			return super.applyImplicitComponent(type, value);
 		}
 	}
 }

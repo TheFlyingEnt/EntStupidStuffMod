@@ -2,19 +2,17 @@ package net.ent.entstupidstuff.item.base.weapons;
 
 
 import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.sound.*;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
 
 public class WeaponWarhammerItem extends WeaponUpdatedItem {
     private static final double BASE_ATTACK_DAMAGE = 8.0;
     private static double ATTACK_DAMAGE;
 
-    public WeaponWarhammerItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(
+    public WeaponWarhammerItem(ToolMaterial toolMaterial, Properties settings) {
+        super(toolMaterial, settings.attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
@@ -41,7 +39,7 @@ public class WeaponWarhammerItem extends WeaponUpdatedItem {
     }*/
 
     @Override
-    public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damage(1, attacker, EquipmentSlot.MAINHAND);
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 }

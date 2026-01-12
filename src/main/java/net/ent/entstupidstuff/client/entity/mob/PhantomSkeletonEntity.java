@@ -10,30 +10,29 @@ import net.ent.entstupidstuff.client.entity.mob.MetalSkeletonEntity.MetalSkeleto
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.CannonItem;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 
@@ -47,7 +46,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	@SuppressWarnings("unused")
 	private PhantomSkeletonVariant variant;
 
-	private static final TrackedData<Integer> VARIANT = DataTracker.registerData(PhantomSkeletonEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PhantomSkeletonEntity.class, EntityDataSerializers.INT);
 
 	public enum PhantomSkeletonVariant {
 		MELEE(0, "melee"),
@@ -80,8 +79,8 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 			return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
 		}
 
-		public static PhantomSkeletonVariant getRandom(Random random) {
-			Random varientR = Random.create();
+		public static PhantomSkeletonVariant getRandom(RandomSource random) {
+			RandomSource varientR = RandomSource.create();
         	float varientRC = varientR.nextInt(3) + 1;
 
 			if (varientRC == 1) {
@@ -95,7 +94,7 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 		}
 	}
 
-	public PhantomSkeletonEntity(EntityType<? extends PhantomSkeletonEntity> entityType, World world) {
+	public PhantomSkeletonEntity(EntityType<? extends PhantomSkeletonEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -117,65 +116,65 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 
 
 	@Override
-	protected void initGoals() {
-		super.initGoals();
-		this.goalSelector.add(4, new CannonAttackGoal<>(this, 1.0, 8.0F));
+	protected void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(4, new CannonAttackGoal<>(this, 1.0, 8.0F));
 	}
 
 	@Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		builder.add(VARIANT, 0);
-		super.initDataTracker(builder);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(VARIANT, 0);
+		super.defineSynchedData(builder);
     }
 
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
 
 		PhantomSkeletonVariant randomVariant = PhantomSkeletonVariant.getRandom(this.getRandom());
         this.setVariant(randomVariant);
 
-        return super.initialize(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
     
 
 	@Override
-	protected boolean isAffectedByDaylight() {
+	protected boolean isSunBurnTick() {
 		return false;
 	}
 
 	@Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel world, DamageSource source, float amount) {
 
-		if (source.isIn(DamageTypeTags.IS_FALL) || source.isIn(DamageTypeTags.BURN_FROM_STEPPING)) {
+		if (source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypeTags.BURN_FROM_STEPPING)) {
 			return false;
 		}
 		else {
 			//boolean bl = source.getSource() instanceof PotionEntity;
-			if (source.isIn(DamageTypeTags.IS_PROJECTILE)/* && !bl */) {
+			if (source.is(DamageTypeTags.IS_PROJECTILE)/* && !bl */) {
 				//boolean bl2 = super.damage(world, source, amount);
 				return false;
 				//return bl2;
 			}
 			else {
-				return super.damage(world, source, amount);
+				return super.hurtServer(world, source, amount);
 			}
 		}
     }
 
 	@Override
-	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
 
-		Random varientR = Random.create();
+		RandomSource varientR = RandomSource.create();
         float varientRC = varientR.nextInt(3) + 1;
 
 		if (varientRC == 1) {
             //this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ItemFactory.CANNON_ITEM));
-			this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+			this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
         } else if (varientRC == 2) {
-            this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
         } else {
-            this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         }
 		
 	}
@@ -186,37 +185,37 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
     	return arrowEntity;
 	}*/
 
-	protected PersistentProjectileEntity createCannonProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	CannonballEntity arrowEntity = new CannonballEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+	protected AbstractArrow createCannonProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+    	CannonballEntity arrowEntity = new CannonballEntity(this.level(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
 	@Override
-    public void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
         view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
 		this.setVariant((PhantomSkeletonEntity.PhantomSkeletonVariant)view.read("Variant", PhantomSkeletonEntity.PhantomSkeletonVariant.INDEX_CODEC).orElse(PhantomSkeletonEntity.PhantomSkeletonVariant.MELEE));
     }
 
 	public void setVariant(PhantomSkeletonEntity.PhantomSkeletonVariant variant) {
 		this.variant = variant;
-		this.dataTracker.set(VARIANT, variant.getId());
+		this.entityData.set(VARIANT, variant.getId());
 	}
 
 	public PhantomSkeletonVariant getVariant() {
-		return PhantomSkeletonVariant.byId(this.dataTracker.get(VARIANT));
+		return PhantomSkeletonVariant.byId(this.entityData.get(VARIANT));
 	}
 
 	//Custom Shoot Code:
 
 	@Override
-	public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
-		ItemStack mainHandStack = this.getMainHandStack();
+	public boolean canFireProjectileWeapon(ProjectileWeaponItem weapon) {
+		ItemStack mainHandStack = this.getMainHandItem();
 		if (mainHandStack.getItem() instanceof CannonItem) {
 			return weapon == ItemFactory.CANNON_ITEM;
 		}
@@ -227,8 +226,8 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 
 
 	@Override
-	public void shootAt(LivingEntity target, float pullProgress) {
-		ItemStack mainHandStack = this.getMainHandStack();
+	public void performRangedAttack(LivingEntity target, float pullProgress) {
+		ItemStack mainHandStack = this.getMainHandItem();
 
 		/*if (mainHandStack.getItem() instanceof CrossbowItem) {
 			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.CROSSBOW));
@@ -259,19 +258,19 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 
 		else*/ if (mainHandStack.getItem() instanceof CannonItem) {
 
-			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, ItemFactory.CANNON_ITEM));
-			ItemStack itemStack2 = this.getProjectileType(itemStack);
-			PersistentProjectileEntity persistentProjectileEntity = this.createCannonProjectile(itemStack2, pullProgress, itemStack);
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, ItemFactory.CANNON_ITEM));
+			ItemStack itemStack2 = this.getProjectile(itemStack);
+			AbstractArrow persistentProjectileEntity = this.createCannonProjectile(itemStack2, pullProgress, itemStack);
 			double d = target.getX() - this.getX();
-			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+			double e = target.getY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
-			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
+			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+			this.level().addFreshEntity(persistentProjectileEntity);
 		}
 
-		super.shootAt(target, pullProgress);
+		super.performRangedAttack(target, pullProgress);
 
 	}
 

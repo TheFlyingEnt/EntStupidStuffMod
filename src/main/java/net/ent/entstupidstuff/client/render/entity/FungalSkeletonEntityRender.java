@@ -3,39 +3,39 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.entity.mob.FungalSkeletonEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.FungalSkeletonGlowRender;
-import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.client.render.entity.state.SkeletonEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
+import net.minecraft.resources.ResourceLocation;
 
-public class FungalSkeletonEntityRender extends AbstractSkeletonEntityRenderer<FungalSkeletonEntity, SkeletonEntityRenderState>  {
-    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/fungal_skeleton.png");
-	private static final Identifier OVERLAY_TEXTURE = Identifier.ofVanilla("textures/entity/fungal_skeleton_overlay.png");
+public class FungalSkeletonEntityRender extends AbstractSkeletonRenderer<FungalSkeletonEntity, SkeletonRenderState>  {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fungal_skeleton.png");
+	private static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/fungal_skeleton_overlay.png");
 
-	public FungalSkeletonEntityRender(EntityRendererFactory.Context context) {
-		super(context, EntityModelLayers.SKELETON, EntityModelLayers.SKELETON_EQUIPMENT);
+	public FungalSkeletonEntityRender(EntityRendererProvider.Context context) {
+		super(context, ModelLayers.SKELETON, ModelLayers.SKELETON_ARMOR);
 		
-		this.addFeature(new FungalSkeletonGlowRender(this));
+		this.addLayer(new FungalSkeletonGlowRender(this));
 		//this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, context.getEntityModels(), ModEntityModelLayers.FUNGAL_SKELTON_OUTER, OVERLAY_TEXTURE));
 	}
 
-	public FungalSkeletonEntityRender(EntityRendererFactory.Context ctx, EntityModelLayer layer, EquipmentModelData<EntityModelLayer> armor) {
+	public FungalSkeletonEntityRender(EntityRendererProvider.Context ctx, ModelLayerLocation layer, ArmorModelSet<ModelLayerLocation> armor) {
 		super(ctx, layer, armor);
-		this.addFeature(new FungalSkeletonGlowRender(this));
+		this.addLayer(new FungalSkeletonGlowRender(this));
         //this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, ctx.getEntityModels(), ModEntityModelLayers.FUNGAL_SKELTON_OUTER, OVERLAY_TEXTURE));
 
 	}
 
-	public Identifier getTexture(SkeletonEntityRenderState soulEnt) {
+	public ResourceLocation getTextureLocation(SkeletonRenderState soulEnt) {
 		return TEXTURE;
 	}
 
 	@Override
-	public SkeletonEntityRenderState createRenderState() {
-		return new SkeletonEntityRenderState();
+	public SkeletonRenderState createRenderState() {
+		return new SkeletonRenderState();
 	}
     
 }

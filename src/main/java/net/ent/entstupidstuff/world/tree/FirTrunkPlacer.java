@@ -7,18 +7,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.TestableWorld;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
-import net.minecraft.world.gen.foliage.FoliagePlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 public class FirTrunkPlacer  extends TrunkPlacer {
     public static final MapCodec<FirTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(
-		instance -> fillTrunkPlacerFields(instance).apply(instance, FirTrunkPlacer::new)
+		instance -> trunkPlacerParts(instance).apply(instance, FirTrunkPlacer::new)
 	);
 
     public FirTrunkPlacer(int baseHeight, int firstRandomHeight, int secondRandomHeight) {
@@ -26,34 +26,34 @@ public class FirTrunkPlacer  extends TrunkPlacer {
     }
 
     @Override
-    protected TrunkPlacerType<?> getType() {
+    protected TrunkPlacerType<?> type() {
         return ModConfiguredFeatures.FIR_TRUNK_PLACER;
     }
 
     @Override
-    public List<FoliagePlacer.TreeNode> generate(
-            TestableWorld world,
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(
+            LevelSimulatedReader world,
             BiConsumer<BlockPos, BlockState> replacer,
-            Random random,
+            RandomSource random,
             int height,
             BlockPos start,
-            TreeFeatureConfig config
+            TreeConfiguration config
     ) {
         // Build straight trunk
         /*for (int y = 0; y < height; y++) {
             placeLog(world, placer, random, start.up(y), config);
         }*/
 
-        setToDirt(world, replacer, random, start.down(), config);
+        setDirtAt(world, replacer, random, start.below(), config);
 
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (int y = 0; y < height; y++) {
-            mutable.set(start, 0, y, 0); // relative to start
-            this.trySetState(world, replacer, random, mutable, config);
+            mutable.setWithOffset(start, 0, y, 0); // relative to start
+            this.placeLogIfFree(world, replacer, random, mutable, config);
         }
 
 
         // Return one foliage attachment at the top of the trunk
-        return List.of(new FoliagePlacer.TreeNode(start.up(height), 0, false));
+        return List.of(new FoliagePlacer.FoliageAttachment(start.above(height), 0, false));
     }
 }

@@ -7,22 +7,22 @@ import net.ent.entstupidstuff.client.entity.passive.KoiPatternMain;
 import net.ent.entstupidstuff.client.entity.passive.KoiPatternSecondary;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.EntityBucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.material.Fluid;
 
-public class KoiBucketItem extends EntityBucketItem {
+public class KoiBucketItem extends MobBucketItem {
 
-    public KoiBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound,
-            Item.Settings settings) {
+    public KoiBucketItem(EntityType<? extends Mob> type, Fluid fluid, SoundEvent emptyingSound,
+            Item.Properties settings) {
         super(type, fluid, emptyingSound, settings);
     }
 
@@ -40,8 +40,8 @@ public class KoiBucketItem extends EntityBucketItem {
     // Yellow, Black
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent,
-            Consumer<Text> textConsumer, TooltipType type) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent,
+            Consumer<Component> textConsumer, TooltipFlag type) {
 
         KoiVariant variant = stack.get(ModDataComponentTypes.KOI_FISH_VARIANT);
 
@@ -130,15 +130,15 @@ public class KoiBucketItem extends EntityBucketItem {
         }
 
         if (!nameLine.isEmpty()) {
-            textConsumer.accept(Text.literal(nameLine + " Koi").formatted(Formatting.GRAY, Formatting.ITALIC));
+            textConsumer.accept(Component.literal(nameLine + " Koi").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
 
         if (!colorLine.isEmpty()) {
-            textConsumer.accept(Text.literal(colorLine).formatted(Formatting.GRAY, Formatting.ITALIC));
+            textConsumer.accept(Component.literal(colorLine).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
 
         if (!styleLine.isEmpty()) {
-            textConsumer.accept(Text.literal(styleLine).formatted(Formatting.GRAY, Formatting.ITALIC));
+            textConsumer.accept(Component.literal(styleLine).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
 
     }

@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
-import net.minecraft.block.SaplingGenerator;
+import net.minecraft.world.level.block.grower.TreeGrower;
 
 public class SaplingGeneratorFactory {
 
-    public static final SaplingGenerator MAPLE = new SaplingGenerator(EntStupidStuff.MOD_ID + ":maple", Optional.empty(), Optional.of(ModConfiguredFeatures.MAPLE_KEY), Optional.empty());
-    public static final SaplingGenerator FIR = new SaplingGenerator(EntStupidStuff.MOD_ID + ":fir", Optional.empty(), Optional.of(ModConfiguredFeatures.FIR_KEY), Optional.empty());
+    public static final TreeGrower MAPLE = new TreeGrower(EntStupidStuff.MOD_ID + ":maple", Optional.empty(), Optional.of(ModConfiguredFeatures.MAPLE_KEY), Optional.empty());
+    public static final TreeGrower FIR = new TreeGrower(EntStupidStuff.MOD_ID + ":fir", Optional.empty(), Optional.of(ModConfiguredFeatures.FIR_KEY), Optional.empty());
     
 }

@@ -6,30 +6,30 @@ import net.ent.entstupidstuff.client.entity.mob.SkeletonPirateCaptainEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.SoulSkeletonGlowRender;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.state.SkeletonEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class SkeletonPirateCaptainEntityRenderer extends AbstractSkeletonEntityRenderer<SkeletonPirateCaptainEntity, SkeletonEntityRenderState>  {
-	private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/toadd/skeleton_pirate_captain.png");
+public class SkeletonPirateCaptainEntityRenderer extends AbstractSkeletonRenderer<SkeletonPirateCaptainEntity, SkeletonRenderState>  {
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/toadd/skeleton_pirate_captain.png");
 
 
-    public SkeletonPirateCaptainEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_EQUIPMENT);
-		this.addFeature(new SoulSkeletonGlowRender(this));
+    public SkeletonPirateCaptainEntityRenderer(EntityRendererProvider.Context context) {
+		super(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, ModelLayers.SKELETON_ARMOR);
+		this.addLayer(new SoulSkeletonGlowRender(this));
 	}
 
 	@Override
-	public Identifier getTexture(SkeletonEntityRenderState state) {
+	public ResourceLocation getTextureLocation(SkeletonRenderState state) {
 		return TEXTURE;
 	}
 
 	@Override
-	public SkeletonEntityRenderState createRenderState() {
-		return new SkeletonEntityRenderState();
+	public SkeletonRenderState createRenderState() {
+		return new SkeletonRenderState();
 	}
 
 }

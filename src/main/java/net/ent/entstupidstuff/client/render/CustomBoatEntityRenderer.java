@@ -1,53 +1,53 @@
 package net.ent.entstupidstuff.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.AbstractBoatEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.state.BoatEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.AbstractBoatRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.BoatRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 
-public class CustomBoatEntityRenderer extends AbstractBoatEntityRenderer {
-	private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ccustomboat_3.png");
-	private final Model.SinglePartModel waterMaskModel;
+public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ccustomboat_3.png");
+	private final Model.Simple waterMaskModel;
 	private final CustomBoatModel model;
 
-	public CustomBoatEntityRenderer(EntityRendererFactory.Context ctx, boolean layer) {
+	public CustomBoatEntityRenderer(EntityRendererProvider.Context ctx, boolean layer) {
 		super(ctx);
 		this.shadowRadius = 0.8F;
 		
-		EntityModelLayer modelLayer = new EntityModelLayer(Identifier.of(EntStupidStuff.MOD_ID, "customboat"), "main");
-		ModelPart modelPart = ctx.getPart(modelLayer);
+		ModelLayerLocation modelLayer = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "main");
+		ModelPart modelPart = ctx.bakeLayer(modelLayer);
 		this.model = new CustomBoatModel(modelPart);
-		this.waterMaskModel = new Model.SinglePartModel(ctx.getPart(modelLayer), id -> RenderLayer.getWaterMask());
+		this.waterMaskModel = new Model.Simple(ctx.bakeLayer(modelLayer), id -> RenderType.waterMask());
 
 	}
 
 	@Override
-	protected RenderLayer getRenderLayer() {
-		return this.model.getLayer(TEXTURE);
+	protected RenderType renderType() {
+		return this.model.renderType(TEXTURE);
 	}
 
 	@Override
-	protected void renderWaterMask(BoatEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, int light) {
-		if (!state.submergedInWater) {
+	protected void submitTypeAdditions(BoatRenderState state, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light) {
+		if (!state.isUnderWater) {
 			orderedRenderCommandQueue.submitModel(
-				this.waterMaskModel, Unit.INSTANCE, matrices, this.waterMaskModel.getLayer(TEXTURE), light, OverlayTexture.DEFAULT_UV, state.outlineColor, null
+				this.waterMaskModel, Unit.INSTANCE, matrices, this.waterMaskModel.renderType(TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null
 			);
 		}
 	}
 
 	@Override
-	protected EntityModel<BoatEntityRenderState> getModel() {
+	protected EntityModel<BoatRenderState> model() {
 		return this.model;
 	}
 }

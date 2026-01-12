@@ -1,29 +1,29 @@
 package net.ent.entstupidstuff.client.particle;
 
-import net.minecraft.client.particle.AnimatedParticle;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.SimpleAnimatedParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
 
-public class HammerBoomParticle extends AnimatedParticle {
+public class HammerBoomParticle extends SimpleAnimatedParticle {
 
-    public HammerBoomParticle(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, SpriteProvider spriteProvider) {
+    public HammerBoomParticle(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, SpriteSet spriteProvider) {
         super(world, x, y, z, spriteProvider, 0.01f); // 0.05f = animation speed
-        this.maxAge = 11; // 8 frames
-        this.setVelocity(vx, vy, vz);
-        this.updateSprite(spriteProvider);
+        this.lifetime = 11; // 8 frames
+        this.setParticleSpeed(vx, vy, vz);
+        this.setSpriteFromAge(spriteProvider);
 
-        this.scale *= 30.0F;
+        this.quadSize *= 30.0F;
     }
 
     @Override
     public void tick() {
         super.tick();
-        this.updateSprite(this.spriteProvider);
+        this.setSpriteFromAge(this.sprites);
     }
 
     @Override
-    public BillboardParticle.RenderType getRenderType() {
-      return RenderType.PARTICLE_ATLAS_OPAQUE;
+    public SingleQuadParticle.Layer getLayer() {
+      return Layer.OPAQUE;
    }
 }

@@ -16,8 +16,8 @@ import net.ent.entstupidstuff.world.ModPlacedFeatures;
 import net.ent.entstupidstuff.world.biome.ModBiomes;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.registry.RegistryBuilder;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 
 
 public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
@@ -49,12 +49,12 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 
 
 	@Override
-	public void buildRegistry(RegistryBuilder registryBuilder) {
+	public void buildRegistry(RegistrySetBuilder registryBuilder) {
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_MATERIAL, ModTrimMaterials::bootstrap);
 		//registryBuilder.addRegistry(RegistryKeys.TRIM_PATTERN, ModTrimPatterns::bootstrap);
-		registryBuilder.addRegistry(RegistryKeys.ENCHANTMENT, UpdatedEnchantmentFactory::bootstrap);
-		registryBuilder.addRegistry(RegistryKeys.BIOME, ModBiomes::boostrap);
-		registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap);
-		registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModPlacedFeatures::bootstrap);
+		registryBuilder.add(Registries.ENCHANTMENT, UpdatedEnchantmentFactory::bootstrap);
+		registryBuilder.add(Registries.BIOME, ModBiomes::boostrap);
+		registryBuilder.add(Registries.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap);
+		registryBuilder.add(Registries.PLACED_FEATURE, ModPlacedFeatures::bootstrap);
 	}
 }

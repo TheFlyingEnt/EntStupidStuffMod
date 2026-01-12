@@ -9,12 +9,12 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.item.Item;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     /*
@@ -22,12 +22,12 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
      * - VanillaItemTagProvider
      */
 
-    public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+    public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+    protected void addTags(HolderLookup.Provider wrapperLookup) {
 
         addWoodFamily("fungal", null, false);
         for (String color : BlockFactory.COLORS) {addWoodFamily("fungal", color, false);}
@@ -113,7 +113,7 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private static TagKey<Item> of(String id) {
-		return TagKey.of(RegistryKeys.ITEM, Identifier.of(EntStupidStuff.MOD_ID, id));
+		return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
 	}
 
     public void addWoodFamily(String FamilyBase, String varient, Boolean isNatural) {

@@ -1,15 +1,15 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
 import net.ent.entstupidstuff.client.render.entity.state.ButterflyRenderState;
-import net.minecraft.client.model.Dilation;
-import net.minecraft.client.model.ModelData;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelPartData;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 
 public class ButterflyModel extends EntityModel<ButterflyRenderState> {
 	private final ModelPart butterfly;
@@ -27,52 +27,52 @@ public class ButterflyModel extends EntityModel<ButterflyRenderState> {
 	}
 
 	@SuppressWarnings("unused")
-	public static TexturedModelData getTexturedModelData() {
+	public static LayerDefinition getTexturedModelData() {
 
-		ModelData modelData = new ModelData();
-		ModelPartData modelPartData = modelData.getRoot();
-		ModelPartData butterfly = modelPartData.addChild("butterfly",
-				ModelPartBuilder.create().uv(0, 10).cuboid(-0.5F, -1.5F, -3.0F, 1.0F, 1.0F, 7.0F, new Dilation(0.0F))
-						.uv(16, 17).cuboid(0.5F, -4.5F, -6.0F, 0.0F, 4.0F, 4.0F, new Dilation(0.0F))
-						.uv(0, 18).cuboid(-0.5F, -4.5F, -6.0F, 0.0F, 4.0F, 4.0F, new Dilation(0.0F)),
-				ModelTransform.origin(0.0F, 24.0F, 0.0F));
+		MeshDefinition modelData = new MeshDefinition();
+		PartDefinition modelPartData = modelData.getRoot();
+		PartDefinition butterfly = modelPartData.addOrReplaceChild("butterfly",
+				CubeListBuilder.create().texOffs(0, 10).addBox(-0.5F, -1.5F, -3.0F, 1.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
+						.texOffs(16, 17).addBox(0.5F, -4.5F, -6.0F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+						.texOffs(0, 18).addBox(-0.5F, -4.5F, -6.0F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)),
+				PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		ModelPartData lLeg_r1 = butterfly.addChild("lLeg_r1",
-				ModelPartBuilder.create().uv(16, 10).cuboid(0.0F, 0.0F, -2.0F, 0.0F, 2.0F, 5.0F, new Dilation(0.0F)),
-				ModelTransform.of(0.45F, -0.5F, 0.0F, 0.0F, 0.0F, -0.3927F));
+		PartDefinition lLeg_r1 = butterfly.addOrReplaceChild("lLeg_r1",
+				CubeListBuilder.create().texOffs(16, 10).addBox(0.0F, 0.0F, -2.0F, 0.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(0.45F, -0.5F, 0.0F, 0.0F, 0.0F, -0.3927F));
 
-		ModelPartData rLeg_r1 = butterfly.addChild("rLeg_r1",
-				ModelPartBuilder.create().uv(16, 10).mirrored()
-						.cuboid(0.0F, 0.0F, -2.0F, 0.0F, 2.0F, 5.0F, new Dilation(0.0F)).mirrored(false),
-				ModelTransform.of(-0.45F, -0.5F, 0.0F, 0.0F, 0.0F, 0.3927F));
+		PartDefinition rLeg_r1 = butterfly.addOrReplaceChild("rLeg_r1",
+				CubeListBuilder.create().texOffs(16, 10).mirror()
+						.addBox(0.0F, 0.0F, -2.0F, 0.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).mirror(false),
+				PartPose.offsetAndRotation(-0.45F, -0.5F, 0.0F, 0.0F, 0.0F, 0.3927F));
 
-		ModelPartData rightWing = butterfly.addChild("rightWing",
-				ModelPartBuilder.create().uv(0, 0).mirrored()
-						.cuboid(-6.0F, 0.0F, -4.0F, 6.0F, 0.0F, 10.0F, new Dilation(0.0F)).mirrored(false),
-				ModelTransform.origin(-0.5F, -1.0F, 0.0F));
+		PartDefinition rightWing = butterfly.addOrReplaceChild("rightWing",
+				CubeListBuilder.create().texOffs(0, 0).mirror()
+						.addBox(-6.0F, 0.0F, -4.0F, 6.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false),
+				PartPose.offset(-0.5F, -1.0F, 0.0F));
 
-		ModelPartData leftWing = butterfly.addChild("leftWing",
-				ModelPartBuilder.create().uv(0, 0).cuboid(0.05F, 0.0F, -4.0F, 6.0F, 0.0F, 10.0F, new Dilation(0.0F)),
-				ModelTransform.origin(0.45F, -1.0F, 0.0F));
-		return TexturedModelData.of(modelData, 32, 32);
+		PartDefinition leftWing = butterfly.addOrReplaceChild("leftWing",
+				CubeListBuilder.create().texOffs(0, 0).addBox(0.05F, 0.0F, -4.0F, 6.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)),
+				PartPose.offset(0.45F, -1.0F, 0.0F));
+		return LayerDefinition.create(modelData, 32, 32);
 	}
 
-	public void setAngles(ButterflyRenderState ButterflyRenderState) {
-		this.rightWing.pitch = 0.0F;
+	public void setupAnim(ButterflyRenderState ButterflyRenderState) {
+		this.rightWing.xRot = 0.0F;
 		this.bodyPitch = ButterflyRenderState.bodyPitch;
 		if (!ButterflyRenderState.stoppedOnGround) {
-			float f = ButterflyRenderState.age * 120.32113F * (float) (Math.PI / 180.0);
-			this.rightWing.yaw = 0.0F;
-			this.rightWing.roll = MathHelper.cos(f) * (float) Math.PI * 0.15F;
-			this.leftWing.pitch = this.rightWing.pitch;
-			this.leftWing.yaw = this.rightWing.yaw;
-			this.leftWing.roll = -this.rightWing.roll;
+			float f = ButterflyRenderState.ageInTicks * 120.32113F * (float) (Math.PI / 180.0);
+			this.rightWing.yRot = 0.0F;
+			this.rightWing.zRot = Mth.cos(f) * (float) Math.PI * 0.15F;
+			this.leftWing.xRot = this.rightWing.xRot;
+			this.leftWing.yRot = this.rightWing.yRot;
+			this.leftWing.zRot = -this.rightWing.zRot;
 		}
 
 	}
 
 	/*@Override
-	public void setAngles(ButterflyRenderState entity, float f, float g, float h, float i, float j) {
+	public void setupAnim(ButterflyRenderState entity, float f, float g, float h, float i, float j) {
 
 		// this.animateMovement(ButterflyAnimation.IDLE, limbAngle, limbDistance, 1f,
 		// 2.5f);
@@ -105,7 +105,7 @@ public class ButterflyModel extends EntityModel<ButterflyRenderState> {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+	public void submit(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
 		// rightWing.render(matrices, vertices, light, overlay);
 		// leftWing.render(matrices, vertices, light, overlay);
 		butterfly.render(matrices, vertices, light, overlay);

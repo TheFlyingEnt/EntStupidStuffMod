@@ -1,28 +1,27 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
-public class SlimedZombieEntity extends ZombieEntity{
+public class SlimedZombieEntity extends Zombie{
 
-    public SlimedZombieEntity(EntityType<? extends SlimedZombieEntity> entityType, World world) {
+    public SlimedZombieEntity(EntityType<? extends SlimedZombieEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     
 
-    public static boolean canSpawnIn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+    public static boolean canSpawnIn(EntityType<? extends Monster> type, ServerLevelAccessor world, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL
-			&& (SpawnReason.isTrialSpawner(spawnReason) || isSpawnDark(world, pos, random))
-			&& canMobSpawn(type, world, spawnReason, pos, random) && pos.getY() < 0 && pos.getY() >= world.getBottomY();
+			&& (EntitySpawnReason.ignoresLightRequirements(spawnReason) || isDarkEnoughToSpawn(world, pos, random))
+			&& checkMobSpawnRules(type, world, spawnReason, pos, random) && pos.getY() < 0 && pos.getY() >= world.getMinY();
 	}
     
 }

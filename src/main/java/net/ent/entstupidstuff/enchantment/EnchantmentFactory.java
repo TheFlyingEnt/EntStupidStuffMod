@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.enchantment;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 
 public class EnchantmentFactory {
@@ -36,19 +36,19 @@ public class EnchantmentFactory {
     
 
     //Loading
-    public static final RegistryKey<Enchantment> FROSTBITE = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "frostbite"));
-    public static final RegistryKey<Enchantment> BERSERK = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "berserk"));
-    public static final RegistryKey<Enchantment> BANEOFRAIDERS = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "baneofraiders"));
-    public static final RegistryKey<Enchantment> EXPERIENCE = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "experience"));
-    public static final RegistryKey<Enchantment> WALL_JUMP = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "wall_jump"));
-    public static final RegistryKey<Enchantment> OSMOSIS = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "osmosis"));
-    public static final RegistryKey<Enchantment> CURSE_FIRE = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "curse_fire"));
+    public static final ResourceKey<Enchantment> FROSTBITE = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "frostbite"));
+    public static final ResourceKey<Enchantment> BERSERK = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "berserk"));
+    public static final ResourceKey<Enchantment> BANEOFRAIDERS = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "baneofraiders"));
+    public static final ResourceKey<Enchantment> EXPERIENCE = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "experience"));
+    public static final ResourceKey<Enchantment> WALL_JUMP = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "wall_jump"));
+    public static final ResourceKey<Enchantment> OSMOSIS = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "osmosis"));
+    public static final ResourceKey<Enchantment> CURSE_FIRE = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "curse_fire"));
 
 
     //TBA
-    public static final RegistryKey<Enchantment> LIGHTEN = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "lighten"));
-    public static final RegistryKey<Enchantment> SCORCHING = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "scorching"));
-    public static final RegistryKey<Enchantment> CLEVING = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "cleving"));
+    public static final ResourceKey<Enchantment> LIGHTEN = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "lighten"));
+    public static final ResourceKey<Enchantment> SCORCHING = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "scorching"));
+    public static final ResourceKey<Enchantment> CLEVING = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "cleving"));
 
 
 
@@ -68,14 +68,14 @@ public class EnchantmentFactory {
 
 
 
-    public static final RegistryKey<Enchantment> STAFE = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "stafe"));
+    public static final ResourceKey<Enchantment> STAFE = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "stafe"));
     //public static final RegistryKey<Enchantment> MAGIC_PROTECTION = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "magic_protection"));
     //public static final RegistryKey<Enchantment> LIGHTEN = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "lighten"));
-    public static final RegistryKey<Enchantment> STALWART = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "stalwart"));
-    public static final RegistryKey<Enchantment> SHIELD_BASH = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "shield_bash"));
+    public static final ResourceKey<Enchantment> STALWART = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "stalwart"));
+    public static final ResourceKey<Enchantment> SHIELD_BASH = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shield_bash"));
     //public static final RegistryKey<Enchantment> SCORCHING = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "scorching"));
 
-    public static final RegistryKey<Enchantment> MAGIC_PROTECTION = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "magic_protection"));
+    public static final ResourceKey<Enchantment> MAGIC_PROTECTION = ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "magic_protection"));
 
     //public static final TagKey<Enchantment> FROSTBITETAG = TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "frostbite"));
 

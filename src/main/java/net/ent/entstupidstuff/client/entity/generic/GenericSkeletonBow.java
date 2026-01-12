@@ -9,44 +9,41 @@ import net.ent.entstupidstuff.client.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.client.entity.ai.UnderwaterBowAttackGoal;
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.client.entity.projectile.UnderwaterArrowEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.AvoidSunlightGoal;
-import net.minecraft.entity.ai.goal.BowAttackGoal;
-import net.minecraft.entity.ai.goal.EscapeSunlightGoal;
-import net.minecraft.entity.ai.goal.FleeEntityGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.ai.pathing.SwimNavigation;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.phys.Vec3;
 
 /*
 *   This class is used as a refenece to Sea Skeleton
@@ -54,47 +51,47 @@ import net.minecraft.world.World;
 *   with a Bow
 */
 
-public class GenericSkeletonBow extends SkeletonEntity{
+public class GenericSkeletonBow extends Skeleton{
 
-    protected final SwimNavigation waterNavigation;
-    protected final MobNavigation landNavigation;
-
-
+    protected final WaterBoundPathNavigation waterNavigation;
+    protected final GroundPathNavigation landNavigation;
 
 
-    public GenericSkeletonBow(EntityType<? extends GenericSkeletonBow> entityType, World world) {
+
+
+    public GenericSkeletonBow(EntityType<? extends GenericSkeletonBow> entityType, Level world) {
         super(entityType, world);
         this.moveControl = new GenericSkeletonBow.GenericSkeletonBowMoveControl(this);
-        this.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
-        this.waterNavigation = new SwimNavigation(this, world);
-        this.landNavigation = new MobNavigation(this, world);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.waterNavigation = new WaterBoundPathNavigation(this, world);
+        this.landNavigation = new GroundPathNavigation(this, world);
     }
 
 
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-	protected void initGoals() {
-		this.goalSelector.add(2, new AvoidSunlightGoal(this));
-		this.goalSelector.add(3, new EscapeSunlightGoal(this, 1.0));
-		this.goalSelector.add(3, new FleeEntityGoal(this, WolfEntity.class, 6.0F, 1.0, 1.2));
-        this.goalSelector.add(4, new UnderwaterBowAttackGoal<>(this, 1.0, 20, 15.0F));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-        this.goalSelector.add(6, new GenericSkeletonBow.GenericSkeletonBowSwimGoal(this));
-        this.goalSelector.add(6, new TrackTargetGoal(this));
+	protected void registerGoals() {
+		this.goalSelector.addGoal(2, new RestrictSunGoal(this));
+		this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0));
+		this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Wolf.class, 6.0F, 1.0, 1.2));
+        this.goalSelector.addGoal(4, new UnderwaterBowAttackGoal<>(this, 1.0, 20, 15.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(6, new GenericSkeletonBow.GenericSkeletonBowSwimGoal(this));
+        this.goalSelector.addGoal(6, new TrackTargetGoal(this));
 
-		this.targetSelector.add(1, new RevengeGoal(this));
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, TurtleEntity.class, 10, true, false, TurtleEntity.BABY_TURTLE_ON_LAND_FILTER));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
 	}
 
     @Override
-	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-		super.initEquipment(random, localDifficulty);
-		this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+		super.populateDefaultEquipmentSlots(random, localDifficulty);
+		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 	}
 
     @Override
@@ -102,30 +99,30 @@ public class GenericSkeletonBow extends SkeletonEntity{
         super.tick();
         LivingEntity target = this.getTarget();
         if (target != null) {
-            this.lookAtEntity(target, 30.0F, 30.0F);
+            this.lookAt(target, 30.0F, 30.0F);
         }
 
-        if (this.isTouchingWaterOrRain()) {
-            this.setAir(300);
+        if (this.isInWaterOrRain()) {
+            this.setAirSupply(300);
         }
     }
 
     @Override
-	protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	UnderwaterArrowEntity arrowEntity = new UnderwaterArrowEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+	protected AbstractArrow getArrow(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+    	UnderwaterArrowEntity arrowEntity = new UnderwaterArrowEntity(this.level(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
-	protected PersistentProjectileEntity createCannonBallProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-    	CannonballEntity arrowEntity = new CannonballEntity(this.getEntityWorld(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
+	protected AbstractArrow createCannonBallProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+    	CannonballEntity arrowEntity = new CannonballEntity(this.level(), this.getX(), this.getY()+1.5F, this.getZ(), arrow, shotFrom);
     	return arrowEntity;
 	}
 
     
     @Override
     public void updateSwimming() {
-        if (!this.getEntityWorld().isClient()) {
-            if (this.canMoveVoluntarily() && this.isTouchingWater() /*&& this.isTargetingUnderwater()*/) {
+        if (!this.level().isClientSide()) {
+            if (this.canSimulateMovement() && this.isInWater() /*&& this.isTargetingUnderwater()*/) {
                 this.navigation = this.waterNavigation;
                 this.setSwimming(true);
             } else {
@@ -136,47 +133,47 @@ public class GenericSkeletonBow extends SkeletonEntity{
     }
 
     @Override
-    public void travel(Vec3d movementInput) {
-        if (this.isLogicalSideForUpdatingMovement() && this.isTouchingWater() /*&& this.isTargetingUnderwater()*/) {
-            this.updateVelocity(0.01F, movementInput);
-            this.move(MovementType.SELF, this.getVelocity());
-            this.setVelocity(this.getVelocity().multiply(0.9));
+    public void travel(Vec3 movementInput) {
+        if (this.isLocalInstanceAuthoritative() && this.isInWater() /*&& this.isTargetingUnderwater()*/) {
+            this.moveRelative(0.01F, movementInput);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
         } else {
             super.travel(movementInput);
         }
     }
 
     @Override
-	public void shootAt(LivingEntity target, float pullProgress) {
-		ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.BOW));
-		ItemStack itemStack2 = this.getProjectileType(itemStack);
-		PersistentProjectileEntity persistentProjectileEntity = this.createArrowProjectile(itemStack2, pullProgress, itemStack);
+	public void performRangedAttack(LivingEntity target, float pullProgress) {
+		ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.BOW));
+		ItemStack itemStack2 = this.getProjectile(itemStack);
+		AbstractArrow persistentProjectileEntity = this.getArrow(itemStack2, pullProgress, itemStack);
 		double d = target.getX() - this.getX();
-		double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+		double e = target.getY(0.3333333333333333) - persistentProjectileEntity.getY();
 		double f = target.getZ() - this.getZ();
 		double g = Math.sqrt(d * d + f * f);
-		persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
-		this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-		this.getEntityWorld().spawnEntity(persistentProjectileEntity);
+		persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+		this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+		this.level().addFreshEntity(persistentProjectileEntity);
 	}
 
     @Override
-	public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
+	public boolean canFireProjectileWeapon(ProjectileWeaponItem weapon) {
 		return weapon == Items.BOW;
 	}
 
     @Override
-	protected void readCustomData(ReadView view) {
-		super.readCustomData(view);
-		this.updateAttackType();
+	protected void readAdditionalSaveData(ValueInput view) {
+		super.readAdditionalSaveData(view);
+		this.reassessWeaponGoal();
 	}
 
 	@SuppressWarnings("resource")
     @Override
-	public void equipStack(EquipmentSlot slot, ItemStack stack) {
-		super.equipStack(slot, stack);
-		if (!this.getEntityWorld().isClient()) {
-			this.updateAttackType();
+	public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
+		super.setItemSlot(slot, stack);
+		if (!this.level().isClientSide()) {
+			this.reassessWeaponGoal();
 		}
 	}
 
@@ -197,31 +194,31 @@ public class GenericSkeletonBow extends SkeletonEntity{
         @Override
         public void tick() {
             LivingEntity target = this.skeleton.getTarget();
-            if (/*this.skeleton.isTargetingUnderwater() &&*/ this.skeleton.isTouchingWater()) {
+            if (/*this.skeleton.isTargetingUnderwater() &&*/ this.skeleton.isInWater()) {
                 if (target != null && target.getY() > this.skeleton.getY() /*|| this.skeleton.targetingUnderwater*/) {
-                    this.skeleton.setVelocity(this.skeleton.getVelocity().add(0.0, 0.002, 0.0));
+                    this.skeleton.setDeltaMovement(this.skeleton.getDeltaMovement().add(0.0, 0.002, 0.0));
                 }
 
-                if (this.state != MoveControl.State.MOVE_TO || this.skeleton.getNavigation().isIdle()) {
-                    this.skeleton.setMovementSpeed(0.0F);
+                if (this.operation != MoveControl.Operation.MOVE_TO || this.skeleton.getNavigation().isDone()) {
+                    this.skeleton.setSpeed(0.0F);
                     return;
                 }
 
-                double d = this.targetX - this.skeleton.getX();
-                double e = this.targetY - this.skeleton.getY();
-                double f = this.targetZ - this.skeleton.getZ();
+                double d = this.wantedX - this.skeleton.getX();
+                double e = this.wantedY - this.skeleton.getY();
+                double f = this.wantedZ - this.skeleton.getZ();
                 double g = Math.sqrt(d * d + e * e + f * f);
                 e /= g;
-                float h = (float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F;
-                this.skeleton.setYaw(this.wrapDegrees(this.skeleton.getYaw(), h, 90.0F));
-                this.skeleton.bodyYaw = this.skeleton.getYaw();
-                float i = (float)(this.speed * this.skeleton.getAttributeValue(EntityAttributes.MOVEMENT_SPEED));
-                float j = MathHelper.lerp(0.125F, this.skeleton.getMovementSpeed(), i);
-                this.skeleton.setMovementSpeed(j);
-                this.skeleton.setVelocity(this.skeleton.getVelocity().add((double)j * d * 0.005, (double)j * e * 0.1, (double)j * f * 0.005));
+                float h = (float)(Mth.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F;
+                this.skeleton.setYRot(this.rotlerp(this.skeleton.getYRot(), h, 90.0F));
+                this.skeleton.yBodyRot = this.skeleton.getYRot();
+                float i = (float)(this.speedModifier * this.skeleton.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                float j = Mth.lerp(0.125F, this.skeleton.getSpeed(), i);
+                this.skeleton.setSpeed(j);
+                this.skeleton.setDeltaMovement(this.skeleton.getDeltaMovement().add((double)j * d * 0.005, (double)j * e * 0.1, (double)j * f * 0.005));
             } else {
-                if (!this.skeleton.isOnGround()) {
-                    this.skeleton.setVelocity(this.skeleton.getVelocity().add(0.0, -0.008, 0.0));
+                if (!this.skeleton.onGround()) {
+                    this.skeleton.setDeltaMovement(this.skeleton.getDeltaMovement().add(0.0, -0.008, 0.0));
                 }
                 super.tick();
             }
@@ -239,17 +236,17 @@ public class GenericSkeletonBow extends SkeletonEntity{
 
         public GenericSkeletonBowSwimGoal(GenericSkeletonBow skeleton) {
             this.skeleton = skeleton;
-            this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.JUMP));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
         }
 
         @Override
-        public boolean canStart() {
-            return this.skeleton.isTouchingWater();
+        public boolean canUse() {
+            return this.skeleton.isInWater();
         }
 
         @Override
         public void start() {
-            this.skeleton.getNavigation().startMovingTo(this.skeleton.getX(), this.skeleton.getY(), this.skeleton.getZ(), 1.0D);
+            this.skeleton.getNavigation().moveTo(this.skeleton.getX(), this.skeleton.getY(), this.skeleton.getZ(), 1.0D);
         }
 
         @Override

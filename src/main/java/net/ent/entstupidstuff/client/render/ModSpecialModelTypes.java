@@ -7,45 +7,45 @@ import net.ent.entstupidstuff.client.item.model.special.IronShieldSpecialRendere
 import net.ent.entstupidstuff.client.item.model.special.NetheriteShieldSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.StoneShieldSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.WoodenShieldSpecialRenderer;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.special.SpecialModelRenderers;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModSpecialModelTypes {
 
     public static void onInit() {
 
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "wooden_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "wooden_shield"),
             WoodenShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "stone_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "stone_shield"),
             StoneShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "iron_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "iron_shield"),
             IronShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "copper_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "copper_shield"),
             CopperShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "diamond_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "diamond_shield"),
             DiamondShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "netherite_shield"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "netherite_shield"),
             NetheriteShieldSpecialRenderer.Unbaked.CODEC
         );
         
-        SpecialModelTypes.ID_MAPPER.put(
-            Identifier.of("entstupidstuff", "ancient_trident"),
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "ancient_trident"),
             AncientTridentSpecialRenderer.Unbaked.CODEC
         );
 

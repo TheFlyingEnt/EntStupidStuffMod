@@ -1,52 +1,52 @@
 package net.ent.entstupidstuff.item.base;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.consume.UseAction;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 
 public class BottleOfRumItem extends Item {
     private static final int DRINK_DURATION = 32;
     private static final int EFFECT_DURATION = 600;
 
-    public BottleOfRumItem(Item.Settings settings) {
-        super(settings.maxCount(16));
+    public BottleOfRumItem(Item.Properties settings) {
+        super(settings.stacksTo(16));
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+    public int getUseDuration(ItemStack stack, LivingEntity user) {
         return DRINK_DURATION;
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity player, Hand hand) {
-        player.setCurrentHand(hand);
-        return ActionResult.SUCCESS;
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
+        player.startUsingItem(hand);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity player) {
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity player) {
 
-        PlayerEntity player2 = (PlayerEntity) player;
+        Player player2 = (Player) player;
 
-        if (!world.isClient()) {
+        if (!world.isClientSide()) {
             if (!player2.isCreative()) {
-                stack.decrement(1);
+                stack.shrink(1);
             }
-            player2.giveItemStack(new ItemStack(Items.GLASS_BOTTLE));
-            player2.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, EFFECT_DURATION, 5));
+            player2.addItem(new ItemStack(Items.GLASS_BOTTLE));
+            player2.addEffect(new MobEffectInstance(MobEffects.NAUSEA, EFFECT_DURATION, 5));
             //applyDrunkEffect(player2, (ServerWorld) world);
         }
         return stack.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : stack;

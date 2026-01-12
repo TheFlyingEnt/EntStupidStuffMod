@@ -1,34 +1,34 @@
 package net.ent.entstupidstuff.client.entity.passive;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class RedPandaEntity extends AnimalEntity{
+public class RedPandaEntity extends Animal{
 
-    public RedPandaEntity(EntityType<? extends RedPandaEntity> entityType, World world) {
+    public RedPandaEntity(EntityType<? extends RedPandaEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
     @Override
-	public void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
+	public void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
     }
 
-    public static DefaultAttributeContainer.Builder createRedPandaAttributes() {
-		return MobEntity.createMobAttributes()
-			.add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
-			.add(EntityAttributes.MAX_HEALTH, 10.0)
-			.add(EntityAttributes.FOLLOW_RANGE, 32.0)
-			.add(EntityAttributes.ATTACK_DAMAGE, 2.0)
-			.add(EntityAttributes.SAFE_FALL_DISTANCE, 5.0);
+    public static AttributeSupplier.Builder createRedPandaAttributes() {
+		return Mob.createMobAttributes()
+			.add(Attributes.MOVEMENT_SPEED, 0.3F)
+			.add(Attributes.MAX_HEALTH, 10.0)
+			.add(Attributes.FOLLOW_RANGE, 32.0)
+			.add(Attributes.ATTACK_DAMAGE, 2.0)
+			.add(Attributes.SAFE_FALL_DISTANCE, 5.0);
 	}
 
 
@@ -55,7 +55,7 @@ public class RedPandaEntity extends AnimalEntity{
 
 
     @Override
-    public boolean isBreedingItem(ItemStack stack) {
+    public boolean isFood(ItemStack stack) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'isBreedingItem'");
     }
@@ -82,7 +82,7 @@ public class RedPandaEntity extends AnimalEntity{
 
 
     @Override
-    public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createChild'");
     }

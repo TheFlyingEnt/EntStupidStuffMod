@@ -3,25 +3,9 @@ package net.ent.entstupidstuff.item.base;
 import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-//import net.ent.entstupidstuff.api.IntTrait.ITrait;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.ToolComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 
 
 /*
@@ -33,7 +17,7 @@ public class WeaponItem extends Item{
 	ToolMaterial arcToolMat;
 	//private List<ITrait> traits;
 
-	public WeaponItem(ToolMaterial toolMaterial, Item.Settings settings/*, ITrait... traits */) {
+	public WeaponItem(ToolMaterial toolMaterial, Item.Properties settings/*, ITrait... traits */) {
 		//super(settings.component(DataComponentTypes.TOOL, createToolComponent()));
 		super(settings);
 		//this.traits = Arrays.asList(traits);
@@ -47,9 +31,9 @@ public class WeaponItem extends Item{
 		);
 	}*/
 	
-	public static final Identifier BASE_ATTACK_RANGE_MODIFIER_ID = EntStupidStuff.id("base_attack_reach");
-    public static final Identifier BASE_ATTACK_SWEEP_MODIFIER_ID = EntStupidStuff.id("base_attack_sweep");
-	public static final Identifier BASE_ATTACK_KNOCKBACK_MODIFIER_ID = EntStupidStuff.id("base_attack_sweep");
+	public static final ResourceLocation BASE_ATTACK_RANGE_MODIFIER_ID = EntStupidStuff.id("base_attack_reach");
+    public static final ResourceLocation BASE_ATTACK_SWEEP_MODIFIER_ID = EntStupidStuff.id("base_attack_sweep");
+	public static final ResourceLocation BASE_ATTACK_KNOCKBACK_MODIFIER_ID = EntStupidStuff.id("base_attack_sweep");
 
 	/*public static AttributeModifiersComponent createAttributeModifiers(ToolMaterial material, double attackDamage, double attackSpeed, float toolReach, int attackSweep, int attackKnockback) {
 		return AttributeModifiersComponent.builder()

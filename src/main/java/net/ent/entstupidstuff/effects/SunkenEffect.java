@@ -1,38 +1,38 @@
 package net.ent.entstupidstuff.effects;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-public class SunkenEffect extends StatusEffect {
+public class SunkenEffect extends MobEffect {
     public SunkenEffect() {
-        super(StatusEffectCategory.HARMFUL, 0x5A5A5A); // HARMFUL effect with a gray color
+        super(MobEffectCategory.HARMFUL, 0x5A5A5A); // HARMFUL effect with a gray color
     }
 
     @Override
-    public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel world, LivingEntity entity, int amplifier) {
 
-        if (!(entity instanceof PlayerEntity player)) return false;
+        if (!(entity instanceof Player player)) return false;
 
         //player.addVelocity(0, -0.1, 0);
         //player.setVelocity(player.getVelocity().multiply(1, 0.5 + (amplifier * 0.1), 1));
         //player.velocityModified = true;
 
-        if (player.isTouchingWater()) {
-            var vel = player.getVelocity();
+        if (player.isInWater()) {
+            var vel = player.getDeltaMovement();
             double sinkForce = 0.02 + amplifier * 0.01;
 
-            if (!player.isSubmergedInWater()) return true;
+            if (!player.isUnderWater()) return true;
 
             if (!player.isJumping()) {
-                player.setVelocity(vel.x, vel.y - sinkForce, vel.z);
+                player.setDeltaMovement(vel.x, vel.y - sinkForce, vel.z);
             } else {
-                player.setVelocity(vel.x, vel.y * 0.9, vel.z);
+                player.setDeltaMovement(vel.x, vel.y * 0.9, vel.z);
             }
 
-            player.velocityModified = true;
+            player.hurtMarked = true;
         }
 
         return true;
@@ -61,7 +61,7 @@ public class SunkenEffect extends StatusEffect {
     }
 
     @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 }

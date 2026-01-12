@@ -1,23 +1,23 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.client.render.entity.state.CrossbowSkeletonEntityRenderState;
 import net.ent.entstupidstuff.client.render.entity.state.MetalSkeletonRenderState;
-import net.minecraft.client.model.Dilation;
-import net.minecraft.client.model.ModelData;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.ArmPosing;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelPartNames;
-import net.minecraft.client.render.entity.model.SkeletonEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.AnimationUtils;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.SkeletonModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
-public class MetalSkeletonModel<S extends MetalSkeletonRenderState> extends BipedEntityModel<S>{
+public class MetalSkeletonModel<S extends MetalSkeletonRenderState> extends HumanoidModel<S>{
 
     public ModelPart rightarm;
     public ModelPart leftarm;
@@ -25,117 +25,117 @@ public class MetalSkeletonModel<S extends MetalSkeletonRenderState> extends Bipe
     public MetalSkeletonModel(ModelPart modelPart) {
         super(modelPart);
 
-        this.head.setOrigin(this.head.originX, this.head.originY, this.head.originZ);
-        this.body.setOrigin(this.body.originX, this.body.originY, this.body.originZ);
-        this.leftLeg.setOrigin(this.leftLeg.originX, this.leftLeg.originY, this.leftLeg.originZ);
+        this.head.setPos(this.head.x, this.head.y, this.head.z);
+        this.body.setPos(this.body.x, this.body.y, this.body.z);
+        this.leftLeg.setPos(this.leftLeg.x, this.leftLeg.y, this.leftLeg.z);
 
-        this.rightarm = modelPart.getChild(EntityModelPartNames.RIGHT_ARM);
-        this.leftarm = modelPart.getChild(EntityModelPartNames.LEFT_ARM);
+        this.rightarm = modelPart.getChild(PartNames.RIGHT_ARM);
+        this.leftarm = modelPart.getChild(PartNames.LEFT_ARM);
     }
 
-    public static TexturedModelData getTexturedModelData() {
+    public static LayerDefinition getTexturedModelData() {
 
-        ModelData modelData = SkeletonEntityModel.getModelData(Dilation.NONE, 0.0F);
+        MeshDefinition modelData = SkeletonModel.createMesh(CubeDeformation.NONE, 0.0F);
 
 		/*ModelPartData modelPartData = */modelData.getRoot();
 		//SkeletonEntityModel.addLimbs(modelPartData);
 
-        modelData.getRoot().addChild(
-			EntityModelPartNames.HEAD, ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(0.0F))
-            /*.uv(32, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(0.0F))*/, ModelTransform.origin(0.0F, 0.0F, 0.0F)
+        modelData.getRoot().addOrReplaceChild(
+			PartNames.HEAD, CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+            /*.uv(32, 0).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(0.0F))*/, PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 		
-        modelData.getRoot().addChild(
-            EntityModelPartNames.BODY, ModelPartBuilder.create().uv(16, 16).cuboid(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new Dilation(0.0F))
-		    .uv(15, 32).cuboid(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new Dilation(0.25F))
-            .uv(1, 48).cuboid(-4.0F, 12.0F, -2.0F, 8.0F, 12.0F, 4.0F, new Dilation(0.25F)), ModelTransform.origin(0.0F, 0.0F, 0.0F)
+        modelData.getRoot().addOrReplaceChild(
+            PartNames.BODY, CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		    .texOffs(15, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+            .texOffs(1, 48).addBox(-4.0F, 12.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 0.0F, 0.0F)
         );
 
-        modelData.getRoot().addChild(
-            EntityModelPartNames.RIGHT_ARM, ModelPartBuilder.create().uv(56, 16).mirrored().cuboid(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.0F)).mirrored(false)
-		    .uv(56, 30).cuboid(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F)), ModelTransform.origin(5.0F, 2.0F, 0.0F)
+        modelData.getRoot().addOrReplaceChild(
+            PartNames.RIGHT_ARM, CubeListBuilder.create().texOffs(56, 16).mirror().addBox(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+		    .texOffs(56, 30).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(5.0F, 2.0F, 0.0F)
             );
 
-		modelData.getRoot().addChild(
-            EntityModelPartNames.LEFT_ARM, ModelPartBuilder.create().uv(40, 16).cuboid(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.0F))
-		    .uv(40, 30).cuboid(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F)), ModelTransform.origin(-5.0F, 2.0F, 0.0F)
+		modelData.getRoot().addOrReplaceChild(
+            PartNames.LEFT_ARM, CubeListBuilder.create().texOffs(40, 16).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F))
+		    .texOffs(40, 30).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(-5.0F, 2.0F, 0.0F)
         );
 
-		modelData.getRoot().addChild(
-            EntityModelPartNames.RIGHT_LEG, ModelPartBuilder.create().uv(48, 48).cuboid(-6.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new Dilation(0.0F))
-		    .uv(0, 30).cuboid(-5.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F))
-		    .uv(0, 16).cuboid(-5.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F)), ModelTransform.origin(2.0F, 12.0F, 0.0F)
+		modelData.getRoot().addOrReplaceChild(
+            PartNames.RIGHT_LEG, CubeListBuilder.create().texOffs(48, 48).addBox(-6.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		    .texOffs(0, 30).addBox(-5.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.25F))
+		    .texOffs(0, 16).addBox(-5.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(2.0F, 12.0F, 0.0F)
         );
 
-		modelData.getRoot().addChild(
-            EntityModelPartNames.LEFT_LEG, ModelPartBuilder.create().uv(48, 16).mirrored().cuboid(-1.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.0F)).mirrored(false)
-		    .uv(32, 48).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new Dilation(0.25F))
-		    .uv(48, 30).mirrored().cuboid(-1.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new Dilation(0.25F)).mirrored(false), ModelTransform.origin(2.0F, 12.0F, 0.0F)
+		modelData.getRoot().addOrReplaceChild(
+            PartNames.LEFT_LEG, CubeListBuilder.create().texOffs(48, 16).mirror().addBox(-1.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+		    .texOffs(32, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+		    .texOffs(48, 30).mirror().addBox(-1.0F, 0.0F, -1.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.25F)).mirror(false), PartPose.offset(2.0F, 12.0F, 0.0F)
         );
 		
-        return TexturedModelData.of(modelData, 64, 64);
+        return LayerDefinition.create(modelData, 64, 64);
 
     }  
     
     @Override
-    public void setAngles(S crossbowSkeletonEntityRenderState) {
-		super.setAngles(crossbowSkeletonEntityRenderState);
-		this.head.yaw = crossbowSkeletonEntityRenderState.relativeHeadYaw * (float) (Math.PI / 180.0);
-		this.head.pitch = crossbowSkeletonEntityRenderState.pitch * (float) (Math.PI / 180.0);
-		if (crossbowSkeletonEntityRenderState.hasVehicle) {
-			this.rightArm.pitch = (float) (-Math.PI / 5);
-			this.rightArm.yaw = 0.0F;
-			this.rightArm.roll = 0.0F;
-			this.leftArm.pitch = (float) (-Math.PI / 5);
-			this.leftArm.yaw = 0.0F;
-			this.leftArm.roll = 0.0F;
-			this.rightLeg.pitch = -1.4137167F;
-			this.rightLeg.yaw = (float) (Math.PI / 10);
-			this.rightLeg.roll = 0.07853982F;
-			this.leftLeg.pitch = -1.4137167F;
-			this.leftLeg.yaw = (float) (-Math.PI / 10);
-			this.leftLeg.roll = -0.07853982F;
+    public void setupAnim(S crossbowSkeletonEntityRenderState) {
+		super.setupAnim(crossbowSkeletonEntityRenderState);
+		this.head.yRot = crossbowSkeletonEntityRenderState.yRot * (float) (Math.PI / 180.0);
+		this.head.xRot = crossbowSkeletonEntityRenderState.xRot * (float) (Math.PI / 180.0);
+		if (crossbowSkeletonEntityRenderState.isPassenger/*hasVehicle*/) {
+			this.rightArm.xRot = (float) (-Math.PI / 5);
+			this.rightArm.yRot = 0.0F;
+			this.rightArm.zRot = 0.0F;
+			this.leftArm.xRot = (float) (-Math.PI / 5);
+			this.leftArm.yRot = 0.0F;
+			this.leftArm.zRot = 0.0F;
+			this.rightLeg.xRot = -1.4137167F;
+			this.rightLeg.yRot = (float) (Math.PI / 10);
+			this.rightLeg.zRot = 0.07853982F;
+			this.leftLeg.xRot = -1.4137167F;
+			this.leftLeg.yRot = (float) (-Math.PI / 10);
+			this.leftLeg.zRot = -0.07853982F;
 		} else {
-			float f = crossbowSkeletonEntityRenderState.limbSwingAmplitude;
-			float g = crossbowSkeletonEntityRenderState.limbSwingAnimationProgress;
-			this.rightArm.pitch = MathHelper.cos(g * 0.6662F + (float) Math.PI) * 2.0F * f * 0.5F;
-			this.rightArm.yaw = 0.0F;
-			this.rightArm.roll = 0.0F;
-			this.leftArm.pitch = MathHelper.cos(g * 0.6662F) * 2.0F * f * 0.5F;
-			this.leftArm.yaw = 0.0F;
-			this.leftArm.roll = 0.0F;
-			this.rightLeg.pitch = MathHelper.cos(g * 0.6662F) * 1.4F * f * 0.5F;
-			this.rightLeg.yaw = 0.0F;
-			this.rightLeg.roll = 0.0F;
-			this.leftLeg.pitch = MathHelper.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f * 0.5F;
-			this.leftLeg.yaw = 0.0F;
-			this.leftLeg.roll = 0.0F;
+			float f = crossbowSkeletonEntityRenderState.walkAnimationSpeed;
+			float g = crossbowSkeletonEntityRenderState.walkAnimationPos;
+			this.rightArm.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 2.0F * f * 0.5F;
+			this.rightArm.yRot = 0.0F;
+			this.rightArm.zRot = 0.0F;
+			this.leftArm.xRot = Mth.cos(g * 0.6662F) * 2.0F * f * 0.5F;
+			this.leftArm.yRot = 0.0F;
+			this.leftArm.zRot = 0.0F;
+			this.rightLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f * 0.5F;
+			this.rightLeg.yRot = 0.0F;
+			this.rightLeg.zRot = 0.0F;
+			this.leftLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f * 0.5F;
+			this.leftLeg.yRot = 0.0F;
+			this.leftLeg.zRot = 0.0F;
 		}
 		
 
 		//next
 		GenericSkeletonCrossbow.State state = crossbowSkeletonEntityRenderState.illagerState;
 		if (state == GenericSkeletonCrossbow.State.ATTACKING) {
-			if (crossbowSkeletonEntityRenderState.getMainHandItemState().isEmpty()) {
-				ArmPosing.zombieArms(this.leftArm, this.rightArm, true, crossbowSkeletonEntityRenderState.handSwingProgress, crossbowSkeletonEntityRenderState.age);
+			if (crossbowSkeletonEntityRenderState.getMainHandItem().isEmpty()) {
+				AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, crossbowSkeletonEntityRenderState.attackTime, crossbowSkeletonEntityRenderState.ageInTicks);
 			} else {
-				ArmPosing.meleeAttack(
-					this.rightArm, this.leftArm, crossbowSkeletonEntityRenderState.illagerMainArm, crossbowSkeletonEntityRenderState.handSwingProgress, crossbowSkeletonEntityRenderState.age
+				AnimationUtils.swingWeaponDown(
+					this.rightArm, this.leftArm, crossbowSkeletonEntityRenderState.illagerMainArm, crossbowSkeletonEntityRenderState.attackTime, crossbowSkeletonEntityRenderState.ageInTicks
 				);
 			}
 		} else if (state == GenericSkeletonCrossbow.State.CROSSBOW_HOLD) {
-			ArmPosing.hold(this.rightArm, this.leftArm, this.head, true);
+			AnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, true);
 		} else if (state == GenericSkeletonCrossbow.State.CROSSBOW_CHARGE) {
-			ArmPosing.charge(this.rightArm, this.leftArm, crossbowSkeletonEntityRenderState.crossbowPullTime, crossbowSkeletonEntityRenderState.itemUseTime, true);
+			AnimationUtils.animateCrossbowCharge(this.rightArm, this.leftArm, crossbowSkeletonEntityRenderState.crossbowPullTime, crossbowSkeletonEntityRenderState.ticksUsingItem, true);
 		}
 	}
 
-	public void setArmAngle(CrossbowSkeletonEntityRenderState illagerEntityRenderState, Arm arm, MatrixStack matrixStack) {
-		this.root.applyTransform(matrixStack);
-		this.getAttackingArm(arm).applyTransform(matrixStack);
+	public void setArmAngle(CrossbowSkeletonEntityRenderState illagerEntityRenderState, HumanoidArm arm, PoseStack matrixStack) {
+		this.root.translateAndRotate(matrixStack);
+		this.getAttackingArm(arm).translateAndRotate(matrixStack);
 	}
 
-	private ModelPart getAttackingArm(Arm arm) {
-		return arm == Arm.LEFT ? this.leftArm : this.rightArm;
+	private ModelPart getAttackingArm(HumanoidArm arm) {
+		return arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
 	}
 }

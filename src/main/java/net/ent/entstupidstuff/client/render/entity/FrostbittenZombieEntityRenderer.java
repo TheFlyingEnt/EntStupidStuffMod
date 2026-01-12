@@ -6,29 +6,29 @@ import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.FrostbittenZombieOverlay;
 import net.ent.entstupidstuff.client.render.entity.model.FrostbittenZombieModel;
 import net.ent.entstupidstuff.client.render.entity.state.FrostbittenEntityRenderState;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ZombieBaseEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.AbstractZombieRenderer;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
-public class FrostbittenZombieEntityRenderer extends ZombieBaseEntityRenderer<FrostbittenZombieEntity, FrostbittenEntityRenderState, FrostbittenZombieModel> {
-    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite_chilled.png");
-    private static final Identifier TEXTURE_B = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite.png");
+public class FrostbittenZombieEntityRenderer extends AbstractZombieRenderer<FrostbittenZombieEntity, FrostbittenEntityRenderState, FrostbittenZombieModel> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite_chilled.png");
+    private static final ResourceLocation TEXTURE_B = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite.png");
 
-    public FrostbittenZombieEntityRenderer(EntityRendererFactory.Context context) {
+    public FrostbittenZombieEntityRenderer(EntityRendererProvider.Context context) {
 		super(
 			context,
-			new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),
-            new FrostbittenZombieModel(context.getPart(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_BABY)),
-			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new),
-			EquipmentModelData.mapToEntityModel(EntityModelLayers.DROWNED_BABY_EQUIPMENT, context.getEntityModels(), FrostbittenZombieModel::new)
+			new FrostbittenZombieModel(context.bakeLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN)),
+            new FrostbittenZombieModel(context.bakeLayer(ModEntityModelLayers.ZOMBIE_FROSTBITTEN_BABY)),
+			ArmorModelSet.bake(ModelLayers.DROWNED_ARMOR, context.getModelSet(), FrostbittenZombieModel::new),
+			ArmorModelSet.bake(ModelLayers.DROWNED_BABY_ARMOR, context.getModelSet(), FrostbittenZombieModel::new)
 		);
-		this.addFeature(new FrostbittenZombieOverlay(this, context.getEntityModels()));
+		this.addLayer(new FrostbittenZombieOverlay(this, context.getModelSet()));
 	}
 
     @Override
-    public Identifier getTexture(FrostbittenEntityRenderState state) {
+    public ResourceLocation getTextureLocation(FrostbittenEntityRenderState state) {
         return switch (state.variant) {
 			case FROSTBITTEN -> TEXTURE;
 			case NORMAL -> TEXTURE_B;

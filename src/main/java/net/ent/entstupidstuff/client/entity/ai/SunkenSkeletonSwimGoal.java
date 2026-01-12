@@ -3,24 +3,24 @@ package net.ent.entstupidstuff.client.entity.ai;
 import java.util.EnumSet;
 
 import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class SunkenSkeletonSwimGoal extends Goal {
     private final SunkenSkeletonEntity skeleton;
 
     public SunkenSkeletonSwimGoal(SunkenSkeletonEntity skeleton) {
         this.skeleton = skeleton;
-        this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.JUMP));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
     @Override
-    public boolean canStart() {
-        return this.skeleton.isTouchingWater();
+    public boolean canUse() {
+        return this.skeleton.isInWater();
     }
 
     @Override
     public void start() {
-        this.skeleton.getNavigation().startMovingTo(this.skeleton.getX(), this.skeleton.getY(), this.skeleton.getZ(), 1.0D);
+        this.skeleton.getNavigation().moveTo(this.skeleton.getX(), this.skeleton.getY(), this.skeleton.getZ(), 1.0D);
     }
 
     @Override

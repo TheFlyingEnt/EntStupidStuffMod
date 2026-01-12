@@ -4,28 +4,28 @@ import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.tag.EnchantmentTagProvider;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup; 
-import net.minecraft.registry.tag.EnchantmentTags;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.tags.EnchantmentTagsProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.item.enchantment.Enchantments;
 
-public class ModEnchantmentTagProvider extends EnchantmentTagProvider {
-    public ModEnchantmentTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> completableFuture) {
+public class ModEnchantmentTagProvider extends EnchantmentTagsProvider {
+    public ModEnchantmentTagProvider(FabricDataOutput output, CompletableFuture<Provider> completableFuture) {
         super(output, completableFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup registryLookup) {
+    protected void addTags(HolderLookup.Provider registryLookup) {
         /*builder((ModItemTags.HAMMER_EXCLUSIVE_SET)
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "gravity"))
             .addOptional(Identifier.of(EntStupidStuff.MOD_ID, "lightning_striker"))
             .addOptional(Identifier.of("minecraft", "breach"));*/
 
-        this.builder(EnchantmentTags.DAMAGE_EXCLUSIVE_SET)
+        this.tag(EnchantmentTags.DAMAGE_EXCLUSIVE)
 			.add(
-                new RegistryKey[]{
+                new ResourceKey[]{
                     Enchantments.SHARPNESS, 
                     Enchantments.SMITE, 
                     Enchantments.BANE_OF_ARTHROPODS, 

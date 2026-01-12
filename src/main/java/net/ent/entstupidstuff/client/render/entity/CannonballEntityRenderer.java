@@ -1,35 +1,34 @@
 package net.ent.entstupidstuff.client.render.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ArrowRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
-public class CannonballEntityRenderer extends EntityRenderer<CannonballEntity, ProjectileEntityRenderState> {
+public class CannonballEntityRenderer extends EntityRenderer<CannonballEntity, ArrowRenderState> {
 	private final CannonballModel model;
 
-    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball.png");
-    private static final Identifier TEXTURE_PHANTOM_FIRE = Identifier.of(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_soulflame.png");
-    private static final Identifier TEXTURE_FIRE = Identifier.of(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_flame.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball.png");
+    private static final ResourceLocation TEXTURE_PHANTOM_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_soulflame.png");
+    private static final ResourceLocation TEXTURE_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_flame.png");
 
-	public CannonballEntityRenderer(EntityRendererFactory.Context context) {
+	public CannonballEntityRenderer(EntityRendererProvider.Context context) {
 		super(context);
-		this.model = new CannonballModel(context.getPart(ModEntityModelLayers.CANNON_BALL));
+		this.model = new CannonballModel(context.bakeLayer(ModEntityModelLayers.CANNON_BALL));
 	}
 
-	public void render(ProjectileEntityRenderState projectileEntityRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState) 
+	public void submit(ArrowRenderState projectileEntityRenderState, PoseStack matrixStack, SubmitNodeCollector orderedRenderCommandQueue, CameraRenderState cameraRenderState) 
     {
-		matrixStack.push();
+		matrixStack.pushPose();
 		/*matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(projectileEntityRenderState.yaw - 90.0F));
 		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(projectileEntityRenderState.pitch));
 		orderedRenderCommandQueue.submitModel(
@@ -49,32 +48,32 @@ public class CannonballEntityRenderer extends EntityRenderer<CannonballEntity, P
 			this.model,
 			projectileEntityRenderState,
 			matrixStack,
-			RenderLayer.getEntityCutout(this.getTexture(projectileEntityRenderState)),
-			projectileEntityRenderState.light,
-			OverlayTexture.DEFAULT_UV,
+			RenderType.entityCutout(this.getTexture(projectileEntityRenderState)),
+			projectileEntityRenderState.lightCoords,
+			OverlayTexture.NO_OVERLAY,
 			projectileEntityRenderState.outlineColor,
 			null
 		);
         
-		matrixStack.pop();
-		super.render(projectileEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
+		matrixStack.popPose();
+		super.submit(projectileEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState);
 	}
 
     
-	protected Identifier getTexture(ProjectileEntityRenderState state) {
+	protected ResourceLocation getTexture(ArrowRenderState state) {
         return TEXTURE;
     }
 
     @Override
-	public void updateRenderState(CannonballEntity persistentProjectileEntity, ProjectileEntityRenderState projectileEntityRenderState, float f) {
-		super.updateRenderState(persistentProjectileEntity, projectileEntityRenderState, f);
-		projectileEntityRenderState.pitch = persistentProjectileEntity.getLerpedPitch(f);
-		projectileEntityRenderState.yaw = persistentProjectileEntity.getLerpedYaw(f);
-		projectileEntityRenderState.shake = persistentProjectileEntity.shake - f;
+	public void extractRenderState(CannonballEntity persistentProjectileEntity, ArrowRenderState projectileEntityRenderState, float f) {
+		super.extractRenderState(persistentProjectileEntity, projectileEntityRenderState, f);
+		projectileEntityRenderState.xRot = persistentProjectileEntity.getXRot(f);
+		projectileEntityRenderState.yRot = persistentProjectileEntity.getYRot(f);
+		projectileEntityRenderState.shake = persistentProjectileEntity.shakeTime - f;
 	}
 
     @Override
-    public ProjectileEntityRenderState createRenderState() {
-        return new ProjectileEntityRenderState();
+    public ArrowRenderState createRenderState() {
+        return new ArrowRenderState();
     }
 }

@@ -4,155 +4,155 @@ import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.intprovider.ClampedNormalIntProvider;
-import net.minecraft.util.math.intprovider.ConstantIntProvider;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.blockpredicate.BlockPredicate;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.PlacedFeatures;
-import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
-import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
-import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
-import net.minecraft.world.gen.placementmodifier.EnvironmentScanPlacementModifier;
-import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier;
-import net.minecraft.world.gen.placementmodifier.PlacementModifier;
-import net.minecraft.world.gen.placementmodifier.RandomOffsetPlacementModifier;
-import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.data.worldgen.placement.VegetationPlacements;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.ClampedNormalInt;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 
 public class ModPlacedFeatures {
-    public static final RegistryKey<PlacedFeature> MAPLE_TREE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "maple_tree_placed")
+    public static final ResourceKey<PlacedFeature> MAPLE_TREE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "maple_tree_placed")
     );
 
-    public static final RegistryKey<PlacedFeature> FIR_TREE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "fir_tree_placed")
+    public static final ResourceKey<PlacedFeature> FIR_TREE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "fir_tree_placed")
     );
 
-    public static final RegistryKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "huge_blue_mushroom_placed")
+    public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "huge_blue_mushroom_placed")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone")
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_LOWER_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone_lower")
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_LOWER_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone_lower")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_LIMESTONE_UPPER_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_limestone_upper")
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_UPPER_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone_upper")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_PACKED_ICE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_packed_ice")
+    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_packed_ice")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_PACKED_ICE_LOWER_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_packed_ice_lower")
+    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_LOWER_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_packed_ice_lower")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_SNOW_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_snow")
+    public static final ResourceKey<PlacedFeature> ORE_SNOW_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_snow")
     );
 
-    public static final RegistryKey<PlacedFeature> ORE_SNOW_UPPER_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "ore_snow_upper")
+    public static final ResourceKey<PlacedFeature> ORE_SNOW_UPPER_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_snow_upper")
     );
 
-    public static final RegistryKey<PlacedFeature> SPIKED_ICE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice")
+    public static final ResourceKey<PlacedFeature> SPIKED_ICE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice")
     );
 
-    public static final RegistryKey<PlacedFeature> LARGE_SPIKED_ICE_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "large_spiked_ice")
+    public static final ResourceKey<PlacedFeature> LARGE_SPIKED_ICE_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "large_spiked_ice")
     );
 
-    public static final RegistryKey<PlacedFeature> SPIKED_ICE_CLUSTER_PLACED_KEY = RegistryKey.of(
-            RegistryKeys.PLACED_FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
+    public static final ResourceKey<PlacedFeature> SPIKED_ICE_CLUSTER_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
     );
 
-    public static final RegistryKey<PlacedFeature> THALASSITE_ORE_PLACE_KEY =
-        RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "thalassite_ore")
+    public static final ResourceKey<PlacedFeature> THALASSITE_ORE_PLACE_KEY =
+        ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "thalassite_ore")
     );
 
-    public static final RegistryKey<PlacedFeature> DATE_PALM_PLACED =
-            RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "date_palm_placed"));
+    public static final ResourceKey<PlacedFeature> DATE_PALM_PLACED =
+            ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "date_palm_placed"));
 
-    public static final RegistryKey<PlacedFeature> DESERT_WILLOW_PLACED =
-            RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "desert_willow_placed"));
+    public static final ResourceKey<PlacedFeature> DESERT_WILLOW_PLACED =
+            ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "desert_willow_placed"));
 
-    public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
-    public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
-    public static final RegistryKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
-    public static final RegistryKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
-    public static final RegistryKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
-    public static final RegistryKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
+    public static final ResourceKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
+    public static final ResourceKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
+    public static final ResourceKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
+    public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
+    public static final ResourceKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
+    public static final ResourceKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
 
-    public static final RegistryKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
+    public static final ResourceKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
 
     // # Bootstrap
 
-    public static void bootstrap(Registerable<PlacedFeature> context) {
+    public static void bootstrap(BootstrapContext<PlacedFeature> context) {
 
         // # Tree
 
         context.register(MAPLE_TREE_PLACED_KEY, new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_KEY),
-                VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
-                        PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_KEY),
+                VegetationPlacements.treePlacement(
+                        PlacementUtils.countExtra(5, 0.1f, 1), // base count, chance, extra
                         BlockFactory.callBlock("maple_sapling")
                 )
         ));
 
         context.register(FIR_TREE_PLACED_KEY, new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.FIR_KEY),
-                VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
-                        PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.FIR_KEY),
+                VegetationPlacements.treePlacement(
+                        PlacementUtils.countExtra(5, 0.1f, 1), // base count, chance, extra
                         BlockFactory.callBlock("fir_sapling")
                 )
         ));
 
         context.register(DATE_PALM_PLACED, new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE)
+                context.lookup(Registries.CONFIGURED_FEATURE)
                         .getOrThrow(ModConfiguredFeatures.DATE_PALM),
                 List.of(
-                        CountPlacementModifier.of(1),
-                        SquarePlacementModifier.of(),
-                        PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP,
-                        BiomePlacementModifier.of()
+                        CountPlacement.of(1),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BiomeFilter.biome()
                 )
         ));
 
         context.register(DESERT_WILLOW_PLACED, new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE)
+                context.lookup(Registries.CONFIGURED_FEATURE)
                         .getOrThrow(ModConfiguredFeatures.DESERT_WILLOW),
                 List.of(
-                        CountPlacementModifier.of(2),
-                        SquarePlacementModifier.of(),
-                        PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP,
-                        BiomePlacementModifier.of()
+                        CountPlacement.of(2),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BiomeFilter.biome()
                 )
         ));
 
@@ -161,12 +161,12 @@ public class ModPlacedFeatures {
         context.register(
             ORE_LIMESTONE_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE),
                 List.of(
-                    CountPlacementModifier.of(2), // "count": 2
-                    SquarePlacementModifier.of(), // "in_square"
-                    HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(0)), // uniform range
-                    BiomePlacementModifier.of() // "biome"
+                    CountPlacement.of(2), // "count": 2
+                    InSquarePlacement.spread(), // "in_square"
+                    HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)), // uniform range
+                    BiomeFilter.biome() // "biome"
                 )
             )
         );
@@ -175,12 +175,12 @@ public class ModPlacedFeatures {
         context.register(
             ORE_LIMESTONE_LOWER_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE_LOWER),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE_LOWER),
                 List.of(
-                    CountPlacementModifier.of(2), // "count": 2
-                    SquarePlacementModifier.of(), // "in_square"
-                    HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(60)), // uniform range
-                    BiomePlacementModifier.of() // "biome"
+                    CountPlacement.of(2), // "count": 2
+                    InSquarePlacement.spread(), // "in_square"
+                    HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(60)), // uniform range
+                    BiomeFilter.biome() // "biome"
                 )
             )
         );
@@ -188,12 +188,12 @@ public class ModPlacedFeatures {
         context.register(
             ORE_LIMESTONE_UPPER_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE_UPPER),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_LIMESTONE_UPPER),
                 List.of(
-                    CountPlacementModifier.of(2), // "count": 2
-                    SquarePlacementModifier.of(), // "in_square"
-                    HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(60)), // uniform range
-                    BiomePlacementModifier.of() // "biome"
+                    CountPlacement.of(2), // "count": 2
+                    InSquarePlacement.spread(), // "in_square"
+                    HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(60)), // uniform range
+                    BiomeFilter.biome() // "biome"
                 )
             )
         );
@@ -201,36 +201,36 @@ public class ModPlacedFeatures {
         context.register(
         ORE_PACKED_ICE_PLACED_KEY,
         new PlacedFeature(
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_PACKED_ICE),
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_PACKED_ICE),
             List.of(
-                CountPlacementModifier.of(2), // count: 2
-                SquarePlacementModifier.of(),
-                HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(0)), // min=above_bottom(0), max=0
-                BiomePlacementModifier.of()
+                CountPlacement.of(2), // count: 2
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(0)), // min=above_bottom(0), max=0
+                BiomeFilter.biome()
             )
         ));
 
         context.register(
         ORE_PACKED_ICE_LOWER_PLACED_KEY,
         new PlacedFeature(
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_PACKED_ICE_LOWER),
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_PACKED_ICE_LOWER),
             List.of(
-                CountPlacementModifier.of(2), // count: 2
-                SquarePlacementModifier.of(),
-                HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(60)), // min=above_bottom(0), max=0
-                BiomePlacementModifier.of()
+                CountPlacement.of(2), // count: 2
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(60)), // min=above_bottom(0), max=0
+                BiomeFilter.biome()
             )
         ));
 
         context.register(
         ORE_SNOW_PLACED_KEY,
         new PlacedFeature(
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_SNOW),
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_SNOW),
             List.of(
-                CountPlacementModifier.of(2),
-                SquarePlacementModifier.of(),
-                HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(0)),
-                BiomePlacementModifier.of()
+                CountPlacement.of(2),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(0)),
+                BiomeFilter.biome()
                 )
             )
         );
@@ -238,12 +238,12 @@ public class ModPlacedFeatures {
         context.register(
         ORE_SNOW_UPPER_PLACED_KEY,
         new PlacedFeature(
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_SNOW_UPPER),
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_SNOW_UPPER),
             List.of(
-                CountPlacementModifier.of(2),
-                SquarePlacementModifier.of(),
-                HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(0)),
-                BiomePlacementModifier.of()
+                CountPlacement.of(2),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(0)),
+                BiomeFilter.biome()
                 )
             )
         );
@@ -251,17 +251,17 @@ public class ModPlacedFeatures {
         context.register(
             SPIKED_ICE_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SMALL_SPIKED_ICE),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SMALL_SPIKED_ICE),
                 List.of(
-                    CountPlacementModifier.of(UniformIntProvider.create(192, 256)), // original "count" uniform 192-256
-                    SquarePlacementModifier.of(),
-                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
-                    CountPlacementModifier.of(UniformIntProvider.create(1, 5)), // second count
-                    RandomOffsetPlacementModifier.of(
-                        ClampedNormalIntProvider.of(0, 3, -10, 10), // xz spread
-                        ClampedNormalIntProvider.of(0, 0.6f, -2, 2) // y spread
+                    CountPlacement.of(UniformInt.of(192, 256)), // original "count" uniform 192-256
+                    InSquarePlacement.spread(),
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(256)),
+                    CountPlacement.of(UniformInt.of(1, 5)), // second count
+                    RandomOffsetPlacement.of(
+                        ClampedNormalInt.of(0, 3, -10, 10), // xz spread
+                        ClampedNormalInt.of(0, 0.6f, -2, 2) // y spread
                     ),
-                    BiomePlacementModifier.of()
+                    BiomeFilter.biome()
                 )
             )
         );
@@ -269,12 +269,12 @@ public class ModPlacedFeatures {
         context.register(
             SPIKED_ICE_CLUSTER_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SPIKED_ICE_CLUSTER),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SPIKED_ICE_CLUSTER),
                 List.of(
-                    CountPlacementModifier.of(UniformIntProvider.create(10, 48)),
-                    SquarePlacementModifier.of(),
-                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
-                    BiomePlacementModifier.of()
+                    CountPlacement.of(UniformInt.of(10, 48)),
+                    InSquarePlacement.spread(),
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(256)),
+                    BiomeFilter.biome()
                 )
             )
         );
@@ -282,12 +282,12 @@ public class ModPlacedFeatures {
         context.register(
             LARGE_SPIKED_ICE_PLACED_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.LARGE_SPIKED_ICE),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.LARGE_SPIKED_ICE),
                 List.of(
-                    CountPlacementModifier.of(UniformIntProvider.create(10, 48)),
-                    SquarePlacementModifier.of(),
-                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
-                    BiomePlacementModifier.of()
+                    CountPlacement.of(UniformInt.of(10, 48)),
+                    InSquarePlacement.spread(),
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(256)),
+                    BiomeFilter.biome()
                 )
             )
         );
@@ -297,12 +297,12 @@ public class ModPlacedFeatures {
         context.register(
             THALASSITE_ORE_PLACE_KEY,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_THALASSITE),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.ORE_THALASSITE),
                 List.of(
-                    CountPlacementModifier.of(10), // "count": 2
-                    SquarePlacementModifier.of(), // "in_square"
-                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
-                    BiomePlacementModifier.of() // "biome"
+                    CountPlacement.of(10), // "count": 2
+                    InSquarePlacement.spread(), // "in_square"
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(256)),
+                    BiomeFilter.biome() // "biome"
                 )
             )
         );
@@ -312,68 +312,68 @@ public class ModPlacedFeatures {
         context.register(
             CRYSTAL_SPIKE_PLACED,
             new PlacedFeature(
-                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.CRYSTAL_SPIKES),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.CRYSTAL_SPIKES),
                 List.of(
-                    CountPlacementModifier.of(UniformIntProvider.create(10, 48)),
-                    SquarePlacementModifier.of(),
-                    HeightRangePlacementModifier.uniform(YOffset.aboveBottom(0), YOffset.fixed(256)),
-                    BiomePlacementModifier.of()
+                    CountPlacement.of(UniformInt.of(10, 48)),
+                    InSquarePlacement.spread(),
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(256)),
+                    BiomeFilter.biome()
                 )
             )
         );
 
         register(context, SHROOMIUM_FLOOR_VEGETATION_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
             List.of()); // Empty list of placement modifiers
 
         // Mud layer (placed first, so it's underneath)
         register(context, MUD_LAYER_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUD_LAYER_KEY),
-            CountPlacementModifier.of(150),
-            SquarePlacementModifier.of(),
-            PlacedFeatures.BOTTOM_TO_120_RANGE,
-            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
-            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)),
-            BiomePlacementModifier.of());
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUD_LAYER_KEY),
+            CountPlacement.of(150),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(-1)),
+            BiomeFilter.biome());
 
         // Shroomium floor (placed after mud)
         register(context, SHROOMIUM_FLOOR_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_KEY),
-            CountPlacementModifier.of(125),
-            SquarePlacementModifier.of(),
-            PlacedFeatures.BOTTOM_TO_120_RANGE,
-            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
-            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)),
-            BiomePlacementModifier.of());
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_KEY),
+            CountPlacement.of(125),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(1)),
+            BiomeFilter.biome());
 
         // Huge blue mushrooms
         register(context, HUGE_BLUE_MUSHROOM_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY),
-            CountPlacementModifier.of(20),
-            SquarePlacementModifier.of(),
-            PlacedFeatures.BOTTOM_TO_120_RANGE,
-            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
-            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)),
-            BiomePlacementModifier.of());
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY),
+            CountPlacement.of(20),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(1)),
+            BiomeFilter.biome());
 
         // Additional mushroom bed patches
         register(context, MUSHROOM_BED_PATCH_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
-            CountPlacementModifier.of(50),
-            SquarePlacementModifier.of(),
-            PlacedFeatures.BOTTOM_TO_120_RANGE,
-            EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
-            BiomePlacementModifier.of());
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
+            CountPlacement.of(50),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            BiomeFilter.biome());
 
         // Fungal spore blossoms (ceiling decoration)
         register(context, FUNGAL_SPORE_BLOSSOM_PLACED, 
-            context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUSHROOM_SPORE_KEY),
-            CountPlacementModifier.of(10),
-            SquarePlacementModifier.of(),
-            PlacedFeatures.BOTTOM_TO_120_RANGE,
-            EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
-            RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)),
-            BiomePlacementModifier.of());
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUSHROOM_SPORE_KEY),
+            CountPlacement.of(10),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.UP, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(-1)),
+            BiomeFilter.biome());
 
 
     }
@@ -387,18 +387,18 @@ public class ModPlacedFeatures {
 
     // # Register
 
-    public static RegistryKey<PlacedFeature> registerKey(String name) {
-        return RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, name));
+    public static ResourceKey<PlacedFeature> registerKey(String name) {
+        return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name));
     }
 
-    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
-                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+    private static void register(BootstrapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key,
+                                Holder<ConfiguredFeature<?, ?>> configuration,
                                 List<PlacementModifier> modifiers) {
         context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
     }
 
-    private static void register(Registerable<PlacedFeature> context, RegistryKey<PlacedFeature> key,
-                                RegistryEntry<ConfiguredFeature<?, ?>> configuration,
+    private static void register(BootstrapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key,
+                                Holder<ConfiguredFeature<?, ?>> configuration,
                                 PlacementModifier... modifiers) {
         register(context, key, configuration, List.of(modifiers));
     }

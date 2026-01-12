@@ -1,16 +1,15 @@
 package net.ent.entstupidstuff.particle;
 
 import java.util.List;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.RandomSource;
 
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.random.Random;
-
-public class CustomSpriteProvider implements SpriteProvider {
-    private final List<Sprite> sprites;
+public class CustomSpriteProvider implements SpriteSet {
+    private final List<TextureAtlasSprite> sprites;
 
     // Constructor accepts a list of sprites
-    public CustomSpriteProvider(List<Sprite> sprites) {
+    public CustomSpriteProvider(List<TextureAtlasSprite> sprites) {
         if (sprites == null || sprites.isEmpty()) {
             throw new IllegalArgumentException("Sprite list cannot be null or empty.");
         }
@@ -18,7 +17,7 @@ public class CustomSpriteProvider implements SpriteProvider {
     }
 
     @Override
-    public Sprite getSprite(int index, int maxIndex) {
+    public TextureAtlasSprite get(int index, int maxIndex) {
         // Ensure index is within bounds
         if (sprites.isEmpty()) {
             throw new IllegalStateException("Sprite list is empty.");
@@ -28,13 +27,13 @@ public class CustomSpriteProvider implements SpriteProvider {
     }
 
     @Override
-    public Sprite getSprite(Random random) {
+    public TextureAtlasSprite get(RandomSource random) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSprite'");
     }
 
     @Override
-    public Sprite getFirst() {
+    public TextureAtlasSprite first() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFirst'");
     }

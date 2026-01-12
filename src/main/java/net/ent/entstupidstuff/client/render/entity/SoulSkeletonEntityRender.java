@@ -5,36 +5,36 @@ import net.ent.entstupidstuff.client.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.SoulSkeletonGlowRender;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.client.render.entity.state.SkeletonEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
+import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class SoulSkeletonEntityRender extends AbstractSkeletonEntityRenderer<SoulSkeletonEntity, SkeletonEntityRenderState>  {
-	private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/soul_skeleton.png");
+public class SoulSkeletonEntityRender extends AbstractSkeletonRenderer<SoulSkeletonEntity, SkeletonRenderState>  {
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/soul_skeleton.png");
 
-	public SoulSkeletonEntityRender(EntityRendererFactory.Context context) {
-		super(context, EntityModelLayers.SKELETON, EntityModelLayers.SKELETON_EQUIPMENT);
-		this.addFeature(new SoulSkeletonGlowRender(this));
+	public SoulSkeletonEntityRender(EntityRendererProvider.Context context) {
+		super(context, ModelLayers.SKELETON, ModelLayers.SKELETON_ARMOR);
+		this.addLayer(new SoulSkeletonGlowRender(this));
 	}
 
-	public SoulSkeletonEntityRender(EntityRendererFactory.Context ctx, EntityModelLayer layer, EquipmentModelData<EntityModelLayer> armor) {
+	public SoulSkeletonEntityRender(EntityRendererProvider.Context ctx, ModelLayerLocation layer, ArmorModelSet<ModelLayerLocation> armor) {
 		super(ctx, layer, armor);
-		this.addFeature(new SoulSkeletonGlowRender(this));
+		this.addLayer(new SoulSkeletonGlowRender(this));
 
 	}
 
-	public Identifier getTexture(SkeletonEntityRenderState soulEnt) {
+	public ResourceLocation getTextureLocation(SkeletonRenderState soulEnt) {
 		return TEXTURE;
 	}
 
 	@Override
-	public SkeletonEntityRenderState createRenderState() {
-		return new SkeletonEntityRenderState();
+	public SkeletonRenderState createRenderState() {
+		return new SkeletonRenderState();
 	}
 
 }

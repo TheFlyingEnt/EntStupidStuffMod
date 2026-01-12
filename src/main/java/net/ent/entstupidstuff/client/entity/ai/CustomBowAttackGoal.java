@@ -1,13 +1,13 @@
 package net.ent.entstupidstuff.client.entity.ai;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Items;
 
-public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
+public class CustomBowAttackGoal<T extends Skeleton> extends Goal {
     private final T skeleton;
     private final double speed;
     private final int attackInterval;
@@ -28,7 +28,7 @@ public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         return this.skeleton.getTarget() != null && this.isHoldingBow();
     }
 
@@ -39,14 +39,14 @@ public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
     @Override
     public void start() {
         super.start();
-        this.skeleton.setAttacking(true);
+        this.skeleton.setAggressive(true);
     }
 
     @Override
     public void stop() {
         super.stop();
-        this.skeleton.setAttacking(false);
-        this.skeleton.clearActiveItem();
+        this.skeleton.setAggressive(false);
+        this.skeleton.stopUsingItem();
         this.seeTime = 0;
         this.attackCooldown = -1;
         this.skeleton.setTarget(null);
@@ -56,8 +56,8 @@ public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
     public void tick() {
         LivingEntity target = this.skeleton.getTarget();
         if (target != null) {
-            double distance = this.skeleton.squaredDistanceTo(target.getX(), target.getY(), target.getZ());
-            boolean canSee = this.skeleton.getVisibilityCache().canSee(target);
+            double distance = this.skeleton.distanceToSqr(target.getX(), target.getY(), target.getZ());
+            boolean canSee = this.skeleton.getSensing().hasLineOfSight(target);
             boolean wasSeeing = this.seeTime > 0;
 
             if (canSee != wasSeeing) {
@@ -74,7 +74,7 @@ public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
                 this.skeleton.getNavigation().stop();
                 this.strafingTime++;
             } else {
-                this.skeleton.getNavigation().startMovingTo(target, this.speed);
+                this.skeleton.getNavigation().moveTo(target, this.speed);
                 this.strafingTime = -1;
             }
 
@@ -97,25 +97,25 @@ public class CustomBowAttackGoal<T extends SkeletonEntity> extends Goal {
                     this.strafingClockwise = true;
                 }
 
-                this.skeleton.getMoveControl().strafeTo(this.movingToLeft ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
-                this.skeleton.lookAtEntity(target, 30.0F, 30.0F);
+                this.skeleton.getMoveControl().strafe(this.movingToLeft ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
+                this.skeleton.lookAt(target, 30.0F, 30.0F);
             } else {
-                this.skeleton.getLookControl().lookAt(target, 30.0F, 30.0F);
+                this.skeleton.getLookControl().setLookAt(target, 30.0F, 30.0F);
             }
 
             if (this.skeleton.isUsingItem()) {
                 if (!canSee && this.seeTime < -60) {
-                    this.skeleton.clearActiveItem();
+                    this.skeleton.stopUsingItem();
                 } else if (canSee) {
-                    int useTicks = this.skeleton.getItemUseTime();
+                    int useTicks = this.skeleton.getTicksUsingItem();
                     if (useTicks >= 20) {
-                        this.skeleton.clearActiveItem();
-                        this.skeleton.shootAt(target, BowItem.getPullProgress(useTicks));
+                        this.skeleton.stopUsingItem();
+                        this.skeleton.performRangedAttack(target, BowItem.getPowerForTime(useTicks));
                         this.attackCooldown = this.attackInterval;
                     }
                 }
             } else if (--this.attackCooldown <= 0 && this.seeTime >= -60) {
-                this.skeleton.setCurrentHand(Hand.MAIN_HAND);
+                this.skeleton.startUsingItem(InteractionHand.MAIN_HAND);
             }
         }
     }

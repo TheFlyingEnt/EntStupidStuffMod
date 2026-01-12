@@ -1,25 +1,24 @@
 package net.ent.entstupidstuff.effects;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.particle.ParticleEffect;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class BleedingEffect extends StatusEffect {
+public class BleedingEffect extends MobEffect {
     public BleedingEffect() {
-        super(StatusEffectCategory.HARMFUL, 0x8B0000); // Dark red color
+        super(MobEffectCategory.HARMFUL, 0x8B0000); // Dark red color
     }
 
-    protected BleedingEffect(StatusEffectCategory statusEffectCategory, int i) {
+    protected BleedingEffect(MobEffectCategory statusEffectCategory, int i) {
 		super(statusEffectCategory, 0x8B0000);
 	}
 
-    protected BleedingEffect(StatusEffectCategory statusEffectCategory, int i, ParticleEffect j) {
+    protected BleedingEffect(MobEffectCategory statusEffectCategory, int i, ParticleOptions j) {
 		super(statusEffectCategory, i);
 	}
 
     @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 

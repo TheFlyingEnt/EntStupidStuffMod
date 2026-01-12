@@ -1,38 +1,38 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
-import net.minecraft.client.model.Dilation;
-import net.minecraft.client.model.ModelData;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelPartData;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelPartNames;
-import net.minecraft.client.render.entity.model.ZombieEntityModel;
-import net.minecraft.client.render.entity.state.ZombieEntityRenderState;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.ZombieModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartNames;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 
-public class SlimedZombieModel extends ZombieEntityModel<ZombieEntityRenderState>{
+public class SlimedZombieModel extends ZombieModel<ZombieRenderState>{
 
     public SlimedZombieModel(ModelPart modelPart) {
         super(modelPart);
     }
     
-    public static TexturedModelData getTexturedModelData(Dilation dilation) {
-		ModelData modelData = BipedEntityModel.getModelData(dilation, 0.0F);
-		ModelPartData modelPartData = modelData.getRoot(); //0,33 
+    public static LayerDefinition getTexturedModelData(CubeDeformation dilation) {
+		MeshDefinition modelData = HumanoidModel.createMesh(dilation, 0.0F);
+		PartDefinition modelPartData = modelData.getRoot(); //0,33 
 
-		ModelPartData slime = modelData.getRoot().getChild(EntityModelPartNames.HEAD);
+		PartDefinition slime = modelData.getRoot().getChild(PartNames.HEAD);
 		
-        slime.addChild(
+        slime.addOrReplaceChild(
 			"slime",
-			ModelPartBuilder.create().uv(0, 32).cuboid(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new Dilation(1F)),
-			ModelTransform.origin(0.0F, 0.0F + 0.0F, 0.0F)
+			CubeListBuilder.create().texOffs(0, 32).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(1F)),
+			PartPose.offset(0.0F, 0.0F + 0.0F, 0.0F)
 		);
 
 
 
-		return TexturedModelData.of(modelData, 64, 64);
+		return LayerDefinition.create(modelData, 64, 64);
 	}
 
 }

@@ -6,16 +6,16 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.item.Item;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 public class UpdatedItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
-    public UpdatedItemTagProvider(FabricDataOutput output, CompletableFuture<WrapperLookup> completableFuture) {
+    public UpdatedItemTagProvider(FabricDataOutput output, CompletableFuture<Provider> completableFuture) {
         super(output, completableFuture);
     }
 
@@ -27,11 +27,11 @@ public class UpdatedItemTagProvider extends FabricTagProvider.ItemTagProvider {
     public static final TagKey<Item> SHIELD = of("shield");
 
     private static TagKey<Item> of(String id) {
-        return TagKey.of(RegistryKeys.ITEM, Identifier.of(EntStupidStuff.MOD_ID, id));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
     }
 
     @Override
-    protected void configure(WrapperLookup wrapperLookup) {
+    protected void addTags(Provider wrapperLookup) {
         valueLookupBuilder(ItemTags.PIGLIN_LOVED)
                 .addTag(ItemTags.GOLD_ORES)
                 .add(

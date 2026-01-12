@@ -3,45 +3,42 @@ package net.ent.entstupidstuff.item.base;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableMap.Builder;
-
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Oxidizable;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ToolComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.HoneycombItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
-import net.minecraft.world.event.GameEvent;
 
 public class WeaponBattleAxeItem extends WeaponUpdatedItem {
     private static final int COOLDOWN_TICKS = 80;
@@ -51,8 +48,8 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
     private static final double BASE_ATTACK_DAMAGE = 5;;
     private static double ATTACK_DAMAGE;
 
-    public WeaponBattleAxeItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(
+    public WeaponBattleAxeItem(ToolMaterial toolMaterial, Properties settings) {
+        super(toolMaterial, settings.attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
@@ -61,9 +58,9 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
                 1, 
                 0.25f
             )
-        ).component(DataComponentTypes.TOOL, new ToolComponent(
+        ).component(DataComponents.TOOL, new Tool(
 					List.of(
-						ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), -3.4f )
+						Tool.Rule.minesAndDrops(BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE), -3.4f )
 					),
 					1.0F,
 					1,
@@ -87,37 +84,37 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
 	}*/
 
     @Override
-    public ActionResult use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
 
-        if (!world.isClient()) {
+        if (!world.isClientSide()) {
 
             if (player.isCreative() == true) {
-                player.getItemCooldownManager().set(player.getMainHandStack(), 3);
+                player.getCooldowns().addCooldown(player.getMainHandItem(), 3);
             } else {
-                player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
+                player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
             }
 
-            Vec3d playerPos = player.getEntityPos();
-            List<LivingEntity> entities = world.getEntitiesByClass(
+            Vec3 playerPos = player.position();
+            List<LivingEntity> entities = world.getEntitiesOfClass(
                 LivingEntity.class, 
-                new Box(playerPos.add(-ATTACK_RADIUS, -1, -ATTACK_RADIUS), playerPos.add(ATTACK_RADIUS, 2, ATTACK_RADIUS)), 
+                new AABB(playerPos.add(-ATTACK_RADIUS, -1, -ATTACK_RADIUS), playerPos.add(ATTACK_RADIUS, 2, ATTACK_RADIUS)), 
                 e -> e != player
             );
 
             for (LivingEntity entity : entities) {
                 // Apply Spin Attack Damage - entity.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), attackDamageBonus() * 1.3f);
-                entity.damage((ServerWorld)world, player.getDamageSources().playerAttack(player), (float) ATTACK_DAMAGE * 1.25f);
+                entity.hurtServer((ServerLevel)world, player.damageSources().playerAttack(player), (float) ATTACK_DAMAGE * 1.25f);
                 System.out.print("Spin Attack");
 
                 // Apply Knockback Effect - Might Remove Knockback
-                Vec3d knockback = entity.getEntityPos().subtract(playerPos).normalize().multiply(KNOCKBACK_STRENGTH);
-                entity.addVelocity(knockback.x, 0.5, knockback.z);
-                entity.velocityModified = true;
+                Vec3 knockback = entity.position().subtract(playerPos).normalize().scale(KNOCKBACK_STRENGTH);
+                entity.push(knockback.x, 0.5, knockback.z);
+                entity.hurtMarked = true;
             }
 
-            world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, player.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0f, 1.0f);
 
-            ((ServerWorld) world).spawnParticles(
+            ((ServerLevel) world).sendParticles(
                 ParticleTypes.LARGE_SMOKE, //ParticleTypes.SWEEP_ATTACK, 
                 player.getX(), player.getY() + 1, player.getZ(), 
                 10, 1.5, 0.5, 1.5, 0.1
@@ -126,7 +123,7 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
 
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
 
     }
 
@@ -155,56 +152,56 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
 		.build();
 
     @Override
-	public ActionResult useOnBlock(ItemUsageContext context) {
-		World world = context.getWorld();
-		BlockPos blockPos = context.getBlockPos();
-		PlayerEntity playerEntity = context.getPlayer();
+	public InteractionResult useOn(UseOnContext context) {
+		Level world = context.getLevel();
+		BlockPos blockPos = context.getClickedPos();
+		Player playerEntity = context.getPlayer();
 		if (shouldCancelStripAttempt(context)) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		} else {
 			Optional<BlockState> optional = this.tryStrip(world, blockPos, playerEntity, world.getBlockState(blockPos));
 			if (optional.isEmpty()) {
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			} else {
-				ItemStack itemStack = context.getStack();
-				if (playerEntity instanceof ServerPlayerEntity) {
-					Criteria.ITEM_USED_ON_BLOCK.trigger((ServerPlayerEntity)playerEntity, blockPos, itemStack);
+				ItemStack itemStack = context.getItemInHand();
+				if (playerEntity instanceof ServerPlayer) {
+					CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)playerEntity, blockPos, itemStack);
 				}
 
-				world.setBlockState(blockPos, (BlockState)optional.get(), Block.NOTIFY_ALL_AND_REDRAW);
-				world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, (BlockState)optional.get()));
+				world.setBlock(blockPos, (BlockState)optional.get(), Block.UPDATE_ALL_IMMEDIATE);
+				world.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(playerEntity, (BlockState)optional.get()));
 				if (playerEntity != null) {
-					itemStack.damage(1, playerEntity, context.getHand().getEquipmentSlot());
+					itemStack.hurtAndBreak(1, playerEntity, context.getHand().asEquipmentSlot());
 				}
 
-				return ActionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
 		}
 	}
 
-	private static boolean shouldCancelStripAttempt(ItemUsageContext context) {
-		PlayerEntity playerEntity = context.getPlayer();
-		return context.getHand().equals(Hand.MAIN_HAND) && playerEntity.getOffHandStack().isOf(Items.SHIELD) && !playerEntity.shouldCancelInteraction();
+	private static boolean shouldCancelStripAttempt(UseOnContext context) {
+		Player playerEntity = context.getPlayer();
+		return context.getHand().equals(InteractionHand.MAIN_HAND) && playerEntity.getOffhandItem().is(Items.SHIELD) && !playerEntity.isSecondaryUseActive();
 	}
 
 	@SuppressWarnings("rawtypes")
-    private Optional<BlockState> tryStrip(World world, BlockPos pos, @Nullable PlayerEntity player, BlockState state) {
+    private Optional<BlockState> tryStrip(Level world, BlockPos pos, @Nullable Player player, BlockState state) {
 		Optional<BlockState> optional = this.getStrippedState(state);
 		if (optional.isPresent()) {
-			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+			world.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 			return optional;
 		} else {
-			Optional<BlockState> optional2 = Oxidizable.getDecreasedOxidationState(state);
+			Optional<BlockState> optional2 = WeatheringCopper.getPrevious(state);
 			if (optional2.isPresent()) {
-				world.playSound(player, pos, SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				world.syncWorldEvent(player, WorldEvents.BLOCK_SCRAPED, pos, 0);
+				world.playSound(player, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
+				world.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, pos, 0);
 				return optional2;
 			} else {
-				Optional<BlockState> optional3 = Optional.ofNullable((Block)((BiMap)HoneycombItem.WAXED_TO_UNWAXED_BLOCKS.get()).get(state.getBlock()))
-					.map(block -> block.getStateWithProperties(state));
+				Optional<BlockState> optional3 = Optional.ofNullable((Block)((BiMap)HoneycombItem.WAX_OFF_BY_BLOCK.get()).get(state.getBlock()))
+					.map(block -> block.withPropertiesOf(state));
 				if (optional3.isPresent()) {
-					world.playSound(player, pos, SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0F, 1.0F);
-					world.syncWorldEvent(player, WorldEvents.WAX_REMOVED, pos, 0);
+					world.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+					world.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, pos, 0);
 					return optional3;
 				} else {
 					return Optional.empty();
@@ -215,12 +212,12 @@ public class WeaponBattleAxeItem extends WeaponUpdatedItem {
 
 	private Optional<BlockState> getStrippedState(BlockState state) {
 		return Optional.ofNullable((Block)STRIPPED_BLOCKS.get(state.getBlock()))
-			.map(block -> block.getDefaultState().with(PillarBlock.AXIS, (Direction.Axis)state.get(PillarBlock.AXIS)));
+			.map(block -> block.defaultBlockState().setValue(RotatedPillarBlock.AXIS, (Direction.Axis)state.getValue(RotatedPillarBlock.AXIS)));
 	}
 
     @Override
-	public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		stack.damage(1, attacker, EquipmentSlot.MAINHAND);
+	public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 	}
     
 }

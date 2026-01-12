@@ -1,11 +1,11 @@
 package net.ent.entstupidstuff.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.WallBlock;
-import net.minecraft.data.family.BlockFamilies;
+import net.minecraft.data.BlockFamilies;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 @SuppressWarnings("unused")
 public class BlockGroupFactory {
@@ -16,19 +16,19 @@ public class BlockGroupFactory {
 
         Block Wall = BlockFactory.register3(MainName + "_wall",
             (settings) -> new WallBlock(settings),
-            AbstractBlock.Settings.copy(MainBlock)
+            BlockBehaviour.Properties.ofFullCopy(MainBlock)
         );
 
         if (Bricks) {
             //Chizeled + Cracked
             Block Chiseled = BlockFactory.register3(MainName + "_chiseled",
                     (settings) -> new Block(settings),
-                    AbstractBlock.Settings.copy(MainBlock)
+                    BlockBehaviour.Properties.ofFullCopy(MainBlock)
                 );
 
             Block Cracked = BlockFactory.register3("cracked_" + MainName + "s",
                 (settings) -> new Block(settings),
-                AbstractBlock.Settings.copy(MainBlock)
+                BlockBehaviour.Properties.ofFullCopy(MainBlock)
             );
         }
     }
@@ -39,7 +39,7 @@ public class BlockGroupFactory {
         BlockFactoryHelper.NatureFamily(MainName , Varient, MainColor, SecondColor, flamable, true);
         BlockFactoryHelper.MosicFamily(MainName , Varient, MainBlock, flamable);
 
-        BlockFamilies.register(MainBlock)
+        BlockFamilies.familyBuilder(MainBlock)
             .button(BlockFactory.callBlock(MainName + "_" + "button" + Varient))
             .fence(BlockFactory.callBlock(MainName + "_" + "fence" + Varient))
             .fenceGate(BlockFactory.callBlock(MainName + "_" + "fence_gate" + Varient))
@@ -50,19 +50,19 @@ public class BlockGroupFactory {
             .trapdoor(BlockFactory.callBlock(MainName + "_" + "glass_trapdoor" + Varient))
             .door(BlockFactory.callBlock(MainName + "_" + "door" + Varient)) 
             .door(BlockFactory.callBlock(MainName + "_" + "glass_door" + Varient))
-        .group("wooden")
-        .unlockCriterionName("has_planks")
-        .build();
+        .recipeGroupPrefix("wooden")
+        .recipeUnlockedBy("has_planks")
+        .getFamily();
     }
 
     public static void groupFungalFamily(String Varient, MapColor MainColor) {
-        Block FUNGAL_PLANKS = BlockFactory.register3("fungal" + "_planks" + Varient, Block::new, (AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).mapColor((MainColor))));
+        Block FUNGAL_PLANKS = BlockFactory.register3("fungal" + "_planks" + Varient, Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MainColor))));
         
         BlockFactoryHelper.BaseFamily("fungal", Varient, FUNGAL_PLANKS, true);
         BlockFactoryHelper.InteractionFamily("fungal", Varient, FUNGAL_PLANKS, MainColor, true, true);
         BlockFactoryHelper.MosicFamily("fungal" , Varient, FUNGAL_PLANKS, true);
 
-        BlockFamilies.register(FUNGAL_PLANKS)
+        BlockFamilies.familyBuilder(FUNGAL_PLANKS)
             .button(BlockFactory.callBlock("fungal" + "_" + "button" + Varient))
             .fence(BlockFactory.callBlock("fungal" + "_" + "fence" + Varient))
             .fenceGate(BlockFactory.callBlock("fungal" + "_" + "fence_gate" + Varient))
@@ -73,9 +73,9 @@ public class BlockGroupFactory {
             .trapdoor(BlockFactory.callBlock("fungal" + "_" + "glass_trapdoor" + Varient))
             .door(BlockFactory.callBlock("fungal" + "_" + "door" + Varient)) 
             .door(BlockFactory.callBlock("fungal" + "_" + "glass_door" + Varient))
-        .group("wooden")
-        .unlockCriterionName("has_planks")
-        .build();
+        .recipeGroupPrefix("wooden")
+        .recipeUnlockedBy("has_planks")
+        .getFamily();
 
     }
     

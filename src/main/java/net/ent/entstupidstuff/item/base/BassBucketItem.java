@@ -5,30 +5,30 @@ import java.util.function.Consumer;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.EntityBucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.material.Fluid;
 
-public class BassBucketItem extends EntityBucketItem {
-    public BassBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
+public class BassBucketItem extends MobBucketItem {
+    public BassBucketItem(EntityType<? extends Mob> type, Fluid fluid, SoundEvent emptyingSound, Properties settings) {
         super(type, fluid, emptyingSound, settings);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent,
-            Consumer<Text> textConsumer, TooltipType type) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent,
+            Consumer<Component> textConsumer, TooltipFlag type) {
 
         BassEntity.Variant variant = stack.get(ModDataComponentTypes.BASS_FISH_VARIANT);
 
         if (variant != null) {
-            textConsumer.accept(Text.literal(variant.getId()).formatted(Formatting.GRAY, Formatting.ITALIC));
+            textConsumer.accept(Component.literal(variant.getId()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
     }
 

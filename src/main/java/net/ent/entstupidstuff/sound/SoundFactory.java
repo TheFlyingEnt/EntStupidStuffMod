@@ -1,11 +1,11 @@
 package net.ent.entstupidstuff.sound;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 public class SoundFactory {
 
@@ -18,8 +18,8 @@ public class SoundFactory {
 
     public static final SoundEvent COMBAT_HAMMER_GROUND = registerSoundEvent("combat.hammer.ground");
     public static final SoundEvent COMBAT_CANNON_FIRE = registerSoundEvent("combat.cannon.fire");
-    public static final RegistryEntry.Reference<SoundEvent> ENTITY_SPOREPER_EXPLODE = registerReference("entity.sporeper.explode");
-    public static final RegistryEntry.Reference<SoundEvent> ENTITY_GENERIC_UNDERWATER_EXPLODE = registerReference("entity.generic.underwater_explode");
+    public static final Holder.Reference<SoundEvent> ENTITY_SPOREPER_EXPLODE = registerReference("entity.sporeper.explode");
+    public static final Holder.Reference<SoundEvent> ENTITY_GENERIC_UNDERWATER_EXPLODE = registerReference("entity.generic.underwater_explode");
 
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_AMBIENT = registerSoundEvent("entity.alligator_gar.ambient");
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_DEATH = registerSoundEvent("entity.alligator_gar.death");
@@ -67,20 +67,20 @@ public class SoundFactory {
     public static final SoundEvent ENTITY_FUR_TROUT_FLOP = registerSoundEvent("entity.fur_trout.flop");
 
     private static SoundEvent registerSoundEvent(String name) {
-        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
-        return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);
+        return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
     }
 
-    private static RegistryEntry.Reference<SoundEvent> registerReference(String id) {
-		return registerReference(Identifier.of(EntStupidStuff.MOD_ID, id));
+    private static Holder.Reference<SoundEvent> registerReference(String id) {
+		return registerReference(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
 	}
 
-    private static RegistryEntry.Reference<SoundEvent> registerReference(Identifier id) {
+    private static Holder.Reference<SoundEvent> registerReference(ResourceLocation id) {
 		return registerReference(id, id);
 	}
 
-    private static RegistryEntry.Reference<SoundEvent> registerReference(Identifier id, Identifier soundId) {
-		return Registry.registerReference(Registries.SOUND_EVENT, id, SoundEvent.of(soundId));
+    private static Holder.Reference<SoundEvent> registerReference(ResourceLocation id, ResourceLocation soundId) {
+		return Registry.registerForHolder(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(soundId));
 	}
 
     public static void registerSounds() {

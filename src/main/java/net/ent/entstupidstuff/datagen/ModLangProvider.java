@@ -7,22 +7,22 @@ import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 
 public class ModLangProvider extends FabricLanguageProvider  {
 
-    public ModLangProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public ModLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "en_us", registryLookup);
     }
     
 
-    public ModLangProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<WrapperLookup> registryLookup) {
+    public ModLangProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<Provider> registryLookup) {
         super(dataOutput, "en_us", registryLookup);
     }
 
     @Override
-    public void generateTranslations(WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
+    public void generateTranslations(Provider registryLookup, TranslationBuilder translationBuilder) {
 
         //Launch - Welcome to Stupidity
 

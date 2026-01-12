@@ -1,15 +1,14 @@
 package net.ent.entstupidstuff.client.entity.ai;
 
-//import net.ent.entstupidstuff.entity.SunkenSkeletonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.BowAttackGoal;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Items;
 
 //ENT EDIT: I changed the SunkenSkeletonEntity to SkeletonEntity 8/1 12:48am - UnTested
-public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ SkeletonEntity> extends /*Goal*/BowAttackGoal<T> {
+public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton> extends /*Goal*/RangedBowAttackGoal<T> {
 
     private final T skeleton;
     private final double speed;
@@ -64,12 +63,12 @@ public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton
         return true;
     } */ 
 
-    public void setAttackInterval(int attackInterval) {
+    public void setMinAttackInterval(int attackInterval) {
 		this.attackInterval = attackInterval;
 	}
 
 	@Override
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.skeleton.getTarget() == null ? false : this.isHoldingBow();
 	}
 
@@ -78,27 +77,27 @@ public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton
 	}
 
 	@Override
-	public boolean shouldContinue() {
-		return (this.canStart() || !this.skeleton.getNavigation().isIdle()) && this.isHoldingBow();
+	public boolean canContinueToUse() {
+		return (this.canUse() || !this.skeleton.getNavigation().isDone()) && this.isHoldingBow();
 	}
 
 	@Override
 	public void start() {
 		super.start();
-		this.skeleton.setAttacking(true);
+		this.skeleton.setAggressive(true);
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
-		this.skeleton.setAttacking(false);
+		this.skeleton.setAggressive(false);
 		this.seeTime = 0;
 		this.attackCooldown = -1;
-		this.skeleton.clearActiveItem();
+		this.skeleton.stopUsingItem();
 	}
 
 	@Override
-	public boolean shouldRunEveryTick() {
+	public boolean requiresUpdateEveryTick() {
 		return true;
 	}
 
@@ -106,13 +105,13 @@ public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton
     public void tick() {
         LivingEntity target = this.skeleton.getTarget();
         if (target != null) {
-            double distance = this.skeleton.squaredDistanceTo(target.getX(), target.getY(), target.getZ());
-            boolean canSee = this.skeleton.getVisibilityCache().canSee(target);
+            double distance = this.skeleton.distanceToSqr(target.getX(), target.getY(), target.getZ());
+            boolean canSee = this.skeleton.getSensing().hasLineOfSight(target);
             boolean wasSeeing = this.seeTime > 0;
 
             //Testing
-            this.skeleton.getLookControl().lookAt(target, 30.0F, 30.0F);
-            this.skeleton.lookAtEntity(target, 30.0F, 30.0F);
+            this.skeleton.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            this.skeleton.lookAt(target, 30.0F, 30.0F);
 
             if (canSee != wasSeeing) {
                 this.seeTime = 0;
@@ -128,7 +127,7 @@ public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton
                 this.skeleton.getNavigation().stop();
                 this.combatTicks++;
             } else {
-                this.skeleton.getNavigation().startMovingTo(target, this.speed);
+                this.skeleton.getNavigation().moveTo(target, this.speed);
                 this.combatTicks = -1;
             }
 
@@ -151,26 +150,26 @@ public class UnderwaterBowAttackGoal<T extends /*SunkenSkeletonEntity*/ Skeleton
                     this.strafingClockwise = true;
                 }
 
-                this.skeleton.getMoveControl().strafeTo(this.movingToLeft ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
-                this.skeleton.lookAtEntity(target, 30.0F, 30.0F);
+                this.skeleton.getMoveControl().strafe(this.movingToLeft ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
+                this.skeleton.lookAt(target, 30.0F, 30.0F);
             } else {
-                this.skeleton.getLookControl().lookAt(target, 30.0F, 30.0F);
+                this.skeleton.getLookControl().setLookAt(target, 30.0F, 30.0F);
             }
 
             if (this.skeleton.isUsingItem()) {
                 if (!canSee && this.seeTime < -60) {
-                    this.skeleton.clearActiveItem();
+                    this.skeleton.stopUsingItem();
                 } else if (canSee) {
-                    int i = this.skeleton.getItemUseTime();
+                    int i = this.skeleton.getTicksUsingItem();
                     if (i >= 20) {
-                        this.skeleton.clearActiveItem();
-                        this.skeleton.shootAt(target, BowItem.getPullProgress(i));
+                        this.skeleton.stopUsingItem();
+                        this.skeleton.performRangedAttack(target, BowItem.getPowerForTime(i));
                         this.attackCooldown = this.attackInterval;
                         System.out.println(attackCooldown);
                     }
                 }
              } else if (--this.attackCooldown <= 0 && this.seeTime >= -60) {
-                this.skeleton.setCurrentHand(ProjectileUtil.getHandPossiblyHolding(this.skeleton, Items.BOW));
+                this.skeleton.startUsingItem(ProjectileUtil.getWeaponHoldingHand(this.skeleton, Items.BOW));
             }
         }
     }

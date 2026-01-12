@@ -3,11 +3,7 @@ package net.ent.entstupidstuff.item.itemType;
 import java.util.List;
 
 import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.world.item.ToolMaterial;
 
 
 public class DaggerItem extends WeaponItem /*implements IBleedingTrait*/{
@@ -21,7 +17,7 @@ public class DaggerItem extends WeaponItem /*implements IBleedingTrait*/{
      * @param - AttackSpeed
     */
 
-    public DaggerItem(ToolMaterial toolMaterial, Settings settings) { //Wood add is 1; So 1 + 4
+    public DaggerItem(ToolMaterial toolMaterial, Properties settings) { //Wood add is 1; So 1 + 4
         super(toolMaterial, settings);
         //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (3 /*3.5*/)  + toolMaterial.attackDamageBonus(), -2.6f, 1, 0, 0)));
     }

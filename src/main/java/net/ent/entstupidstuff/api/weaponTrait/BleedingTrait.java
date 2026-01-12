@@ -2,18 +2,18 @@ package net.ent.entstupidstuff.api.weaponTrait;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.IntTrait.ITrait;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 public class BleedingTrait implements ITrait {
 
-    public static final Identifier BASE_ATTACK_DAMAGE_MODIFIER_ID = EntStupidStuff.id("bleed_damage");
+    public static final ResourceLocation BASE_ATTACK_DAMAGE_MODIFIER_ID = EntStupidStuff.id("bleed_damage");
 
-    public static void applyBleedingEffect(PlayerEntity player, LivingEntity target, float baseDamage, boolean DR) {
+    public static void applyBleedingEffect(Player player, LivingEntity target, float baseDamage, boolean DR) {
 
         float targetHealth = target.getHealth();
         float targetMaxHealth = target.getMaxHealth();
@@ -28,14 +28,14 @@ public class BleedingTrait implements ITrait {
             damageMultiplier = 1.0f;
         }
 
-        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
+        AttributeInstance attackDamageInstance = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
         if (attackDamageInstance != null) {
             attackDamageInstance.removeModifier(BASE_ATTACK_DAMAGE_MODIFIER_ID);
-                attackDamageInstance.addTemporaryModifier(new EntityAttributeModifier(
+                attackDamageInstance.addTransientModifier(new AttributeModifier(
                 BASE_ATTACK_DAMAGE_MODIFIER_ID,  
                 baseDamage * (damageMultiplier), 
-                EntityAttributeModifier.Operation.ADD_VALUE)
+                AttributeModifier.Operation.ADD_VALUE)
             );
         }
     }

@@ -1,40 +1,39 @@
 package net.ent.entstupidstuff.api.weaponTrait;
 
 import java.util.List;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class CircleSlashTrait {
 
     private static final int COOLDOWN_TICKS = 100; // Customize the cooldown duration (in ticks, 1 second = 20 ticks)
     private static final int DURABILITY_DAMAGE = 5; // Customize the durability damage
 
-    public static void performCircleSlash(PlayerEntity player, double radius) {
-        World world = player.getEntityWorld();
-        Box area = new Box(
+    public static void performCircleSlash(Player player, double radius) {
+        Level world = player.level();
+        AABB area = new AABB(
             player.getX() - radius, player.getY() - radius, player.getZ() - radius,
             player.getX() + radius, player.getY() + radius, player.getZ() + radius
         );
 
-        List<LivingEntity> entities = world.getEntitiesByClass(LivingEntity.class, area, entity -> entity != player);
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, area, entity -> entity != player);
 
         for (LivingEntity entity : entities) {
             // Deal damage to each entity
-            entity.damage(null, player.getDamageSources().playerAttack(player), 10.0F); // Adjust the damage value as needed
+            entity.hurtServer(null, player.damageSources().playerAttack(player), 10.0F); // Adjust the damage value as needed
         }
 
         // Apply cooldown to the player
-        player.getItemCooldownManager().set(player.getMainHandStack(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
     
         // Damage the item
         // Damage the item
-        ItemStack mainHandStack = player.getMainHandStack();
-        mainHandStack.damage(DURABILITY_DAMAGE, player, EquipmentSlot.MAINHAND); 
+        ItemStack mainHandStack = player.getMainHandItem();
+        mainHandStack.hurtAndBreak(DURABILITY_DAMAGE, player, EquipmentSlot.MAINHAND); 
 
         //Creating particle
         /*Vec3d playerPos = player.getPos();
@@ -51,8 +50,8 @@ public class CircleSlashTrait {
         
     }
 
-    public static boolean canPerformCircleSlash(PlayerEntity player) {
-        return !player.getItemCooldownManager().isCoolingDown(player.getMainHandStack());
+    public static boolean canPerformCircleSlash(Player player) {
+        return !player.getCooldowns().isOnCooldown(player.getMainHandItem());
     }
 
 }

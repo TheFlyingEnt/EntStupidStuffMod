@@ -1,8 +1,8 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonBow;
-import net.minecraft.entity.EntityType;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 public class SunkenSkeletonEntity extends GenericSkeletonBow {
 
@@ -13,7 +13,7 @@ public class SunkenSkeletonEntity extends GenericSkeletonBow {
     }
 
     private final Variant variant;
-    public SunkenSkeletonEntity(EntityType<? extends SunkenSkeletonEntity> entityType, World world) {
+    public SunkenSkeletonEntity(EntityType<? extends SunkenSkeletonEntity> entityType, Level world) {
         super(entityType, world);
 
         int varNum = 1 + random.nextInt(3);

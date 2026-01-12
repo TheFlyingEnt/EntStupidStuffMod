@@ -1,21 +1,20 @@
 package net.ent.entstupidstuff.item;
 
 import java.util.List;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class ReachHelper {
-    public static Entity raycastEntity(World world, PlayerEntity player, double reach) {
-        Vec3d eyePos = player.getCameraPosVec(1.0f);
-        Vec3d lookVec = player.getRotationVec(1.0f);
-        Vec3d targetPos = eyePos.add(lookVec.multiply(reach));
-        Box box = player.getBoundingBox().stretch(lookVec.multiply(reach)).expand(1.0);
+    public static Entity raycastEntity(Level world, Player player, double reach) {
+        Vec3 eyePos = player.getEyePosition(1.0f);
+        Vec3 lookVec = player.getViewVector(1.0f);
+        Vec3 targetPos = eyePos.add(lookVec.scale(reach));
+        AABB box = player.getBoundingBox().expandTowards(lookVec.scale(reach)).inflate(1.0);
 
-        List<Entity> hits = world.getOtherEntities(player, box);
+        List<Entity> hits = world.getEntities(player, box);
         Entity closest = null;
         double closestDist = reach;
 

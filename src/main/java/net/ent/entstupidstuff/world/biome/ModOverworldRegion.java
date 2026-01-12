@@ -1,15 +1,13 @@
 package net.ent.entstupidstuff.world.biome;
 
 import java.util.function.Consumer;
-
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.Climate.Parameter;
 import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
 import terrablender.api.ParameterUtils.Continentalness;
 import terrablender.api.ParameterUtils.Erosion;
 import terrablender.api.ParameterUtils.Humidity;
@@ -23,12 +21,12 @@ import terrablender.api.VanillaParameterOverlayBuilder;
 //https://minecraft.wiki/w/World_generation#Biomes
 
 public class ModOverworldRegion extends Region {
-    public ModOverworldRegion(Identifier name, int weight) {
+    public ModOverworldRegion(ResourceLocation name, int weight) {
         super(name, RegionType.OVERWORLD, weight);
     }
 
     @Override
-    public void addBiomes(Registry<Biome> registry, Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> mapper) {
+    public void addBiomes(Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
 
         VanillaParameterOverlayBuilder builder = new VanillaParameterOverlayBuilder();
 
@@ -44,7 +42,7 @@ public class ModOverworldRegion extends Region {
                     Erosion.EROSION_2,
                     Erosion.EROSION_2
             ))
-            .depth(ParameterRange.of(0.2F, 0.5F), ParameterRange.of(0.2F, 0.5F))
+            .depth(Parameter.span(0.2F, 0.5F), Parameter.span(0.2F, 0.5F))
             .weirdness(Weirdness.span(
                 Weirdness.MID_SLICE_NORMAL_ASCENDING, 
                 Weirdness.MID_SLICE_NORMAL_DESCENDING //PEAK_NORMAL
@@ -81,7 +79,7 @@ public class ModOverworldRegion extends Region {
 
             // Depth: bias toward the “mid-to-deep” underground slice where big caverns commonly appear.
             // If you prefer exact control, you can use a ParameterRange like your old example.
-            .depth(MultiNoiseUtil.ParameterRange.of(0.7F, 0.92F))
+            .depth(Climate.Parameter.span(0.7F, 0.92F))
 
             // Weirdness: use the MID_SLICE ascending weirdness — this is the zone where Minecraft's
             // noise caves often produce large pocket/cheese-style cavities.
@@ -147,7 +145,7 @@ public class ModOverworldRegion extends Region {
             // Bias toward mid-to-deep underground where dripstone caves live
             // This mirrors vanilla behavior much better than Depth.UNDERGROUND
             //.depth(MultiNoiseUtil.ParameterRange.of(0.65F, 0.9F))
-            .depth(MultiNoiseUtil.ParameterRange.of(0.45F, 0.9F))
+            .depth(Climate.Parameter.span(0.45F, 0.9F))
 
             // Mid-slice weirdness = large caverns (cheese caves)
             .weirdness(Weirdness.span(

@@ -1,8 +1,8 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
-import net.minecraft.entity.EntityType;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 public class SkeletonCrossbowEntity extends GenericSkeletonCrossbow {
 
@@ -14,7 +14,7 @@ public class SkeletonCrossbowEntity extends GenericSkeletonCrossbow {
 
     private final Variant variant;
 
-    public SkeletonCrossbowEntity(EntityType<? extends SkeletonCrossbowEntity> entityType, World world) {
+    public SkeletonCrossbowEntity(EntityType<? extends SkeletonCrossbowEntity> entityType, Level world) {
         super(entityType, world);
 
         int varNum = 1 + random.nextInt(3);

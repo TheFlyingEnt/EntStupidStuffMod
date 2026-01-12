@@ -6,57 +6,54 @@ import net.ent.entstupidstuff.client.entity.ai.CannonAttackGoalNew;
 import net.ent.entstupidstuff.client.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.CannonItem;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.provider.EnchantmentProviders;
-import net.minecraft.entity.CrossbowUser;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.AvoidSunlightGoal;
-import net.minecraft.entity.ai.goal.CrossbowAttackGoal;
-import net.minecraft.entity.ai.goal.EscapeSunlightGoal;
-import net.minecraft.entity.ai.goal.FleeEntityGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.inventory.StackReference;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.providers.VanillaEnchantmentProviders;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /*
 *   This class is used as a refenece to Sea Skeleton
@@ -64,34 +61,34 @@ import net.minecraft.world.WorldView;
 *   with a Crossbow with the Ability to Swim!!
 */
 
-public class GenericSkeletonCrossbow extends GenericSkeletonBow implements CrossbowUser{
+public class GenericSkeletonCrossbow extends GenericSkeletonBow implements CrossbowAttackMob{
 
-    private static final TrackedData<Boolean> CHARGING = DataTracker.registerData(GenericSkeletonCrossbow.class, TrackedDataHandlerRegistry.BOOLEAN);
-	private final SimpleInventory inventory = new SimpleInventory(5);
+    private static final EntityDataAccessor<Boolean> CHARGING = SynchedEntityData.defineId(GenericSkeletonCrossbow.class, EntityDataSerializers.BOOLEAN);
+	private final SimpleContainer inventory = new SimpleContainer(5);
 
-    public GenericSkeletonCrossbow(EntityType<? extends GenericSkeletonCrossbow> entityType, World world) {
+    public GenericSkeletonCrossbow(EntityType<? extends GenericSkeletonCrossbow> entityType, Level world) {
         super(entityType, world);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(2, new AvoidSunlightGoal(this));
-		this.goalSelector.add(3, new EscapeSunlightGoal(this, 1.0));
-		this.goalSelector.add(3, new FleeEntityGoal(this, WolfEntity.class, 6.0F, 1.0, 1.2));
-		this.goalSelector.add(4, new CrossbowAttackGoal<>(this, 1.0, 8.0F));
-		this.goalSelector.add(4, new CannonAttackGoalNew<>(this, 1.0, 8.0F));
+	protected void registerGoals() {
+		this.goalSelector.addGoal(2, new RestrictSunGoal(this));
+		this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0));
+		this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Wolf.class, 6.0F, 1.0, 1.2));
+		this.goalSelector.addGoal(4, new RangedCrossbowAttackGoal<>(this, 1.0, 8.0F));
+		this.goalSelector.addGoal(4, new CannonAttackGoalNew<>(this, 1.0, 8.0F));
 
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.goalSelector.add(6, new GenericSkeletonBow.GenericSkeletonBowSwimGoal(this));
-		this.goalSelector.add(6, new TrackTargetGoal(this)); 
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(6, new GenericSkeletonBow.GenericSkeletonBowSwimGoal(this));
+		this.goalSelector.addGoal(6, new TrackTargetGoal(this)); 
 
-		this.targetSelector.add(1, new RevengeGoal(this));
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, TurtleEntity.class, 10, true, false, TurtleEntity.BABY_TURTLE_ON_LAND_FILTER));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
 	}
 
     public static enum State {
@@ -103,26 +100,26 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	}
 
     @Override
-    public void postShoot() {
-        this.despawnCounter = 0;
+    public void onCrossbowAttackPerformed() {
+        this.noActionTime = 0;
     }
 
-    public static DefaultAttributeContainer.Builder createGenericSkeletonCrossbow() {
-		return HostileEntity.createHostileAttributes()
-			.add(EntityAttributes.MOVEMENT_SPEED, 0.35F)
-			.add(EntityAttributes.MAX_HEALTH, 24.0)
-			.add(EntityAttributes.ATTACK_DAMAGE, 5.0)
-			.add(EntityAttributes.FOLLOW_RANGE, 32.0);
+    public static AttributeSupplier.Builder createGenericSkeletonCrossbow() {
+		return Monster.createMonsterAttributes()
+			.add(Attributes.MOVEMENT_SPEED, 0.35F)
+			.add(Attributes.MAX_HEALTH, 24.0)
+			.add(Attributes.ATTACK_DAMAGE, 5.0)
+			.add(Attributes.FOLLOW_RANGE, 32.0);
 	}
 
     @Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
-		builder.add(CHARGING, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(CHARGING, false);
 	}
 
 	@Override
-	public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
+	public boolean canFireProjectileWeapon(ProjectileWeaponItem weapon) {
 
 		if (weapon == Items.CROSSBOW || weapon == ItemFactory.CANNON_ITEM)
 			return true;
@@ -131,17 +128,17 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 	}
 
 	public boolean isCharging() {
-		return this.dataTracker.get(CHARGING);
+		return this.entityData.get(CHARGING);
 	}
 
 	@Override
-	public void setCharging(boolean charging) {
-		this.dataTracker.set(CHARGING, charging);
+	public void setChargingCrossbow(boolean charging) {
+		this.entityData.set(CHARGING, charging);
 	}
 
     @Override
-	public void writeCustomData(WriteView view) {
-      super.writeCustomData(view);
+	public void addAdditionalSaveData(ValueOutput view) {
+      super.addAdditionalSaveData(view);
 	}
 
 	public GenericSkeletonCrossbow.State getState() {
@@ -150,47 +147,47 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		} else if (this.isHolding(Items.CROSSBOW) || this.isHolding(ItemFactory.CANNON_ITEM)) {
 			return GenericSkeletonCrossbow.State.CROSSBOW_HOLD;
 		} else {
-			return this.isAttacking() ? GenericSkeletonCrossbow.State.ATTACKING : GenericSkeletonCrossbow.State.NEUTRAL;
+			return this.isAggressive() ? GenericSkeletonCrossbow.State.ATTACKING : GenericSkeletonCrossbow.State.NEUTRAL;
 		}
 	}
 
     @Override
-	protected void readCustomData(ReadView view) {
-      super.readCustomData(view);
+	protected void readAdditionalSaveData(ValueInput view) {
+      super.readAdditionalSaveData(view);
 		this.setCanPickUpLoot(true);
 	}
 
 	@Override
-	public float getPathfindingFavor(BlockPos pos, WorldView world) {
+	public float getWalkTargetValue(BlockPos pos, LevelReader world) {
 		return 0.0F;
 	}
 
 	@Override
-	public int getLimitPerChunk() {
+	public int getMaxSpawnClusterSize() {
 		return 1;
 	}
 
 	@Nullable
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-		Random random = world.getRandom();
-		this.initEquipment(random, difficulty);
-		this.updateEnchantments(world, random, difficulty);
-		return super.initialize(world, difficulty, spawnReason, entityData);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
+		RandomSource random = world.getRandom();
+		this.populateDefaultEquipmentSlots(random, difficulty);
+		this.populateDefaultEquipmentEnchantments(world, random, difficulty);
+		return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
 	@Override
-	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-		this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
 	}
 
 	@Override
-	protected void enchantMainHandItem(ServerWorldAccess world, Random random, LocalDifficulty localDifficulty) {
-		super.enchantMainHandItem(world, random, localDifficulty);
+	protected void enchantSpawnedWeapon(ServerLevelAccessor world, RandomSource random, DifficultyInstance localDifficulty) {
+		super.enchantSpawnedWeapon(world, random, localDifficulty);
 		if (random.nextInt(300) == 0) {
-			ItemStack itemStack = this.getMainHandStack();
-			if (itemStack.isOf(Items.CROSSBOW)) {
-				EnchantmentHelper.applyEnchantmentProvider(itemStack, world.getRegistryManager(), EnchantmentProviders.PILLAGER_SPAWN_CROSSBOW, localDifficulty, random);
+			ItemStack itemStack = this.getMainHandItem();
+			if (itemStack.is(Items.CROSSBOW)) {
+				EnchantmentHelper.enchantItemFromProvider(itemStack, world.registryAccess(), VanillaEnchantmentProviders.PILLAGER_SPAWN_CROSSBOW, localDifficulty, random);
 			}
 		}
 	}
@@ -198,68 +195,68 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
     //Sound Events
     @Override
 	protected SoundEvent getAmbientSound() { //TODO: Replace with Sunken Skeleton Sound
-		return SoundEvents.ENTITY_SKELETON_AMBIENT;
+		return SoundEvents.SKELETON_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_SKELETON_DEATH;
+		return SoundEvents.SKELETON_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.ENTITY_SKELETON_HURT;
+		return SoundEvents.SKELETON_HURT;
 	}
 
     @Override
-	public StackReference getStackReference(int mappedIndex) {
+	public SlotAccess getSlot(int mappedIndex) {
 		int i = mappedIndex - 300;
-		return i >= 0 && i < this.inventory.size() ? StackReference.of(this.inventory, i) : super.getStackReference(mappedIndex);
+		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(mappedIndex);
 	}
 
 	@Override
-	public void shootAt(LivingEntity target, float pullProgress) {
-		ItemStack mainHandStack = this.getMainHandStack();
+	public void performRangedAttack(LivingEntity target, float pullProgress) {
+		ItemStack mainHandStack = this.getMainHandItem();
 
 		if (mainHandStack.getItem() instanceof CrossbowItem) {
-			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.CROSSBOW));
-			ItemStack itemStack2 = this.getProjectileType(itemStack);
-			PersistentProjectileEntity persistentProjectileEntity = this.createArrowProjectile(itemStack2, pullProgress, itemStack);
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.CROSSBOW));
+			ItemStack itemStack2 = this.getProjectile(itemStack);
+			AbstractArrow persistentProjectileEntity = this.getArrow(itemStack2, pullProgress, itemStack);
 			double d = target.getX() - this.getX();
-			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+			double e = target.getY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
-			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
+			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+			this.level().addFreshEntity(persistentProjectileEntity);
 		}
 
 		else if (mainHandStack.getItem() instanceof CannonItem) {
-			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, ItemFactory.CANNON_ITEM));
-			ItemStack itemStack2 = this.getProjectileType(itemStack);
-			PersistentProjectileEntity persistentProjectileEntity = this.createCannonBallProjectile(itemStack2, pullProgress, itemStack);
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, ItemFactory.CANNON_ITEM));
+			ItemStack itemStack2 = this.getProjectile(itemStack);
+			AbstractArrow persistentProjectileEntity = this.createCannonBallProjectile(itemStack2, pullProgress, itemStack);
 			
 			double d = target.getX() - this.getX();
-			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+			double e = target.getY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
-			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
+			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+			this.level().addFreshEntity(persistentProjectileEntity);
 		}
 
 		else if (mainHandStack.getItem() instanceof BowItem) {
 
-			ItemStack itemStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.BOW));
-			ItemStack itemStack2 = this.getProjectileType(itemStack);
-			PersistentProjectileEntity persistentProjectileEntity = this.createArrowProjectile(itemStack2, pullProgress, itemStack);
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.BOW));
+			ItemStack itemStack2 = this.getProjectile(itemStack);
+			AbstractArrow persistentProjectileEntity = this.getArrow(itemStack2, pullProgress, itemStack);
 			double d = target.getX() - this.getX();
-			double e = target.getBodyY(0.3333333333333333) - persistentProjectileEntity.getY();
+			double e = target.getY(0.3333333333333333) - persistentProjectileEntity.getY();
 			double f = target.getZ() - this.getZ();
 			double g = Math.sqrt(d * d + f * f);
-			persistentProjectileEntity.setVelocity(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.getEntityWorld().getDifficulty().getId() * 4));
-			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.getEntityWorld().spawnEntity(persistentProjectileEntity);
+			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+			this.level().addFreshEntity(persistentProjectileEntity);
 		}
 
 

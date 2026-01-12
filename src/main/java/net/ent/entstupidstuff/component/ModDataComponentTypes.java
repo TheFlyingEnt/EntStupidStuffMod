@@ -8,61 +8,61 @@ import net.ent.entstupidstuff.client.entity.passive.KoiVariantRegistry;
 import net.ent.entstupidstuff.client.entity.passive.MahiMahiEntity;
 import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
 import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
-import net.minecraft.component.ComponentType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModDataComponentTypes {
 
-    public static final ComponentType<ButterflyEntity.Variant> BUTTERFLY_VARIANT = register(
+    public static final DataComponentType<ButterflyEntity.Variant> BUTTERFLY_VARIANT = register(
         "butterfly_variant",
         builder -> builder
-            .codec(ButterflyEntity.Variant.CODEC)
-            .packetCodec(ButterflyEntity.Variant.PACKET_CODEC)
+            .persistent(ButterflyEntity.Variant.CODEC)
+            .networkSynchronized(ButterflyEntity.Variant.PACKET_CODEC)
     );
 
-    public static final ComponentType<ZebraFishEntity.Variant> ZEBRA_FISH_VARIANT = register(
+    public static final DataComponentType<ZebraFishEntity.Variant> ZEBRA_FISH_VARIANT = register(
         "zebra_fish_variant",
         builder -> builder
-            .codec(ZebraFishEntity.Variant.CODEC)
-            .packetCodec(ZebraFishEntity.Variant.PACKET_CODEC)
+            .persistent(ZebraFishEntity.Variant.CODEC)
+            .networkSynchronized(ZebraFishEntity.Variant.PACKET_CODEC)
     );
 
-    public static final ComponentType<PerchFishEntity.Variant> PERCH_FISH_VARIANT = register(
+    public static final DataComponentType<PerchFishEntity.Variant> PERCH_FISH_VARIANT = register(
         "perch_fish_variant",
         builder -> builder
-            .codec(PerchFishEntity.Variant.CODEC)
-            .packetCodec(PerchFishEntity.Variant.PACKET_CODEC)
+            .persistent(PerchFishEntity.Variant.CODEC)
+            .networkSynchronized(PerchFishEntity.Variant.PACKET_CODEC)
     );
 
-    public static final ComponentType<BassEntity.Variant> BASS_FISH_VARIANT = register(
+    public static final DataComponentType<BassEntity.Variant> BASS_FISH_VARIANT = register(
         "bass_fish_variant",
         builder -> builder
-            .codec(BassEntity.Variant.CODEC)
-            .packetCodec(BassEntity.Variant.PACKET_CODEC)
+            .persistent(BassEntity.Variant.CODEC)
+            .networkSynchronized(BassEntity.Variant.PACKET_CODEC)
     );
 
-    public static final ComponentType<KoiVariant> KOI_FISH_VARIANT = register(
+    public static final DataComponentType<KoiVariant> KOI_FISH_VARIANT = register(
         "koi_fish_variant",
         builder -> builder
-            .codec(KoiVariantRegistry.INDEX_CODEC)
-            .packetCodec(KoiVariantRegistry.PACKET_CODEC)
+            .persistent(KoiVariantRegistry.INDEX_CODEC)
+            .networkSynchronized(KoiVariantRegistry.PACKET_CODEC)
     );
 
-    public static final ComponentType<MahiMahiEntity.Variant> MAHIMAHI_FISH_VARIANT = register(
+    public static final DataComponentType<MahiMahiEntity.Variant> MAHIMAHI_FISH_VARIANT = register(
         "mahimahi_fish_variant",
         builder -> builder
-            .codec(MahiMahiEntity.Variant.CODEC)
-            .packetCodec(MahiMahiEntity.Variant.PACKET_CODEC)
+            .persistent(MahiMahiEntity.Variant.CODEC)
+            .networkSynchronized(MahiMahiEntity.Variant.PACKET_CODEC)
     );
 
 
-    private static <T> ComponentType<T> register(String name, java.util.function.UnaryOperator<ComponentType.Builder<T>> builderOperator) {
+    private static <T> DataComponentType<T> register(String name, java.util.function.UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(EntStupidStuff.MOD_ID, name),
-            builderOperator.apply(ComponentType.builder()).build()
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name),
+            builderOperator.apply(DataComponentType.builder()).build()
         );
     }
 

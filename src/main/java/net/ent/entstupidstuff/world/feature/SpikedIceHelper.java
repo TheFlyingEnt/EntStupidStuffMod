@@ -3,18 +3,18 @@ package net.ent.entstupidstuff.world.feature;
 import java.util.function.Consumer;
 
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.PointedDripstoneBlock;
-import net.minecraft.block.enums.Thickness;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.gen.feature.util.DripstoneHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
+import net.minecraft.world.level.levelgen.feature.DripstoneUtils;
 
 public class SpikedIceHelper {
 	protected static double scaleHeightFromRadius(double radius, double scale, double heightScale, double bluntness) {
@@ -32,7 +32,7 @@ public class SpikedIceHelper {
 		return i / 0.384 * scale;
 	}
 
-	protected static boolean canGenerateBase(StructureWorldAccess world, BlockPos pos, int height) {
+	protected static boolean canGenerateBase(WorldGenLevel world, BlockPos pos, int height) {
 		if (canGenerateOrLava(world, pos)) {
 			return false;
 		} else {
@@ -40,9 +40,9 @@ public class SpikedIceHelper {
 			float g = 6.0F / (float)height;
 
 			for (float h = 0.0F; h < (float) (Math.PI * 2); h += g) {
-				int i = (int)(MathHelper.cos(h) * (float)height);
-				int j = (int)(MathHelper.sin(h) * (float)height);
-				if (canGenerateOrLava(world, pos.add(i, 0, j))) {
+				int i = (int)(Mth.cos(h) * (float)height);
+				int j = (int)(Mth.sin(h) * (float)height);
+				if (canGenerateOrLava(world, pos.offset(i, 0, j))) {
 					return false;
 				}
 			}
@@ -51,77 +51,77 @@ public class SpikedIceHelper {
 		}
 	}
 
-	protected static boolean canGenerate(WorldAccess world, BlockPos pos) {
-		return world.testBlockState(pos, DripstoneHelper::canGenerate);
+	protected static boolean canGenerate(LevelAccessor world, BlockPos pos) {
+		return world.isStateAtPosition(pos, DripstoneUtils::isEmptyOrWater);
 	}
 
-	protected static boolean canGenerateOrLava(WorldAccess world, BlockPos pos) {
-		return world.testBlockState(pos, DripstoneHelper::canGenerateOrLava);
+	protected static boolean canGenerateOrLava(LevelAccessor world, BlockPos pos) {
+		return world.isStateAtPosition(pos, DripstoneUtils::isEmptyOrWaterOrLava);
 	}
 
 	protected static void getDripstoneThickness(Direction direction, int height, boolean merge, Consumer<BlockState> callback) {
 		if (height >= 3) {
-			callback.accept(getState(direction, Thickness.BASE));
+			callback.accept(getState(direction, DripstoneThickness.BASE));
 
 			for (int i = 0; i < height - 3; i++) {
-				callback.accept(getState(direction, Thickness.MIDDLE));
+				callback.accept(getState(direction, DripstoneThickness.MIDDLE));
 			}
 		}
 
 		if (height >= 2) {
-			callback.accept(getState(direction, Thickness.FRUSTUM));
+			callback.accept(getState(direction, DripstoneThickness.FRUSTUM));
 		}
 
 		if (height >= 1) {
-			callback.accept(getState(direction, merge ? Thickness.TIP_MERGE : Thickness.TIP));
+			callback.accept(getState(direction, merge ? DripstoneThickness.TIP_MERGE : DripstoneThickness.TIP));
 		}
 	}
 
-	protected static void generatePointedDripstone(WorldAccess world, BlockPos pos, Direction direction, int height, boolean merge) {
-		if (canReplace(world.getBlockState(pos.offset(direction.getOpposite())))) {
-			BlockPos.Mutable mutable = pos.mutableCopy();
+	protected static void generatePointedDripstone(LevelAccessor world, BlockPos pos, Direction direction, int height, boolean merge) {
+		if (canReplace(world.getBlockState(pos.relative(direction.getOpposite())))) {
+			BlockPos.MutableBlockPos mutable = pos.mutable();
 			getDripstoneThickness(direction, height, merge, state -> {
-				if (state.isOf(BlockFactory.callBlock("pointed_ice"))) {
-					state = state.with(PointedDripstoneBlock.WATERLOGGED, Boolean.valueOf(world.isWater(mutable)));
+				if (state.is(BlockFactory.callBlock("pointed_ice"))) {
+					state = state.setValue(PointedDripstoneBlock.WATERLOGGED, Boolean.valueOf(world.isWaterAt(mutable)));
 				}
 
-				world.setBlockState(mutable, state, Block.NOTIFY_LISTENERS);
+				world.setBlock(mutable, state, Block.UPDATE_CLIENTS);
 				mutable.move(direction);
 			});
 		}
 	}
 
-	protected static boolean generateDripstoneBlock(WorldAccess world, BlockPos pos) {
+	protected static boolean generateDripstoneBlock(LevelAccessor world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		if (blockState.isIn(BlockTags.DRIPSTONE_REPLACEABLE_BLOCKS)) {
-			world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState(), Block.NOTIFY_LISTENERS);
+		if (blockState.is(BlockTags.DRIPSTONE_REPLACEABLE)) {
+			world.setBlock(pos, Blocks.PACKED_ICE.defaultBlockState(), Block.UPDATE_CLIENTS);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private static BlockState getState(Direction direction, Thickness thickness) {
-		return BlockFactory.callBlock("pointed_ice").getDefaultState().with(PointedDripstoneBlock.VERTICAL_DIRECTION, direction).with(PointedDripstoneBlock.THICKNESS, thickness);
+	private static BlockState getState(Direction direction, DripstoneThickness thickness) {
+		return BlockFactory.callBlock("pointed_ice").defaultBlockState().setValue(PointedDripstoneBlock.TIP_DIRECTION, direction).setValue(PointedDripstoneBlock.THICKNESS, thickness);
 	}
 
 	public static boolean canReplaceOrLava(BlockState state) {
-		return canReplace(state) || state.isOf(Blocks.LAVA);
+		return canReplace(state) || state.is(Blocks.LAVA);
 	}
 
 	public static boolean canReplace(BlockState state) {
-		return state.isOf(Blocks.PACKED_ICE) || state.isIn(BlockTags.DRIPSTONE_REPLACEABLE_BLOCKS);
+		return state.is(Blocks.PACKED_ICE) || state.is(BlockTags.DRIPSTONE_REPLACEABLE);
 	}
 
 	public static boolean canGenerate(BlockState state) {
-		return state.isAir() || state.isOf(Blocks.WATER);
+		return state.isAir() || state.is(Blocks.WATER);
 	}
 
 	public static boolean cannotGenerate(BlockState state) {
-		return !state.isAir() && !state.isOf(Blocks.WATER);
+		return !state.isAir() && !state.is(Blocks.WATER);
 	}
 
 	public static boolean canGenerateOrLava(BlockState state) {
-		return state.isAir() || state.isOf(Blocks.WATER) || state.isOf(Blocks.LAVA);
+		return state.isAir() || state.is(Blocks.WATER) || state.is(Blocks.LAVA);
 	}
 }

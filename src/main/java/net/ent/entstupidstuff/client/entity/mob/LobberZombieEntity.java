@@ -1,89 +1,89 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LevelEvent;
 
-public class LobberZombieEntity extends ZombieEntity {
+public class LobberZombieEntity extends Zombie {
 
-    public LobberZombieEntity(EntityType<? extends /*ZombieEntity*/ LobberZombieEntity> entityType, World world) {
+    public LobberZombieEntity(EntityType<? extends /*ZombieEntity*/ LobberZombieEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public boolean tryAttack(ServerWorld world, Entity target) {
-        boolean successful = super.tryAttack(world, target);
-        if (successful && target instanceof PlayerEntity) {
-            target.addVelocity(-MathHelper.sin(this.getYaw() * 0.017453292F) * 0.5F, 0.1D, MathHelper.cos(this.getYaw() * 0.017453292F) * 0.5F);
+    public boolean doHurtTarget(ServerLevel world, Entity target) {
+        boolean successful = super.doHurtTarget(world, target);
+        if (successful && target instanceof Player) {
+            target.push(-Mth.sin(this.getYRot() * 0.017453292F) * 0.5F, 0.1D, Mth.cos(this.getYRot() * 0.017453292F) * 0.5F);
 
             //Concept - Nausa
-            float f = this.getEntityWorld().getLocalDifficulty(this.getBlockPos()).getLocalDifficulty();
-            ((LivingEntity)target).addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 140 * (int)f), this);
+            float f = this.level().getCurrentDifficultyAt(this.blockPosition()).getEffectiveDifficulty();
+            ((LivingEntity)target).addEffect(new MobEffectInstance(MobEffects.NAUSEA, 140 * (int)f), this);
         }
         return successful;
     }
 
-    public static DefaultAttributeContainer.Builder createLobberZombieAttributes() {
-        return ZombieEntity.createZombieAttributes()
-        .add(EntityAttributes.FOLLOW_RANGE, 35.0D)
-        .add(EntityAttributes.MOVEMENT_SPEED, 0.23D)
-        .add(EntityAttributes.ATTACK_DAMAGE, 3.0D)
-        .add(EntityAttributes.ARMOR, 2.0D)
-        .add(EntityAttributes.SPAWN_REINFORCEMENTS);
+    public static AttributeSupplier.Builder createLobberZombieAttributes() {
+        return Zombie.createAttributes()
+        .add(Attributes.FOLLOW_RANGE, 35.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.23D)
+        .add(Attributes.ATTACK_DAMAGE, 3.0D)
+        .add(Attributes.ARMOR, 2.0D)
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
     }
 
     @Override
-    protected void initAttributes() {
-        super.initAttributes();
-        this.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(20.0D);
-        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
-        this.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).setBaseValue(3.0D);
-        this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(2.0D);
+    protected void randomizeReinforcementsChance() {
+        super.randomizeReinforcementsChance();
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23D);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+        this.getAttribute(Attributes.ARMOR).setBaseValue(2.0D);
     }
 
     /* Sounds */
     @Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_HUSK_AMBIENT;
+		return SoundEvents.HUSK_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.ENTITY_HUSK_HURT;
+		return SoundEvents.HUSK_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_HUSK_DEATH;
+		return SoundEvents.HUSK_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getStepSound() {
-		return SoundEvents.ENTITY_HUSK_STEP;
+		return SoundEvents.HUSK_STEP;
 	}
 
 	@Override
-	protected boolean canConvertInWater() {
+	protected boolean convertsInWater() {
 		return true;
 	}
 
@@ -93,10 +93,10 @@ public class LobberZombieEntity extends ZombieEntity {
 
     /* Drown Code */
     @Override
-    protected void convertInWater() {
-        this.convertTo(EntityType.DROWNED);
+    protected void doUnderWaterConversion() {
+        this.convertToZombieType(EntityType.DROWNED);
         if (!this.isSilent()) {
-            this.getEntityWorld().syncWorldEvent(null, WorldEvents.ZOMBIE_CONVERTS_TO_DROWNED, this.getBlockPos(), 0);
+            this.level().levelEvent(null, LevelEvent.SOUND_ZOMBIE_TO_DROWNED, this.blockPosition(), 0);
         }
     }
 
@@ -105,10 +105,10 @@ public class LobberZombieEntity extends ZombieEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.isSubmergedInWater() && !this.isDead()) {
+        if (this.isUnderWater() && !this.isDeadOrDying()) {
             inWaterTime++;
             if (inWaterTime >= 300) { // The time it takes for the zombie to convert to drowned (300 ticks = 15 seconds)
-                this.convertInWater();
+                this.doUnderWaterConversion();
             }
         } else {
             inWaterTime = 0;
@@ -116,14 +116,14 @@ public class LobberZombieEntity extends ZombieEntity {
     }
 
     @Override
-	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-		super.initEquipment(random, localDifficulty);
-		if (random.nextFloat() < (this.getEntityWorld().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+		super.populateDefaultEquipmentSlots(random, localDifficulty);
+		if (random.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
 			int i = random.nextInt(3);
 			if (i == 0) {
-				this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ItemFactory.callItem("iron_hammer")));
+				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemFactory.callItem("iron_hammer")));
 			} else {
-				this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
 			}
 		}
 	}

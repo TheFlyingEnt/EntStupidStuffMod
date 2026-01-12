@@ -3,28 +3,26 @@ package net.ent.entstupidstuff.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Fertilizable;
-import net.minecraft.block.MudBlock;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.MudBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(MudBlock.class)
-public abstract class MudBlockMixin implements Fertilizable {
+public abstract class MudBlockMixin implements BonemealableBlock {
 
     @Override
-    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state) {
+    public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
 
-        if (!world.getBlockState(pos.up()).isTransparent()) {
+        if (!world.getBlockState(pos.above()).propagatesSkylightDown()) {
 			return false;
 		} else {
-			for (BlockPos blockPos : BlockPos.iterate(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
-				if (world.getBlockState(blockPos).isOf(BlockFactory.callBlock("shroomium"))) {
+			for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-1, -1, -1), pos.offset(1, 1, 1))) {
+				if (world.getBlockState(blockPos).is(BlockFactory.callBlock("shroomium"))) {
                     return true;
                 }
 			}
@@ -38,20 +36,20 @@ public abstract class MudBlockMixin implements Fertilizable {
     }
 
     @Override
-    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
         // Can always grow when fertilized
         return true;
     }
 
     @Override
-    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel world, RandomSource random, BlockPos pos, BlockState state) {
         // Example behavior: transform into grass when grown
-        world.setBlockState(pos, BlockFactory.callBlock("shroomium").getDefaultState(), 3);
+        world.setBlock(pos, BlockFactory.callBlock("shroomium").defaultBlockState(), 3);
     }
 
     @Override
-    public Fertilizable.FertilizableType getFertilizableType() {
+    public BonemealableBlock.Type getType() {
         // Neighbor spreading type, like Netherrack
-        return Fertilizable.FertilizableType.NEIGHBOR_SPREADER;
+        return BonemealableBlock.Type.NEIGHBOR_SPREADER;
     }
 }

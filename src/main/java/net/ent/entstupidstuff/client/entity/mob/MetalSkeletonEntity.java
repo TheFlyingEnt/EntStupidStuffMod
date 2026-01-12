@@ -6,34 +6,34 @@ import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potions;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.projectile.AbstractThrownPotion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 
 	@SuppressWarnings("unused")
 	private /*final*/ MetalSkeletonVariant variant;
 
-	private static final TrackedData<Integer> VARIANT = DataTracker.registerData(MetalSkeletonEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MetalSkeletonEntity.class, EntityDataSerializers.INT);
 
 
 	public enum MetalSkeletonVariant {
@@ -67,9 +67,9 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 			return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
 		}
 
-		public static MetalSkeletonVariant getRandom(Random random) {
+		public static MetalSkeletonVariant getRandom(RandomSource random) {
 			//return VALUES[random.nextInt(VALUES.length)];
-			Random varientR = Random.create();
+			RandomSource varientR = RandomSource.create();
         	float varientRC = varientR.nextInt(3) + 1;
 
 			if (varientRC == 1) {
@@ -90,26 +90,26 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
     }*/
 
 	@Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
         //this.dataTracker.startTracking(VARIANT, MetalSkeletonVariant.DEFAULT.getId());
-		builder.add(VARIANT, 0);
+		builder.define(VARIANT, 0);
     }
 
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
 
 		MetalSkeletonVariant randomVariant = MetalSkeletonVariant.getRandom(this.getRandom());
         this.setVariant(randomVariant);
 
-        return super.initialize(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
 	/*public void setVariant(MetalSkeletonEntity.MetalSkeletonVariant variant) {
 		this.dataTracker.set(VARIANT, variant.getId());
 	}*/
 
-    public MetalSkeletonEntity(EntityType<? extends GenericSkeletonCrossbow> entityType, World world) {
+    public MetalSkeletonEntity(EntityType<? extends GenericSkeletonCrossbow> entityType, Level world) {
         super(entityType, world);
 
 		/*Random varientR = Random.create();
@@ -147,14 +147,14 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
 	}
 
 	@Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel world, DamageSource source, float amount) {
 
 		// Check if the damage source is a potion
-    	if (source.getSource() instanceof PotionEntity potionEntity) {
+    	if (source.getDirectEntity() instanceof AbstractThrownPotion potionEntity) {
         	// Check if the potion is Healing or Harming
         	if (potionEntity == Potions.HEALING) {
             	// Healing potion causes damage to the skeleton
-            	return super.damage(world, source, amount * 1.5f); // Takes more damage from healing potions (increase if needed)
+            	return super.hurtServer(world, source, amount * 1.5f); // Takes more damage from healing potions (increase if needed)
         	} else if (potionEntity == Potions.HARMING) {
             	// Harming potion heals the skeleton
             	this.heal(amount * 1.5f); // Heals with harming potions (increase healing if needed)
@@ -163,30 +163,30 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
     	}
 
 
-        if (source.isIn(DamageTypeTags.IS_EXPLOSION) || source.isIn(DamageTypeTags.IS_PROJECTILE)) {
+        if (source.is(DamageTypeTags.IS_EXPLOSION) || source.is(DamageTypeTags.IS_PROJECTILE)) {
             // Weakness to explosions and fireworks (taking full or increased damage)
-            return super.damage(world, source, amount * 1.5f);
-        } else if (source.isIn(DamageTypeTags.BYPASSES_ARMOR)) {
+            return super.hurtServer(world, source, amount * 1.5f);
+        } else if (source.is(DamageTypeTags.BYPASSES_ARMOR)) {
             // Keep normal damage for armor-piercing attacks
-            return super.damage(world, source, amount);
+            return super.hurtServer(world, source, amount);
         } else {
             // High resistance to melee (reducing melee damage)
-            return super.damage(world, source, amount * 0.5f);
+            return super.hurtServer(world, source, amount * 0.5f);
         }
     }
 
 	@Override
-	protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
 
-		Random varientR = Random.create();
+		RandomSource varientR = RandomSource.create();
         float varientRC = varientR.nextInt(3) + 1;
 
 		if (varientRC == 1) {
-            this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
         } else if (varientRC == 2) {
-            this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
         } else {
-            this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         }
 
 		
@@ -197,24 +197,24 @@ public class MetalSkeletonEntity extends GenericSkeletonCrossbow{
     }*/
 
 	@Override
-    public void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
         view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
 		this.setVariant((MetalSkeletonEntity.MetalSkeletonVariant)view.read("Variant", MetalSkeletonEntity.MetalSkeletonVariant.INDEX_CODEC).orElse(MetalSkeletonEntity.MetalSkeletonVariant.DEFAULT));
     }
 
 	public void setVariant(MetalSkeletonEntity.MetalSkeletonVariant variant) {
 		this.variant = variant; // Ensure the field is updated
-		this.dataTracker.set(VARIANT, variant.getId());
+		this.entityData.set(VARIANT, variant.getId());
 	}
 
 	public MetalSkeletonVariant getVariant() {
-		return MetalSkeletonVariant.byId(this.dataTracker.get(VARIANT)); // Ensure it retrieves from dataTracker
+		return MetalSkeletonVariant.byId(this.entityData.get(VARIANT)); // Ensure it retrieves from dataTracker
 	}
 
 	

@@ -1,38 +1,37 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.AvoidSunlightGoal;
-import net.minecraft.entity.ai.goal.EscapeSunlightGoal;
-import net.minecraft.entity.ai.goal.FleeEntityGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.World;
 
 
 
 
+public class SoulSkeletonEntity extends Skeleton{
 
-public class SoulSkeletonEntity extends SkeletonEntity{
-
-    public SoulSkeletonEntity(EntityType<? extends SoulSkeletonEntity> entityType, World world) {
+    public SoulSkeletonEntity(EntityType<? extends SoulSkeletonEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
@@ -43,17 +42,17 @@ public class SoulSkeletonEntity extends SkeletonEntity{
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_SKELETON_AMBIENT;
+		return SoundEvents.SKELETON_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.ENTITY_SKELETON_HURT;
+		return SoundEvents.SKELETON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_SKELETON_DEATH;
+		return SoundEvents.SKELETON_DEATH;
 	}
 
 	//@Override
@@ -62,11 +61,11 @@ public class SoulSkeletonEntity extends SkeletonEntity{
 	//}
 
 	@Override
-	protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
-		PersistentProjectileEntity persistentProjectileEntity = super.createArrowProjectile(arrow, damageModifier, shotFrom);
-		if (persistentProjectileEntity instanceof ArrowEntity arrowEntity) {
+	protected AbstractArrow getArrow(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+		AbstractArrow persistentProjectileEntity = super.getArrow(arrow, damageModifier, shotFrom);
+		if (persistentProjectileEntity instanceof Arrow arrowEntity) {
 			//arrowEntity.addEffect(new StatusEffectInstance(StatusEffects.POISON, 100));
-			arrowEntity.setOnFireFor(10);
+			arrowEntity.igniteForSeconds(10);
 		}
 
 		return persistentProjectileEntity;
@@ -74,21 +73,21 @@ public class SoulSkeletonEntity extends SkeletonEntity{
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(2, new AvoidSunlightGoal(this));
-		this.goalSelector.add(3, new EscapeSunlightGoal(this, 1.0));
-		this.goalSelector.add(3, new FleeEntityGoal(this, WolfEntity.class, 6.0F, 1.0, 1.2));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.targetSelector.add(1, new RevengeGoal(this));
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, TurtleEntity.class, 10, true, false, TurtleEntity.BABY_TURTLE_ON_LAND_FILTER));
+	protected void registerGoals() {
+		this.goalSelector.addGoal(2, new RestrictSunGoal(this));
+		this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0));
+		this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Wolf.class, 6.0F, 1.0, 1.2));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
 	}
 
-	public static DefaultAttributeContainer.Builder createSoulSkeletonAttributes() {
-		return SkeletonEntity.createHostileAttributes().add(EntityAttributes.MOVEMENT_SPEED, 0.25);
+	public static AttributeSupplier.Builder createSoulSkeletonAttributes() {
+		return Skeleton.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.25);
 	}
 
 }

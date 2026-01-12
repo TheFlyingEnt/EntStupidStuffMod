@@ -4,28 +4,28 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.world.World;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 public interface AttackCallbackAll {
 	Event<AttackCallbackAll> EVENT = EventFactory.createArrayBacked(AttackCallbackAll.class,
 			(listeners) -> (attacker, world, hand, entity, hitResult) -> {
 				for (AttackCallbackAll event : listeners) {
-					ActionResult result = event.interact(attacker, world, hand, entity, hitResult);
+					InteractionResult result = event.interact(attacker, world, hand, entity, hitResult);
 					
 
-					if (result != ActionResult.PASS) {
+					if (result != InteractionResult.PASS) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 	);
 
-	ActionResult interact(LivingEntity attacker, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult);
+	InteractionResult interact(LivingEntity attacker, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult);
 }

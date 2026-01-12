@@ -7,56 +7,56 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 public class ModGroup {
 
-    public static final RegistryKey<ItemGroup> ENTSTUPIDSTUFF_SERVER_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(EntStupidStuff.MOD_ID, "ent_server_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_SERVER_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_server_group"));
 
-    public static final RegistryKey<ItemGroup> ENTSTUPIDSTUFF_DECO_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(EntStupidStuff.MOD_ID, "ent_deco_group"));
-    public static final RegistryKey<ItemGroup> ENTSTUPIDSTUFF_NATURAL_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(EntStupidStuff.MOD_ID, "ent_natural_group"));
-    public static final RegistryKey<ItemGroup> ENTSTUPIDSTUFF_DEFAULT_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(EntStupidStuff.MOD_ID, "ent_default_group"));
-    public static final RegistryKey<ItemGroup> ENTSTUPIDSTUFF_COMBAT_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(EntStupidStuff.MOD_ID, "ent_combat_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_DECO_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_deco_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_NATURAL_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_natural_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_DEFAULT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_default_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_COMBAT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_combat_group"));
 
 
-    public static final Map<Identifier, Item> Natural_Group = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, Item> Natural_Group = new LinkedHashMap<>();
 
     public static void onInitialize() {
 
-        Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_SERVER_GROUP, FabricItemGroup.builder()
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_SERVER_GROUP, FabricItemGroup.builder()
         .icon(() -> new ItemStack(ItemFactory.callItem("toasted_marshmellow").asItem()))
-        .displayName(Text.translatable("item.entstupidstuff.server_group"))
+        .title(Component.translatable("item.entstupidstuff.server_group"))
         .build());
 
         //if (EntStupidStuff.DEV_MODE) {
 
-            Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(BlockFactory.callBlock("fungal_planks_cyan").asItem()))
-            .displayName(Text.translatable("item.entstupidstuff.deco_group"))
+            .title(Component.translatable("item.entstupidstuff.deco_group"))
             .build());
 
-            Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_NATURAL_GROUP, FabricItemGroup.builder()
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NATURAL_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(BlockFactory.callBlock("redwood_log").asItem()))
-            .displayName(Text.translatable("item.entstupidstuff.natural_group"))
+            .title(Component.translatable("item.entstupidstuff.natural_group"))
             .build());
 
-            Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_DEFAULT_GROUP, FabricItemGroup.builder()
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DEFAULT_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(ItemFactory.callItem("raw_marshmellow")))
-            .displayName(Text.translatable("item.entstupidstuff.default_group")) //MISC
+            .title(Component.translatable("item.entstupidstuff.default_group")) //MISC
             .build());
 
-            Registry.register(Registries.ITEM_GROUP, ENTSTUPIDSTUFF_COMBAT_GROUP, FabricItemGroup.builder()
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_COMBAT_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(ItemFactory.callItem("diamond_hammer")))
-            .displayName(Text.translatable("item.entstupidstuff.combat_group")) //Advance Combat
+            .title(Component.translatable("item.entstupidstuff.combat_group")) //Advance Combat
             .build());
 
             //addToCombat();
@@ -86,34 +86,34 @@ public class ModGroup {
 
     public static void addToDefault(String item){
         Item id = ItemFactory.callItem(item);
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_DEFAULT_GROUP).register(entries -> entries.add(id));
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_DEFAULT_GROUP).register(entries -> entries.accept(id));
     }
 
     public static void addToNatural(String item){
-        ItemConvertible  id = ItemFactory.callItem(item);
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_NATURAL_GROUP).register(entries -> entries.add(id));
+        ItemLike  id = ItemFactory.callItem(item);
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_NATURAL_GROUP).register(entries -> entries.accept(id));
     }
 
     public static void addToDeco(String item){
-        ItemConvertible id = ItemFactory.callItem(item);
-        ItemConvertible id2 = id.asItem();
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_DECO_GROUP).register(entries -> entries.add(id2)); //check
+        ItemLike id = ItemFactory.callItem(item);
+        ItemLike id2 = id.asItem();
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_DECO_GROUP).register(entries -> entries.accept(id2)); //check
 
     }
 
     public static void addToCombat(String item){
-        ItemConvertible  id = ItemFactory.callItem(item);
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_COMBAT_GROUP).register(entries -> entries.add(id));
+        ItemLike  id = ItemFactory.callItem(item);
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_COMBAT_GROUP).register(entries -> entries.accept(id));
     }
 
     public static void addToServer(String item){
-        ItemConvertible  id = ItemFactory.callItem(item);
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.add(id));
+        ItemLike  id = ItemFactory.callItem(item);
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
     }
 
     public static void addToServerBlock(String block){
-        ItemConvertible  id = BlockFactory.callBlock(block).asItem();
-        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.add(id));
+        ItemLike  id = BlockFactory.callBlock(block).asItem();
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
     }
 
     public static void LaunchItem() {

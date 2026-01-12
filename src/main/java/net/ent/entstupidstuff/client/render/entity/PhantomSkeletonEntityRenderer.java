@@ -4,29 +4,29 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.client.render.entity.state.PhantomSkeletonRenderState;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
-public class PhantomSkeletonEntityRenderer extends AbstractSkeletonEntityRenderer<PhantomSkeletonEntity, PhantomSkeletonRenderState>{
+public class PhantomSkeletonEntityRenderer extends AbstractSkeletonRenderer<PhantomSkeletonEntity, PhantomSkeletonRenderState>{
 
-    private static final Identifier TEXTURE3 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
-	private static final Identifier TEXTURE2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
-	private static final Identifier TEXTURE1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
+    private static final ResourceLocation TEXTURE3 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
+	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
+	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/phantom_skeleton/phantom_skeleton_01.png");
     
-    public PhantomSkeletonEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, ModEntityModelLayers.PHANTOM_SKELETON, EntityModelLayers.SKELETON_EQUIPMENT);
+    public PhantomSkeletonEntityRenderer(EntityRendererProvider.Context context) {
+		super(context, ModEntityModelLayers.PHANTOM_SKELETON, ModelLayers.SKELETON_ARMOR);
 	}
 
     @Override
-    protected RenderLayer getRenderLayer(PhantomSkeletonRenderState entity, boolean showBody, boolean translucent, boolean showOutline) {
-        return RenderLayer.getEntityTranslucent(this.getTexture(entity));
+    protected RenderType getRenderType(PhantomSkeletonRenderState entity, boolean showBody, boolean translucent, boolean showOutline) {
+        return RenderType.entityTranslucent(this.getTextureLocation(entity));
     }
 
 	@Override
-	public Identifier getTexture(PhantomSkeletonRenderState state) {
+	public ResourceLocation getTextureLocation(PhantomSkeletonRenderState state) {
 		return switch (state.variant) {
 			case MELEE -> TEXTURE1;
 			case CROSSBOW -> TEXTURE2;

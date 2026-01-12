@@ -5,39 +5,39 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.CrossbowAttackGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.WanderAroundGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PillagerEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Pillager;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-public class ArmoredPillagerEntity extends PillagerEntity{
+public class ArmoredPillagerEntity extends Pillager{
 
-    private static final TrackedData<Integer> VARIANT = DataTracker.registerData(ArmoredPillagerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArmoredPillagerEntity.class, EntityDataSerializers.INT);
 
     private Variant variant;
 
@@ -71,9 +71,9 @@ public class ArmoredPillagerEntity extends PillagerEntity{
 			return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
 		}
 
-        public static Variant getRandom(Random random) {
+        public static Variant getRandom(RandomSource random) {
 			//return VALUES[random.nextInt(VALUES.length)];
-			Random varientR = Random.create();
+			RandomSource varientR = RandomSource.create();
         	float varientRC = varientR.nextInt(3) + 1;
 
 			if (varientRC == 1) {
@@ -87,23 +87,23 @@ public class ArmoredPillagerEntity extends PillagerEntity{
     }
 
     @Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
-		builder.add(VARIANT, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(VARIANT, 0);
     }
 
     @Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
 
 		Variant randomVariant = Variant.getRandom(this.getRandom());
         this.setVariant(randomVariant);
 
-        return super.initialize(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
     //Start of Code
 
-    public ArmoredPillagerEntity(EntityType<? extends PillagerEntity> entityType, World world) {
+    public ArmoredPillagerEntity(EntityType<? extends Pillager> entityType, Level world) {
         super(entityType, world);
         //variant = Variant.DIAMOND; //Implement Varient Code - Please Test
         /*Random varientR = Random.create();
@@ -123,75 +123,75 @@ public class ArmoredPillagerEntity extends PillagerEntity{
     private void equipDefaultEquipment() {
         if (EntStupidStuff.DEV_MODE)
             System.out.println("AP - equipDefaultEquipment");
-        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
     }
 
     private void applyArmorStats() {
         if (this.variant == Variant.DIAMOND) {
-            this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(20.0); // Diamond armor value
-            this.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).setBaseValue(2.0);
+            this.getAttribute(Attributes.ARMOR).setBaseValue(20.0); // Diamond armor value
+            this.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(2.0);
         } else if (this.variant == Variant.GOLD) {
-            this.getAttributeInstance(EntityAttributes.ARMOR).setBaseValue(11.0); // Gold armor value
-            this.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).setBaseValue(0.0);
+            this.getAttribute(Attributes.ARMOR).setBaseValue(11.0); // Gold armor value
+            this.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(0.0);
         }
     }
 
-    public static DefaultAttributeContainer.Builder createArmoredPillagerAttributes() {
-        return PillagerEntity.createPillagerAttributes()
-        .add(EntityAttributes.MOVEMENT_SPEED, 0.35F)
-		.add(EntityAttributes.MAX_HEALTH, 24.0)
-		.add(EntityAttributes.ATTACK_DAMAGE, 5.0)
-		.add(EntityAttributes.FOLLOW_RANGE, 32.0);
+    public static AttributeSupplier.Builder createArmoredPillagerAttributes() {
+        return Pillager.createAttributes()
+        .add(Attributes.MOVEMENT_SPEED, 0.35F)
+		.add(Attributes.MAX_HEALTH, 24.0)
+		.add(Attributes.ATTACK_DAMAGE, 5.0)
+		.add(Attributes.FOLLOW_RANGE, 32.0);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" }) //TODO: Check on This
     @Override
-	protected void initGoals() {
-		super.initGoals();
-		this.goalSelector.add(0, new SwimGoal(this));
-		this.goalSelector.add(2, new RaiderEntity.PatrolApproachGoal(this, 10.0F));
-		this.goalSelector.add(3, new CrossbowAttackGoal<>(this, 1.0, 8.0F));
-		this.goalSelector.add(8, new WanderAroundGoal(this, 0.6));
-		this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 15.0F, 1.0F));
-		this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 15.0F));
-		this.targetSelector.add(1, new RevengeGoal(this, RaiderEntity.class).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, false));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
+	protected void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(0, new FloatGoal(this));
+		this.goalSelector.addGoal(2, new Raider.HoldGroundAttackGoal(this, 10.0F));
+		this.goalSelector.addGoal(3, new RangedCrossbowAttackGoal<>(this, 1.0, 8.0F));
+		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
 	}
     
     /* Pillager Code */
 
     @Override
-    protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-        super.initEquipment(random, localDifficulty);
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+        super.populateDefaultEquipmentSlots(random, localDifficulty);
         if (EntStupidStuff.DEV_MODE)
             System.out.println("AP - initEquipment");
-        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
 
         applyArmorStats();
     }
 
     //Varientation Code:
     @Override
-    public void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
         view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
         this.setVariant((ArmoredPillagerEntity.Variant)view.read("Variant", ArmoredPillagerEntity.Variant.INDEX_CODEC).orElse(ArmoredPillagerEntity.Variant.GOLD));
     }
 
 	public void setVariant(ArmoredPillagerEntity.Variant variant) {
 		this.variant = variant; // Ensure the field is updated
-		this.dataTracker.set(VARIANT, variant.getId());
+		this.entityData.set(VARIANT, variant.getId());
 	}
 
 	public Variant getVariant() {
-		return Variant.byId(this.dataTracker.get(VARIANT)); // Ensure it retrieves from dataTracker
+		return Variant.byId(this.entityData.get(VARIANT)); // Ensure it retrieves from dataTracker
 	}
 
 

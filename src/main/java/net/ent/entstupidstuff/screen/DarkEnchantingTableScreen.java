@@ -8,31 +8,27 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.EnchantingPhrases;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.BookModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.model.BookModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 /*public class DarkEnchantingTableScreen extends HandledScreen<DarkDarkEnchantmentScreenHandler> {
     public static final Identifier GUI_TEXTURE =
@@ -53,7 +49,7 @@ import net.minecraft.util.math.random.Random;
     }/*
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void submit(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         drawMouseoverTooltip(context, mouseX, mouseY);
     }*/
@@ -85,23 +81,23 @@ import net.minecraft.util.math.random.Random;
 }*/
 
 //@Environment(EnvType.CLIENT)
-public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScreenHandler> {
-	private static final Identifier[] LEVEL_TEXTURES = new Identifier[]{
-		Identifier.ofVanilla("container/enchanting_table/level_1"),
-		Identifier.ofVanilla("container/enchanting_table/level_2"),
-		Identifier.ofVanilla("container/enchanting_table/level_3")
+public class DarkEnchantingTableScreen extends AbstractContainerScreen<DarkEnchantmentScreenHandler> {
+	private static final ResourceLocation[] LEVEL_TEXTURES = new ResourceLocation[]{
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1"),
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2"),
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3")
 	};
-	private static final Identifier[] LEVEL_DISABLED_TEXTURES = new Identifier[]{
-		Identifier.ofVanilla("container/enchanting_table/level_1_disabled"),
-		Identifier.ofVanilla("container/enchanting_table/level_2_disabled"),
-		Identifier.ofVanilla("container/enchanting_table/level_3_disabled")
+	private static final ResourceLocation[] LEVEL_DISABLED_TEXTURES = new ResourceLocation[]{
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
+		ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3_disabled")
 	};
-	private static final Identifier ENCHANTMENT_SLOT_DISABLED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_disabled");
-	private static final Identifier ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot_highlighted");
-	private static final Identifier ENCHANTMENT_SLOT_TEXTURE = Identifier.ofVanilla("container/enchanting_table/enchantment_slot");
-	private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/enchanting_table.png");
-	private static final Identifier BOOK_TEXTURE = Identifier.ofVanilla("textures/entity/enchanting_table_book.png");
-	private final Random random = Random.create();
+	private static final ResourceLocation ENCHANTMENT_SLOT_DISABLED_TEXTURE = ResourceLocation.withDefaultNamespace("container/enchanting_table/enchantment_slot_disabled");
+	private static final ResourceLocation ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE = ResourceLocation.withDefaultNamespace("container/enchanting_table/enchantment_slot_highlighted");
+	private static final ResourceLocation ENCHANTMENT_SLOT_TEXTURE = ResourceLocation.withDefaultNamespace("container/enchanting_table/enchantment_slot");
+	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/container/enchanting_table.png");
+	private static final ResourceLocation BOOK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/enchanting_table_book.png");
+	private final RandomSource random = RandomSource.create();
 	private BookModel BOOK_MODEL;
 	public int ticks;
 	public float nextPageAngle;
@@ -112,32 +108,32 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 	public float pageTurningSpeed;
 	private ItemStack stack = ItemStack.EMPTY;
 
-	public DarkEnchantingTableScreen(DarkEnchantmentScreenHandler handler, PlayerInventory inventory, Text title) {
+	public DarkEnchantingTableScreen(DarkEnchantmentScreenHandler handler, Inventory inventory, Component title) {
 		super(handler, inventory, title);
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		this.BOOK_MODEL = new BookModel(this.client.getLoadedEntityModels().getModelPart(EntityModelLayers.BOOK));
+		this.BOOK_MODEL = new BookModel(this.minecraft.getEntityModels().bakeLayer(ModelLayers.BOOK));
 	}
 
 	@Override
-	public void handledScreenTick() {
-		super.handledScreenTick();
+	public void containerTick() {
+		super.containerTick();
 		this.doTick();
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		int i = (this.width - this.backgroundWidth) / 2;
-		int j = (this.height - this.backgroundHeight) / 2;
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
 
 		for (int k = 0; k < 3; k++) {
 			double d = click.x() - (i + 60);
 			double e = click.y() - (j + 14 + 19 * k);
-			if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.handler.onButtonClick(this.client.player, k)) {
-				this.client.interactionManager.clickButton(this.handler.syncId, k);
+			if (d >= 0.0 && e >= 0.0 && d < 108.0 && e < 19.0 && this.menu.clickMenuButton(this.minecraft.player, k)) {
+				this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, k);
 				return true;
 			}
 		}
@@ -146,106 +142,106 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
-		int i = (this.width - this.backgroundWidth) / 2;
-		int j = (this.height - this.backgroundHeight) / 2;
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 256, 256);
+	protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 		this.drawBook(context, i, j);
-		EnchantingPhrases.getInstance().setSeed((long)this.handler.getSeed());
-		int k = this.handler.getEchoShardCount();
+		EnchantmentNames.getInstance().initSeed((long)this.menu.getSeed());
+		int k = this.menu.getEchoShardCount();
 
 		for (int l = 0; l < 3; l++) {
 			int m = i + 60;
 			int n = m + 20;
-			int o = this.handler.enchantmentPower[l];
+			int o = this.menu.enchantmentPower[l];
 			if (o == 0) {
-				context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+				context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
 			} else {
 				String string = o + "";
-				int p = 86 - this.textRenderer.getWidth(string);
-				StringVisitable stringVisitable = EnchantingPhrases.getInstance().generatePhrase(this.textRenderer, p);
+				int p = 86 - this.font.width(string);
+				FormattedText stringVisitable = EnchantmentNames.getInstance().getRandomName(this.font, p);
 				int q = 6839882;
-				if ((k < l + 1 || this.client.player.experienceLevel < o) && !this.client.player.getAbilities().creativeMode) {
-					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
-					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, LEVEL_DISABLED_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					context.drawWrappedText(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, ColorHelper.fullAlpha((q & 16711422) >> 1), false);
+				if ((k < l + 1 || this.minecraft.player.experienceLevel < o) && !this.minecraft.player.getAbilities().instabuild) {
+					context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_DISABLED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+					context.blitSprite(RenderPipelines.GUI_TEXTURED, LEVEL_DISABLED_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
+					context.drawWordWrap(this.font, stringVisitable, n, j + 16 + 19 * l, p, ARGB.opaque((q & 16711422) >> 1), false);
 					q = 4226832;
 				} else {
 					int r = mouseX - (i + 60);
 					int s = mouseY - (j + 14 + 19 * l);
 					if (r >= 0 && s >= 0 && r < 108 && s < 19) {
-						context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+						context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_HIGHLIGHTED_TEXTURE, m, j + 14 + 19 * l, 108, 19);
 						q = -128;
 					} else {
-						context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, m, j + 14 + 19 * l, 108, 19);
+						context.blitSprite(RenderPipelines.GUI_TEXTURED, ENCHANTMENT_SLOT_TEXTURE, m, j + 14 + 19 * l, 108, 19);
 					}
 
-					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, LEVEL_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
-					context.drawWrappedText(this.textRenderer, stringVisitable, n, j + 16 + 19 * l, p, q, false);
+					context.blitSprite(RenderPipelines.GUI_TEXTURED, LEVEL_TEXTURES[l], m + 1, j + 15 + 19 * l, 16, 16);
+					context.drawWordWrap(this.font, stringVisitable, n, j + 16 + 19 * l, p, q, false);
 					q = -8323296;
 				}
 
-				context.drawTextWithShadow(this.textRenderer, string, n + 86 - this.textRenderer.getWidth(string), j + 16 + 19 * l + 7, q);
+				context.drawString(this.font, string, n + 86 - this.font.width(string), j + 16 + 19 * l + 7, q);
 			}
 		}
 	}
 
-	private void drawBook(DrawContext context, int x, int y) {
-		float f = this.client.getRenderTickCounter().getTickProgress(false);
-		float g = MathHelper.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
-		float h = MathHelper.lerp(f, this.pageAngle, this.nextPageAngle);
+	private void drawBook(GuiGraphics context, int x, int y) {
+		float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+		float g = Mth.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
+		float h = Mth.lerp(f, this.pageAngle, this.nextPageAngle);
 		int i = x + 14;
 		int j = y + 14;
 		int k = i + 38;
 		int l = j + 31;
-		context.addBookModel(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
+		context.submitBookModelRenderState(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
-		this.drawMouseoverTooltip(context, mouseX, mouseY);
-		boolean bl = this.client.player.getAbilities().creativeMode;
-		int i = this.handler.getEchoShardCount();
+		this.renderTooltip(context, mouseX, mouseY);
+		boolean bl = this.minecraft.player.getAbilities().instabuild;
+		int i = this.menu.getEchoShardCount();
 
 		for (int j = 0; j < 3; j++) {
-			int k = this.handler.enchantmentPower[j];
-			Optional<RegistryEntry.Reference<Enchantment>> optional = this.client
-				.world
-				.getRegistryManager()
-				.getOrThrow(RegistryKeys.ENCHANTMENT)
-				.getEntry(this.handler.enchantmentId[j]);
+			int k = this.menu.enchantmentPower[j];
+			Optional<Holder.Reference<Enchantment>> optional = this.minecraft
+				.level
+				.registryAccess()
+				.lookupOrThrow(Registries.ENCHANTMENT)
+				.get(this.menu.enchantmentId[j]);
 			if (!optional.isEmpty()) {
-				int l = this.handler.enchantmentLevel[j];
+				int l = this.menu.enchantmentLevel[j];
 				int m = j + 1;
-				if (this.isPointWithinBounds(60, 14 + 19 * j, 108, 17, (double)mouseX, (double)mouseY) && k > 0 && l >= 0 && optional != null) {
-					List<Text> list = Lists.<Text>newArrayList();
-					list.add(Text.translatable("container.enchant.clue", Enchantment.getName((RegistryEntry<Enchantment>)optional.get(), l)).formatted(Formatting.WHITE));
+				if (this.isHovering(60, 14 + 19 * j, 108, 17, (double)mouseX, (double)mouseY) && k > 0 && l >= 0 && optional != null) {
+					List<Component> list = Lists.<Component>newArrayList();
+					list.add(Component.translatable("container.enchant.clue", Enchantment.getFullname((Holder<Enchantment>)optional.get(), l)).withStyle(ChatFormatting.WHITE));
 					if (!bl) {
-						list.add(ScreenTexts.EMPTY);
-						if (this.client.player.experienceLevel < k) {
-							list.add(Text.translatable("container.enchant.level.requirement", this.handler.enchantmentPower[j]).formatted(Formatting.RED));
+						list.add(CommonComponents.EMPTY);
+						if (this.minecraft.player.experienceLevel < k) {
+							list.add(Component.translatable("container.enchant.level.requirement", this.menu.enchantmentPower[j]).withStyle(ChatFormatting.RED));
 						} else {
-							MutableText mutableText;
+							MutableComponent mutableText;
 							if (m == 1) {
-								mutableText = Text.translatable("container.enchant.lapis.one");
+								mutableText = Component.translatable("container.enchant.lapis.one");
 							} else {
-								mutableText = Text.translatable("container.enchant.lapis.many", m);
+								mutableText = Component.translatable("container.enchant.lapis.many", m);
 							}
 
-							list.add(mutableText.formatted(i >= m ? Formatting.GRAY : Formatting.RED));
-							MutableText mutableText2;
+							list.add(mutableText.withStyle(i >= m ? ChatFormatting.GRAY : ChatFormatting.RED));
+							MutableComponent mutableText2;
 							if (m == 1) {
-								mutableText2 = Text.translatable("container.enchant.level.one");
+								mutableText2 = Component.translatable("container.enchant.level.one");
 							} else {
-								mutableText2 = Text.translatable("container.enchant.level.many", m);
+								mutableText2 = Component.translatable("container.enchant.level.many", m);
 							}
 
-							list.add(mutableText2.formatted(Formatting.GRAY));
+							list.add(mutableText2.withStyle(ChatFormatting.GRAY));
 						}
 					}
 
-					context.drawTooltip(this.textRenderer, list, mouseX, mouseY);
+					context.setComponentTooltipForNextFrame(this.font, list, mouseX, mouseY);
 					break;
 				}
 			}
@@ -253,8 +249,8 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 	}
 
 	public void doTick() {
-		ItemStack itemStack = this.handler.getSlot(0).getStack();
-		if (!ItemStack.areEqual(itemStack, this.stack)) {
+		ItemStack itemStack = this.menu.getSlot(0).getItem();
+		if (!ItemStack.matches(itemStack, this.stack)) {
 			this.stack = itemStack;
 
 			do {
@@ -268,7 +264,7 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 		boolean bl = false;
 
 		for (int i = 0; i < 3; i++) {
-			if (this.handler.enchantmentPower[i] != 0) {
+			if (this.menu.enchantmentPower[i] != 0) {
 				bl = true;
 			}
 		}
@@ -279,10 +275,10 @@ public class DarkEnchantingTableScreen extends HandledScreen<DarkEnchantmentScre
 			this.nextPageTurningSpeed -= 0.2F;
 		}
 
-		this.nextPageTurningSpeed = MathHelper.clamp(this.nextPageTurningSpeed, 0.0F, 1.0F);
+		this.nextPageTurningSpeed = Mth.clamp(this.nextPageTurningSpeed, 0.0F, 1.0F);
 		float f = (this.approximatePageAngle - this.nextPageAngle) * 0.4F;
 		float g = 0.2F;
-		f = MathHelper.clamp(f, -0.2F, 0.2F);
+		f = Mth.clamp(f, -0.2F, 0.2F);
 		this.pageRotationSpeed = this.pageRotationSpeed + (f - this.pageRotationSpeed) * 0.9F;
 		this.nextPageAngle = this.nextPageAngle + this.pageRotationSpeed;
 	}

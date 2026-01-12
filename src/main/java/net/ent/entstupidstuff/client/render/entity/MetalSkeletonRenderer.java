@@ -4,30 +4,30 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.MetalSkeletonEntity;
 import net.ent.entstupidstuff.client.render.entity.state.MetalSkeletonRenderState;
-import net.minecraft.client.render.entity.AbstractSkeletonEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory.Context;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.client.render.entity.model.SkeletonEntityModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.SkeletonModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.AbstractSkeletonRenderer;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.resources.ResourceLocation;
 
-public class MetalSkeletonRenderer extends AbstractSkeletonEntityRenderer<MetalSkeletonEntity, MetalSkeletonRenderState> {
+public class MetalSkeletonRenderer extends AbstractSkeletonRenderer<MetalSkeletonEntity, MetalSkeletonRenderState> {
 
-	public MetalSkeletonRenderer(Context context, EntityModelLayer layer, EquipmentModelData<EntityModelLayer> equipmentModelData) {
+	public MetalSkeletonRenderer(Context context, ModelLayerLocation layer, ArmorModelSet<ModelLayerLocation> equipmentModelData) {
 		super(context, ModEntityModelLayers.METAL_SKELETON, equipmentModelData);
 	}
 
-	public MetalSkeletonRenderer(Context context, EquipmentModelData<EntityModelLayer> equipmentModelData, SkeletonEntityModel<MetalSkeletonRenderState> skeletonEntityModel) {
+	public MetalSkeletonRenderer(Context context, ArmorModelSet<ModelLayerLocation> equipmentModelData, SkeletonModel<MetalSkeletonRenderState> skeletonEntityModel) {
 		super(context, equipmentModelData, skeletonEntityModel);
 	}
 
-	private static final Identifier TEXTURE3 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_03.png");
-	private static final Identifier TEXTURE2 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_02.png");
-	private static final Identifier TEXTURE1 = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_01.png");
+	private static final ResourceLocation TEXTURE3 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_03.png");
+	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_02.png");
+	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/metal_skeleton/metal_skeleton_01.png");
     
 
 	@Override
-	public Identifier getTexture(MetalSkeletonRenderState state) {
+	public ResourceLocation getTextureLocation(MetalSkeletonRenderState state) {
 		return switch (state.variant) {
 			case BLUE -> TEXTURE2;
 			case RED -> TEXTURE3;
@@ -36,8 +36,8 @@ public class MetalSkeletonRenderer extends AbstractSkeletonEntityRenderer<MetalS
 	}
 
 	@Override
-	public void updateRenderState(MetalSkeletonEntity entity, MetalSkeletonRenderState state, float tickDelta) {
-		super.updateRenderState(entity, state, tickDelta);
+	public void extractRenderState(MetalSkeletonEntity entity, MetalSkeletonRenderState state, float tickDelta) {
+		super.extractRenderState(entity, state, tickDelta);
 		state.variant = entity.getVariant();
 	}
 

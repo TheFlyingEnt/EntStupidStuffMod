@@ -2,43 +2,42 @@ package net.ent.entstupidstuff.api.legacy;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class TwoHandTrait /*implements Trait*/{
 
     
-    public void addTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable("item.entstupidstuff.double_hand.tooltip"));
+    public void addTooltip(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
+        tooltip.add(Component.translatable("item.entstupidstuff.double_hand.tooltip"));
     }
 
 
     //Code Clean up V2:
 
-    public static final Identifier BASE_ATTACK_DAMAGE_MODIFIER_ID = EntStupidStuff.id("two_hand_attack_damage");
+    public static final ResourceLocation BASE_ATTACK_DAMAGE_MODIFIER_ID = EntStupidStuff.id("two_hand_attack_damage");
 
-    public static boolean isOffHandFree(PlayerEntity player) {
-        return !player.getOffHandStack().isEmpty();
+    public static boolean isOffHandFree(Player player) {
+        return !player.getOffhandItem().isEmpty();
     }
 
-    public static void applyMiningFatigue(PlayerEntity player) {
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 20, 4));
+    public static void applyMiningFatigue(Player player) {
+        player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 20, 4));
     }
 
     public float modWeaponDamage(ToolMaterial material, float baseDamage, DamageSource source, LivingEntity attackerE, LivingEntity victiumE){
@@ -77,8 +76,8 @@ public class TwoHandTrait /*implements Trait*/{
 
 
 
-    public static boolean isUsingTwoHands(PlayerEntity player) {
-        return !player.getOffHandStack().isEmpty();
+    public static boolean isUsingTwoHands(Player player) {
+        return !player.getOffhandItem().isEmpty();
     }
 
     /*public static void applyMiningFatigue(PlayerEntity player) {
@@ -87,26 +86,26 @@ public class TwoHandTrait /*implements Trait*/{
 
     //public static final Identifier BASE_ATTACK_DAMAGE_MODIFIER_ID = EntStupidStuff.id("two_hand_attack_damage");
 
-    public static void applyDamageReduction(PlayerEntity player, boolean reduceDamage, double toolDamage) {
+    public static void applyDamageReduction(Player player, boolean reduceDamage, double toolDamage) {
         double damageMultiplier = reduceDamage ? 0.25 : 1.0;
-        EntityAttributeInstance attackDamageInstance = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
+        AttributeInstance attackDamageInstance = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
         // Remove the existing modifier if it exists
         if (attackDamageInstance != null) {
             attackDamageInstance.removeModifier(BASE_ATTACK_DAMAGE_MODIFIER_ID);
-            attackDamageInstance.addTemporaryModifier(new EntityAttributeModifier(
+            attackDamageInstance.addTransientModifier(new AttributeModifier(
                 BASE_ATTACK_DAMAGE_MODIFIER_ID,  
                 toolDamage * (damageMultiplier - 1), 
-                EntityAttributeModifier.Operation.ADD_VALUE)
+                AttributeModifier.Operation.ADD_VALUE)
             );
         }
         System.out.println(BASE_ATTACK_DAMAGE_MODIFIER_ID);
     }
 
-    public static void weaponCheck(ItemStack stack, World world, Entity entity, int slot, boolean selected, ToolMaterial toolMaterial, float attackDamage ) {
+    public static void weaponCheck(ItemStack stack, Level world, Entity entity, int slot, boolean selected, ToolMaterial toolMaterial, float attackDamage ) {
         System.out.println("InMethod");
-        if (!world.isClient() && entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
+        if (!world.isClientSide() && entity instanceof Player) {
+            Player player = (Player) entity;
             boolean isHoldingTwoHandedWeapon = false; //= player.getMainHandStack().getItem() instanceof WeaponItem;
 
             if (isHoldingTwoHandedWeapon) {
@@ -129,7 +128,7 @@ public class TwoHandTrait /*implements Trait*/{
 
 
     @Deprecated
-    public float applyDamageReduction2(PlayerEntity player, LivingEntity victim, float toolDamage) {
+    public float applyDamageReduction2(Player player, LivingEntity victim, float toolDamage) {
         float modDamage = toolDamage;
 
         if(isUsingTwoHands(player) == false) {

@@ -1,20 +1,11 @@
 package net.ent.entstupidstuff.item.base;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-// Apply massive dash attack damage - target.damage(new DamageSources((ServerWorld) world).create(ModDamageTypes.SLASH_DAMAGE), attackDamageBonus() * DASH_DAMAGE_MULTIPLIER);
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 
 public class WeaponGlaiveItem extends WeaponUpdatedItem {
@@ -28,8 +19,8 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
     private static double ATTACK_DAMAGE;
 
 
-    public WeaponGlaiveItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(
+    public WeaponGlaiveItem(ToolMaterial toolMaterial, Properties settings) {
+        super(toolMaterial, settings.attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
@@ -44,25 +35,25 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
 
-        if (!world.isClient()) {
+        if (!world.isClientSide()) {
 
             if (player.isCreative() == true) {
-                player.getItemCooldownManager().set(player.getMainHandStack(), 3);
+                player.getCooldowns().addCooldown(player.getMainHandItem(), 3);
             } else {
-                player.getItemCooldownManager().set(player.getMainHandStack(), DASH_COOLDOWN_TICKS);
+                player.getCooldowns().addCooldown(player.getMainHandItem(), DASH_COOLDOWN_TICKS);
             }
 
-            if (player.isOnGround()) {
-                Vec3d lookVec = player.getRotationVec(1.0F).normalize(); //Might at this as FeedBack for the #@Cannon
-                Vec3d dashVelocity = new Vec3d(lookVec.x * DASH_SPEED, 0, lookVec.z * DASH_SPEED);
+            if (player.onGround()) {
+                Vec3 lookVec = player.getViewVector(1.0F).normalize(); //Might at this as FeedBack for the #@Cannon
+                Vec3 dashVelocity = new Vec3(lookVec.x * DASH_SPEED, 0, lookVec.z * DASH_SPEED);
 
-                player.addVelocity(dashVelocity.x, 0.1, dashVelocity.z);
-                player.velocityModified = true;
+                player.push(dashVelocity.x, 0.1, dashVelocity.z);
+                player.hurtMarked = true;
 
-                Vec3d startPos = player.getEyePos();
-                Vec3d endPos = startPos.add(lookVec.multiply(ATTACK_REACH + 1));
+                Vec3 startPos = player.getEyePosition();
+                Vec3 endPos = startPos.add(lookVec.scale(ATTACK_REACH + 1));
                 /*EntityHitResult hitResult = ProjectileUtil.getEntityCollision(
                     world, player, startPos, endPos, 
                     new Box(startPos, endPos).expand(1.0), 
@@ -90,7 +81,7 @@ public class WeaponGlaiveItem extends WeaponUpdatedItem {
 
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
         
     }
     

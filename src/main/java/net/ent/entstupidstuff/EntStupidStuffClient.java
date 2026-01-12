@@ -10,9 +10,9 @@ import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.item.ItemStack;
 
 
 public class EntStupidStuffClient implements ClientModInitializer {
@@ -32,12 +32,12 @@ public class EntStupidStuffClient implements ClientModInitializer {
 
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
             if (client.player != null) {
-                ItemStack stack = client.player.getMainHandStack();
+                ItemStack stack = client.player.getMainHandItem();
                 if (stack.getItem() instanceof CannonItem && CannonItem.isCharged(stack)) {
-                    int x = drawContext.getScaledWindowWidth() / 2;
-                    int y = drawContext.getScaledWindowHeight() / 2;
+                    int x = drawContext.guiWidth() / 2;
+                    int y = drawContext.guiHeight() / 2;
                     //Identifier TEX = Identifier.of("entstupidstuff", "textures/gui/cannon_crosshair.png");
                     //Identifier TEX = Identifier.of("entstupidstuff", "textures/gui/sprites/hud/crosshair_cannon.png");
 
@@ -46,7 +46,7 @@ public class EntStupidStuffClient implements ClientModInitializer {
             }
         });
 
-        HandledScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
+        MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
         
     }
 }

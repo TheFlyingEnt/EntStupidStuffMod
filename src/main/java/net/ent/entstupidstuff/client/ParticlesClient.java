@@ -11,7 +11,7 @@ import net.minecraft.client.particle.FlameParticle;
 public class ParticlesClient {
 
     public static void initalize() {
-        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.PHANTOM_FLAME, FlameParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.PHANTOM_FLAME, FlameParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.HAMMER_BOOM, HammerBoomParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE_BLOSSOM, FallingMushroomSporeBlossomFactory::new);//FallingMSporeBlossomFactory::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, BlueGlowFactory::new);

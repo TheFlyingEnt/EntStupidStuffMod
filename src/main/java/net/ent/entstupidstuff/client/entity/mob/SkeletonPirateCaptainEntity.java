@@ -1,14 +1,14 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 public class SkeletonPirateCaptainEntity extends SunkenSkeletonEntity{
 
-    public SkeletonPirateCaptainEntity(EntityType<? extends SkeletonPirateCaptainEntity> entityType, World world) {
+    public SkeletonPirateCaptainEntity(EntityType<? extends SkeletonPirateCaptainEntity> entityType, Level world) {
         super(entityType, world);
     }
 

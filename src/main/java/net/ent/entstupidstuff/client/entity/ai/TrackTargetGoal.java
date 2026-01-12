@@ -1,18 +1,18 @@
 package net.ent.entstupidstuff.client.entity.ai;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.monster.Skeleton;
 
 public class TrackTargetGoal extends Goal {
-    private final SkeletonEntity skeleton;
+    private final Skeleton skeleton;
 
-    public TrackTargetGoal(SkeletonEntity skeleton) {
+    public TrackTargetGoal(Skeleton skeleton) {
         this.skeleton = skeleton;
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         return this.skeleton.getTarget() != null;
     }
 
@@ -20,7 +20,7 @@ public class TrackTargetGoal extends Goal {
     public void tick() {
         LivingEntity target = this.skeleton.getTarget();
         if (target != null) {
-            this.skeleton.lookAtEntity(target, 30.0F, 30.0F);
+            this.skeleton.lookAt(target, 30.0F, 30.0F);
         }
     }
 }

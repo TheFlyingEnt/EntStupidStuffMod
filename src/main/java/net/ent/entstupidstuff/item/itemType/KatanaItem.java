@@ -6,22 +6,19 @@ import java.util.UUID;
 
 import net.ent.entstupidstuff.api.IntTrait.ITrait;
 import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class KatanaItem  extends WeaponItem implements ITrait{
 
-    public KatanaItem(ToolMaterial toolMaterial, Settings settings) {
+    public KatanaItem(ToolMaterial toolMaterial, Properties settings) {
         super(toolMaterial, settings);
         //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.attackDamageBonus(), -3.4f, 1, 0, 3)));
     }
@@ -50,13 +47,13 @@ public class KatanaItem  extends WeaponItem implements ITrait{
     }*/
 
     @Override
-    public ActionResult use(World world, PlayerEntity player, Hand hand) {
-        if (!world.isClient() && !isCharging(player)) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
+        if (!world.isClientSide() && !isCharging(player)) {
             startCharging(player);
             checkForCollision(player);
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResult.FAIL;
+        return InteractionResult.FAIL;
     }
 
     /*@Override
@@ -66,13 +63,13 @@ public class KatanaItem  extends WeaponItem implements ITrait{
         }
     }*/
 
-    private boolean checkForCollision(PlayerEntity player) {
-        Box boundingBox = player.getBoundingBox().expand(1); // Slightly larger hitbox
-        List<LivingEntity> entities = player.getEntityWorld().getEntitiesByClass(LivingEntity.class, boundingBox, e -> e != player);
+    private boolean checkForCollision(Player player) {
+        AABB boundingBox = player.getBoundingBox().inflate(1); // Slightly larger hitbox
+        List<LivingEntity> entities = player.level().getEntitiesOfClass(LivingEntity.class, boundingBox, e -> e != player);
 
         for (LivingEntity target : entities) {
             if (target.isAlive()) {
-                target.damage((ServerWorld) player.getEntityWorld(), player.getDamageSources().playerAttack(player), 10 * 2); // Double damage
+                target.hurtServer((ServerLevel) player.level(), player.damageSources().playerAttack(player), 10 * 2); // Double damage
                 return true;
             }
         }
@@ -90,19 +87,19 @@ public class KatanaItem  extends WeaponItem implements ITrait{
         return super.postHit(stack, target, attacker);
     }*/
 
-    public static void startCharging(PlayerEntity player) {
-        CHARGING_PLAYERS.put(player.getUuid(), player.getEntityWorld().getTime() + CHARGE_DURATION);
-        Vec3d lookDirection = player.getRotationVec(1.0f).multiply(CHARGE_SPEED);
-        player.addVelocity(lookDirection.x, 0, lookDirection.z);
-        player.velocityModified = true;
+    public static void startCharging(Player player) {
+        CHARGING_PLAYERS.put(player.getUUID(), player.level().getGameTime() + CHARGE_DURATION);
+        Vec3 lookDirection = player.getViewVector(1.0f).scale(CHARGE_SPEED);
+        player.push(lookDirection.x, 0, lookDirection.z);
+        player.hurtMarked = true;
     }
 
-    public static boolean isCharging(PlayerEntity player) {
-        return CHARGING_PLAYERS.getOrDefault(player.getUuid(), 0L) > player.getEntityWorld().getTime();
+    public static boolean isCharging(Player player) {
+        return CHARGING_PLAYERS.getOrDefault(player.getUUID(), 0L) > player.level().getGameTime();
     }
 
-    public static void stopCharging(PlayerEntity player) {
-        CHARGING_PLAYERS.remove(player.getUuid());
+    public static void stopCharging(Player player) {
+        CHARGING_PLAYERS.remove(player.getUUID());
     }
 
     

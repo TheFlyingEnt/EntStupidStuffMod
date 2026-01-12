@@ -5,24 +5,24 @@ import org.jetbrains.annotations.Nullable;
 import net.ent.entstupidstuff.api.enchantment.EntEnchantmentHelper;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.registry.EntityFactory;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker.Builder;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
-public class CannonballEntity extends PersistentProjectileEntity {
+public class CannonballEntity extends AbstractArrow {
 
 	/*
 	 * Enhantments:
@@ -34,61 +34,61 @@ public class CannonballEntity extends PersistentProjectileEntity {
 
 	private boolean hasFlame;
 
-	public CannonballEntity(EntityType<? extends CannonballEntity> entityType, World world) {
+	public CannonballEntity(EntityType<? extends CannonballEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public CannonballEntity(World world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { // Player
+	public CannonballEntity(Level world, LivingEntity owner, ItemStack stack, @Nullable ItemStack shotFrom) { // Player
 		super(EntityFactory.CANNON_BALL, owner, world, stack, shotFrom);
 
 		if (shotFrom != null) {
 			this.hasFlame =
-			EnchantmentHelper.getLevel(EntEnchantmentHelper.getEnchantmentEntry(owner.getEntityWorld(), Enchantments.FLAME, 99999999), stack) > 0;
+			EnchantmentHelper.getItemEnchantmentLevel(EntEnchantmentHelper.getEnchantmentEntry(owner.level(), Enchantments.FLAME, 99999999), stack) > 0;
 		}
 	}
 
-	public CannonballEntity(World world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { // Mob
+	public CannonballEntity(Level world, double x, double y, double z, ItemStack stack, @Nullable ItemStack shotFrom) { // Mob
 		super(EntityFactory.CANNON_BALL, x, y, z, world, stack, shotFrom);
 	}
 
 	@Override
-	public void setVelocity(double x, double y, double z, float power, float uncertainty) {
-		super.setVelocity(x, y, z, power, uncertainty);
+	public void shoot(double x, double y, double z, float power, float uncertainty) {
+		super.shoot(x, y, z, power, uncertainty);
 	}
 
 	@Override
-	protected ItemStack getDefaultItemStack() {
+	protected ItemStack getDefaultPickupItem() {
 		return new ItemStack(ItemFactory.CANNON_BALL_ITEM);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.getEntityWorld().isClient() && !this.isSubmergedInWater()) {
-			if (this.getVelocity().lengthSquared() > 0.01) {
-				this.getEntityWorld().addParticleClient(
+		if (this.level().isClientSide() && !this.isUnderWater()) {
+			if (this.getDeltaMovement().lengthSqr() > 0.01) {
+				this.level().addParticle(
 						ParticleTypes.LARGE_SMOKE,
 						this.getX(),
 						this.getY(),
 						this.getZ(),
 						this.random.nextGaussian() * 0.05,
-						-this.getVelocity().y * 0.5,
+						-this.getDeltaMovement().y * 0.5,
 						this.random.nextGaussian() * 0.05);
-				this.getEntityWorld().addParticleClient(
+				this.level().addParticle(
 						ParticleTypes.FLAME,
 						this.getX(),
 						this.getY(),
 						this.getZ(),
 						this.random.nextGaussian() * 0.05,
-						-this.getVelocity().y * 0.5,
+						-this.getDeltaMovement().y * 0.5,
 						this.random.nextGaussian() * 0.05);
 			} else {
-				if (this.getOwner() instanceof PlayerEntity) {
+				if (this.getOwner() instanceof Player) {
 
-					this.getEntityWorld().addParticleClient(
+					this.level().addParticle(
 							ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
 							this.getX(),
-							this.getY() + this.getHeight(),
+							this.getY() + this.getBbHeight(),
 							this.getZ(),
 							this.random.nextGaussian() * 0.02,
 							0.07,
@@ -104,37 +104,37 @@ public class CannonballEntity extends PersistentProjectileEntity {
 	public int hit = 0;
 
 	@Override
-	protected void onCollision(HitResult hitResult) {
-		super.onCollision(hitResult);
-		if (!this.getEntityWorld().isClient()) {
+	protected void onHit(HitResult hitResult) {
+		super.onHit(hitResult);
+		if (!this.level().isClientSide()) {
 
 		}
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
+	protected void onHitBlock(BlockHitResult blockHitResult) {
 		if (hit == 0) {
-			this.getEntityWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F,
-					World.ExplosionSourceType.NONE);
+			this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					Level.ExplosionInteraction.NONE);
 			hit = 1;
-			this.getEntityWorld().addParticleClient(
+			this.level().addParticle(
 					ParticleTypes.EXPLOSION_EMITTER,
 					this.getX(),
 					this.getY(),
 					this.getZ(),
 					this.random.nextGaussian() * 0.05,
-					-this.getVelocity().y * 0.5,
+					-this.getDeltaMovement().y * 0.5,
 					this.random.nextGaussian() * 0.05);
 		}
-		super.onBlockHit(blockHitResult);
+		super.onHitBlock(blockHitResult);
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-		if (!this.getEntityWorld().isClient() && hit == 0) {
-			this.getEntityWorld().createExplosion(null, this.getX(), this.getY(), this.getZ(), 2.0F,
-					World.ExplosionSourceType.NONE);
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level().isClientSide() && hit == 0) {
+			this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					Level.ExplosionInteraction.NONE);
 			hit = 1;
 		}
 
@@ -143,25 +143,25 @@ public class CannonballEntity extends PersistentProjectileEntity {
 		if (target instanceof LivingEntity living) {
 			// Flame
 			if (hasFlame) {
-				living.setOnFireFor(5);
+				living.igniteForSeconds(5);
 			}
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private SoundEvent sound = this.getHitSound();
+	private SoundEvent sound = this.getDefaultHitGroundSoundEvent();
 
-	public void setSound(SoundEvent sound) {
+	public void setSoundEvent(SoundEvent sound) {
 		this.sound = sound;
 	}
 
-	protected SoundEvent getHitSound() {
-		return SoundEvents.ENTITY_ARROW_HIT;
+	protected SoundEvent getDefaultHitGroundSoundEvent() {
+		return SoundEvents.ARROW_HIT;
 	}
 
 	@Override
-	protected void initDataTracker(Builder builder) {
-		super.initDataTracker(builder);
+	protected void defineSynchedData(Builder builder) {
+		super.defineSynchedData(builder);
 	}
 
 	public boolean hasFlame() {

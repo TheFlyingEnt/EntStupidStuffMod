@@ -4,17 +4,17 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.TestableWorld;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
-import net.minecraft.world.gen.foliage.FoliagePlacer;
-import net.minecraft.world.gen.foliage.FoliagePlacerType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 
 public class FirFoliagePlacer  extends FoliagePlacer {
     public static final MapCodec<FirFoliagePlacer> CODEC = RecordCodecBuilder.mapCodec(
-        instance -> fillFoliagePlacerFields(instance)
+        instance -> foliagePlacerParts(instance)
             .apply(instance, FirFoliagePlacer::new)
     );
 
@@ -23,24 +23,24 @@ public class FirFoliagePlacer  extends FoliagePlacer {
     }
 
     @Override
-    protected FoliagePlacerType<?> getType() {
+    protected FoliagePlacerType<?> type() {
         return ModConfiguredFeatures.FIR_FOLIAGE_PLACER;
     }
 
     @Override
-    protected void generate(
-            TestableWorld world,
-            BlockPlacer placer,
-            Random random,
-            TreeFeatureConfig config,
+    protected void createFoliage(
+            LevelSimulatedReader world,
+            FoliageSetter placer,
+            RandomSource random,
+            TreeConfiguration config,
             int trunkHeight,
-            TreeNode treeNode,
+            FoliageAttachment treeNode,
             int foliageHeight,
             int radius,
             int offset
     ) {
 
-        BlockPos blockPos = treeNode.getCenter();
+        BlockPos blockPos = treeNode.pos();
 		//int i = random.nextInt(2);
 		//int j = 1;
 		//int k = 0;
@@ -60,11 +60,11 @@ public class FirFoliagePlacer  extends FoliagePlacer {
             for (int dx = -layerRadius; dx <= layerRadius; dx++) {
                 for (int dz = -layerRadius; dz <= layerRadius; dz++) {
                     if (Math.abs(dx) + Math.abs(dz) > layerRadius) continue; // diamond shape
-                    BlockPos leafPos = blockPos.add(dx, l, dz);
+                    BlockPos leafPos = blockPos.offset(dx, l, dz);
 
                     // Don't overwrite trunk
-                    if (!leafPos.equals(blockPos.add(0, l, 0))) {
-                        placeFoliageBlock(world, placer, random, config, leafPos);
+                    if (!leafPos.equals(blockPos.offset(0, l, 0))) {
+                        tryPlaceLeaf(world, placer, random, config, leafPos);
                     }
                 }
             }
@@ -140,8 +140,8 @@ public class FirFoliagePlacer  extends FoliagePlacer {
     }*/
 
     @Override
-    protected boolean isInvalidForLeaves(
-            Random random,
+    protected boolean shouldSkipLocation(
+            RandomSource random,
             int dx,
             int y,
             int dz,
@@ -153,7 +153,7 @@ public class FirFoliagePlacer  extends FoliagePlacer {
     }
 
     @Override
-    public int getRandomHeight(Random random, int trunkHeight, TreeFeatureConfig config) {
+    public int foliageHeight(RandomSource random, int trunkHeight, TreeConfiguration config) {
         // foliage height scales with trunk dynamically
         return trunkHeight - 2 - random.nextInt(3);
     }

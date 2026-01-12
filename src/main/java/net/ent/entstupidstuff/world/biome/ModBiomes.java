@@ -3,35 +3,35 @@ package net.ent.entstupidstuff.world.biome;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.world.ModPlacedFeatures;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.MusicSound;
-import net.minecraft.sound.MusicType;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.carver.ConfiguredCarvers;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.feature.OceanPlacedFeatures;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BiomeDefaultFeatures;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.Carvers;
+import net.minecraft.data.worldgen.placement.AquaticPlacements;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.Music;
+import net.minecraft.sounds.Musics;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class ModBiomes {
-    public static final RegistryKey<Biome> MAPLE_FOREST = RegistryKey.of(RegistryKeys.BIOME,
-            Identifier.of(EntStupidStuff.MOD_ID, "maple_forest"));
-    public static final RegistryKey<Biome> ICY_CAVES = RegistryKey.of(RegistryKeys.BIOME,
-            Identifier.of(EntStupidStuff.MOD_ID, "icy_caves"));
-    public static final RegistryKey<Biome> UNDERGROUND_BLUE_MUSHROOM = RegistryKey.of(RegistryKeys.BIOME,
-            Identifier.of(EntStupidStuff.MOD_ID, "underground_blue_mushroom"));
-    public static final RegistryKey<Biome> SUNKEN_SEA = RegistryKey.of(RegistryKeys.BIOME,
-            Identifier.of(EntStupidStuff.MOD_ID, "sunken_sea"));
+    public static final ResourceKey<Biome> MAPLE_FOREST = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "maple_forest"));
+    public static final ResourceKey<Biome> ICY_CAVES = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "icy_caves"));
+    public static final ResourceKey<Biome> UNDERGROUND_BLUE_MUSHROOM = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "underground_blue_mushroom"));
+    public static final ResourceKey<Biome> SUNKEN_SEA = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sunken_sea"));
 
-    public static void boostrap(Registerable<Biome> context) {
+    public static void boostrap(BootstrapContext<Biome> context) {
         //context.register(MAPLE_FOREST, mapleforest(context));
         context.register(ICY_CAVES, icyCaves(context));
         context.register(MAPLE_FOREST, mapleForest(context));
@@ -41,62 +41,62 @@ public class ModBiomes {
 
     //biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
 
-    private static void addBasicFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
-		DefaultBiomeFeatures.addLandCarvers(generationSettings);
-		DefaultBiomeFeatures.addAmethystGeodes(generationSettings);
-		DefaultBiomeFeatures.addDungeons(generationSettings);
-		DefaultBiomeFeatures.addMineables(generationSettings);
-		DefaultBiomeFeatures.addSprings(generationSettings);
-		DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
+    private static void addBasicFeatures(BiomeGenerationSettings.Builder generationSettings) {
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(generationSettings);
+		BiomeDefaultFeatures.addDefaultCrystalFormations(generationSettings);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(generationSettings);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(generationSettings);
+		BiomeDefaultFeatures.addDefaultSprings(generationSettings);
+		BiomeDefaultFeatures.addSurfaceFreezing(generationSettings);
 	}
 
-    private static Biome createSunkenSea(Registerable<Biome> context) {
+    private static Biome createSunkenSea(BootstrapContext<Biome> context) {
 
         // === Spawn Settings ===
-        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
+        MobSpawnSettings.Builder spawnSettings = new MobSpawnSettings.Builder();
 
-        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, 10,
-                new SpawnSettings.SpawnEntry(EntityType.COD, 4, 8));
-        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, 8,
-                new SpawnSettings.SpawnEntry(EntityType.SALMON, 2, 5));
+        spawnSettings.addSpawn(MobCategory.WATER_AMBIENT, 10,
+                new MobSpawnSettings.SpawnerData(EntityType.COD, 4, 8));
+        spawnSettings.addSpawn(MobCategory.WATER_AMBIENT, 8,
+                new MobSpawnSettings.SpawnerData(EntityType.SALMON, 2, 5));
 
-        spawnSettings.spawn(SpawnGroup.MONSTER, 20, 
-                new SpawnSettings.SpawnEntry(EntityType.DROWNED, 1, 3));
-        spawnSettings.spawn(SpawnGroup.MONSTER, 5,
-                new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 2));
+        spawnSettings.addSpawn(MobCategory.MONSTER, 20, 
+                new MobSpawnSettings.SpawnerData(EntityType.DROWNED, 1, 3));
+        spawnSettings.addSpawn(MobCategory.MONSTER, 5,
+                new MobSpawnSettings.SpawnerData(EntityType.GUARDIAN, 1, 2));
 
         // === Generation Settings ===
-        GenerationSettings.LookupBackedBuilder generation =
-                new GenerationSettings.LookupBackedBuilder(
-                        context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
-                        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER)
+        BiomeGenerationSettings.Builder generation =
+                new BiomeGenerationSettings.Builder(
+                        context.lookup(Registries.PLACED_FEATURE),
+                        context.lookup(Registries.CONFIGURED_CARVER)
                 );
 
         // Terrain
-        generation.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.THALASSITE_ORE_PLACE_KEY);
+        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.THALASSITE_ORE_PLACE_KEY);
 
         // Coral & vegetation
         //generation.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.SUNKEN_CORAL);
         //generation.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.SEAWEED_PATCH);
 
         addBasicFeatures(generation);
-		DefaultBiomeFeatures.addDefaultOres(generation);
-		DefaultBiomeFeatures.addDefaultDisks(generation);
-		DefaultBiomeFeatures.addWaterBiomeOakTrees(generation);
-		DefaultBiomeFeatures.addDefaultFlowers(generation);
-		DefaultBiomeFeatures.addDefaultGrass(generation);
-		DefaultBiomeFeatures.addDefaultMushrooms(generation);
-		DefaultBiomeFeatures.addDefaultVegetation(generation, true);
+		BiomeDefaultFeatures.addDefaultOres(generation);
+		BiomeDefaultFeatures.addDefaultSoftDisks(generation);
+		BiomeDefaultFeatures.addWaterTrees(generation);
+		BiomeDefaultFeatures.addDefaultFlowers(generation);
+		BiomeDefaultFeatures.addDefaultGrass(generation);
+		BiomeDefaultFeatures.addDefaultMushrooms(generation);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(generation, true);
 
 		generation
-			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.WARM_OCEAN_VEGETATION)
-			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM)
-			.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEA_PICKLE);
+			.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.WARM_OCEAN_VEGETATION)
+			.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEAGRASS_WARM)
+			.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
 
-        DefaultBiomeFeatures.addLessKelp(generation);
+        BiomeDefaultFeatures.addLukeWarmKelp(generation);
 
-        generation.carver(ConfiguredCarvers.CAVE);
-        generation.carver(ConfiguredCarvers.CAVE_EXTRA_UNDERGROUND);
+        generation.addCarver(Carvers.CAVE);
+        generation.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
 
         /*generation.feature(
             GenerationStep.Feature.TOP_LAYER_MODIFICATION, // runs after carving
@@ -110,19 +110,19 @@ public class ModBiomes {
         
 
         // === Biome Effects ===
-        BiomeEffects effects = new BiomeEffects.Builder()
+        BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
                 .waterColor(0x1B4F72)
                 .waterFogColor(0x0A2A43)
                 .fogColor(0x081A2B)
                 .skyColor(0x000000) // underground
                 .build();
 
-        return new Biome.Builder()
-                .precipitation(false)
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
                 .temperature(0.5f)
                 .downfall(0.0f)
-                .effects(effects)
-                .spawnSettings(spawnSettings.build())
+                .specialEffects(effects)
+                .mobSpawnSettings(spawnSettings.build())
                 .generationSettings(generation.build())
                 .build();
     }
@@ -181,111 +181,111 @@ public class ModBiomes {
 		
     }
     */
-    public static Biome mapleForest(Registerable<Biome> context) {
+    public static Biome mapleForest(BootstrapContext<Biome> context) {
 
-        GenerationSettings.LookupBackedBuilder biomeBuilder =
-            new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
-        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
+        BiomeGenerationSettings.Builder biomeBuilder =
+            new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE),
+        context.lookup(Registries.CONFIGURED_CARVER));
 
-        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        spawnSettings.spawn(SpawnGroup.CREATURE, 5, new SpawnSettings.SpawnEntry(EntityType.FOX, 2, 4))
-			.spawn(SpawnGroup.CREATURE, 6, new SpawnSettings.SpawnEntry(EntityType.RABBIT, 2, 3))
-			.spawn(SpawnGroup.CREATURE, 5, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 2, 4));
-        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
+        MobSpawnSettings.Builder spawnSettings = new MobSpawnSettings.Builder();
+        spawnSettings.addSpawn(MobCategory.CREATURE, 5, new MobSpawnSettings.SpawnerData(EntityType.FOX, 2, 4))
+			.addSpawn(MobCategory.CREATURE, 6, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 2, 3))
+			.addSpawn(MobCategory.CREATURE, 5, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 2, 4));
+        BiomeDefaultFeatures.commonSpawns(spawnSettings);
 		addBasicFeatures(biomeBuilder);
-		DefaultBiomeFeatures.addPlainsTallGrass(biomeBuilder);
-		DefaultBiomeFeatures.addDefaultOres(biomeBuilder);
-		DefaultBiomeFeatures.addDefaultDisks(biomeBuilder);
+		BiomeDefaultFeatures.addPlainGrass(biomeBuilder);
+		BiomeDefaultFeatures.addDefaultOres(biomeBuilder);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biomeBuilder);
         
 
-        DefaultBiomeFeatures.addEmeraldOre(biomeBuilder);
-		DefaultBiomeFeatures.addInfestedStone(biomeBuilder);
-		MusicSound musicSound = MusicType.createIngameMusic(SoundEvents.MUSIC_OVERWORLD_CHERRY_GROVE);
+        BiomeDefaultFeatures.addExtraEmeralds(biomeBuilder);
+		BiomeDefaultFeatures.addInfestedStone(biomeBuilder);
+		Music musicSound = Musics.createGameMusic(SoundEvents.MUSIC_BIOME_CHERRY_GROVE);
 
         //biomeBuilder.feature(GenerationStep.Feature.FLUID_SPRINGS, ModPlacedFeatures.); 
-        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
 
-        BiomeEffects effects = new BiomeEffects.Builder()
+        BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
             .waterColor(0x61AEEE)      // Warm Ocean water color
             .waterFogColor(0x054E81)   // Warm Ocean water fog
             .fogColor(0xC0D8FF)
             .skyColor(0x77ADFF)
-            .foliageColor(0xFF8C8C)    // Maple tint
-            .grassColor(0x8BC057)
+            .foliageColorOverride(0xFF8C8C)    // Maple tint
+            .grassColorOverride(0x8BC057)
         .build();
 
-        return new Biome.Builder()
-            .precipitation(true)
+        return new Biome.BiomeBuilder()
+            .hasPrecipitation(true)
             .temperature(0.7f)
             .downfall(0.8f)
-            .effects(effects)
-            .spawnSettings(spawnSettings.build())
+            .specialEffects(effects)
+            .mobSpawnSettings(spawnSettings.build())
             .generationSettings(biomeBuilder.build())
             .build();
 
     }
 
-    public static Biome undergroundBlueMushroom(Registerable<Biome> context) {
-        SpawnSettings.Builder builder = new SpawnSettings.Builder();
-        DefaultBiomeFeatures.addBatsAndMonsters(builder);
+    public static Biome undergroundBlueMushroom(BootstrapContext<Biome> context) {
+        MobSpawnSettings.Builder builder = new MobSpawnSettings.Builder();
+        BiomeDefaultFeatures.commonSpawns(builder);
 
         //Mushrom Creatures
-        builder.spawn(SpawnGroup.MONSTER, 150, new SpawnSettings.SpawnEntry(EntityFactory.FUNGAL_SKELETON, 1, 4));
-        builder.spawn(SpawnGroup.MONSTER, 150, new SpawnSettings.SpawnEntry(EntityFactory.ZOMBIE_FUNGAL, 1, 4));
-        builder.spawn(SpawnGroup.MONSTER, 100, new SpawnSettings.SpawnEntry(EntityFactory.SPOREPER, 1, 2));
+        builder.addSpawn(MobCategory.MONSTER, 150, new MobSpawnSettings.SpawnerData(EntityFactory.FUNGAL_SKELETON, 1, 4));
+        builder.addSpawn(MobCategory.MONSTER, 150, new MobSpawnSettings.SpawnerData(EntityFactory.ZOMBIE_FUNGAL, 1, 4));
+        builder.addSpawn(MobCategory.MONSTER, 100, new MobSpawnSettings.SpawnerData(EntityFactory.SPOREPER, 1, 2));
 
-        GenerationSettings.LookupBackedBuilder biomeBuilder =
-            new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
-        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
+        BiomeGenerationSettings.Builder biomeBuilder =
+            new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE),
+        context.lookup(Registries.CONFIGURED_CARVER));
 
         addBasicFeatures(biomeBuilder);
-        DefaultBiomeFeatures.addDefaultOres(biomeBuilder);
+        BiomeDefaultFeatures.addDefaultOres(biomeBuilder);
 
         //Add Mud Biome Features
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, 
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, 
             ModPlacedFeatures.MUD_LAYER_PLACED);
 
         // Then add shroomium floor on top
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, 
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, 
             ModPlacedFeatures.SHROOMIUM_FLOOR_PLACED);
 
         // Add huge blue mushrooms
-        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
             ModPlacedFeatures.HUGE_BLUE_MUSHROOM_PLACED);
 
         // Add extra mushroom bed patches
-        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
             ModPlacedFeatures.MUSHROOM_BED_PATCH_PLACED);
 
         // Add fungal spore blossoms
-        biomeBuilder.feature(GenerationStep.Feature.VEGETAL_DECORATION, 
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
             ModPlacedFeatures.FUNGAL_SPORE_BLOSSOM_PLACED);
 
-        biomeBuilder.feature(
-            GenerationStep.Feature.UNDERGROUND_DECORATION,
+        biomeBuilder.addFeature(
+            GenerationStep.Decoration.UNDERGROUND_DECORATION,
             ModPlacedFeatures.CRYSTAL_SPIKE_PLACED
         );
 
             
 
-        MusicSound musicSound = MusicType.createIngameMusic(SoundEvents.MUSIC_OVERWORLD_LUSH_CAVES);
+        Music musicSound = Musics.createGameMusic(SoundEvents.MUSIC_BIOME_LUSH_CAVES);
 
-        BiomeEffects effects = new BiomeEffects.Builder()
+        BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
                 .fogColor(12638463)
                 .skyColor(7907327)
                 .waterColor(4375259)
                 .waterFogColor(2710405)
                 //.moodSound(new BiomeMoodSound(RegistryEntry.of(SoundEvents.AMBIENT_CAVE), 6000, 8, 2.0))
-                .music(musicSound)
+                .backgroundMusic(musicSound)
         .build();
 
 
-        return new Biome.Builder()
-            .precipitation(true)
+        return new Biome.BiomeBuilder()
+            .hasPrecipitation(true)
             .temperature(0.4f)
             .downfall(0.4f)
-            .effects(effects)
-            .spawnSettings(builder.build())
+            .specialEffects(effects)
+            .mobSpawnSettings(builder.build())
             .generationSettings(biomeBuilder.build())
         .build();
 
@@ -293,47 +293,47 @@ public class ModBiomes {
     }
 
 
-    public static Biome icyCaves(Registerable<Biome> context) {
-        SpawnSettings.Builder spawnBuilder = new SpawnSettings.Builder();
-		DefaultBiomeFeatures.addDripstoneCaveMobs(spawnBuilder);
-		GenerationSettings.LookupBackedBuilder biomeBuilder =
-            new GenerationSettings.LookupBackedBuilder(context.getRegistryLookup(RegistryKeys.PLACED_FEATURE),
-        context.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER));
+    public static Biome icyCaves(BootstrapContext<Biome> context) {
+        MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
+		BiomeDefaultFeatures.dripstoneCavesSpawns(spawnBuilder);
+		BiomeGenerationSettings.Builder biomeBuilder =
+            new BiomeGenerationSettings.Builder(context.lookup(Registries.PLACED_FEATURE),
+        context.lookup(Registries.CONFIGURED_CARVER));
 
         addBasicFeatures(biomeBuilder);
-        DefaultBiomeFeatures.addPlainsTallGrass(biomeBuilder);
-        DefaultBiomeFeatures.addDefaultOres(biomeBuilder, true);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_LOWER_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_UPPER_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_PACKED_ICE_LOWER_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_PACKED_ICE_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_SNOW_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ModPlacedFeatures.ORE_SNOW_UPPER_PLACED_KEY);
-		DefaultBiomeFeatures.addDefaultDisks(biomeBuilder);
-		DefaultBiomeFeatures.addPlainsFeatures(biomeBuilder);
-		DefaultBiomeFeatures.addDefaultMushrooms(biomeBuilder);
-		DefaultBiomeFeatures.addDefaultVegetation(biomeBuilder, false);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.LARGE_SPIKED_ICE_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_CLUSTER_PLACED_KEY);
-        biomeBuilder.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_PLACED_KEY);
+        BiomeDefaultFeatures.addPlainGrass(biomeBuilder);
+        BiomeDefaultFeatures.addDefaultOres(biomeBuilder, true);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_LOWER_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_LIMESTONE_UPPER_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_PACKED_ICE_LOWER_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_PACKED_ICE_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_SNOW_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.ORE_SNOW_UPPER_PLACED_KEY);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biomeBuilder);
+		BiomeDefaultFeatures.addPlainVegetation(biomeBuilder);
+		BiomeDefaultFeatures.addDefaultMushrooms(biomeBuilder);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biomeBuilder, false);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.LARGE_SPIKED_ICE_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_CLUSTER_PLACED_KEY);
+        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.SPIKED_ICE_PLACED_KEY);
         
-        MusicSound musicSound = MusicType.createIngameMusic(SoundEvents.MUSIC_OVERWORLD_DRIPSTONE_CAVES);
-		BiomeEffects effects = new BiomeEffects.Builder()
+        Music musicSound = Musics.createGameMusic(SoundEvents.MUSIC_BIOME_DRIPSTONE_CAVES);
+		BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
                 .fogColor(12638463)
                 .skyColor(7907327)
                 .waterColor(3750089)
                 .waterFogColor(329011)
                 //.moodSound(new BiomeMoodSound(RegistryEntry.of(SoundEvents.AMBIENT_CAVE), 6000, 8, 2.0))
-                .music(musicSound)
+                .backgroundMusic(musicSound)
         .build();
 
-        return new Biome.Builder()
-                .precipitation(true)
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
                 .temperature(0.10f)
                 .downfall(0.4f)
-                .effects(effects)
-                .spawnSettings(spawnBuilder.build())
+                .specialEffects(effects)
+                .mobSpawnSettings(spawnBuilder.build())
                 .generationSettings(biomeBuilder.build())
         .build();
 

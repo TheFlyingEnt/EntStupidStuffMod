@@ -1,9 +1,8 @@
 package net.ent.entstupidstuff.client.entity.ai;
 
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -12,27 +11,27 @@ public class ButterflyFlyingAroundGoal extends Goal {
     private final double speed;
     private final int interval;
     private int cooldown;
-    private Vec3d target;
+    private Vec3 target;
     private boolean hovering;
 
     public ButterflyFlyingAroundGoal(ButterflyEntity butterfly, double speed, int interval) {
         this.butterfly = butterfly;
         this.speed = speed;
         this.interval = interval;
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         return true;
     }
 
     @Override
     public void tick() {
-        if (--cooldown <= 0 || target == null || butterfly.getEntityPos().distanceTo(target) < 2.0) {
+        if (--cooldown <= 0 || target == null || butterfly.position().distanceTo(target) < 2.0) {
             cooldown = interval;
 
-            Vec3d pos = butterfly.getEntityPos();
+            Vec3 pos = butterfly.position();
             Random random = new Random();
 
             double dx = (random.nextDouble() - 0.5) * 12;
@@ -41,7 +40,7 @@ public class ButterflyFlyingAroundGoal extends Goal {
 
             target = pos.add(dx, dy, dz);
 
-            butterfly.getMoveControl().moveTo(target.x, target.y, target.z, speed);
+            butterfly.getMoveControl().setWantedPosition(target.x, target.y, target.z, speed);
         }
     }
 }

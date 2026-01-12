@@ -5,45 +5,45 @@ import net.ent.entstupidstuff.enchantment.effect.FrostbiteEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.GravityEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.LightningStrikerEnchantmentEffect;
 import net.ent.entstupidstuff.item.ModItemTags;
-import net.minecraft.component.EnchantmentEffectComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLevelBasedValue;
-import net.minecraft.enchantment.effect.EnchantmentEffectTarget;
-import net.minecraft.enchantment.effect.entity.ApplyMobEffectEnchantmentEffect;
-import net.minecraft.enchantment.effect.value.AddEnchantmentEffect;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.loot.condition.DamageSourcePropertiesLootCondition;
-import net.minecraft.loot.condition.EntityPropertiesLootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.predicate.entity.DamageSourcePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.EntityTypePredicate;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.EnchantmentTags;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.critereon.DamageSourcePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.EntityTypePredicate;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.item.enchantment.effects.AddValue;
+import net.minecraft.world.item.enchantment.effects.ApplyMobEffect;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 
 public class UpdatedEnchantmentFactory {
 
-    public static final RegistryKey<Enchantment> LIGHTNING_STRIKER =
-    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "lightning_striker"));
+    public static final ResourceKey<Enchantment> LIGHTNING_STRIKER =
+    ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "lightning_striker"));
 
-    public static final RegistryKey<Enchantment> FROSTBITE =
-    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "frostbite"));
+    public static final ResourceKey<Enchantment> FROSTBITE =
+    ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "frostbite"));
 
-    public static final RegistryKey<Enchantment> BANEOFRAIDERS =
-    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "baneofraiders"));
+    public static final ResourceKey<Enchantment> BANEOFRAIDERS =
+    ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "baneofraiders"));
 
-    public static final RegistryKey<Enchantment> GRAVITY =
-    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "gravity"));
+    public static final ResourceKey<Enchantment> GRAVITY =
+    ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gravity"));
 
-    public static final RegistryKey<Enchantment> OSMOSIS =
-    RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "osmosis"));
+    public static final ResourceKey<Enchantment> OSMOSIS =
+    ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "osmosis"));
 
     //public static final RegistryKey<Enchantment> EXCAVATOR =
     //RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "excavator"));
@@ -101,74 +101,74 @@ public class UpdatedEnchantmentFactory {
     RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(EntStupidStuff.MOD_ID, "ricochet"));*/
     
         
-    public static void bootstrap(Registerable<Enchantment> registry) {
-        var enchantments = registry.getRegistryLookup(RegistryKeys.ENCHANTMENT);
-        var items = registry.getRegistryLookup(RegistryKeys.ITEM);
+    public static void bootstrap(BootstrapContext<Enchantment> registry) {
+        var enchantments = registry.lookup(Registries.ENCHANTMENT);
+        var items = registry.lookup(Registries.ITEM);
 
         register(registry, OSMOSIS,
-                Enchantment.builder(
+                Enchantment.enchantment(
                     Enchantment.definition(
                         items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE),
                         2,
                         4,
-                        Enchantment.leveledCost(21, 9),
-                        Enchantment.leveledCost(1, 9),
+                        Enchantment.dynamicCost(21, 9),
+                        Enchantment.dynamicCost(1, 9),
                         4
                     )
                 )//.exclusiveSet(enchantments.getOrThrow(EnchantmentTags.TR))
-				.addEffect(
-					EnchantmentEffectComponentTypes.ARMOR_EFFECTIVENESS,
-					new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(-1.0F, -0.1F))
+				.withEffect(
+					EnchantmentEffectComponents.ARMOR_EFFECTIVENESS,
+					new AddValue(LevelBasedValue.perLevel(-1.0F, -0.1F))
 				)
         );
 
         register(registry, LIGHTNING_STRIKER, // Has a 30% chance to summon a lightning strike that damages nearby enemies.
-        Enchantment.builder(
+        Enchantment.enchantment(
             Enchantment.definition(
                 items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
                 items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
                 5,
                 2,
-                Enchantment.leveledCost(5, 7),
-                Enchantment.leveledCost(25, 9),
+                Enchantment.dynamicCost(5, 7),
+                Enchantment.dynamicCost(25, 9),
                 2,
-                AttributeModifierSlot.MAINHAND
+                EquipmentSlotGroup.MAINHAND
             )
         )
-        .exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
-        .addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM, new LightningStrikerEnchantmentEffect()));
+        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
+        .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM, new LightningStrikerEnchantmentEffect()));
 
         register(registry, GRAVITY, // Pulls in Entity towards target
-        Enchantment.builder(
+        Enchantment.enchantment(
             Enchantment.definition(
                 items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
                 items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
                 5,
                 1,
-                Enchantment.leveledCost(5, 7),
-                Enchantment.leveledCost(25, 9),
+                Enchantment.dynamicCost(5, 7),
+                Enchantment.dynamicCost(25, 9),
                 2,
-                AttributeModifierSlot.MAINHAND
+                EquipmentSlotGroup.MAINHAND
             )
         )
-        .exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
-        .addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM, new GravityEnchantmentEffect()));
+        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
+        .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM, new GravityEnchantmentEffect()));
 
         register(registry, FROSTBITE,
-        Enchantment.builder(
+        Enchantment.enchantment(
             Enchantment.definition(
                 items.getOrThrow(ItemTags.WEAPON_ENCHANTABLE),
                 items.getOrThrow(ItemTags.SWORD_ENCHANTABLE),
                 5,
                 2,
-                Enchantment.leveledCost(5, 7),
-                Enchantment.leveledCost(25, 9),
+                Enchantment.dynamicCost(5, 7),
+                Enchantment.dynamicCost(25, 9),
                 2,
-                AttributeModifierSlot.MAINHAND
+                EquipmentSlotGroup.MAINHAND
             )
         )
-        .exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET)) //Enchantments.FIRE_ASPECT
-        .addEffect(EnchantmentEffectComponentTypes.POST_ATTACK, EnchantmentEffectTarget.ATTACKER, EnchantmentEffectTarget.VICTIM, new FrostbiteEnchantmentEffect())
+        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE)) //Enchantments.FIRE_ASPECT
+        .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM, new FrostbiteEnchantmentEffect())
         );
         
 
@@ -179,48 +179,48 @@ public class UpdatedEnchantmentFactory {
 
 
         register(registry, BANEOFRAIDERS, // Attacks deal extra damage to Illagers.
-			Enchantment.builder(
+			Enchantment.enchantment(
 				Enchantment.definition(
 					items.getOrThrow(ItemTags.WEAPON_ENCHANTABLE),
 					items.getOrThrow(ItemTags.SWORD_ENCHANTABLE),
 					5,
 					5,
-					Enchantment.leveledCost(5, 8),
-					Enchantment.leveledCost(25, 8),
+					Enchantment.dynamicCost(5, 8),
+					Enchantment.dynamicCost(25, 8),
 					2,
-					AttributeModifierSlot.MAINHAND
+					EquipmentSlotGroup.MAINHAND
 				)
 			)
-		.exclusiveSet(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE_SET))
-		.addEffect(
-					EnchantmentEffectComponentTypes.DAMAGE,
-					new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5F)),
-					EntityPropertiesLootCondition.builder(
-						LootContext.EntityReference.THIS,
-						EntityPredicate.Builder.create().type(EntityTypePredicate.create(registry.getRegistryLookup(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
+		.exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
+		.withEffect(
+					EnchantmentEffectComponents.DAMAGE,
+					new AddValue(LevelBasedValue.perLevel(2.5F)),
+					LootItemEntityPropertyCondition.hasProperties(
+						LootContext.EntityTarget.THIS,
+						EntityPredicate.Builder.entity().entityType(EntityTypePredicate.of(registry.lookup(Registries.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
 					)
 				)
-				.addEffect(
-					EnchantmentEffectComponentTypes.POST_ATTACK,
-					EnchantmentEffectTarget.ATTACKER,
-					EnchantmentEffectTarget.VICTIM,
-					new ApplyMobEffectEnchantmentEffect(
-						RegistryEntryList.of(StatusEffects.SLOWNESS),
-						EnchantmentLevelBasedValue.constant(1.5F),
-						EnchantmentLevelBasedValue.linear(1.5F, 0.5F),
-						EnchantmentLevelBasedValue.constant(3.0F),
-						EnchantmentLevelBasedValue.constant(3.0F)
+				.withEffect(
+					EnchantmentEffectComponents.POST_ATTACK,
+					EnchantmentTarget.ATTACKER,
+					EnchantmentTarget.VICTIM,
+					new ApplyMobEffect(
+						HolderSet.direct(MobEffects.SLOWNESS),
+						LevelBasedValue.constant(1.5F),
+						LevelBasedValue.perLevel(1.5F, 0.5F),
+						LevelBasedValue.constant(3.0F),
+						LevelBasedValue.constant(3.0F)
 					),
-					EntityPropertiesLootCondition.builder(
-							LootContext.EntityReference.THIS,
-							EntityPredicate.Builder.create().type(EntityTypePredicate.create(registry.getRegistryLookup(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
+					LootItemEntityPropertyCondition.hasProperties(
+							LootContext.EntityTarget.THIS,
+							EntityPredicate.Builder.entity().entityType(EntityTypePredicate.of(registry.lookup(Registries.ENTITY_TYPE), EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS))
 						)
-						.and(DamageSourcePropertiesLootCondition.builder(DamageSourcePredicate.Builder.create().isDirect(true)))
+						.and(DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)))
 				)
 		);
     }
 
-    private static void register(Registerable<Enchantment> registry, RegistryKey<Enchantment> key, Enchantment.Builder builder) {
-        registry.register(key, builder.build(key.getValue()));
+    private static void register(BootstrapContext<Enchantment> registry, ResourceKey<Enchantment> key, Enchantment.Builder builder) {
+        registry.register(key, builder.build(key.location()));
     }
 }

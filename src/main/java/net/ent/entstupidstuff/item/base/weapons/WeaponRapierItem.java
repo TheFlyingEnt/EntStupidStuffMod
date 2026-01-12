@@ -1,22 +1,18 @@
 package net.ent.entstupidstuff.item.base.weapons;
 
 import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.*;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
 
 public class WeaponRapierItem extends WeaponUpdatedItem {
     private static final float CRIT_CHANCE = 0.25f;
     private static final double BASE_ATTACK_DAMAGE = 3.5; // fast, low base
     private static double ATTACK_DAMAGE;
 
-    public WeaponRapierItem(ToolMaterial toolMaterial, Settings settings) {
-        super(toolMaterial, settings.attributeModifiers(
+    public WeaponRapierItem(ToolMaterial toolMaterial, Properties settings) {
+        super(toolMaterial, settings.attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial,
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(),
@@ -46,8 +42,8 @@ public class WeaponRapierItem extends WeaponUpdatedItem {
     }*/
 
     @Override
-    public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damage(1, attacker, EquipmentSlot.MAINHAND);
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 }
 

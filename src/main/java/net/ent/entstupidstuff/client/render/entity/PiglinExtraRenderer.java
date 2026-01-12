@@ -1,46 +1,46 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
-import net.minecraft.client.render.entity.model.PiglinEntityModel;
-import net.minecraft.client.render.entity.state.PiglinEntityRenderState;
-import net.minecraft.entity.mob.AbstractPiglinEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.PiglinModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.state.PiglinRenderState;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 
-public class PiglinExtraRenderer extends BipedEntityRenderer<AbstractPiglinEntity, PiglinEntityRenderState, PiglinEntityModel> {
+public class PiglinExtraRenderer extends HumanoidMobRenderer<AbstractPiglin, PiglinRenderState, PiglinModel> {
 
-	private static final Identifier PIGLIN_W_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png");
-	public static final HeadFeatureRenderer.HeadTransformation HEAD_TRANSFORMATION = new HeadFeatureRenderer.HeadTransformation(0.0F, 0.0F, 1.0019531F);
+	private static final ResourceLocation PIGLIN_W_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png");
+	public static final CustomHeadLayer.Transforms HEAD_TRANSFORMATION = new CustomHeadLayer.Transforms(0.0F, 0.0F, 1.0019531F);
 
 	@SuppressWarnings("rawtypes")
-    public PiglinExtraRenderer(EntityRendererFactory.Context ctx, EntityModelLayer mainLayer, EntityModelLayer babyMainLayer, EquipmentModelData<EntityModelLayer> equipmentModelData, EquipmentModelData<EntityModelLayer> equipmentModelData2) {
-		super(ctx, new PiglinEntityModel(ctx.getPart(mainLayer)), new PiglinEntityModel(ctx.getPart(babyMainLayer)), 0.5F, HEAD_TRANSFORMATION);
-		this.addFeature(
-			new ArmorFeatureRenderer<>(
+    public PiglinExtraRenderer(EntityRendererProvider.Context ctx, ModelLayerLocation mainLayer, ModelLayerLocation babyMainLayer, ArmorModelSet<ModelLayerLocation> equipmentModelData, ArmorModelSet<ModelLayerLocation> equipmentModelData2) {
+		super(ctx, new PiglinModel(ctx.bakeLayer(mainLayer)), new PiglinModel(ctx.bakeLayer(babyMainLayer)), 0.5F, HEAD_TRANSFORMATION);
+		this.addLayer(
+			new HumanoidArmorLayer<>(
 				this,
-				EquipmentModelData.mapToEntityModel(equipmentModelData, ctx.getEntityModels(), PiglinEntityModel::new),
-				EquipmentModelData.mapToEntityModel(equipmentModelData2, ctx.getEntityModels(), PiglinEntityModel::new),
+				ArmorModelSet.bake(equipmentModelData, ctx.getModelSet(), PiglinModel::new),
+				ArmorModelSet.bake(equipmentModelData2, ctx.getModelSet(), PiglinModel::new),
 				ctx.getEquipmentRenderer()
 			)
 		);
 	}
 
 
-	public PiglinEntityRenderState createRenderState() {
-		return new PiglinEntityRenderState();
+	public PiglinRenderState createRenderState() {
+		return new PiglinRenderState();
 	}
 
-	public Identifier getTexture(PiglinEntityRenderState piglinEntityRenderState) {
+	public ResourceLocation getTextureLocation(PiglinRenderState piglinEntityRenderState) {
 		return PIGLIN_W_TEXTURE;
 	}
 
-	protected boolean isShaking(PiglinEntityRenderState piglinEntityRenderState) {
-		return super.isShaking(piglinEntityRenderState) || piglinEntityRenderState.shouldZombify;
+	protected boolean isShaking(PiglinRenderState piglinEntityRenderState) {
+		return super.isShaking(piglinEntityRenderState) || piglinEntityRenderState.isConverting;
 	}
 
 }

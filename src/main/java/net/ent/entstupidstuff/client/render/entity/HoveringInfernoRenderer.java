@@ -4,20 +4,20 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
-import net.minecraft.client.render.entity.EntityRendererFactory.Context;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 
-public class HoveringInfernoRenderer extends MobEntityRenderer<HoveringInfernoEntity, LivingEntityRenderState, HoveringInfernoModel> {
-    private static final Identifier TEXTURE = Identifier.of(EntStupidStuff.MOD_ID,"textures/entity/hovering_inferno.png");
+public class HoveringInfernoRenderer extends MobRenderer<HoveringInfernoEntity, LivingEntityRenderState, HoveringInfernoModel> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/hovering_inferno.png");
 
     public HoveringInfernoRenderer(Context context) {
-        super(context, new HoveringInfernoModel(context.getPart(ModEntityModelLayers.HOVERING_INFERNO)), 1.1F);
+        super(context, new HoveringInfernoModel(context.bakeLayer(ModEntityModelLayers.HOVERING_INFERNO)), 1.1F);
     }
 
     @Override
-    public Identifier getTexture(LivingEntityRenderState state) {
+    public ResourceLocation getTextureLocation(LivingEntityRenderState state) {
         return TEXTURE;
     }
 

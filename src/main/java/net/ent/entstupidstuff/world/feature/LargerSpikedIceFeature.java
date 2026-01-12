@@ -1,57 +1,55 @@
 package net.ent.entstupidstuff.world.feature;
 
 import java.util.Optional;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Column;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.LargeDripstoneConfiguration;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.floatprovider.FloatProvider;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.LargeDripstoneFeatureConfig;
-import net.minecraft.world.gen.feature.util.CaveSurface;
-import net.minecraft.world.gen.feature.util.FeatureContext;
-
-public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig> {
-	public LargerSpikedIceFeature(Codec<LargeDripstoneFeatureConfig> codec) {
+public class LargerSpikedIceFeature extends Feature<LargeDripstoneConfiguration> {
+	public LargerSpikedIceFeature(Codec<LargeDripstoneConfiguration> codec) {
 		super(codec);
 	}
 
 	@Override
-	public boolean generate(FeatureContext<LargeDripstoneFeatureConfig> context) {
-		StructureWorldAccess structureWorldAccess = context.getWorld();
-		BlockPos blockPos = context.getOrigin();
-		LargeDripstoneFeatureConfig largeDripstoneFeatureConfig = context.getConfig();
-		Random random = context.getRandom();
+	public boolean place(FeaturePlaceContext<LargeDripstoneConfiguration> context) {
+		WorldGenLevel structureWorldAccess = context.level();
+		BlockPos blockPos = context.origin();
+		LargeDripstoneConfiguration largeDripstoneFeatureConfig = context.config();
+		RandomSource random = context.random();
 		if (!SpikedIceHelper.canGenerate(structureWorldAccess, blockPos)) {
 			return false;
 		} else {
-			Optional<CaveSurface> optional = CaveSurface.create(
+			Optional<Column> optional = Column.scan(
 				structureWorldAccess, blockPos, largeDripstoneFeatureConfig.floorToCeilingSearchRange, SpikedIceHelper::canGenerate, SpikedIceHelper::canReplaceOrLava
 			);
-			if (!optional.isEmpty() && optional.get() instanceof CaveSurface.Bounded) {
-				CaveSurface.Bounded bounded = (CaveSurface.Bounded)optional.get();
-				if (bounded.getHeight() < 4) {
+			if (!optional.isEmpty() && optional.get() instanceof Column.Range) {
+				Column.Range bounded = (Column.Range)optional.get();
+				if (bounded.height() < 4) {
 					return false;
 				} else {
-					int i = (int)((float)bounded.getHeight() * largeDripstoneFeatureConfig.maxColumnRadiusToCaveHeightRatio);
-					int j = MathHelper.clamp(i, largeDripstoneFeatureConfig.columnRadius.getMin(), largeDripstoneFeatureConfig.columnRadius.getMax());
-					int k = MathHelper.nextBetween(random, largeDripstoneFeatureConfig.columnRadius.getMin(), j);
+					int i = (int)((float)bounded.height() * largeDripstoneFeatureConfig.maxColumnRadiusToCaveHeightRatio);
+					int j = Mth.clamp(i, largeDripstoneFeatureConfig.columnRadius.getMinValue(), largeDripstoneFeatureConfig.columnRadius.getMaxValue());
+					int k = Mth.randomBetweenInclusive(random, largeDripstoneFeatureConfig.columnRadius.getMinValue(), j);
 					LargerSpikedIceFeature.DripstoneGenerator dripstoneGenerator = createGenerator(
-						blockPos.withY(bounded.getCeiling() - 1), false, random, k, largeDripstoneFeatureConfig.stalactiteBluntness, largeDripstoneFeatureConfig.heightScale
+						blockPos.atY(bounded.ceiling() - 1), false, random, k, largeDripstoneFeatureConfig.stalactiteBluntness, largeDripstoneFeatureConfig.heightScale
 					);
 					LargerSpikedIceFeature.DripstoneGenerator dripstoneGenerator2 = createGenerator(
-						blockPos.withY(bounded.getFloor() + 1), true, random, k, largeDripstoneFeatureConfig.stalagmiteBluntness, largeDripstoneFeatureConfig.heightScale
+						blockPos.atY(bounded.floor() + 1), true, random, k, largeDripstoneFeatureConfig.stalagmiteBluntness, largeDripstoneFeatureConfig.heightScale
 					);
 					LargerSpikedIceFeature.WindModifier windModifier;
 					if (dripstoneGenerator.generateWind(largeDripstoneFeatureConfig) && dripstoneGenerator2.generateWind(largeDripstoneFeatureConfig)) {
@@ -79,9 +77,9 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 	}
 
 	private static LargerSpikedIceFeature.DripstoneGenerator createGenerator(
-		BlockPos pos, boolean isStalagmite, Random random, int scale, FloatProvider bluntness, FloatProvider heightScale
+		BlockPos pos, boolean isStalagmite, RandomSource random, int scale, FloatProvider bluntness, FloatProvider heightScale
 	) {
-		return new LargerSpikedIceFeature.DripstoneGenerator(pos, isStalagmite, scale, (double)bluntness.get(random), (double)heightScale.get(random));
+		return new LargerSpikedIceFeature.DripstoneGenerator(pos, isStalagmite, scale, (double)bluntness.sample(random), (double)heightScale.sample(random));
 	}
 
 	/*private void testGeneration(StructureWorldAccess world, BlockPos pos, CaveSurface.Bounded surface, LargerSpikedIceFeature.WindModifier wind) {
@@ -123,13 +121,13 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 			return !this.isStalagmite ? this.pos.getY() : this.pos.getY() + this.getBaseScale();
 		}*/
 
-		boolean canGenerate(StructureWorldAccess world, LargerSpikedIceFeature.WindModifier wind) {
+		boolean canGenerate(WorldGenLevel world, LargerSpikedIceFeature.WindModifier wind) {
 			while (this.scale > 1) {
-				BlockPos.Mutable mutable = this.pos.mutableCopy();
+				BlockPos.MutableBlockPos mutable = this.pos.mutable();
 				int i = Math.min(10, this.getBaseScale());
 
 				for (int j = 0; j < i; j++) {
-					if (world.getBlockState(mutable).isOf(Blocks.LAVA)) {
+					if (world.getBlockState(mutable).is(Blocks.LAVA)) {
 						return false;
 					}
 
@@ -151,28 +149,28 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 			return (int)SpikedIceHelper.scaleHeightFromRadius((double)height, (double)this.scale, this.heightScale, this.bluntness);
 		}
 
-		void generate(StructureWorldAccess world, Random random, LargerSpikedIceFeature.WindModifier wind) {
+		void generate(WorldGenLevel world, RandomSource random, LargerSpikedIceFeature.WindModifier wind) {
 			for (int i = -this.scale; i <= this.scale; i++) {
 				for (int j = -this.scale; j <= this.scale; j++) {
-					float f = MathHelper.sqrt((float)(i * i + j * j));
+					float f = Mth.sqrt((float)(i * i + j * j));
 					if (!(f > (float)this.scale)) {
 						int k = this.scale(f);
 						if (k > 0) {
 							if ((double)random.nextFloat() < 0.2) {
-								k = (int)((float)k * MathHelper.nextBetween(random, 0.8F, 1.0F));
+								k = (int)((float)k * Mth.randomBetween(random, 0.8F, 1.0F));
 							}
 
-							BlockPos.Mutable mutable = this.pos.add(i, 0, j).mutableCopy();
+							BlockPos.MutableBlockPos mutable = this.pos.offset(i, 0, j).mutable();
 							boolean bl = false;
-							int l = this.isStalagmite ? world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, mutable.getX(), mutable.getZ()) : Integer.MAX_VALUE;
+							int l = this.isStalagmite ? world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, mutable.getX(), mutable.getZ()) : Integer.MAX_VALUE;
 
 							for (int m = 0; m < k && mutable.getY() < l; m++) {
 								BlockPos blockPos = wind.modify(mutable);
 								if (SpikedIceHelper.canGenerateOrLava(world, blockPos)) {
 									bl = true;
 									Block block = Blocks.PACKED_ICE ;
-									world.setBlockState(blockPos, block.getDefaultState(), Block.NOTIFY_LISTENERS);
-								} else if (bl && world.getBlockState(blockPos).isIn(BlockTags.BASE_STONE_OVERWORLD)) {
+									world.setBlock(blockPos, block.defaultBlockState(), Block.UPDATE_CLIENTS);
+								} else if (bl && world.getBlockState(blockPos).is(BlockTags.BASE_STONE_OVERWORLD)) {
 									break;
 								}
 
@@ -184,7 +182,7 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 			}
 		}
 
-		boolean generateWind(LargeDripstoneFeatureConfig config) {
+		boolean generateWind(LargeDripstoneConfiguration config) {
 			return this.scale >= config.minRadiusForWind && this.bluntness >= (double)config.minBluntnessForWind;
 		}
 	}
@@ -192,13 +190,13 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 	static final class WindModifier {
 		private final int y;
 		@Nullable
-		private final Vec3d wind;
+		private final Vec3 wind;
 
-		WindModifier(int y, Random random, FloatProvider wind) {
+		WindModifier(int y, RandomSource random, FloatProvider wind) {
 			this.y = y;
-			float f = wind.get(random);
-			float g = MathHelper.nextBetween(random, 0.0F, (float) Math.PI);
-			this.wind = new Vec3d((double)(MathHelper.cos(g) * f), 0.0, (double)(MathHelper.sin(g) * f));
+			float f = wind.sample(random);
+			float g = Mth.randomBetween(random, 0.0F, (float) Math.PI);
+			this.wind = new Vec3((double)(Mth.cos(g) * f), 0.0, (double)(Mth.sin(g) * f));
 		}
 
 		private WindModifier() {
@@ -215,8 +213,8 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 				return pos;
 			} else {
 				int i = this.y - pos.getY();
-				Vec3d vec3d = this.wind.multiply((double)i);
-				return pos.add(MathHelper.floor(vec3d.x), 0, MathHelper.floor(vec3d.z));
+				Vec3 vec3d = this.wind.scale((double)i);
+				return pos.offset(Mth.floor(vec3d.x), 0, Mth.floor(vec3d.z));
 			}
 		}
 	}

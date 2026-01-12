@@ -4,46 +4,43 @@ import java.util.EnumSet;
 import java.util.function.Predicate;
 
 import net.ent.entstupidstuff.client.entity.ai.RedStoneGolemAttackGoal;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.provider.EnchantmentProvider;
-import net.minecraft.enchantment.provider.EnchantmentProviders;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.NavigationConditions;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.WanderAroundGoal;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.VindicatorEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.village.raid.Raid;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.AbstractIllager;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raid;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.providers.EnchantmentProvider;
+import net.minecraft.world.item.enchantment.providers.VanillaEnchantmentProviders;
+import net.minecraft.world.level.Level;
 
-public class RedStoneGolemEntity extends IllagerEntity{
+public class RedStoneGolemEntity extends AbstractIllager{
 
 	static final Predicate<Difficulty> DIFFICULTY_ALLOWS_DOOR_BREAKING_PREDICATE = difficulty -> difficulty == Difficulty.NORMAL || difficulty == Difficulty.HARD;
 
@@ -51,8 +48,8 @@ public class RedStoneGolemEntity extends IllagerEntity{
 
 	//Animation
 
-	private static final TrackedData<Boolean> ATTACKING =
-	DataTracker.registerData(RedStoneGolemEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> ATTACKING =
+	SynchedEntityData.defineId(RedStoneGolemEntity.class, EntityDataSerializers.BOOLEAN);
 
 	//private static final TrackedData<Boolean> IDLE =
 	//DataTracker.registerData(RSGEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -65,98 +62,98 @@ public class RedStoneGolemEntity extends IllagerEntity{
 
 	
 	//Default Code
-	public RedStoneGolemEntity(EntityType<? extends IllagerEntity> entityType, World world) {
+	public RedStoneGolemEntity(EntityType<? extends AbstractIllager> entityType, Level world) {
         super(entityType, world);
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void initGoals() {
-		super.initGoals();
-		this.goalSelector.add(0, new SwimGoal(this));
-		this.goalSelector.add(1, new RedStoneGolemEntity.BreakDoorGoal(this));
-		this.goalSelector.add(2, new IllagerEntity.LongDoorInteractGoal(this));
-		this.goalSelector.add(3, new RaiderEntity.PatrolApproachGoal(this, 10.0F));
+	public void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(0, new FloatGoal(this));
+		this.goalSelector.addGoal(1, new RedStoneGolemEntity.BreakDoorGoal(this));
+		this.goalSelector.addGoal(2, new AbstractIllager.RaiderOpenDoorGoal(this));
+		this.goalSelector.addGoal(3, new Raider.HoldGroundAttackGoal(this, 10.0F));
 		//this.goalSelector.add(4, new RSGAttackGoal(this, 1.0, false, 40)); //- Fix then Add
 		//this.goalSelector.add(4, new RSGAttackGoal(this, 1.0, false, 40)); //- Fix then Add
 
-		this.goalSelector.add(4, new RedStoneGolemAttackGoal(this, 1D, false));
+		this.goalSelector.addGoal(4, new RedStoneGolemAttackGoal(this, 1D, false));
 
-		this.targetSelector.add(1, new RevengeGoal(this, RaiderEntity.class).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, true));
-		this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
-		this.targetSelector.add(4, new RedStoneGolemEntity.TargetGoal(this));
-		this.goalSelector.add(8, new WanderAroundGoal(this, 0.6));
-		this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-		this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, AbstractVillager.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
+		this.targetSelector.addGoal(4, new RedStoneGolemEntity.TargetGoal(this));
+		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
 
 	}
 
 	///////////////
 
-	public static DefaultAttributeContainer.Builder createVindicatorAttributes() {
-		return HostileEntity.createHostileAttributes()
-			.add(EntityAttributes.MOVEMENT_SPEED, 0.25F) //was 0.35
-			.add(EntityAttributes.FOLLOW_RANGE, 12.0)
-			.add(EntityAttributes.MAX_HEALTH, 24.0)
-			.add(EntityAttributes.ATTACK_DAMAGE, 5.0);
+	public static AttributeSupplier.Builder createVindicatorAttributes() {
+		return Monster.createMonsterAttributes()
+			.add(Attributes.MOVEMENT_SPEED, 0.25F) //was 0.35
+			.add(Attributes.FOLLOW_RANGE, 12.0)
+			.add(Attributes.MAX_HEALTH, 24.0)
+			.add(Attributes.ATTACK_DAMAGE, 5.0);
 	}
 
     @Override
-	public void addBonusForWave(ServerWorld world, int wave, boolean unused) {
+	public void applyRaidBuffs(ServerLevel world, int wave, boolean unused) {
 		ItemStack itemStack = new ItemStack(Items.IRON_AXE);
-		Raid raid = this.getRaid();
-		boolean bl = this.random.nextFloat() <= raid.getEnchantmentChance();
+		Raid raid = this.getCurrentRaid();
+		boolean bl = this.random.nextFloat() <= raid.getEnchantOdds();
 		if (bl) {
-			RegistryKey<EnchantmentProvider> registryKey = wave > raid.getMaxWaves(Difficulty.NORMAL)
-				? EnchantmentProviders.VINDICATOR_POST_WAVE_5_RAID
-				: EnchantmentProviders.VINDICATOR_RAID;
-			EnchantmentHelper.applyEnchantmentProvider(itemStack, world.getRegistryManager(), registryKey, world.getLocalDifficulty(this.getBlockPos()), this.random);
+			ResourceKey<EnchantmentProvider> registryKey = wave > raid.getNumGroups(Difficulty.NORMAL)
+				? VanillaEnchantmentProviders.RAID_VINDICATOR_POST_WAVE_5
+				: VanillaEnchantmentProviders.RAID_VINDICATOR;
+			EnchantmentHelper.enchantItemFromProvider(itemStack, world.registryAccess(), registryKey, world.getCurrentDifficultyAt(this.blockPosition()), this.random);
 		}
 
-		this.equipStack(EquipmentSlot.MAINHAND, itemStack);
+		this.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
 	}
 
     @Override
-	public SoundEvent getCelebratingSound() {
-		return SoundEvents.ENTITY_VINDICATOR_CELEBRATE;
+	public SoundEvent getCelebrateSound() {
+		return SoundEvents.VINDICATOR_CELEBRATE;
 	}
 
-    static class BreakDoorGoal extends net.minecraft.entity.ai.goal.BreakDoorGoal {
-		public BreakDoorGoal(MobEntity mobEntity) {
+    static class BreakDoorGoal extends net.minecraft.world.entity.ai.goal.BreakDoorGoal {
+		public BreakDoorGoal(Mob mobEntity) {
 			super(mobEntity, 6, RedStoneGolemEntity.DIFFICULTY_ALLOWS_DOOR_BREAKING_PREDICATE);
-			this.setControls(EnumSet.of(Goal.Control.MOVE));
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 		}
 
 		@Override
-		public boolean shouldContinue() {
+		public boolean canContinueToUse() {
 			RedStoneGolemEntity rsgEntity = (RedStoneGolemEntity)this.mob;
-			return rsgEntity.hasActiveRaid() && super.shouldContinue();
+			return rsgEntity.hasActiveRaid() && super.canContinueToUse();
 		}
 
 		@Override
-		public boolean canStart() {
+		public boolean canUse() {
 			RedStoneGolemEntity rsgEntity = (RedStoneGolemEntity)this.mob;
-			return rsgEntity.hasActiveRaid() && rsgEntity.random.nextInt(toGoalTicks(10)) == 0 && super.canStart();
+			return rsgEntity.hasActiveRaid() && rsgEntity.random.nextInt(reducedTickDelay(10)) == 0 && super.canUse();
 		}
 
 		@Override
 		public void start() {
 			super.start();
-			this.mob.setDespawnCounter(0);
+			this.mob.setNoActionTime(0);
 		}
 	}
 
-	static class TargetGoal extends ActiveTargetGoal<LivingEntity> {
+	static class TargetGoal extends NearestAttackableTargetGoal<LivingEntity> {
 		public TargetGoal(RedStoneGolemEntity vindicator) {
-			super(vindicator, LivingEntity.class, 0, true, true, (target, world) -> target.isMobOrPlayer());
+			super(vindicator, LivingEntity.class, 0, true, true, (target, world) -> target.attackable());
 		}
 
 		@Override
 		public void start() {
 			super.start();
-			this.mob.setDespawnCounter(0);
+			this.mob.setNoActionTime(0);
 		}
 	}
 
@@ -167,54 +164,54 @@ public class RedStoneGolemEntity extends IllagerEntity{
         if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = this.random.nextInt(40) + 80;
 			System.out.println("Idle");
-            this.idleAnimationState.start(this.age);
+            this.idleAnimationState.start(this.tickCount);
         } else {
             --this.idleAnimationTimeout;
         }
 
-        if(this.isAttacking() && attackAnimationTimeout <= 0) {
+        if(this.isAggressive() && attackAnimationTimeout <= 0) {
             attackAnimationTimeout = 20;//40;
 			System.out.println("Attacking");
-            attackAnimationState.start(this.age);
+            attackAnimationState.start(this.tickCount);
         } else {
             --this.attackAnimationTimeout;
         }
 
-        if(!this.isAttacking()) {
+        if(!this.isAggressive()) {
 			System.out.println("stop");
             attackAnimationState.stop();
         }
     }
 
 	@Override
-    protected void updateLimbs(float posDelta) {
-        float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
-        this.limbAnimator.updateLimbs(f, 0.2f, 1);
+    protected void updateWalkAnimation(float posDelta) {
+        float f = this.getPose() == Pose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
+        this.walkAnimation.update(f, 0.2f, 1);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if(this.getEntityWorld().isClient()) {
+        if(this.level().isClientSide()) {
             setupAnimationStates();
         }
     }
 
-	public void setAttacking(boolean attacking) {
-        this.dataTracker.set(ATTACKING, attacking);
+	public void setAggressive(boolean attacking) {
+        this.entityData.set(ATTACKING, attacking);
     }
 
     @Override
-    public boolean isAttacking() {
-        return this.dataTracker.get(ATTACKING);
+    public boolean isAggressive() {
+        return this.entityData.get(ATTACKING);
     }
 
     @Override
-    public void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
 		//this.dataTracker.set(ATTACKING, false, false);
 
-		builder.add(ATTACKING, false);
+		builder.define(ATTACKING, false);
 
 		// DataTracker.startTracking(TrackedData<T>, T)
 		//this.attackAnimationState.start()

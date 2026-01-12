@@ -3,32 +3,31 @@ package net.ent.entstupidstuff.client.entity.mob;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-public class FrostbittenZombieEntity extends ZombieEntity{
+public class FrostbittenZombieEntity extends Zombie{
 
-    private static final TrackedData<Integer> VARIANT = DataTracker.registerData(FrostbittenZombieEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(FrostbittenZombieEntity.class, EntityDataSerializers.INT);
 
     @SuppressWarnings("unused")
     private Variant variant;
@@ -63,9 +62,9 @@ public class FrostbittenZombieEntity extends ZombieEntity{
 			return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
 		}
 
-        public static Variant getRandom(Random random) {
+        public static Variant getRandom(RandomSource random) {
 			//return VALUES[random.nextInt(VALUES.length)];
-			Random varientR = Random.create();
+			RandomSource varientR = RandomSource.create();
         	float varientRC = varientR.nextInt(3) + 1;
 
 			if (varientRC == 1) {
@@ -79,63 +78,63 @@ public class FrostbittenZombieEntity extends ZombieEntity{
     }
 
     @Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
-		builder.add(VARIANT, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(VARIANT, 0);
     }
 
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData) {
 
 		Variant randomVariant = Variant.getRandom(this.getRandom());
         this.setVariant(randomVariant);
 
-        return super.initialize(world, difficulty, spawnReason, entityData);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
-    public FrostbittenZombieEntity(EntityType<? extends FrostbittenZombieEntity> entityType, World world) {
+    public FrostbittenZombieEntity(EntityType<? extends FrostbittenZombieEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public boolean tryAttack(ServerWorld world, Entity target) {
-        boolean successful = super.tryAttack(world, target);
+    public boolean doHurtTarget(ServerLevel world, Entity target) {
+        boolean successful = super.doHurtTarget(world, target);
         if (successful) {
             if (target instanceof LivingEntity) {
-                ((LivingEntity) target).addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 1, 1));
-                ((LivingEntity) target).addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 1, 1));
-                target.setFrozenTicks(100 * 1);
+                ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20 * 1, 1));
+                ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 20 * 1, 1));
+                target.setTicksFrozen(100 * 1);
             }
         }
         return successful;
     }
 
-    public static boolean canSpawnIn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+    public static boolean canSpawnIn(EntityType<? extends Monster> type, ServerLevelAccessor world, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL
-			&& (SpawnReason.isTrialSpawner(spawnReason) || isSpawnDark(world, pos, random))
-			&& canMobSpawn(type, world, spawnReason, pos, random) && pos.getY() < 0 && pos.getY() >= world.getBottomY();
+			&& (EntitySpawnReason.ignoresLightRequirements(spawnReason) || isDarkEnoughToSpawn(world, pos, random))
+			&& checkMobSpawnRules(type, world, spawnReason, pos, random) && pos.getY() < 0 && pos.getY() >= world.getMinY();
 	}
 
 	//Varientation Code:
     @Override
-    public void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
         view.putInt("Variant", this.getVariant().getId());
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
         this.setVariant((FrostbittenZombieEntity.Variant)view.read("Variant", FrostbittenZombieEntity.Variant.INDEX_CODEC).orElse(FrostbittenZombieEntity.Variant.NORMAL));
     }
 
 	public void setVariant(FrostbittenZombieEntity.Variant variant) {
 		this.variant = variant; // Ensure the field is updated
-		this.dataTracker.set(VARIANT, variant.getId());
+		this.entityData.set(VARIANT, variant.getId());
 	}
 
 	public Variant getVariant() {
-		return Variant.byId(this.dataTracker.get(VARIANT)); // Ensure it retrieves from dataTracker
+		return Variant.byId(this.entityData.get(VARIANT)); // Ensure it retrieves from dataTracker
 	}
     
 }

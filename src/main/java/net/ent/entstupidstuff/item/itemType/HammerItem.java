@@ -6,15 +6,8 @@ import net.ent.entstupidstuff.api.IntTrait.IBluntTrait;
 import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
 import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item.TooltipContext;
-//import net.minecraft.item.Item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ToolMaterial;
 
 public class HammerItem extends WeaponUpdatedItem{
 
@@ -27,7 +20,7 @@ public class HammerItem extends WeaponUpdatedItem{
      * @param - AttackSpeed
     */
 
-    public HammerItem(ToolMaterial toolMaterial, Settings settings) {
+    public HammerItem(ToolMaterial toolMaterial, Properties settings) {
         super(toolMaterial, settings);
         //super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(toolMaterial, (6.5 /*5.5*/)  + toolMaterial.attackDamageBonus(), -3.4f, 1, 0, 3)));
     }
@@ -64,8 +57,8 @@ public class HammerItem extends WeaponUpdatedItem{
             xRatio = (Math.random() - Math.random()) * 0.01;
             zRatio = (Math.random() - Math.random()) * 0.01;
         }
-        target.takeKnockback(strength, xRatio, zRatio);
-        target.velocityModified = true;
+        target.knockback(strength, xRatio, zRatio);
+        target.hurtMarked = true;
     }
 }
 

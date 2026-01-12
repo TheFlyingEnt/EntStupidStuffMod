@@ -3,14 +3,11 @@ package net.ent.entstupidstuff.item.itemType;
 import java.util.List;
 
 import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
+import net.minecraft.world.item.ToolMaterial;
 
 public class BattleAxeItem extends WeaponItem{
 
-    public BattleAxeItem(ToolMaterial toolMaterial, Settings settings) {
+    public BattleAxeItem(ToolMaterial toolMaterial, Properties settings) {
         super(toolMaterial, settings);
         /*super(toolMaterial, settings.attributeModifiers(WeaponItem.createAttributeModifiers(
         toolMaterial, //Tool Material

@@ -37,38 +37,33 @@ import net.ent.entstupidstuff.item.itemType.DaggerItem;
 import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.Block;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.component.type.BlocksAttacksComponent;
-import net.minecraft.component.type.ChargedProjectilesComponent;
-import net.minecraft.component.type.ConsumableComponent;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.component.type.FoodComponents;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.EntityBucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShieldItem;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
-import net.minecraft.item.consume.UseAction;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.BlocksAttacks;
+import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.material.Fluids;
 
 public class ItemFactory {
 
@@ -83,30 +78,30 @@ public class ItemFactory {
      */
 
     //public static final Map<Identifier, Item> BlockFactory.ItemList = new LinkedHashMap<>();
-    public static final Map<Identifier, Item> ModelList = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, Item> ModelList = new LinkedHashMap<>();
 
     //Food Comp
 
-    public static final FoodComponent FOOD_BASS = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
-    public static final FoodComponent FOOD_COOKED_BASS = new FoodComponent.Builder().nutrition(7).saturationModifier(0.8F).build();
+    public static final FoodProperties FOOD_BASS = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodProperties FOOD_COOKED_BASS = new FoodProperties.Builder().nutrition(7).saturationModifier(0.8F).build();
 
-    public static final FoodComponent FOOD_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
-    public static final FoodComponent FOOD_COOKED_ALLIGATOR_JAR = new FoodComponent.Builder().nutrition(4).saturationModifier(0.5F).build();
+    public static final FoodProperties FOOD_ALLIGATOR_JAR = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodProperties FOOD_COOKED_ALLIGATOR_JAR = new FoodProperties.Builder().nutrition(4).saturationModifier(0.5F).build();
 
-    public static final FoodComponent FOOD_MAHIMAHI = new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).build();
-    public static final FoodComponent FOOD_COOKED_FOOD_MAHIMAHI = new FoodComponent.Builder().nutrition(8).saturationModifier(0.9F).build();
+    public static final FoodProperties FOOD_MAHIMAHI = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    public static final FoodProperties FOOD_COOKED_FOOD_MAHIMAHI = new FoodProperties.Builder().nutrition(8).saturationModifier(0.9F).build();
 
     //Launch - Welcome to Stupidity
     
-    public static final Item MARSHMELLOW_RAW = registerItem("raw_marshmellow", settings -> new Item(settings.useRemainder(Items.STICK).maxCount(16).food(new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build())));
-    public static final Item MARSHMELLOW_TOASTED = registerItem("toasted_marshmellow", settings -> new Item(settings.useRemainder(Items.STICK).maxCount(16).food(new FoodComponent.Builder().nutrition(4).saturationModifier(0.3F).alwaysEdible().build())));
-    public static final Item BAGGUETTE = registerItem("baguette", settings -> new Item(settings.maxCount(16).food(FoodComponents.BREAD).attributeModifiers(WeaponUpdatedItem.createAttributeModifiers(ToolMaterial.WOOD, 1  + ToolMaterial.WOOD.attackDamageBonus(), 2.6f, 1, 0, 0))));
+    public static final Item MARSHMELLOW_RAW = registerItem("raw_marshmellow", settings -> new Item(settings.usingConvertsTo(Items.STICK).stacksTo(16).food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build())));
+    public static final Item MARSHMELLOW_TOASTED = registerItem("toasted_marshmellow", settings -> new Item(settings.usingConvertsTo(Items.STICK).stacksTo(16).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).alwaysEdible().build())));
+    public static final Item BAGGUETTE = registerItem("baguette", settings -> new Item(settings.stacksTo(16).food(Foods.BREAD).attributes(WeaponUpdatedItem.createAttributeModifiers(ToolMaterial.WOOD, 1  + ToolMaterial.WOOD.attackDamageBonus(), 2.6f, 1, 0, 0))));
 
     //public static final Item MARSHMELLOW_RAW = new Item(settings.maxCount(16).food(new FoodComponent.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().alwaysEdible().build()));
     //public static final Item MARSHMELLOW_TOASTED = new Item(settings.maxCount(16).food(new FoodComponent.Builder().nutrition(4).saturationModifier(0.3F).alwaysEdible().alwaysEdible().build()));
     //public static final Item BAGGUETTE = new Item(settings.maxCount(16).food(FoodComponents.BREAD).attributeModifiers(WeaponUpdatedItem.createAttributeModifiers(ToolMaterial.WOOD, 1  + ToolMaterial.WOOD.attackDamageBonus(), 2.6f, 1, 0, 0)));
     
-    public static final Item BUTTERFLY_JAR = registerItem("butterfly_jar", settings -> new ButterflyJarItem(EntityFactory.BUTTERFLY, SoundEvents.ITEM_BOTTLE_FILL, settings));
+    public static final Item BUTTERFLY_JAR = registerItem("butterfly_jar", settings -> new ButterflyJarItem(EntityFactory.BUTTERFLY, SoundEvents.BOTTLE_FILL, settings));
     public static final Item BUTTERFLY_SPAWN_EGG = registerItem("butterfly_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.BUTTERFLY)));
     
     public static final Item ZOMBIE_LOBBER_SPAWN_EGG = registerItem("zombie_lobber_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_LOBBER)));
@@ -144,49 +139,49 @@ public class ItemFactory {
 
     // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
         
-    public static final Item ZEBRA_FISH_BUCKET =registerItem("zebra_fish_bucket", settings ->  new ZebraFishBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
-    public static final Item ZEBRA_FISH =registerItem("zebra_fish", settings ->  new Item((settings).food(FoodComponents.TROPICAL_FISH)));
+    public static final Item ZEBRA_FISH_BUCKET =registerItem("zebra_fish_bucket", settings ->  new ZebraFishBucketItem(EntityFactory.ZEBRA_FISH, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
+    public static final Item ZEBRA_FISH =registerItem("zebra_fish", settings ->  new Item((settings).food(Foods.TROPICAL_FISH)));
     public static final Item ZEBRA_FISH_SPAWN_EGG = registerItem("zebra_fish_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZEBRA_FISH)));
     
-    public static final Item ALLIGATOR_GAR_BUCKET =registerItem("alligator_gar_bucket", settings ->  new EntityBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
+    public static final Item ALLIGATOR_GAR_BUCKET =registerItem("alligator_gar_bucket", settings ->  new MobBucketItem(EntityFactory.ALLIGATOR_GAR, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
     public static final Item ALLIGATOR_GAR =registerItem("alligator_gar", settings ->  new Item((settings).food(FOOD_ALLIGATOR_JAR)));
     public static final Item COOKED_ALLIGATOR_GAR =registerItem("cooked_alligator_gar", settings ->  new Item((settings).food(FOOD_COOKED_ALLIGATOR_JAR)));
     public static final Item ALLIGATOR_GAR_SPAWN_EGG = registerItem("alligator_gar_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ALLIGATOR_GAR)));
 
-    public static final Item MACKEREL_BUCKET =registerItem("mackerel_bucket", settings ->  new EntityBucketItem(EntityFactory.MACKEREL, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
-    public static final Item MACKEREL = registerItem("mackerel", settings ->  new Item((settings).food(FoodComponents.COD)));
-    public static final Item COOKED_MACKEREL = registerItem("cooked_mackerel", settings -> new Item((settings).food(FoodComponents.COOKED_COD)));
+    public static final Item MACKEREL_BUCKET =registerItem("mackerel_bucket", settings ->  new MobBucketItem(EntityFactory.MACKEREL, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
+    public static final Item MACKEREL = registerItem("mackerel", settings ->  new Item((settings).food(Foods.COD)));
+    public static final Item COOKED_MACKEREL = registerItem("cooked_mackerel", settings -> new Item((settings).food(Foods.COOKED_COD)));
     public static final Item MACKEREL_SPAWN_EGG = registerItem("mackerel_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.MACKEREL)));
     
-    public static final Item BASS_BUCKET = registerItem("bass_bucket", settings -> new BassBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
+    public static final Item BASS_BUCKET = registerItem("bass_bucket", settings -> new BassBucketItem(EntityFactory.BASS, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
     public static final Item BASS = registerItem("bass", settings -> new Item((settings).food(FOOD_BASS)));
     public static final Item COOKED_BASS = registerItem("cooked_bass", settings -> new Item((settings).food(FOOD_COOKED_BASS)));
     public static final Item BASS_SPAWN_EGG = registerItem("bass_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.BASS)));
     
-    public static final Item FUR_TROUT_BUCKET = registerItem("fur_trout_bucket", settings -> new BassBucketItem(EntityFactory.FURTROUT, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
+    public static final Item FUR_TROUT_BUCKET = registerItem("fur_trout_bucket", settings -> new BassBucketItem(EntityFactory.FURTROUT, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
     public static final Item FUR_TROUT_SPAWN_EGG = registerItem("fur_trout_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.FURTROUT)));
 
-    public static final Item KOI_BUCKET = registerItem("koi_bucket", settings -> new KoiBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
-    public static final Item KOI = registerItem("koi", settings -> new Item((settings).food(FoodComponents.TROPICAL_FISH)));
+    public static final Item KOI_BUCKET = registerItem("koi_bucket", settings -> new KoiBucketItem(EntityFactory.KOI, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
+    public static final Item KOI = registerItem("koi", settings -> new Item((settings).food(Foods.TROPICAL_FISH)));
     public static final Item KOI_SPAWN_EGG = registerItem("koi_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.KOI)));
     
-    public static final Item PERCH_BUCKET = registerItem("perch_bucket", settings -> new PerchBucketItem(EntityFactory.PERCH, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
-    public static final Item PERCH = registerItem("perch", settings -> new Item((settings).food(FoodComponents.COD)));
-    public static final Item COOKED_PERCH = registerItem("cooked_perch", settings -> new Item((settings).food(FoodComponents.COOKED_COD)));
+    public static final Item PERCH_BUCKET = registerItem("perch_bucket", settings -> new PerchBucketItem(EntityFactory.PERCH, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
+    public static final Item PERCH = registerItem("perch", settings -> new Item((settings).food(Foods.COD)));
+    public static final Item COOKED_PERCH = registerItem("cooked_perch", settings -> new Item((settings).food(Foods.COOKED_COD)));
     public static final Item PERCH_SPAWN_EGG = registerItem("perch_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.PERCH)));
     
-    public static final Item MAHIMAHI_BUCKET = registerItem("mahimahi_bucket", settings -> new MahiMahiBucketItem(EntityFactory.MAHIMAHI, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
+    public static final Item MAHIMAHI_BUCKET = registerItem("mahimahi_bucket", settings -> new MahiMahiBucketItem(EntityFactory.MAHIMAHI, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
     public static final Item MAHIMAHI = registerItem("mahimahi", settings -> new Item((settings).food(FOOD_MAHIMAHI)));
     public static final Item COOKED_MAHIMAHI = registerItem("cooked_mahimahi", settings -> new Item((settings).food(FOOD_COOKED_FOOD_MAHIMAHI)));
     public static final Item MAHIMAHI_SPAWN_EGG = registerItem("mahimahi_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.MAHIMAHI)));
     
-    public static final Item SNAPPER_BUCKET = registerItem("snapper_bucket", settings -> new EntityBucketItem(EntityFactory.SNAPPER, Fluids.WATER, SoundEvents.ITEM_BUCKET_EMPTY_FISH, (settings).maxCount(1).component(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT)));
+    public static final Item SNAPPER_BUCKET = registerItem("snapper_bucket", settings -> new MobBucketItem(EntityFactory.SNAPPER, Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (settings).stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY)));
     public static final Item SNAPPER = registerItem("snapper", settings -> new Item((settings).food(FOOD_BASS)));
     public static final Item COOKED_SNAPPER = registerItem("cooked_snapper", settings -> new Item((settings).food(FOOD_COOKED_BASS)));
     public static final Item SNAPPER_SPAWN_EGG = registerItem("snapper_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.SNAPPER)));
 
     public static final Item RUM = registerItem("bottle_of_rum", settings -> new BottleOfRumItem(settings));
-    public static final Item CANNON_BALL_ITEM = registerItem("cannon_ball", settings -> new CannonballItem(settings.component(DataComponentTypes.CHARGED_PROJECTILES, ChargedProjectilesComponent.DEFAULT)));
+    public static final Item CANNON_BALL_ITEM = registerItem("cannon_ball", settings -> new CannonballItem(settings.component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
     public static final Item CANNON_ITEM = registerItem("cannon", settings -> new CannonItem(settings));
     public static final Item PRISMERINE_ARROW = registerItem("prismerine_arrow", settings -> new PrismerineArrowItem(settings));
 
@@ -198,7 +193,7 @@ public class ItemFactory {
 
     public static final Item SUNKEN_DROWN_SPAWN = null;
     public static final Item ANCIENT_DROWN_SPAWN = registerItem("ancient_drowned", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.ANCIENT_DROWNED)));
-    public static final Item ANCIENT_TRIDENT = registerItem("ancient_trident", settings -> new AncientTridentItem((settings).rarity(Rarity.EPIC).maxDamage(250).attributeModifiers(AncientTridentItem.createAttributeModifiers()).component(DataComponentTypes.TOOL, AncientTridentItem.createToolComponent())));
+    public static final Item ANCIENT_TRIDENT = registerItem("ancient_trident", settings -> new AncientTridentItem((settings).rarity(Rarity.EPIC).durability(250).attributes(AncientTridentItem.createAttributes()).component(DataComponents.TOOL, AncientTridentItem.createToolProperties())));
 
     public static final Item PHANTOM_SKELETON_SPAWN = registerItem("skeleton_phantom_spawn_egg", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.PHANTOM_SKELETON)));
     public static final Item PHANTOM_PILLAGER_SPAWN = null;
@@ -215,79 +210,79 @@ public class ItemFactory {
 
     // Shields
 
-    public static final Item STONE_SHIELD = registerItem("stone_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+    public static final Item STONE_SHIELD = registerItem("stone_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY).equippableUnswappable(EquipmentSlot.OFFHAND)
 			.component(
-				DataComponentTypes.BLOCKS_ATTACKS,
-				new BlocksAttacksComponent(
+				DataComponents.BLOCKS_ATTACKS,
+				new BlocksAttacks(
 					0.25F,
 					1.0F,
-					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
 					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
-					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
-					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+					Optional.of(SoundEvents.SHIELD_BLOCK),
+					Optional.of(SoundEvents.SHIELD_BREAK)
 				)
 			)
-			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));;
-    public static final Item STONE_BLACKSTONE_SHIELD = registerItem("stone_deepslate_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));; //Custom Nether Design
-    public static final Item STONE_DEEPSLATE_SHIELD = registerItem("stone_blackstone_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));; // Custom Cave Design
+			.component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)));;
+    public static final Item STONE_BLACKSTONE_SHIELD = registerItem("stone_deepslate_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));; //Custom Nether Design
+    public static final Item STONE_DEEPSLATE_SHIELD = registerItem("stone_blackstone_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));; // Custom Cave Design
 
 
-    public static final Item GOLDEN_SHIELD = registerItem("golden_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+    public static final Item GOLDEN_SHIELD = registerItem("golden_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY).equippableUnswappable(EquipmentSlot.OFFHAND)
 			.component(
-				DataComponentTypes.BLOCKS_ATTACKS,
-				new BlocksAttacksComponent(
+				DataComponents.BLOCKS_ATTACKS,
+				new BlocksAttacks(
 					0.25F,
 					1.0F,
-					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
 					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
-					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
-					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+					Optional.of(SoundEvents.SHIELD_BLOCK),
+					Optional.of(SoundEvents.SHIELD_BREAK)
 				)
 			)
-			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));;
-    public static final Item DIAMOND_SHIELD = registerItem("diamond_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT).equippableUnswappable(EquipmentSlot.OFFHAND)
+			.component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)));;
+    public static final Item DIAMOND_SHIELD = registerItem("diamond_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY).equippableUnswappable(EquipmentSlot.OFFHAND)
 			.component(
-				DataComponentTypes.BLOCKS_ATTACKS,
-				new BlocksAttacksComponent(
+				DataComponents.BLOCKS_ATTACKS,
+				new BlocksAttacks(
 					0.25F,
 					1.0F,
-					List.of(new BlocksAttacksComponent.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-					new BlocksAttacksComponent.ItemDamage(3.0F, 1.0F, 1.0F),
+					List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+					new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
 					Optional.of(DamageTypeTags.BYPASSES_SHIELD),
-					Optional.of(SoundEvents.ITEM_SHIELD_BLOCK),
-					Optional.of(SoundEvents.ITEM_SHIELD_BREAK)
+					Optional.of(SoundEvents.SHIELD_BLOCK),
+					Optional.of(SoundEvents.SHIELD_BREAK)
 				)
 			)
-			.component(DataComponentTypes.BREAK_SOUND, SoundEvents.ITEM_SHIELD_BREAK)));
+			.component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)));
     public static final Item BLAZING_SHIELD = null; // Basically Netherite Shield // Custom Model - This has a Shield Bash, set enemys on fire
     public static final Item AMYTHESTH_SHIELD = null; // Basically Cooper  Shield - Low Durrabilty //Custom Model,
 
-    public static final Item WOODEN_OAK_SHIELD = registerItem("wooden_oak_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT))); //All use Basic Design
-    public static final Item WOODEN_SPRUCE_SHIELD = registerItem("wooden_spruce_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_BIRCH_SHIELD = registerItem("wooden_birch_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_JUNGLE_SHIELD = registerItem("wooden_jungle_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_ACACIA_SHIELD = registerItem("wooden_acacia_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_DARK_OAK_SHIELD = registerItem("wooden_dark_oak_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_MANGROVE_SHIELD = registerItem("wooden_mangrove_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_CHERRY_SHIELD = registerItem("wooden_cherry_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
+    public static final Item WOODEN_OAK_SHIELD = registerItem("wooden_oak_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY))); //All use Basic Design
+    public static final Item WOODEN_SPRUCE_SHIELD = registerItem("wooden_spruce_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_BIRCH_SHIELD = registerItem("wooden_birch_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_JUNGLE_SHIELD = registerItem("wooden_jungle_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_ACACIA_SHIELD = registerItem("wooden_acacia_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_DARK_OAK_SHIELD = registerItem("wooden_dark_oak_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_MANGROVE_SHIELD = registerItem("wooden_mangrove_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
+    public static final Item WOODEN_CHERRY_SHIELD = registerItem("wooden_cherry_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
     //public static final Item WOODEN_PALE_OAK_SHIELD = new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
     //public static final Item WOODEN_CRIMSON_SHIELD = new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
     //public static final Item WOODEN_WARPED_SHIELD = new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
-    public static final Item WOODEN_BAMBOO_SHIELD = registerItem("wooden_bamboo_shield", settings -> new ShieldItem(settings.maxDamage(336).component(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT)));
+    public static final Item WOODEN_BAMBOO_SHIELD = registerItem("wooden_bamboo_shield", settings -> new ShieldItem(settings.durability(336).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY)));
 
     //Testing
     
-    public static final Item BattleAxeTest = registerItem("battle_test", settings -> new WeaponBattleAxeItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item GlaiveTest = registerItem("glaive_test", settings -> new WeaponGlaiveItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item RapierTest = registerItem("rapier_test", settings -> new WeaponRapierItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item WarHammerTest = registerItem("warhammer_test", settings -> new WeaponWarhammerItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item ScytheTest = registerItem("scythe_test", settings -> new WeaponScytheItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item HalberdTest = registerItem("halberd_test", settings -> new WeaponHalberdItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item TwinDaggersTest = registerItem("twindaggers_test", settings ->  new WeaponTwinDaggerItem(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item GlaiveTest2 = registerItem("glaive_test22", settings -> new WeaponGlaiveItem22(ToolMaterial.IRON, settings.maxDamage(336)));
-    public static final Item GreatSwrodTest = registerItem("greatsword_test", settings -> new WeaponGreatSwordItem(ToolMaterial.IRON, settings.maxDamage(336)));
+    public static final Item BattleAxeTest = registerItem("battle_test", settings -> new WeaponBattleAxeItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item GlaiveTest = registerItem("glaive_test", settings -> new WeaponGlaiveItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item RapierTest = registerItem("rapier_test", settings -> new WeaponRapierItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item WarHammerTest = registerItem("warhammer_test", settings -> new WeaponWarhammerItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item ScytheTest = registerItem("scythe_test", settings -> new WeaponScytheItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item HalberdTest = registerItem("halberd_test", settings -> new WeaponHalberdItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item TwinDaggersTest = registerItem("twindaggers_test", settings ->  new WeaponTwinDaggerItem(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item GlaiveTest2 = registerItem("glaive_test22", settings -> new WeaponGlaiveItem22(ToolMaterial.IRON, settings.durability(336)));
+    public static final Item GreatSwrodTest = registerItem("greatsword_test", settings -> new WeaponGreatSwordItem(ToolMaterial.IRON, settings.durability(336)));
     //public static final Item ClaymoreTest = new WeaponClaymoreItem(ToolMaterial.IRON, settings.maxDamage(336));
 
     public static final Item WOODEN_BATTLE_AXE = registerItem("wooden_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.WOOD, settings));
@@ -296,7 +291,7 @@ public class ItemFactory {
     public static final Item COPPER_BATTLE_AXE = registerItem("copper_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_BATTLE_AXE = registerItem("iron_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_BATTLE_AXE = registerItem("diamond_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_BATTLE_AXE = registerItem("netherite_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_BATTLE_AXE = registerItem("netherite_battle_axe", settings -> new WeaponBattleAxeItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
     // Weapon & Combat
     public static final Item WOODEN_CLAYMORE = registerItem("wooden_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.WOOD, settings));
@@ -305,7 +300,7 @@ public class ItemFactory {
     public static final Item COPPER_CLAYMORE = registerItem("copper_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_CLAYMORE = registerItem("iron_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_CLAYMORE = registerItem("diamond_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_CLAYMORE = registerItem("netherite_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_CLAYMORE = registerItem("netherite_claymore", settings -> new WeaponClaymoreItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
     public static final Item WOODEN_GLAIVE = registerItem("wooden_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_GLAIVE = registerItem("stone_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.STONE, settings));
@@ -313,7 +308,7 @@ public class ItemFactory {
     public static final Item COPPER_GLAIVE = registerItem("copper_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_GLAIVE = registerItem("iron_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_GLAIVE = registerItem("diamond_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_GLAIVE = registerItem("netherite_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_GLAIVE = registerItem("netherite_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
     public static final Item WOODEN_HAMMER = registerItem("wooden_hammer", settings -> new WeaponHammerItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_HAMMER = registerItem("stone_hammer", settings -> new WeaponHammerItem(ToolMaterial.STONE, settings));
@@ -321,7 +316,7 @@ public class ItemFactory {
     public static final Item COPPER_HAMMER = registerItem("copper_hammer", settings -> new WeaponHammerItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_HAMMER = registerItem("iron_hammer", settings -> new WeaponHammerItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_HAMMER = registerItem("diamond_hammer", settings -> new WeaponHammerItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_HAMMER = registerItem("netherite_hammer", settings -> new WeaponHammerItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_HAMMER = registerItem("netherite_hammer", settings -> new WeaponHammerItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
     public static final Item WOODEN_DAGGER = registerItem("wooden_dagger", settings -> new DaggerItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_DAGGER = registerItem("stone_dagger", settings -> new DaggerItem(ToolMaterial.STONE, settings));
@@ -329,7 +324,7 @@ public class ItemFactory {
     public static final Item COPPER_DAGGER = registerItem("copper_dagger", settings -> new DaggerItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_DAGGER = registerItem("iron_dagger", settings -> new DaggerItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_DAGGER = registerItem("diamond_dagger", settings -> new DaggerItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_DAGGER = registerItem("netherite_dagger", settings -> new DaggerItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_DAGGER = registerItem("netherite_dagger", settings -> new DaggerItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
     public static final Item WOODEN_LONG_SWORD = registerItem("wooden_long_sword", settings -> new LongSwordItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_LONG_SWORD = registerItem("stone_long_sword", settings -> new LongSwordItem(ToolMaterial.STONE, settings));
@@ -337,7 +332,7 @@ public class ItemFactory {
     public static final Item COPPER_LONG_SWORD = registerItem("copper_long_sword", settings -> new LongSwordItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_LONG_SWORD = registerItem("iron_long_sword", settings -> new LongSwordItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_LONG_SWORD = registerItem("diamond_long_sword", settings -> new LongSwordItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_LONG_SWORD = registerItem("netherite_long_sword", settings -> new LongSwordItem(ToolMaterial.NETHERITE, settings.fireproof()));
+    public static final Item NETHERITE_LONG_SWORD = registerItem("netherite_long_sword", settings -> new LongSwordItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
 
     /*
@@ -546,7 +541,7 @@ public class ItemFactory {
     }
 
     public static void onInitializeMobEggs() {
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(content -> {
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(content -> {
             content.addAfter(
                 ZOMBIE_LOBBER_SPAWN_EGG,
                 ZOMBIE_SCORCHED_SPAWN_EGG,
@@ -562,10 +557,10 @@ public class ItemFactory {
 
     public static <I extends Item> I registerModel(String name, I item) {
 
-        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);
         System.out.println(id.toString());
         ModelList.put(id, item);
-        Registry.register(Registries.ITEM, id, item);
+        Registry.register(BuiltInRegistries.ITEM, id, item);
         return item;
     }
 
@@ -585,18 +580,18 @@ public class ItemFactory {
         return item;
     }*/
 
-    public static Item registerBlockItem3(Block block, String id, ItemGroup group) {
-        return Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, id), new BlockItem(block, new Item.Settings()));
+    public static Item registerBlockItem3(Block block, String id, CreativeModeTab group) {
+        return Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id), new BlockItem(block, new Item.Properties()));
     }
 
     public static <I extends BlockItem> I registerBlockItems(String name, I item) {
 
-        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);
         if (EntStupidStuff.DEV_MODE)
             System.out.println("Item: " + id.toString());
         BlockFactory.ItemList.put(id, item);
 
-        Registry.register(Registries.ITEM, RegistryKey.of(Registries.ITEM.getKey(), Registries.BLOCK.getId(item.getBlock())), item);
+        Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(BuiltInRegistries.ITEM.key(), BuiltInRegistries.BLOCK.getKey(item.getBlock())), item);
 
         if (name == null || item == null) {
             System.out.println("[ITEM-ERROR]: " + name + " with id " + item);
@@ -610,7 +605,7 @@ public class ItemFactory {
     public static Item callItem(String name) {
         //return BlockFactory.ItemList.get(Identifier.of(EntStupidStuff.MOD_ID, name));
         try {
-            return BlockFactory.ItemList.get(Identifier.of(EntStupidStuff.MOD_ID, name));
+            return BlockFactory.ItemList.get(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name));
         } catch(Exception e) {
             System.out.println("An Error was called in callItem()... Tried to call: " + name);
             return null;
@@ -622,43 +617,43 @@ public class ItemFactory {
 	}
 
 	public static Item registerRaw(Block block, Item item) {
-		return registerRaw(Registries.BLOCK.getId(block), item);
+		return registerRaw(BuiltInRegistries.BLOCK.getKey(block), item);
 	}
 
-    public static Item registerRaw(Identifier id, Item item) {
-		return registerRaw(RegistryKey.of(Registries.ITEM.getKey(), id), item);
+    public static Item registerRaw(ResourceLocation id, Item item) {
+		return registerRaw(ResourceKey.create(BuiltInRegistries.ITEM.key(), id), item);
 	}
 
 
-    public static Item registerRaw(RegistryKey<Item> key, Item item) {
+    public static Item registerRaw(ResourceKey<Item> key, Item item) {
 		if (item instanceof BlockItem) {
-			((BlockItem)item).appendBlocks(Item.BLOCK_ITEMS, item);
+			((BlockItem)item).registerBlocks(Item.BY_BLOCK, item);
 		}
 
-		return Registry.register(Registries.ITEM, key, item);
+		return Registry.register(BuiltInRegistries.ITEM, key, item);
 	}
 
     // NEW //////////////////////////////////////////
 
-    private static Item registerItem(String name, Function<Item.Settings, Item> function) {
-        return register(keyOf(name), function, new Item.Settings(), name);
+    private static Item registerItem(String name, Function<Item.Properties, Item> function) {
+        return register(keyOf(name), function, new Item.Properties(), name);
     }
 
-    public static Item register(RegistryKey<Item> key, Function<Item.Settings, Item> factory, Item.Settings settings, String name) {
-		Item item = (Item)factory.apply(settings.registryKey(key));
+    public static Item register(ResourceKey<Item> key, Function<Item.Properties, Item> factory, Item.Properties settings, String name) {
+		Item item = (Item)factory.apply(settings.setId(key));
 		if (item instanceof BlockItem blockItem) {
-			blockItem.appendBlocks(Item.BLOCK_ITEMS, item);
+			blockItem.registerBlocks(Item.BY_BLOCK, item);
 		}
-        System.out.println("Items: " + Identifier.of(EntStupidStuff.MOD_ID, name));
-        BlockFactory.ItemList.put(Identifier.of(EntStupidStuff.MOD_ID, name), item);
+        System.out.println("Items: " + ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name));
+        BlockFactory.ItemList.put(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name), item);
         ModGroup.addToDefault(name);
 
 
-		return Registry.register(Registries.ITEM, key, item);
+		return Registry.register(BuiltInRegistries.ITEM, key, item);
 	}
 
-    private static RegistryKey<Item> keyOf(String id) {
-		return RegistryKey.of(RegistryKeys.ITEM, Identifier.of(EntStupidStuff.MOD_ID, id));
+    private static ResourceKey<Item> keyOf(String id) {
+		return ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
 	}
 
     //old to new
@@ -670,24 +665,24 @@ public class ItemFactory {
         }
 
         // Create RegistryKey
-        RegistryKey<Item> key = keyOf(name);
+        ResourceKey<Item> key = keyOf(name);
 
         // Apply registry key to item settings if possible
-        Item.Settings settings = new Item.Settings();
+        Item.Properties settings = new Item.Properties();
         try {
-            settings.registryKey(key);
+            settings.setId(key);
         } catch (Exception ignored) {}
 
         // If item is a BlockItem, register it properly with appendBlocks
         if (item instanceof BlockItem blockItem) {
-            blockItem.appendBlocks(Item.BLOCK_ITEMS, item);
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
         }
 
         // Register in the vanilla registry
-        Registry.register(Registries.ITEM, key, item);
+        Registry.register(BuiltInRegistries.ITEM, key, item);
 
         // Put in custom item list
-        Identifier id = Identifier.of(EntStupidStuff.MOD_ID, name);
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);
         BlockFactory.ItemList.put(id, item);
 
         // Add to default mod group

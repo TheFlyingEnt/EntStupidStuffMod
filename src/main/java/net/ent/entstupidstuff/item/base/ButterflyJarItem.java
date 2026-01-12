@@ -5,48 +5,48 @@ import java.util.function.Consumer;
 import net.ent.entstupidstuff.client.entity.Jarredable;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 public class ButterflyJarItem extends Item {
 
     private final EntityType<? extends ButterflyEntity> entityType;
     private final SoundEvent releaseSound;
 
-    public ButterflyJarItem(EntityType<? extends ButterflyEntity> type, SoundEvent emptyingSound, Settings settings) {
+    public ButterflyJarItem(EntityType<? extends ButterflyEntity> type, SoundEvent emptyingSound, Properties settings) {
         super(settings);
         this.entityType = type;
         this.releaseSound = emptyingSound;
     }
 
-    private void spawnEntity(ServerWorld world, ItemStack stack, BlockPos pos) {
-        if (this.entityType.spawnFromItemStack(world, stack, null, pos, SpawnReason.BUCKET, true, false) instanceof Jarredable jarredEntity) {
+    private void spawnEntity(ServerLevel world, ItemStack stack, BlockPos pos) {
+        if (this.entityType.spawn(world, stack, null, pos, EntitySpawnReason.BUCKET, true, false) instanceof Jarredable jarredEntity) {
 
             // Copy all NBT from stack
-            NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.BUCKET_ENTITY_DATA, NbtComponent.DEFAULT);
-            jarredEntity.copyDataFromNbt(nbtComponent.copyNbt());
+            CustomData nbtComponent = stack.getOrDefault(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY);
+            jarredEntity.copyDataFromNbt(nbtComponent.copyTag());
 
             // Copy custom name
-            if (stack.get(DataComponentTypes.CUSTOM_NAME) != null) {
-                ((LivingEntity) jarredEntity).setCustomName(stack.get(DataComponentTypes.CUSTOM_NAME).copy());
+            if (stack.get(DataComponents.CUSTOM_NAME) != null) {
+                ((LivingEntity) jarredEntity).setCustomName(stack.get(DataComponents.CUSTOM_NAME).copy());
                 ((LivingEntity) jarredEntity).setCustomNameVisible(true);
             }
 
@@ -55,14 +55,14 @@ public class ButterflyJarItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
         ButterflyEntity.Variant variant = stack.get(ModDataComponentTypes.BUTTERFLY_VARIANT);
         if (variant != null) {
             String variantName = variant.getId();
             String formattedName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1);
             textConsumer.accept(
-                Text.literal(formattedName)
-                    .formatted(Formatting.GRAY, Formatting.ITALIC)
+                Component.literal(formattedName)
+                    .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
             );
             return;
         }
@@ -84,23 +84,23 @@ public class ButterflyJarItem extends Item {
 
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
-        PlayerEntity player = context.getPlayer();
-        ItemStack stack = context.getStack();
-        BlockPos pos = context.getBlockPos().offset(context.getSide());
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
+        ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos().relative(context.getClickedFace());
 
-        if (world instanceof ServerWorld serverWorld) {
+        if (world instanceof ServerLevel serverWorld) {
             this.spawnEntity(serverWorld, stack, pos);
 
-            world.playSound(null, pos, this.releaseSound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+            world.playSound(null, pos, this.releaseSound, SoundSource.NEUTRAL, 1.0F, 1.0F);
 
             if (!player.isCreative()) {
-                stack.decrement(1);
-                player.giveItemStack(new ItemStack(Items.GLASS_BOTTLE));
+                stack.shrink(1);
+                player.addItem(new ItemStack(Items.GLASS_BOTTLE));
             }
         }
 
-        return ActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

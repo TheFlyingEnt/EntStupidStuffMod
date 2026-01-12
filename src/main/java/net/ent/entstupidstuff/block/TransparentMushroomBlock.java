@@ -2,42 +2,41 @@ package net.ent.entstupidstuff.block;
 
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.HugeMushroomBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.MushroomBlock;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+public class TransparentMushroomBlock extends HugeMushroomBlock {
 
-public class TransparentMushroomBlock extends MushroomBlock {
+    public static final MapCodec<TransparentMushroomBlock> CODEC = simpleCodec(TransparentMushroomBlock::new);
 
-    public static final MapCodec<TransparentMushroomBlock> CODEC = createCodec(TransparentMushroomBlock::new);
-
-    public TransparentMushroomBlock(Settings settings) {
+    public TransparentMushroomBlock(Properties settings) {
         super(settings);
     }
 
 	@Override
-	protected VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.empty();
+	protected VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return Shapes.empty();
 	}
 
 	@Override
-	protected float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+	protected float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos) {
 		return 1.0F;
 	}
 
 	@Override
-	protected boolean isTransparent(BlockState state) {
+	protected boolean propagatesSkylightDown(BlockState state) {
 		return true;
 	}
 
     @Override
-	protected boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-		return stateFrom.isOf(this) ? true : super.isSideInvisible(state, stateFrom, direction);
+	protected boolean skipRendering(BlockState state, BlockState stateFrom, Direction direction) {
+		return stateFrom.is(this) ? true : super.skipRendering(state, stateFrom, direction);
 	}
 
 
