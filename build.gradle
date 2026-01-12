@@ -71,71 +71,12 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// TerraBlender - Need for Biome Support
 	modImplementation 'com.github.glitchfiend:TerraBlender-fabric:1.21.10-21.10.0.0'
 
-	/*// JavaCV for video playback (FFmpeg wrapper)
-    //implementation 'org.bytedeco:javacv-platform:1.5.10'
-    //include 'org.bytedeco:javacv-platform:1.5.10'
-	// JavaCV core
-    modImplementation "org.bytedeco:javacv:1.5.10"
-    include "org.bytedeco:javacv:1.5.10"
-
-    // FFmpeg with native binaries
-    //modImplementation "org.bytedeco:ffmpeg-platform:6.1.1-1.5.10"
-    //include "org.bytedeco:ffmpeg-platform:6.1.1-1.5.10"
-	modImplementation "org.bytedeco:ffmpeg:6.1.1-1.5.10"
-    include "org.bytedeco:ffmpeg:6.1.1-1.5.10"
-
-	modImplementation "org.bytedeco:ffmpeg-platform:6.1.1-1.5.10"
-    include "org.bytedeco:ffmpeg-platform:6.1.1-1.5.10"
-
-    // JavaCPP core (needed by both)
-    modImplementation "org.bytedeco:javacpp:1.5.10"
-    include "org.bytedeco:javacpp:1.5.10"
-
-	runtimeOnly "org.bytedeco:ffmpeg:6.1.1-1.5.10:windows-x86_64"
-	runtimeOnly "org.bytedeco:ffmpeg:6.1.1-1.5.10:linux-x86_64"
-    runtimeOnly "org.bytedeco:ffmpeg:6.1.1-1.5.10:macosx-x86_64"*/
-
-	//include "org/bytedeco/**"
-
-	//modImplementation 'org.bytedeco:javacv-platform:1.5.10'
-    //include 'org.bytedeco:javacv-platform:1.5.10'
-
-	// JavaCV dependencies - Use implementation AND include
-    def javacvVersion = "1.5.10"
-    def ffmpegVersion = "6.1.1-1.5.10"
-    
-    // Core JavaCV
-    implementation "org.bytedeco:javacv:${javacvVersion}"
-    //include "org.bytedeco:javacv:${javacvVersion}"
-
-	// Core JavaCV
-    //implementation "org.bytedeco:javacv-platform:${javacvVersion}"
-    //include "org.bytedeco:javacv-platform:${javacvVersion}"
-    
-    // JavaCPP (required by JavaCV)
-    implementation "org.bytedeco:javacpp:${javacvVersion}"
-    //include "org.bytedeco:javacpp:${javacvVersion}"
-    
-    // FFmpeg bindings (NOT platform yet)
-    implementation "org.bytedeco:ffmpeg:${ffmpegVersion}"
-    //include "org.bytedeco:ffmpeg:${ffmpegVersion}"
-
-	runtimeOnly "org.bytedeco:ffmpeg:${ffmpegVersion}:windows-x86_64"
-    runtimeOnly "org.bytedeco:ffmpeg:${ffmpegVersion}:linux-x86_64"
-    runtimeOnly "org.bytedeco:ffmpeg:${ffmpegVersion}:macosx-x86_64"
-    
-    // Platform-specific FFmpeg natives for Windows
-    //implementation "org.bytedeco:ffmpeg:${ffmpegVersion}:windows-x86_64"
-    //include "org.bytedeco:ffmpeg:${ffmpegVersion}:windows-x86_64"
-
-    //include "org.bytedeco:ffmpeg:${ffmpegVersion}:macosx-x86_64"
-    //include "org.bytedeco:ffmpeg:${ffmpegVersion}:linux-x86_64"
 	
 }
 
@@ -162,6 +103,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+	
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.

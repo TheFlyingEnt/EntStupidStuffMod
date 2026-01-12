@@ -13,7 +13,101 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-public class KoiPatternFeatureRenderer extends FeatureRenderer<KoiEntityRenderState, KoiModel> {
+
+public class KoiPatternFeatureRenderer
+        extends FeatureRenderer<KoiEntityRenderState, KoiModel> {
+
+    public KoiPatternFeatureRenderer(
+            FeatureRendererContext<KoiEntityRenderState, KoiModel> ctx) {
+        super(ctx);
+    }
+
+    @Override
+    public void render(
+            MatrixStack matrices,
+            OrderedRenderCommandQueue queue,
+            int light,
+            KoiEntityRenderState state,
+            float limbAngle,
+            float limbDistance
+    ) {
+        if (state.invisible) return;
+
+        KoiVariant variant = state.variant;
+        if (variant == null) return;
+
+        /* ------------------------------------------------------------
+         *  MAIN (Kohaku) PATTERN — White only
+         * ------------------------------------------------------------ */
+
+        if (variant.getBaseColor() == KoiBaseColor.WHITE
+                && variant.getMainPattern() != null) {
+
+            Identifier tex = Identifier.of(
+                    "entstupidstuff",
+                    "textures/entity/koi/pattern_kohaku_"
+                            + variant.getMainPattern().getName().toLowerCase()
+                            + ".png"
+            );
+
+            queue.getBatchingQueue(1).submitModel(
+                    this.getContextModel(),
+                    state,
+                    matrices,
+                    RenderLayer.getEntityTranslucent(tex),
+                    light,
+                    OverlayTexture.DEFAULT_UV,
+                    -1,
+                    null,
+                    state.outlineColor,
+                    null
+            );
+        }
+
+        /* ------------------------------------------------------------
+         *  SECONDARY PATTERN (Sanke / Showa)
+         * ------------------------------------------------------------ */
+
+        if (variant.getSecondaryPattern() != null) {
+            KoiPatternSecondary sec = variant.getSecondaryPattern();
+
+            Identifier tex = switch (sec.getType()) {
+                case "sanke" -> Identifier.of(
+                        "entstupidstuff",
+                        "textures/entity/koi/pattern_sanke_"
+                                + sec.getName().toLowerCase()
+                                + ".png"
+                );
+                case "showa" -> Identifier.of(
+                        "entstupidstuff",
+                        "textures/entity/koi/pattern_showa_"
+                                + sec.getName().toLowerCase()
+                                + ".png"
+                );
+                default -> null;
+            };
+
+            if (tex != null) {
+                queue.getBatchingQueue(1).submitModel(
+                        this.getContextModel(),
+                        state,
+                        matrices,
+                        RenderLayer.getEntityTranslucent(tex),
+                        light,
+                        OverlayTexture.DEFAULT_UV,
+                        -1,
+                        null,
+                        state.outlineColor,
+                        null
+                );
+            }
+        }
+    }
+}
+
+
+
+/*public class KoiPatternFeatureRenderer extends FeatureRenderer<KoiEntityRenderState, KoiModel> {
 
     public KoiPatternFeatureRenderer(FeatureRendererContext<KoiEntityRenderState, KoiModel> ctx) {
         super(ctx);
@@ -45,7 +139,7 @@ public class KoiPatternFeatureRenderer extends FeatureRenderer<KoiEntityRenderSt
 
             if (tex != null) {
                 //queue.getBatchingQueue(1)
-                //     .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEntityTranslucent(tex), light, 0, /*-1*/0xFFFFFFFF, null, state.outlineColor, null);
+                //     .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEntityTranslucent(tex), light, 0, /*-1*0xFFFFFFFF, null, state.outlineColor, null);
                 queue.getBatchingQueue(1)
                     .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEntityTranslucent(tex), light, OverlayTexture.getUv(0.0F, false), -1, null, state.outlineColor, null);
             }
@@ -115,4 +209,4 @@ public class KoiPatternFeatureRenderer extends FeatureRenderer<KoiEntityRenderSt
             this.getContextModel().render(matrices, vc2, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
         }
     }*/
-}
+//}

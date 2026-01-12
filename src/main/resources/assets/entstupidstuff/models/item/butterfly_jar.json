@@ -57,6 +57,18 @@
         "variant": 8
       },
       "model": "entstupidstuff:item/butterfly_jar_creeper"
+    },
+    {
+      "predicate": {
+        "variant": 9
+      },
+      "model": "entstupidstuff:item/butterfly_jar_crown"
+    },
+    {
+      "predicate": {
+        "variant": 10
+      },
+      "model": "entstupidstuff:item/butterfly_jar_error"
     }
   ]
 }

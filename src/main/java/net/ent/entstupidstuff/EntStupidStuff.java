@@ -6,7 +6,6 @@ import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
-import net.ent.entstupidstuff.event.WeaponEvent;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
@@ -15,7 +14,6 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShieldDecorationRecipe;
@@ -80,11 +78,8 @@ public class EntStupidStuff implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Mod Initializing");
 
-
-
-		WeaponEvent.onInitialize(); //To be Removed
 		EntityFactory.onInitialize();
-		ModEffects.registerEffects();
+		ModEffects.registerEffects(); //StatusEffect
 		ModEntitySpawns.addSpawns();
 		BlockFactory.onInitialize();
 		ItemFactory.onInitialize();

@@ -1,6 +1,5 @@
 package net.ent.entstupidstuff.world.tree;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -42,9 +41,9 @@ public class FirFoliagePlacer  extends FoliagePlacer {
     ) {
 
         BlockPos blockPos = treeNode.getCenter();
-		int i = random.nextInt(2);
-		int j = 1;
-		int k = 0;
+		//int i = random.nextInt(2);
+		//int j = 1;
+		//int k = 0;
 
         // Go upward from start to top
         for (int l = offset; l >= -foliageHeight; l--) {
@@ -119,7 +118,7 @@ public class FirFoliagePlacer  extends FoliagePlacer {
         }*/
     }
 
-    private void placeLeavesLayer(
+    /*private void placeLeavesLayer(
             TestableWorld world,
             BlockPlacer placer,
             Random random,
@@ -138,7 +137,7 @@ public class FirFoliagePlacer  extends FoliagePlacer {
                 }
             }
         }
-    }
+    }*/
 
     @Override
     protected boolean isInvalidForLeaves(

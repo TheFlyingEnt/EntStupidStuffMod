@@ -2,8 +2,11 @@ package net.ent.entstupidstuff.client.entity.passive;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.ComponentsAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Bucketable;
@@ -17,7 +20,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.FishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
@@ -25,9 +27,10 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 
-public class KoiEntity extends /*SchoolingFishEntity*/ FishEntity{
+public class KoiEntity extends /* SchoolingFishEntity */ FishEntity {
 
-    public static final TrackedData<Integer> VARIANT = DataTracker.registerData(KoiEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    public static final TrackedData<Integer> VARIANT = DataTracker.registerData(KoiEntity.class,
+            TrackedDataHandlerRegistry.INTEGER);
 
     public KoiEntity(EntityType<? extends FishEntity> entityType, World world) {
         super(entityType, world);
@@ -60,20 +63,23 @@ public class KoiEntity extends /*SchoolingFishEntity*/ FishEntity{
 
     // ----- Variant Management -----
 
-    public void setVariant(KoiVariant variant) {
-        this.dataTracker.set(VARIANT, KoiVariantRegistry.getId(variant));
+    public KoiVariant getVariant() {
+        return KoiVariantRegistry.getByIndex(this.dataTracker.get(VARIANT));
     }
 
-    public KoiVariant getVariant() {
-        return KoiVariantRegistry.getById(this.dataTracker.get(VARIANT));
+    public void setVariant(KoiVariant variant) {
+        this.dataTracker.set(VARIANT, KoiVariantRegistry.getIndex(variant));
     }
 
     // ----- Spawning -----
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        KoiVariant randomVariant = KoiVariantRegistry.getRandom(this.random);
-        this.setVariant(randomVariant);
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason,
+            @Nullable EntityData entityData) {
+        this.setVariant(KoiVariantRegistry.getRandom(world.getRandom()));
+
+        // KoiVariant randomVariant = KoiVariantRegistry.getRandom(this.random);
+        // this.setVariant(randomVariant);
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
@@ -90,28 +96,51 @@ public class KoiEntity extends /*SchoolingFishEntity*/ FishEntity{
     @Override
     public void writeCustomData(WriteView view) {
         super.writeCustomData(view);
-        view.putInt("Variant", KoiVariantRegistry.getId(this.getVariant()));
+        view.put(
+            "Variant",
+            KoiVariantRegistry.INDEX_CODEC,
+            this.getVariant()
+        );
     }
 
-    @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
-        this.setVariant(KoiVariantRegistry.getById(view.getInt("Variant", 0)));
-    }
-
-    @Override
-    public void copyDataFromNbt(NbtCompound nbt) {
-        Bucketable.copyDataFromNbt(this, nbt);
-    }
 
     @Override
     public void copyDataToStack(ItemStack stack) {
         super.copyDataToStack(stack);
-        NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
-            nbtCompound.putInt("BucketVariantTag", KoiVariantRegistry.getId(this.getVariant()));
-        });
+        stack.copy(ModDataComponentTypes.KOI_FISH_VARIANT, this);
     }
 
 
-    
+    @Override
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.setVariant(
+            view.read("Variant", KoiVariantRegistry.INDEX_CODEC)
+                .orElse(KoiVariantRegistry.getByIndex(0))
+        );
+    }
+
+    @Nullable
+	@Override
+	public <T> T get(ComponentType<? extends T> type) {
+		return type == ModDataComponentTypes.KOI_FISH_VARIANT ? castComponentValue((ComponentType<T>)type, this.getVariant()) : super.get(type);
+	}
+
+	@Override
+	protected void copyComponentsFrom(ComponentsAccess from) {
+		this.copyComponentFrom(from, ModDataComponentTypes.KOI_FISH_VARIANT);
+		super.copyComponentsFrom(from);
+	}
+
+	@Override
+	protected <T> boolean setApplicableComponent(ComponentType<T> type, T value) {
+		if (type == ModDataComponentTypes.KOI_FISH_VARIANT) {
+			this.setVariant(castComponentValue(ModDataComponentTypes.KOI_FISH_VARIANT, value));
+			return true;
+		} else {
+			return super.setApplicableComponent(type, value);
+		}
+    }
+
+
 }

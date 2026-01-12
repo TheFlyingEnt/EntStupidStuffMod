@@ -3,7 +3,6 @@ package net.ent.entstupidstuff.world.tree;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 

@@ -7,7 +7,7 @@ import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 
 public class KoiEntityRenderState extends LivingEntityRenderState {
-    public KoiVariant variant = new KoiVariant(KoiBaseColor.WHITE, null, null);
+    public KoiVariant variant = new KoiVariant(null, KoiBaseColor.WHITE, null, null);
     public KoiPatternMain mainPatter;
     public KoiPatternSecondary secondaryPattern;
     public boolean invisible;

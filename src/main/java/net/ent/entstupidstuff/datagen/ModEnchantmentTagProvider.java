@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.data.tag.EnchantmentTagProvider;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryKey;

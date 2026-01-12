@@ -1,9 +1,6 @@
 package net.ent.entstupidstuff.item.base;
 
-import java.util.List;
 import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.client.entity.Jarredable;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
@@ -20,8 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -61,7 +56,7 @@ public class ButterflyJarItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        ButterflyEntity.Variant variant = stack.getOrDefault(ModDataComponentTypes.BUTTERFLY_VARIANT, ButterflyEntity.Variant.DEFAULT);
+        ButterflyEntity.Variant variant = stack.get(ModDataComponentTypes.BUTTERFLY_VARIANT);
         if (variant != null) {
             String variantName = variant.getId();
             String formattedName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1);

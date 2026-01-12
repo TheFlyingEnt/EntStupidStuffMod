@@ -1,10 +1,14 @@
 package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.ent.entstupidstuff.client.entity.passive.MahiMahiEntity;
+import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.fluid.Fluid;
@@ -22,6 +26,17 @@ public class MahiMahiBucketItem extends EntityBucketItem{
 
     public MahiMahiBucketItem(EntityType<? extends MobEntity> type, Fluid fluid, SoundEvent emptyingSound, Settings settings) {
         super(type, fluid, emptyingSound, settings);
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent,
+            Consumer<Text> textConsumer, TooltipType type) {
+
+        MahiMahiEntity.Variant variant = stack.get(ModDataComponentTypes.MAHIMAHI_FISH_VARIANT);
+
+        if (variant != null) {
+            textConsumer.accept(Text.literal(variant.getId()).formatted(Formatting.GRAY, Formatting.ITALIC));
+        }
     }
     
     /*@Override

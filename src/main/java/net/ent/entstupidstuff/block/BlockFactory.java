@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
@@ -40,16 +42,23 @@ import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.WoodType;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.component.type.ConsumableComponent;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.data.family.BlockFamilies;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
@@ -159,7 +168,7 @@ public class BlockFactory {
         BlockGroupFactory.groupFungalFamily("_pink", MapColor.PINK);
 
         // # Added Blue Mushroom Family
-        Block BLUE_MUSHROOM = register3(
+        Block BLUE_MUSHROOM = register_custom_mushroom(
 		"blue_mushroom",
 		(settings) -> new BlueMushroomPlantBlock(
 			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY,settings
@@ -328,7 +337,9 @@ public class BlockFactory {
         Block HARDEND_SANDSTONE = register3("hardend_sandstone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
         BlockGroupFactory.groupStoneFamily("hardend_sandstone", HARDEND_SANDSTONE, MapColor.PALE_YELLOW, false);
 
-        // # Vanilla Additions
+        Block DATE = register_dates("date", DateBlock::new, Settings.create().mapColor(MapColor.DARK_GREEN).ticksRandomly().strength(0.2F, 3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().pistonBehavior(PistonBehavior.DESTROY));
+
+        // # Vanilla Additions 
         addVanilla();
 
         // # Legacy (Textured Wool)
@@ -1212,6 +1223,77 @@ public class BlockFactory {
 
 		return Registry.register(Registries.BLOCK, key, block);
 	}
+
+    //Adding for Blue Mushroom
+
+    public static Block register_custom_mushroom(String id, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings) {
+		return register_custom_mushroom(keyOf(id), factory, settings, id);
+	}
+
+    public static Block register_custom_mushroom(RegistryKey<Block> key, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings, String id) {
+		Block block = (Block)factory.apply(settings.registryKey(key));
+
+        Identifier blockId = Identifier.of(EntStupidStuff.MOD_ID, id);
+        BlockList.put(blockId, block);
+
+        System.out.println("Adding Block (custom_mushroom): " + blockId);
+
+        registerBlockItem2_custom_mushroom(id, block);
+        ModGroup.addToDefault(id);
+
+		return Registry.register(Registries.BLOCK, key, block);
+	}
+
+    //Adding for Dates
+
+    public static Block register_dates(String id, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings) {
+		return register_dates(keyOf(id), factory, settings, id);
+	}
+
+    public static Block register_dates(RegistryKey<Block> key, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings, String id) {
+		Block block = (Block)factory.apply(settings.registryKey(key));
+
+        Identifier blockId = Identifier.of(EntStupidStuff.MOD_ID, id);
+        BlockList.put(blockId, block);
+
+        System.out.println("Adding Block (dates): " + blockId);
+
+        registerBlockItem2_date(id, block);
+        ModGroup.addToDefault(id);
+
+		return Registry.register(Registries.BLOCK, key, block);
+	}
+
+    private static void registerBlockItem2_date(String name, Block block) {
+
+        BlockItem item = new BlockItem(block, new Item.Settings().food(FOOD_SHROOM, CONS_SHROOM).useBlockPrefixedTranslationKey()
+                        .registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(EntStupidStuff.MOD_ID, name))));
+
+        Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, name), item);
+
+        ItemList.put(Identifier.of(EntStupidStuff.MOD_ID, name), item);
+        System.out.println("Adding Item: (dates)" + item);
+    }
+
+    //Adding Food Times
+
+    public static final FoodComponent FOOD_SHROOM = new FoodComponent.Builder().nutrition(1).saturationModifier(0.1F).alwaysEdible().build();
+
+    public static final ConsumableComponent CONS_SHROOM = ConsumableComponent.builder()
+        .consumeSeconds(1.6F).useAction(UseAction.EAT).sound(SoundEvents.ENTITY_GENERIC_EAT).consumeParticles(true)
+        .consumeEffect(new ApplyEffectsConsumeEffect(new StatusEffectInstance(ModEffects.RGB_SHIFT, 600, 0), 0.8F))
+        .consumeEffect(new ApplyEffectsConsumeEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 600, 0), 0.8F)).build();
+
+    private static void registerBlockItem2_custom_mushroom(String name, Block block) {
+
+        BlockItem item = new BlockItem(block, new Item.Settings().food(FOOD_SHROOM, CONS_SHROOM).useBlockPrefixedTranslationKey()
+                        .registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(EntStupidStuff.MOD_ID, name))));
+
+        Registry.register(Registries.ITEM, Identifier.of(EntStupidStuff.MOD_ID, name), item);
+
+        ItemList.put(Identifier.of(EntStupidStuff.MOD_ID, name), item);
+        System.out.println("Adding Item: (custom_mushroom)" + item);
+    }
 
     
 

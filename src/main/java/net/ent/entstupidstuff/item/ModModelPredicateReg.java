@@ -2,8 +2,6 @@ package net.ent.entstupidstuff.item;
 
 
 import net.fabricmc.api.Environment;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 
 @Environment(EnvType.CLIENT)

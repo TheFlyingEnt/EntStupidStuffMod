@@ -6,7 +6,6 @@ import net.ent.entstupidstuff.client.entity.mob.FungalZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
-import net.ent.entstupidstuff.client.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.item.ModItemTags;
 import net.ent.entstupidstuff.registry.EntityFactory;

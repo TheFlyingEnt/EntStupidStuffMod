@@ -97,6 +97,12 @@ public class ModPlacedFeatures {
         RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "thalassite_ore")
     );
 
+    public static final RegistryKey<PlacedFeature> DATE_PALM_PLACED =
+            RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "date_palm_placed"));
+
+    public static final RegistryKey<PlacedFeature> DESERT_WILLOW_PLACED =
+            RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "desert_willow_placed"));
+
     public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
     public static final RegistryKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
     public static final RegistryKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
@@ -125,6 +131,28 @@ public class ModPlacedFeatures {
                 VegetationPlacedFeatures.treeModifiersWithWouldSurvive(
                         PlacedFeatures.createCountExtraModifier(5, 0.1f, 1), // base count, chance, extra
                         BlockFactory.callBlock("fir_sapling")
+                )
+        ));
+
+        context.register(DATE_PALM_PLACED, new PlacedFeature(
+                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE)
+                        .getOrThrow(ModConfiguredFeatures.DATE_PALM),
+                List.of(
+                        CountPlacementModifier.of(1),
+                        SquarePlacementModifier.of(),
+                        PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP,
+                        BiomePlacementModifier.of()
+                )
+        ));
+
+        context.register(DESERT_WILLOW_PLACED, new PlacedFeature(
+                context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE)
+                        .getOrThrow(ModConfiguredFeatures.DESERT_WILLOW),
+                List.of(
+                        CountPlacementModifier.of(2),
+                        SquarePlacementModifier.of(),
+                        PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP,
+                        BiomePlacementModifier.of()
                 )
         ));
 

@@ -151,14 +151,20 @@
       {
         "type": "entstupidstuff:fungal_skeleton",
         "maxCount": 4,
-        "minCount": 4,
+        "minCount": 1,
         "weight": 150
       },
       {
         "type": "entstupidstuff:zombie_fungal",
         "maxCount": 4,
-        "minCount": 4,
+        "minCount": 1,
         "weight": 150
+      },
+      {
+        "type": "entstupidstuff:sporeper",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 100
       }
     ],
     "underground_water_creature": [

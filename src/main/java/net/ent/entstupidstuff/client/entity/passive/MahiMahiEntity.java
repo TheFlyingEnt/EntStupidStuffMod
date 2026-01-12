@@ -1,14 +1,18 @@
 package net.ent.entstupidstuff.client.entity.passive;
 
+import java.util.Arrays;
+import java.util.function.IntFunction;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
+import io.netty.buffer.ByteBuf;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.Bucketable;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.ComponentsAccess;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -18,11 +22,14 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.Util;
+import net.minecraft.util.function.ValueLists;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -34,51 +41,51 @@ public class MahiMahiEntity extends SchoolingFishEntity{
         super(entityType, world);
     }
 
-    private Variant variant;
     private static final TrackedData<Integer> VARIANT = DataTracker.registerData(MahiMahiEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
-    public enum Variant {
+    public enum Variant implements StringIdentifiable{
         GREEN(0, "Green"),
         BLUE(1, "Blue");
 
-        private static final Variant[] VALUES = values();
-		private final int id;
-		private final String name;
+        public static final Variant DEFAULT = GREEN;
 
-        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(
-            Variant::byId,
-            Variant::getId
+        private static final IntFunction<Variant> INDEX_MAPPER = ValueLists.createIndexToValueFunction(
+            Variant::getIndex, values(), ValueLists.OutOfBoundsHandling.ZERO
         );
 
-        Variant(int id, String name) {
+        public static final Codec<Variant> CODEC = StringIdentifiable.createCodec(Variant::values);
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(INDEX_MAPPER::apply, Variant::getIndex);
+        public static final PacketCodec<ByteBuf, Variant> PACKET_CODEC = PacketCodecs.indexed(INDEX_MAPPER, Variant::getIndex);
+
+        private final int index;
+        private final String id;
+
+        private Variant(int index, String id) {
+			this.index = index;
 			this.id = id;
-			this.name = name;
 		}
 
-        public int getId() {
-			return id;
-		}
-	
-		public String getName() {
-			return name;
-		}
-	
-		public static Variant byId(int id) {
-			return VALUES[Math.max(0, Math.min(id, VALUES.length - 1))];
-		}
+        public int getIndex() { return this.index; }
+        public String getId() { return this.id; }
+
+        public static Variant byIndex(int index) {
+            return INDEX_MAPPER.apply(index);
+        }
+
+        public static Variant getRandomNatural(Random random) {
+            Variant[] list = (Variant[]) Arrays.stream(values()).toArray(Variant[]::new);
+            return Util.getRandom(list, random);
+        }
 
         public static Variant getRandom(Random random) {
-			//return VALUES[random.nextInt(VALUES.length)];
-			Random varientR = Random.create();
-        	float varientRC = varientR.nextInt(2) + 1;
+            Variant[] list = values();
+            return Util.getRandom(list, random);
+        }
 
-			if (varientRC == 1) {
-                return Variant.GREEN;
-        	} else {
-                return Variant.BLUE;
-        	}
-
-		}
+        @Override
+        public String asString() {
+            return this.id;
+        }
 
     }
 
@@ -106,38 +113,33 @@ public class MahiMahiEntity extends SchoolingFishEntity{
       return SoundFactory.ENTITY_MAHIMAHI_FLOP;
     }
 
+    // === Data NBT ===
+
     @Override
     public void writeCustomData(WriteView view) {
         super.writeCustomData(view);
-        view.putInt("Variant", this.getVariant().getId());
+        view.put("Variant", MahiMahiEntity.Variant.INDEX_CODEC, this.getVariant());
     }
 
+    @Override
     public void copyDataToStack(ItemStack stack) {
         super.copyDataToStack(stack);
-        NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
-
-            if (this.getVariant() == Variant.GREEN) {
-                nbtCompound.putInt("BucketVariantTag", 0);
-            }
-            else if (this.getVariant() == Variant.BLUE) {
-                nbtCompound.putInt("BucketVariantTag", 1);
-            }
-        });
+        //Bucketable.copyDataToStack(this, stack);
+        stack.copy(ModDataComponentTypes.MAHIMAHI_FISH_VARIANT, this);
    }
 
     @Override
     protected void readCustomData(ReadView view) {
         super.readCustomData(view);
-		this.setVariant((MahiMahiEntity.Variant)view.read("Variant", MahiMahiEntity.Variant.INDEX_CODEC).orElse(MahiMahiEntity.Variant.BLUE));
+		this.setVariant((MahiMahiEntity.Variant)view.read("Variant", MahiMahiEntity.Variant.CODEC).orElse(MahiMahiEntity.Variant.DEFAULT));
     }
 
     public void setVariant(MahiMahiEntity.Variant variant) {
-        this.variant = variant;
-        this.dataTracker.set(VARIANT, variant.getId());
+        this.dataTracker.set(VARIANT, variant.getIndex());
     }
 
     public Variant getVariant() {
-        return Variant.byId(this.dataTracker.get(VARIANT));
+        return MahiMahiEntity.Variant.byIndex((Integer)this.dataTracker.get(VARIANT));
     }
 
     @Override
@@ -149,15 +151,36 @@ public class MahiMahiEntity extends SchoolingFishEntity{
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
 
-        Variant randomVariant = Variant.getRandom(this.getRandom());
-        this.setVariant(randomVariant);
+        if (spawnReason == SpawnReason.BUCKET) {
+            return (EntityData)entityData;
+        } else {
+            Variant randomVariant = Variant.getRandom(this.getRandom());
+            this.setVariant(randomVariant);
+        }
 
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
-    @Override
-    public void copyDataFromNbt(NbtCompound nbt) {
-        Bucketable.copyDataFromNbt(this, nbt);
-    }
+    @Nullable
+	@Override
+	public <T> T get(ComponentType<? extends T> type) {
+		return type == ModDataComponentTypes.MAHIMAHI_FISH_VARIANT ? castComponentValue((ComponentType<T>)type, this.getVariant()) : super.get(type);
+	}
+
+	@Override
+	protected void copyComponentsFrom(ComponentsAccess from) {
+		this.copyComponentFrom(from, ModDataComponentTypes.MAHIMAHI_FISH_VARIANT);
+		super.copyComponentsFrom(from);
+	}
+
+	@Override
+	protected <T> boolean setApplicableComponent(ComponentType<T> type, T value) {
+		if (type == ModDataComponentTypes.MAHIMAHI_FISH_VARIANT) {
+			this.setVariant(castComponentValue(ModDataComponentTypes.MAHIMAHI_FISH_VARIANT, value));
+			return true;
+		} else {
+			return super.setApplicableComponent(type, value);
+		}
+	}
     
 }

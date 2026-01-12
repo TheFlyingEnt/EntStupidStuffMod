@@ -11,7 +11,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
 import terrablender.api.ParameterUtils.Continentalness;
-import terrablender.api.ParameterUtils.Depth;
 import terrablender.api.ParameterUtils.Erosion;
 import terrablender.api.ParameterUtils.Humidity;
 import terrablender.api.ParameterUtils.ParameterPointListBuilder;

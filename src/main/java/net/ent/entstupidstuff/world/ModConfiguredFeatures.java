@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
-import net.ent.entstupidstuff.item.ModItemTags;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeature;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeatureConfig;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
@@ -13,20 +11,21 @@ import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;
 import net.ent.entstupidstuff.world.tree.FirFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.FirTrunkPlacer;
+import net.ent.entstupidstuff.world.tree.PalmFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.RedwoodFoliagePlacer;
 import net.ent.entstupidstuff.world.tree.ThreexThreeTrunkPlacer;
+import net.ent.entstupidstuff.world.tree.UmbrellaPalmFoliagePlacer;
+import net.ent.entstupidstuff.world.tree.WillowFoliagePlacer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerbedBlock;
-import net.minecraft.block.LeafLitterBlock;
 import net.minecraft.block.MushroomBlock;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.state.property.EnumProperty;
@@ -39,7 +38,6 @@ import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.VerticalSurfaceType;
 import net.minecraft.util.math.floatprovider.ClampedNormalFloatProvider;
-import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.floatprovider.UniformFloatProvider;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
@@ -56,6 +54,7 @@ import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.PredicatedStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 import net.minecraft.world.gen.trunk.CherryTrunkPlacer;
+import net.minecraft.world.gen.trunk.StraightTrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
 public class ModConfiguredFeatures {
@@ -74,6 +73,15 @@ public class ModConfiguredFeatures {
     public static final TrunkPlacerType<FirTrunkPlacer> FIR_TRUNK_PLACER =
         Registry.register(Registries.TRUNK_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "fir_trunk"), new TrunkPlacerType<FirTrunkPlacer>(FirTrunkPlacer.CODEC));
 
+	public static final FoliagePlacerType<PalmFoliagePlacer> PALM_FOLIAGE_PLACE =
+        Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "palm_foliage"), new FoliagePlacerType<>(PalmFoliagePlacer.CODEC));
+
+	public static final FoliagePlacerType<UmbrellaPalmFoliagePlacer> UMBRELLA_PALM_FOLIAGE_PLACE =
+        Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "umbrella_palm_foliage"), new FoliagePlacerType<>(UmbrellaPalmFoliagePlacer.CODEC));
+
+	public static final FoliagePlacerType<WillowFoliagePlacer> WILLOW_FOLIAGE_PLACE =
+        Registry.register(Registries.FOLIAGE_PLACER_TYPE, Identifier.of(EntStupidStuff.MOD_ID, "willow"), new FoliagePlacerType<>(WillowFoliagePlacer.CODEC));
+
     // # ConfiguredFeatures
 
     public static final RegistryKey<ConfiguredFeature<?, ?>> MAPLE_KEY = registerKey("maple");
@@ -90,6 +98,12 @@ public class ModConfiguredFeatures {
 	public static final RegistryKey<ConfiguredFeature<?, ?>> SPIKED_ICE_CLUSTER = registerKey("spiked_ice_cluster");
     public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_spiked_ice");
     public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
+
+	 public static final RegistryKey<ConfiguredFeature<?, ?>> DATE_PALM =
+            RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "date_palm"));
+
+    public static final RegistryKey<ConfiguredFeature<?, ?>> DESERT_WILLOW =
+            RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, Identifier.of(EntStupidStuff.MOD_ID, "desert_willow"));
 
 	//Blue Mushrom Biome
 
@@ -230,7 +244,7 @@ public class ModConfiguredFeatures {
 
 		// # Underground Mushroom Biome:
 
-		ConfiguredFeatures.register(
+		/*ConfiguredFeatures.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
 			Feature.HUGE_RED_MUSHROOM,
@@ -241,9 +255,9 @@ public class ModConfiguredFeatures {
 				),
 				2
 			)
-		);
+		);*/
 
-		/**ConfiguredFeatures.register(
+		ConfiguredFeatures.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
 			Feature.SIMPLE_RANDOM_SELECTOR,
@@ -265,14 +279,14 @@ public class ModConfiguredFeatures {
 							BlockFactory.callBlock("shroomium").getDefaultState(),
 							Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, Boolean.valueOf(false)).with(MushroomBlock.DOWN, Boolean.valueOf(false)),
 							BlockFactory.callBlock("blue_mushroom_block").getDefaultState().with(MushroomBlock.DOWN, Boolean.valueOf(false)),
-							null,
+							Blocks.AIR.getDefaultState(),
 							blockPredicate,
-							false
+							true
 						)
 					)
 				)
 			)
-		);*/
+		);
 
 		
 
@@ -436,6 +450,44 @@ public class ModConfiguredFeatures {
 				new CherryFoliagePlacer(ConstantIntProvider.create(4), ConstantIntProvider.create(0), ConstantIntProvider.create(5), 0.25F, 0.5F, 0.16666667F, 0.33333334F),
 				new TwoLayersFeatureSize(1, 0, 2)
 			)
+            .ignoreVines()
+			.build()
+		);
+
+		// # Oasis
+
+		ConfiguredFeatures.register(
+			context,
+			DATE_PALM,
+			Feature.TREE,
+			new TreeFeatureConfig.Builder(
+                BlockStateProvider.of(Blocks.OAK_LOG),
+                new StraightTrunkPlacer(6, 4, 2),
+                BlockStateProvider.of(Blocks.OAK_LEAVES),
+                new UmbrellaPalmFoliagePlacer(
+						ConstantIntProvider.create(0),
+						ConstantIntProvider.create(0)
+				),
+                new TwoLayersFeatureSize(1, 0, 2)
+            )
+            .ignoreVines()
+			.build()
+		);
+
+		ConfiguredFeatures.register(
+			context,
+			DESERT_WILLOW,
+			Feature.TREE,
+			new TreeFeatureConfig.Builder(
+                BlockStateProvider.of(Blocks.OAK_LOG),
+                new StraightTrunkPlacer(5, 3, 1),
+                BlockStateProvider.of(Blocks.OAK_LEAVES),
+                new WillowFoliagePlacer(
+                        ConstantIntProvider.create(0),
+                        ConstantIntProvider.create(0)
+                ),
+                new TwoLayersFeatureSize(1, 0, 2)
+                )
             .ignoreVines()
 			.build()
 		);

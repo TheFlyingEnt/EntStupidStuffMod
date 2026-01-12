@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 
-import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.tag.BlockTags;
@@ -85,7 +84,7 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 		return new LargerSpikedIceFeature.DripstoneGenerator(pos, isStalagmite, scale, (double)bluntness.get(random), (double)heightScale.get(random));
 	}
 
-	private void testGeneration(StructureWorldAccess world, BlockPos pos, CaveSurface.Bounded surface, LargerSpikedIceFeature.WindModifier wind) {
+	/*private void testGeneration(StructureWorldAccess world, BlockPos pos, CaveSurface.Bounded surface, LargerSpikedIceFeature.WindModifier wind) {
 		world.setBlockState(wind.modify(pos.withY(surface.getCeiling() - 1)), Blocks.DIAMOND_BLOCK.getDefaultState(), Block.NOTIFY_LISTENERS);
 		world.setBlockState(wind.modify(pos.withY(surface.getFloor() + 1)), Blocks.GOLD_BLOCK.getDefaultState(), Block.NOTIFY_LISTENERS);
 
@@ -95,7 +94,7 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 				world.setBlockState(blockPos, Blocks.CREEPER_HEAD.getDefaultState(), Block.NOTIFY_LISTENERS);
 			}
 		}
-	}
+	}*/
 
 	static final class DripstoneGenerator {
 		private BlockPos pos;
@@ -116,13 +115,13 @@ public class LargerSpikedIceFeature extends Feature<LargeDripstoneFeatureConfig>
 			return this.scale(0.0F);
 		}
 
-		private int getBottomY() {
+		/*private int getBottomY() {
 			return this.isStalagmite ? this.pos.getY() : this.pos.getY() - this.getBaseScale();
 		}
 
 		private int getTopY() {
 			return !this.isStalagmite ? this.pos.getY() : this.pos.getY() + this.getBaseScale();
-		}
+		}*/
 
 		boolean canGenerate(StructureWorldAccess world, LargerSpikedIceFeature.WindModifier wind) {
 			while (this.scale > 1) {

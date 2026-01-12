@@ -2,94 +2,122 @@ package net.ent.entstupidstuff.client.entity.passive;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 
+import com.mojang.serialization.Codec;
+
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.util.Util;
+import net.minecraft.util.function.ValueLists;
 import net.minecraft.util.math.random.Random;
 
-public class KoiVariantRegistry {
+public final class KoiVariantRegistry {
+
     private static final List<KoiVariant> VARIANTS = new ArrayList<>();
 
-    static {
+    /* ------------------------------------------------------------
+     *  VARIANT GENERATION
+     * ------------------------------------------------------------ */
 
+    static {
         for (KoiBaseColor base : KoiBaseColor.values()) {
 
-            //Register a Base Color
-            VARIANTS.add(new KoiVariant(base, null, null));
+            // Base only
+            register(
+                base.name().toLowerCase(),
+                base,
+                null,
+                null
+            );
 
             for (KoiPatternSecondary secondary : KoiPatternSecondary.values()) {
 
-                //Generate for [Secondary] + Blank
-                VARIANTS.add(new KoiVariant(base, secondary, null));
+                // Base + secondary
+                register(
+                    base.name().toLowerCase() + "_" + secondary.name().toLowerCase(),
+                    base,
+                    secondary,
+                    null
+                );
 
-                if (base.equals(KoiBaseColor.WHITE)) {
-
-                    //Generate for [Secondary] + [Main]
+                // White-only main patterns
+                if (base == KoiBaseColor.WHITE) {
                     for (KoiPatternMain main : KoiPatternMain.values()) {
-                        VARIANTS.add(new KoiVariant(base, secondary, main));
+                        register(
+                            base.name().toLowerCase() + "_" +
+                            secondary.name().toLowerCase() + "_" +
+                            main.name().toLowerCase(),
+                            base,
+                            secondary,
+                            main
+                        );
                     }
-
                 }
-                
             }
-
-
         }
-
     }
 
-    public static KoiVariant getById(int id) {
-        return VARIANTS.get(Math.floorMod(id, VARIANTS.size()));
+    private static void register(
+        String id,
+        KoiBaseColor base,
+        KoiPatternSecondary secondary,
+        KoiPatternMain main
+    ) {
+        VARIANTS.add(new KoiVariant(id, base, secondary, main));
     }
 
-    public static int getId(KoiVariant variant) {
+    /* ------------------------------------------------------------
+     *  INDEXING
+     * ------------------------------------------------------------ */
+
+   public static final IntFunction<KoiVariant> INDEX_MAPPER = index -> {
+    if (VARIANTS.isEmpty()) {
+        throw new IllegalStateException("KoiVariantRegistry is empty");
+    }
+    return VARIANTS.get(Math.floorMod(index, VARIANTS.size()));
+};
+
+    public static int getIndex(KoiVariant variant) {
         return VARIANTS.indexOf(variant);
     }
 
+    public static KoiVariant getByIndex(int index) {
+        return VARIANTS.get(Math.floorMod(index, VARIANTS.size()));
+    }
+
+    /* ------------------------------------------------------------
+     *  CODECS
+     * ------------------------------------------------------------ */
+
+    /** Used for entity data / NBT */
+    public static final Codec<KoiVariant> INDEX_CODEC =
+        Codec.INT.xmap(
+            KoiVariantRegistry::getByIndex,
+            KoiVariantRegistry::getIndex
+        );
+
+    /** Used for network sync */
+    public static final PacketCodec<ByteBuf, KoiVariant> PACKET_CODEC =
+        PacketCodecs.indexed(
+            INDEX_MAPPER,
+            KoiVariantRegistry::getIndex
+        );
+
+    /* ------------------------------------------------------------
+     *  UTIL
+     * ------------------------------------------------------------ */
+
     public static KoiVariant getRandom(Random random) {
-        return VARIANTS.get(random.nextInt(VARIANTS.size()));
-
-
-        /*double roll = random.nextDouble();
-
-        if (roll < 0.05) {
-            // 5%: plain color koi (no secondary/main)
-            List<KoiVariant> baseOnly = VARIANTS.stream()
-                    .filter(v -> v.getSecondaryPattern() == null && v.getPatternKohaku() == null)
-                    .toList();
-            return baseOnly.get(random.nextInt(baseOnly.size()));
-
-        } else if (roll < 0.65) {
-            // 60%: base + secondary, no main
-            List<KoiVariant> secondaryOnly = VARIANTS.stream()
-                    .filter(v -> v.getSecondaryPattern() != null && v.getPatternKohaku() == null)
-                    .toList();
-            return secondaryOnly.get(random.nextInt(secondaryOnly.size()));
-
-        } else {
-            // 35%: base + secondary + main
-            List<KoiVariant> fullPattern = VARIANTS.stream()
-                    .filter(v -> v.getSecondaryPattern() != null && v.getPatternKohaku() != null)
-                    .toList();
-
-            // Within this group, bias specific patterns
-            KoiVariant pick = fullPattern.get(random.nextInt(fullPattern.size()));
-
-            // Rarity tweak: make Tancho / Doitsu less common
-            if (pick.getPatternKohaku().getName().equals("Tancho") && random.nextDouble() < 0.7) {
-                // 70% chance re-roll if Tancho picked
-                return getRandom(random);
-            }
-
-            if (pick.getPatternKohaku().getName().equals("Doitsu") && random.nextDouble() < 0.5) {
-                // 50% chance re-roll if Doitsu picked
-                return getRandom(random);
-            }
-
-            return pick;
-        }*/
+        return Util.getRandom(VARIANTS, random);
     }
 
     public static int size() {
         return VARIANTS.size();
     }
-    
+
+    public static List<KoiVariant> values() {
+        return VARIANTS;
+    }
 }

@@ -22,7 +22,7 @@ public class SpikedIceHelper {
 			radius = bluntness;
 		}
 
-		double d = 0.384;
+		//double d = 0.384;
 		double e = radius / scale * 0.384;
 		double f = 0.75 * Math.pow(e, 1.3333333333333333);
 		double g = Math.pow(e, 0.6666666666666666);
@@ -36,7 +36,7 @@ public class SpikedIceHelper {
 		if (canGenerateOrLava(world, pos)) {
 			return false;
 		} else {
-			float f = 6.0F;
+			//float f = 6.0F;
 			float g = 6.0F / (float)height;
 
 			for (float h = 0.0F; h < (float) (Math.PI * 2); h += g) {
