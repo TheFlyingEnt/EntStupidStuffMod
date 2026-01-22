@@ -70,7 +70,7 @@
     ],
     "fallback": {
       "type": "minecraft:model",
-      "model": "minecraft:item"
+      "model": "entstupidstuff:item/butterfly_jar_yellow"
     }
   }
 }

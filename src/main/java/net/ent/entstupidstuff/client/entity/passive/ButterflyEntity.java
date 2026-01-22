@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
@@ -47,8 +48,12 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -256,13 +261,20 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
         return Mob.createMobAttributes()
             .add(Attributes.MAX_HEALTH, 8.0)
             .add(Attributes.MOVEMENT_SPEED, 0.2)
-            .add(Attributes.FLYING_SPEED, 0.35);
+            .add(Attributes.FLYING_SPEED, 0.35)
+            .add(Attributes.TEMPT_RANGE, 10.0);
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new BFWanderAroundGoal(this));
-        this.goalSelector.addGoal(2, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, (itemStack) -> {
+            return itemStack.is(ItemTags.BEE_FOOD);
+        }, false));
+        this.goalSelector.addGoal(3, new BFWanderAroundGoal(this));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
     }
 
     @Override

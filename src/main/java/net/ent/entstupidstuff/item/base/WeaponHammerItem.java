@@ -1,20 +1,29 @@
 package net.ent.entstupidstuff.item.base;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
+import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.fabricmc.fabric.api.item.v1.FabricItem.Settings;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,7 +36,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -67,54 +78,54 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
     public double attackDamageBonus() {
         return ATTACK_DAMAGE;
     }
-    
 
-    /*@Override
-    public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
+        super.appendHoverText(stack, context, displayComponent, textConsumer, type);
 
-        super.appendTooltip(itemStack, context, tooltip, type);
-
-        var client = net.minecraft.client.MinecraftClient.getInstance();
-        long handle = client.getWindow().getHandle();
-        boolean shiftHeld = InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) 
-                        || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT);
+        var client = Minecraft.getInstance();
+        boolean shiftHeld = InputConstants.isKeyDown(client.getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) 
+                        || InputConstants.isKeyDown(client.getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
 
         if (type.isAdvanced() && client.player != null) {
-            boolean hasTwoHandsFree = client.player.getOffHandStack().isEmpty() || client.player.getMainHandStack().isEmpty();
+            boolean hasTwoHandsFree = client.player.getOffhandItem().isEmpty() || client.player.getMainHandItem().isEmpty();
 
             // Two-Handed I tooltip
-            Formatting twoHandedColor = hasTwoHandsFree ? Formatting.GRAY : Formatting.RED;
-            tooltip.add(Text.literal("Two-Handed I").formatted(twoHandedColor));
+            ChatFormatting twoHandedColor = hasTwoHandsFree ? ChatFormatting.GRAY : ChatFormatting.RED;
+            textConsumer.accept(Component.literal("Two-Handed I").withStyle(twoHandedColor));
 
             if (shiftHeld) {
-                tooltip.add(Text.literal("- Holding Two Items decreases Damage").formatted(Formatting.GRAY));
+                textConsumer.accept(Component.literal("- Holding Two Items decreases Damage").withStyle(ChatFormatting.GRAY));
             }
         }
 
         // Ground Pound tooltip
-        tooltip.add(Text.literal("Ground Pound").formatted(Formatting.GRAY));
+        textConsumer.accept(Component.literal("Ground Pound").withStyle(ChatFormatting.GRAY));
 
         if (shiftHeld && client.player != null) {
-            boolean hasTwoHandsFree = client.player.getOffHandStack().isEmpty() || client.player.getMainHandStack().isEmpty();
+            boolean hasTwoHandsFree = client.player.getOffhandItem().isEmpty() || client.player.getMainHandItem().isEmpty();
             String percent = hasTwoHandsFree ? "50% " : "25% ";
-            Formatting percentColor = hasTwoHandsFree ? Formatting.GRAY : Formatting.RED;
+            ChatFormatting percentColor = hasTwoHandsFree ? ChatFormatting.GRAY : ChatFormatting.RED;
 
-            tooltip.add(
-                Text.literal("- Right Clicking on a Block causes AoE Damage worth ")
-                    .formatted(Formatting.GRAY)
-                    .append(Text.literal(percent).formatted(percentColor))
-                    .append(Text.literal("of Weapon's Damage").formatted(Formatting.GRAY))
+            textConsumer.accept(
+                Component.literal("- Right Clicking on a Block causes AoE Damage worth ")
+                    .withStyle(ChatFormatting.GRAY)
+                    .append(Component.literal(percent).withStyle(percentColor))
+                    .append(Component.literal("of Weapon's Damage").withStyle(ChatFormatting.GRAY))
             );
         }
 
         // Shift Hint
         if (!shiftHeld) {
-            tooltip.add(Text.literal("Hold SHIFT for more info").formatted(Formatting.DARK_GRAY));
-            tooltip.add(Text.empty());
+            textConsumer.accept(Component.literal("Hold SHIFT for more info").withStyle(ChatFormatting.DARK_GRAY));
+            textConsumer.accept(Component.empty());
         }
 
         //item.entstupidstuff.double_hand.tooltip
-    }*/
+
+
+
+    }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -127,8 +138,14 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         if (!world.isClientSide() && player != null) {
 
             //Adding Cooldown & Durability Damage
-            player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
-            stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
+            if (player.getMainHandItem().getItem() instanceof WeaponHammerItem) {
+                player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
+                stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
+            }
+            else if (player.getOffhandItem().getItem() instanceof WeaponHammerItem) {
+                player.getCooldowns().addCooldown(player.getOffhandItem(), COOLDOWN_TICKS);
+                stack.hurtAndBreak(2, player, EquipmentSlot.OFFHAND);
+            }
 
             //Getting Attack Pos
             Vec3 attackPos = pos.getCenter();
@@ -197,6 +214,19 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
 
     @Override
 	public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+
+            if (player.getMainHandItem().getItem() instanceof WeaponHammerItem) {
+                stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
+            }
+            else if (player.getOffhandItem().getItem() instanceof WeaponHammerItem) {
+                stack.hurtAndBreak(1, attacker, EquipmentSlot.OFFHAND);
+            }
+        }
+
+
 		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 	}
     

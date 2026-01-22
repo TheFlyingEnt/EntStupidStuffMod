@@ -6,6 +6,9 @@ import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
+import net.ent.entstupidstuff.event.callback.DualDaggerHandler;
+import net.ent.entstupidstuff.event.callback.ModDataComponents;
+import net.ent.entstupidstuff.event.callback.ServerDelayedTasks;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
@@ -95,6 +98,12 @@ public class EntStupidStuff implements ModInitializer {
 		ScreenHandlerFactory.registerScreenHandlers();
 
 		ModDataComponentTypes.register();
+
+		//ServerDelayedTasks.init();
+
+		//ModDataComponents.register();
+
+		
 		
 	}
 

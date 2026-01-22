@@ -42,6 +42,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         translationBuilder.add("subtitles.ent.combat." + "hammer.ground", "Ground Smash");
 
+        translationBuilder.add("subtitles.entity.generic.underwater_explode", "Underwater Explosion");
+        translationBuilder.add("subtitles.entity.sporeper.explode", "Sporeper Explodes");
+
         //The Fire of the Hunt Update:
 
         translationBuilder.add("item.entstupidstuff." + "wither_bone", "Wither Bone");
@@ -146,6 +149,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "skeleton_metal" + "_spawn_egg", "Metal Skeleton Spawn Egg");
         translationBuilder.add("item.entstupidstuff." + "skeleton_phantom" + "_spawn_egg", "Phantom Skeleton Spawn Egg");
 
+        translationBuilder.add("combat.hammer.ground", "Hammer Smash");
+        translationBuilder.add("combat.cannon.fire", "Cannon Fired");
+
         // Weapons
 
         translationBuilder.add(ItemFactory.callItem("wooden_claymore"), "Wooden Claymore");
@@ -175,6 +181,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.callItem("golden_hammer"), "Golden Hammer");
         translationBuilder.add(ItemFactory.callItem("diamond_hammer"), "Diamond Hammer");
         translationBuilder.add(ItemFactory.callItem("netherite_hammer"), "Netherite Hammer");
+
+        translationBuilder.add(ItemFactory.DOUBLE_BARREL_CROSSBOW, "Double-barrel Crossbow");
+        translationBuilder.add(ItemFactory.FLINTLOCK_CROSSBOW, "Flintlock Crossbow");
 
         // Shields
 

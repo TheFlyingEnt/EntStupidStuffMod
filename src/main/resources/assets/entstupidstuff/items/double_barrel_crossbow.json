@@ -1,0 +1,55 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "entstupidstuff:item/double_barrel_crossbow_ready_1"
+        },
+        "when": 1
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "entstupidstuff:item/double_barrel_crossbow_ready"
+        },
+        "when": 2
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:condition",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "entstupidstuff:item/double_barrel_crossbow_unloaded"
+      },
+      "on_true": {
+        "type": "minecraft:range_dispatch",
+        "entries": [
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "entstupidstuff:item/double_barrel_crossbow_load"
+            },
+            "threshold": 0.58
+          },
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "entstupidstuff:item/double_barrel_crossbow_load_2"
+            },
+            "threshold": 1.0
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "entstupidstuff:item/double_barrel_crossbow_unloaded"
+        },
+        "property": "minecraft:crossbow/pull"
+      },
+      "property": "minecraft:using_item"
+    },
+    "property": "minecraft:component",
+    "component": "entstupidstuff:loaded_arrows"
+  }
+}

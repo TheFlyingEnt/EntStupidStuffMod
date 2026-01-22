@@ -61,6 +61,9 @@ public abstract class GameRendererMixin {
             } else if (livingEntity.hasEffect(ModEffects.CREEPER)) {
                 // Apply RGB shift post-processor
                 this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "creeper"));
+            } else if (livingEntity.hasEffect(ModEffects.HALLUC)) {
+                // Apply RGB shift post-processor
+                this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "hallucinating"));
             } else if (this.effectActive) {
                 // Clear if we had it enabled but effect is gone
                 this.clearPostEffect();

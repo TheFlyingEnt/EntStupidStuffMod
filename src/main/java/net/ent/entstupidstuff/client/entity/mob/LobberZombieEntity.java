@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -61,35 +62,28 @@ public class LobberZombieEntity extends Zombie {
         this.getAttribute(Attributes.ARMOR).setBaseValue(2.0D);
     }
 
-    /* Sounds */
-    @Override
-	protected SoundEvent getAmbientSound() {
-		return SoundEvents.HUSK_AMBIENT;
-	}
+    //Sound Code:
+    protected SoundEvent getAmbientSound() {
+        return SoundFactory.ENTITY_LOBBER_AMBIENT;
+    }
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.HUSK_HURT;
-	}
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return SoundFactory.ENTITY_LOBBER_HURT;
+    }
 
-	@Override
-	protected SoundEvent getDeathSound() {
-		return SoundEvents.HUSK_DEATH;
-	}
+    protected SoundEvent getDeathSound() {
+        return SoundFactory.ENTITY_LOBBER_DEATH;
+    }
 
-	@Override
-	protected SoundEvent getStepSound() {
-		return SoundEvents.HUSK_STEP;
-	}
+    protected SoundEvent getStepSound() {
+        return SoundFactory.ENTITY_LOBBER_STEP;
+    }
 
 	@Override
 	protected boolean convertsInWater() {
 		return true;
 	}
 
-	
-
-    
 
     /* Drown Code */
     @Override

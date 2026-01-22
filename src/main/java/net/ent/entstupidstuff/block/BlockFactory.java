@@ -245,6 +245,7 @@ public class BlockFactory {
                 .noCollision()
                 .sound(SoundType.SPORE_BLOSSOM)
                 .pushReaction(PushReaction.DESTROY)
+                .lightLevel(state -> 4)
         );
 
         // # Adding Andersite, Diorite and Granite
@@ -612,17 +613,21 @@ public class BlockFactory {
         if (isNatural) {
 
 
+            @SuppressWarnings("unused")
             Block LOG = register2(blockName + "_log" + suffix, 
             (settings) -> new RotatedPillarBlock(settings),
                 Blocks.logProperties(mapColor, mapColor, SoundType.WOOD));
 
+            @SuppressWarnings("unused")
             Block STRIPPED_LOG = register2("stripped_" + blockName + "_log" + suffix, 
             (settings) -> new RotatedPillarBlock(settings),
                 Blocks.logProperties(mapColor, mapColor, SoundType.WOOD));
 
+            @SuppressWarnings("unused")
             Block WOOD = register(blockName + "_wood" + suffix, 
                 new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
 
+            @SuppressWarnings("unused")
             Block STRIPPED_WOOD = register("stripped_" + blockName + "_wood" + suffix, 
                 new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
 
@@ -671,6 +676,7 @@ public class BlockFactory {
         Block TRAP_DOOR = register(blockName + "_trapdoor" + suffix, 
             new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
 
+        @SuppressWarnings("unused")
         Block GLASS_TRAP_DOOR = register(blockName + "_glass_trapdoor" + suffix, 
             new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
 
@@ -768,12 +774,15 @@ public class BlockFactory {
         /*if (varient == null) {varient = "";}
         else {varient = "_" + varient;}*/
 
+        @SuppressWarnings("unused")
         Block MOSAIC  = register(blockName + "_mosaic" + varient,
             new Block(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
 
+        @SuppressWarnings("unused")
         Block MOSAIC_STAIRS = register(blockName + "_mosaic_stairs" + varient, 
             new StairBlock(baseBlock.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(baseBlock))); 
 
+        @SuppressWarnings("unused")
         Block MOSAIC_SLAB = register(blockName + "_mosaic_slab" + varient, 
             new SlabBlock(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
 
@@ -879,42 +888,50 @@ public class BlockFactory {
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Stairs = register3(blockName + "_brick_stairs",
                 (settings) -> new StairBlock(Bricks.defaultBlockState(), settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Slab = register3(blockName + "_brick_slab",
                 (settings) -> new SlabBlock(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Wall = register3(blockName + "_brick_wall",
                 (settings) -> new WallBlock(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Chiseled = register3(blockName + "_brick_chiseled",
                 (settings) -> new Block(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Cracked = register3("cracked_" + blockName + "_bricks",
                 (settings) -> new Block(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
         } else {  
+            @SuppressWarnings("unused")
             Block Normal_Stairs = register3(blockName + "_stairs",
                 (settings) -> new StairBlock(familyBlock.defaultBlockState(), settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Normal_Slab = register3(blockName + "_slab",
                 (settings) -> new SlabBlock(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
             );
 
+            @SuppressWarnings("unused")
             Block Normal_Wall = register3(blockName + "_wall",
                 (settings) -> new WallBlock(settings),
                 BlockBehaviour.Properties.ofFullCopy(familyBlock)
@@ -932,6 +949,7 @@ public class BlockFactory {
 
         if (isNatural) {
 
+            @SuppressWarnings("unused")
             Block LOG = register3(blockName + "_log" + suffix,
                 settings -> new RotatedPillarBlock(settings
                     .mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? mapColor : mapColor)
@@ -943,6 +961,7 @@ public class BlockFactory {
                 ),
                 BlockBehaviour.Properties.of());
 
+            @SuppressWarnings("unused")
             Block STRIPPED_LOG = register3("stripped_" + blockName + "_log" + suffix,
                 settings -> new RotatedPillarBlock(settings
                     .mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? mapColor : mapColor)
@@ -954,6 +973,7 @@ public class BlockFactory {
                 ),
                 BlockBehaviour.Properties.of());
 
+            @SuppressWarnings("unused")
             Block WOOD = register3(blockName + "_wood" + suffix,
                 settings -> new RotatedPillarBlock(settings
                     .mapColor(mapColor)
@@ -965,6 +985,7 @@ public class BlockFactory {
                 ),
                 BlockBehaviour.Properties.of());
 
+            @SuppressWarnings("unused")
             Block STRIPPED_WOOD = register3("stripped_" + blockName + "_wood" + suffix,
                 settings -> new RotatedPillarBlock(settings
                     .mapColor(mapColor)
@@ -1024,7 +1045,7 @@ public class BlockFactory {
             settings -> new TrapDoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor(mapColor).noOcclusion()),
             BlockBehaviour.Properties.of());
 
-        @SuppressWarnings("static-access")
+        @SuppressWarnings({ "static-access", "unused" })
         Block GLASS_TRAP_DOOR = register3(blockName + "_glass_trapdoor" + suffix,
             settings -> new TrapDoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor(mapColor).noOcclusion()),
             BlockBehaviour.Properties.of());
@@ -1141,7 +1162,8 @@ public class BlockFactory {
 
 
     private static BlockBehaviour.Properties copyLootTable(Block block, boolean copyTranslationKey) {
-		BlockBehaviour.Properties settings = block.properties();
+		@SuppressWarnings("unused")
+        BlockBehaviour.Properties settings = block.properties();
 		BlockBehaviour.Properties settings2 = BlockBehaviour.Properties.of().overrideLootTable(block.getLootTable());
 		if (copyTranslationKey) {
 			settings2 = settings2.overrideDescription(block.getDescriptionId());
@@ -1281,7 +1303,7 @@ public class BlockFactory {
 
     public static final Consumable CONS_SHROOM = Consumable.builder()
         .consumeSeconds(1.6F).animation(ItemUseAnimation.EAT).sound(SoundEvents.GENERIC_EAT).hasConsumeParticles(true)
-        .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(ModEffects.RGB_SHIFT, 600, 0), 0.8F))
+        .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(ModEffects.HALLUC, 600, 0), 0.8F))
         .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.NAUSEA, 600, 0), 0.8F)).build();
 
     private static void registerBlockItem2_custom_mushroom(String name, Block block) {

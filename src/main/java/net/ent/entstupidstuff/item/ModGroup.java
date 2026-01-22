@@ -163,7 +163,16 @@ public class ModGroup {
         ModGroup.addToServer("armored_pillager_spawn_egg");
         ModGroup.addToServer("piglin_warrior_spawn_egg");
         ModGroup.addToServer("soul_skeleton_spawn_egg");
-        ModGroup.addToServer("bass");
+
+        ModGroup.addToServer("zebra_fish_spawn_egg");
+        ModGroup.addToServer("alligator_gar_bucket");
+        ModGroup.addToServer("mackerel_spawn_egg");
+        ModGroup.addToServer("bass_spawn_egg");
+        ModGroup.addToServer("fur_trout_spawn_egg");
+        ModGroup.addToServer("koi_spawn_egg");
+        ModGroup.addToServer("perch_spawn_egg");
+        ModGroup.addToServer("mahimahi_spawn_egg");
+        ModGroup.addToServer("snapper_spawn_egg");
 
         //Blocks
         addWoodPlain("fungal");
@@ -240,6 +249,14 @@ public class ModGroup {
         ModGroup.addToServerBlock("granite" + "_brick_slab");
         ModGroup.addToServerBlock("granite" + "_brick_wall");
         ModGroup.addToServerBlock("granite" + "_brick_chiseled");
+
+        //Mushroom Blocks
+        ModGroup.addToServerBlock("blue_mushroom");
+        ModGroup.addToServerBlock("blue_mushroom_block");
+        ModGroup.addToServerBlock("shroomium");
+        ModGroup.addToServerBlock("crystal_block");
+        ModGroup.addToServerBlock("mushroom_bed");
+        ModGroup.addToServerBlock("fungal_spore_blossom");
 
         
         

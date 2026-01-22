@@ -6,14 +6,15 @@ import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.client.entity.ai.CannonAttackGoal;
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
-import net.ent.entstupidstuff.client.entity.mob.MetalSkeletonEntity.MetalSkeletonVariant;
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.CannonItem;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
@@ -97,23 +98,6 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 	public PhantomSkeletonEntity(EntityType<? extends PhantomSkeletonEntity> entityType, Level world) {
         super(entityType, world);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	@Override
 	protected void registerGoals() {
@@ -273,6 +257,27 @@ public class PhantomSkeletonEntity extends GenericSkeletonCrossbow{
 		super.performRangedAttack(target, pullProgress);
 
 	}
+
+	
+
+	// Sound Effect:
+
+	protected SoundEvent getAmbientSound() {
+		return SoundFactory.ENTITY_PHANTOM_SKELETON_AMBIENT;
+	}
+
+	protected SoundEvent getHurtSound(DamageSource damageSource) {
+		return SoundFactory.ENTITY_PHANTOM_SKELETON_HURT;
+	}
+
+	protected SoundEvent getDeathSound() {
+		return SoundFactory.ENTITY_PHANTOM_SKELETON_DEATH;
+	}
+
+	SoundEvent getStepSound() {
+		return SoundFactory.ENTITY_PHANTOM_SKELETON_STEP;
+	}
+
 
 
 }

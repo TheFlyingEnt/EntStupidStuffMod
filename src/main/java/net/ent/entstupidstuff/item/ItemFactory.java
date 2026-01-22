@@ -8,12 +8,14 @@ import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
 import net.ent.entstupidstuff.item.base.BassBucketItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
 import net.ent.entstupidstuff.item.base.CannonballItem;
+import net.ent.entstupidstuff.item.base.FlintlockPistolItem;
+import net.ent.entstupidstuff.item.base.DoubleBarrelCrossbowItem;
+import net.ent.entstupidstuff.item.base.DummyCrossbow;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.item.base.KoiBucketItem;
 import net.ent.entstupidstuff.item.base.MahiMahiBucketItem;
@@ -21,9 +23,9 @@ import net.ent.entstupidstuff.item.base.PerchBucketItem;
 import net.ent.entstupidstuff.item.base.PrismerineArrowItem;
 import net.ent.entstupidstuff.item.base.WeaponBattleAxeItem;
 import net.ent.entstupidstuff.item.base.WeaponClaymoreItem;
+import net.ent.entstupidstuff.item.base.WeaponDaggerNew;
 import net.ent.entstupidstuff.item.base.WeaponGlaiveItem;
 import net.ent.entstupidstuff.item.base.WeaponHammerItem;
-import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
 import net.ent.entstupidstuff.item.base.ZebraFishBucketItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponGlaiveItem22;
@@ -134,7 +136,7 @@ public class ItemFactory {
     public static final Item HUNT_ARMOR_TRIM_SMITHING_TEMPLATE = null;
 
     public static final Item PIGLIN_WARRIOR_SPAWN = registerItem("piglin_warrior_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.PIGLIN_WARRIOR)));
-    public static final Item BLAZING_INFERNO_SPAWN = registerItem("blazing_inferno_spawn_egg", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.HOVERING_INFERNO)));
+    public static final Item BLAZING_INFERNO_SPAWN = registerItem("blazing_inferno_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.HOVERING_INFERNO)));
     public static final Item SOUL_SKELETON_SPAWN = registerItem("soul_skeleton_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SOUL_SKELETON)));
 
     // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
@@ -184,18 +186,22 @@ public class ItemFactory {
     public static final Item CANNON_BALL_ITEM = registerItem("cannon_ball", settings -> new CannonballItem(settings.component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
     public static final Item CANNON_ITEM = registerItem("cannon", settings -> new CannonItem(settings));
     public static final Item PRISMERINE_ARROW = registerItem("prismerine_arrow", settings -> new PrismerineArrowItem(settings));
+    public static final Item FLINTLOCK_CROSSBOW = registerItem("flintlock_crossbow", settings -> new FlintlockPistolItem(settings)); //flintlock
+    public static final Item DOUBLE_BARREL_CROSSBOW = registerItem("double_barrel_crossbow", settings -> new DoubleBarrelCrossbowItem(settings)); //flintlock_two
+    public static final Item DUMMY_CROSSBOW = registerItem("dummy_crossbow", settings -> new DummyCrossbow(settings));
+
 
     public static final Item SUNKEN_SKELETON_SPAWN = registerItem("sunken_skeleton_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SUNKEN_SKELETON)));
     public static final Item SUNKEN_SKELETON2_SPAWN = registerItem("sunken_skeleton2_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SUNKEN_SKELETON_CROSSBOW)));
-    public static final Item SKELETON_PIRATE_CAPTAIN_SPAWN = registerItem("skeleton_pirate_captain_spawn_egg", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.SKELETON_PIRATE_CAPTAIN)));
-    public static final Item METAL_SKELETON_SPAWN = registerItem("skeleton_metal_spawn_egg", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.METAL_SKELETON)));
+    public static final Item SKELETON_PIRATE_CAPTAIN_SPAWN = registerItem("skeleton_pirate_captain_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SKELETON_PIRATE_CAPTAIN)));
+    public static final Item METAL_SKELETON_SPAWN = registerItem("skeleton_metal_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.METAL_SKELETON)));
     public static final Item ASHEN_SKELETON_SPAWN = null;
 
     public static final Item SUNKEN_DROWN_SPAWN = null;
-    public static final Item ANCIENT_DROWN_SPAWN = registerItem("ancient_drowned", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.ANCIENT_DROWNED)));
+    public static final Item ANCIENT_DROWN_SPAWN = registerItem("ancient_drowned", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.ANCIENT_DROWNED)));
     public static final Item ANCIENT_TRIDENT = registerItem("ancient_trident", settings -> new AncientTridentItem((settings).rarity(Rarity.EPIC).durability(250).attributes(AncientTridentItem.createAttributes()).component(DataComponents.TOOL, AncientTridentItem.createToolProperties())));
 
-    public static final Item PHANTOM_SKELETON_SPAWN = registerItem("skeleton_phantom_spawn_egg", settings -> new SpawnEggItem( settings.spawnEgg(EntityFactory.PHANTOM_SKELETON)));
+    public static final Item PHANTOM_SKELETON_SPAWN = registerItem("skeleton_phantom_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.PHANTOM_SKELETON)));
     public static final Item PHANTOM_PILLAGER_SPAWN = null;
     public static final Item PHANTOM_VINDICATOR_SPAWN = null;
 
@@ -324,7 +330,7 @@ public class ItemFactory {
     public static final Item COPPER_DAGGER = registerItem("copper_dagger", settings -> new DaggerItem(ToolMaterial.COPPER, settings));
     public static final Item IRON_DAGGER = registerItem("iron_dagger", settings -> new DaggerItem(ToolMaterial.IRON, settings));
     public static final Item DIAMOND_DAGGER = registerItem("diamond_dagger", settings -> new DaggerItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_DAGGER = registerItem("netherite_dagger", settings -> new DaggerItem(ToolMaterial.NETHERITE, settings.fireResistant()));
+    public static final Item NETHERITE_DAGGER = registerItem("netherite_dagger", settings -> new WeaponDaggerNew(settings.fireResistant().sword(ToolMaterial.WOOD, 3.0F, -2.4F)));
 
     public static final Item WOODEN_LONG_SWORD = registerItem("wooden_long_sword", settings -> new LongSwordItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_LONG_SWORD = registerItem("stone_long_sword", settings -> new LongSwordItem(ToolMaterial.STONE, settings));

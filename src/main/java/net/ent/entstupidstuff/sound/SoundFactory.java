@@ -16,10 +16,88 @@ public class SoundFactory {
 	public static final SoundEvent ENTITY_METAL_SKELETON_SHOOT = registerSoundEvent("entity.metal_skeleton.shoot");
 	public static final SoundEvent ENTITY_METAL_SKELETON_STEP = registerSoundEvent("entity.metal_skeleton.step");
 
-    public static final SoundEvent COMBAT_HAMMER_GROUND = registerSoundEvent("combat.hammer.ground");
-    public static final SoundEvent COMBAT_CANNON_FIRE = registerSoundEvent("combat.cannon.fire");
-    public static final Holder.Reference<SoundEvent> ENTITY_SPOREPER_EXPLODE = registerReference("entity.sporeper.explode");
+    public static final SoundEvent COMBAT_HAMMER_GROUND = registerSoundEvent("combat.hammer.ground"); //TODO: change to item.hammer.smash_ground
+    public static final SoundEvent COMBAT_CANNON_FIRE = registerSoundEvent("combat.cannon.fire"); //TODO: change to item.cannon.fire
+    //public static final SoundEvent COMBAT_CANNON_HIT = registerSoundEvent("item.cannon.hit"); //TODO: change to item.cannon.hit
+    //public static final Holder<SoundEvent> COMBAT_CANNON_LOADING_END = registerForHolder("item.cannon.loading_end"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_CANNON_LOADING_MIDDLE = registerForHolder("item.cannon.loading_middle"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_CANNON_LOADING_START = registerForHolder("item.cannon.loading_start"); //TODO: ADD SOUND
+
+    //public static final SoundEvent COMBAT_DB_CROSSBOW_FIRE = registerSoundEvent("combat.db_crossbow.fire"); //TODO: ADD SOUND
+    //public static final SoundEvent COMBAT_DB_CROSSBOW_HIT = registerSoundEvent("item.db_crossbow.hit"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_DB_CROSSBOW_LOADING_END = registerForHolder("item.db_crossbow.loading_end"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_DB_CROSSBOW_LOADING_MIDDLE = registerForHolder("item.db_crossbow.loading_middle"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_DB_CROSSBOW_LOADING_START = registerForHolder("item.db_crossbow.loading_start"); //TODO: ADD SOUND
+
+    //public static final SoundEvent COMBAT_FL_CROSSBOW_FIRE = registerSoundEvent("combat.fl_crossbow.fire"); //TODO: ADD SOUND
+    //public static final SoundEvent COMBAT_FL_CROSSBOW_HIT = registerSoundEvent("item.fl_crossbow.hit"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_FL_CROSSBOW_LOADING_END = registerForHolder("item.fl_crossbow.loading_end"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_FL_CROSSBOW_LOADING_MIDDLE = registerForHolder("item.fl_crossbow.loading_middle"); //TODO: ADD SOUND
+    //public static final Holder<SoundEvent> COMBAT_FL_CROSSBOW_LOADING_START = registerForHolder("item.fl_crossbow.loading_start"); //TODO: ADD SOUND
+
+    //public static final SoundEvent PIGLIN_WARRIOR_AMBIENT = registerSoundEvent("entity.piglin_warrior.ambient");
+    //public static final SoundEvent PIGLIN_WARRIOR_ANGRY = registerSoundEvent("entity.piglin_warrior.angry");
+    //public static final SoundEvent PIGLIN_WARRIOR_DEATH = registerSoundEvent("entity.piglin_warrior.death");
+    //public static final SoundEvent PIGLIN_WARRIOR_HURT = registerSoundEvent("entity.piglin_warrior.hurt");
+    //public static final SoundEvent PIGLIN_WARRIOR_STEP = registerSoundEvent("entity.piglin_warrior.step");
+    //public static final SoundEvent PIGLIN_WARRIOR_CONVERTED_TO_ZOMBIFIED = registerSoundEvent("entity.piglin_warrior.converted_to_zombified");
+
+
+    public static final Holder.Reference<SoundEvent> ENTITY_SPOREPER_EXPLODE = registerReference("entity.sporeper.explode"); //TODO: Add Sporeper Hurt and Death Sounds
     public static final Holder.Reference<SoundEvent> ENTITY_GENERIC_UNDERWATER_EXPLODE = registerReference("entity.generic.underwater_explode");
+
+    /*//TODO: Add the Following Mob Sounds:
+        ZOMBIE_LOBBER
+        ZOMBIE_SCORCHED
+        ZOMBIE_SLIMED
+        ZOMBIE_FROSTBITTEN
+        ZOMBIE_FUNGAL
+        FUNGAL_SKELETON //name change to Sporekin or Veil?
+
+        BUTTERFLY
+        PHANTOM_SKELETON
+    */
+
+    public static final SoundEvent ENTITY_LOBBER_AMBIENT = registerSoundEvent("entity.lobber.ambient");
+    public static final SoundEvent ENTITY_LOBBER_CONVERTED_TO_ZOMBIE = registerSoundEvent("entity.lobber.converted_to_zombie");
+    public static final SoundEvent ENTITY_LOBBER_DEATH = registerSoundEvent("entity.lobber.death");
+    public static final SoundEvent ENTITY_LOBBER_HURT = registerSoundEvent("entity.lobber.hurt");
+    public static final SoundEvent ENTITY_LOBBER_STEP = registerSoundEvent("entity.lobber.step");
+
+    public static final SoundEvent ENTITY_SCORCHED_AMBIENT = registerSoundEvent("entity.scorched.ambient");
+    public static final SoundEvent ENTITY_SCORCHED_CONVERTED_TO_ZOMBIE = registerSoundEvent("entity.scorched.converted_to_zombie");
+    public static final SoundEvent ENTITY_SCORCHED_DEATH = registerSoundEvent("entity.scorched.death");
+    public static final SoundEvent ENTITY_SCORCHED_HURT = registerSoundEvent("entity.scorched.hurt");
+    public static final SoundEvent ENTITY_SCORCHED_STEP = registerSoundEvent("entity.scorched.step");
+
+    public static final SoundEvent ENTITY_SLIMED_AMBIENT = registerSoundEvent("entity.slimed.ambient");
+    public static final SoundEvent ENTITY_SLIMED_CONVERTED_TO_ZOMBIE = registerSoundEvent("entity.slimed.converted_to_zombie");
+    public static final SoundEvent ENTITY_SLIMED_DEATH = registerSoundEvent("entity.slimed.death");
+    public static final SoundEvent ENTITY_SLIMED_HURT = registerSoundEvent("entity.slimed.hurt");
+    public static final SoundEvent ENTITY_SLIMED_STEP = registerSoundEvent("entity.slimed.step");
+
+    public static final SoundEvent ENTITY_FROSTBITTEN_AMBIENT = registerSoundEvent("entity.frostbitten.ambient");
+    public static final SoundEvent ENTITY_FROSTBITTEN_CONVERTED_TO_ZOMBIE = registerSoundEvent("entity.frostbitten.converted_to_zombie");
+    public static final SoundEvent ENTITY_FROSTBITTEN_DEATH = registerSoundEvent("entity.frostbitten.death");
+    public static final SoundEvent ENTITY_FROSTBITTEN_HURT = registerSoundEvent("entity.frostbitten.hurt");
+    public static final SoundEvent ENTITY_FROSTBITTEN_STEP = registerSoundEvent("entity.frostbitten.step");
+
+    public static final SoundEvent ENTITY_FUNGAL_SKELETON_AMBIENT = registerSoundEvent("entity.fungal_skeleton.ambient");
+	public static final SoundEvent ENTITY_FUNGAL_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.fungal_skeleton.converted_to_stray");
+	public static final SoundEvent ENTITY_FUNGAL_SKELETON_DEATH = registerSoundEvent("entity.fungal_skeleton.death");
+	public static final SoundEvent ENTITY_FUNGAL_SKELETON_HURT = registerSoundEvent("entity.fungal_skeleton.hurt");
+	public static final SoundEvent ENTITY_FUNGAL_SKELETON_SHOOT = registerSoundEvent("entity.fungal_skeleton.shoot");
+	public static final SoundEvent ENTITY_FUNGAL_SKELETON_STEP = registerSoundEvent("entity.fungal_skeleton.step");
+
+    public static final SoundEvent ENTITY_PHANTOM_SKELETON_AMBIENT = registerSoundEvent("entity.phantom_skeleton.ambient");
+	public static final SoundEvent ENTITY_PHANTOM_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.phantom_skeleton.converted_to_stray");
+	public static final SoundEvent ENTITY_PHANTOM_SKELETON_DEATH = registerSoundEvent("entity.phantom_skeleton.death");
+	public static final SoundEvent ENTITY_PHANTOM_SKELETON_HURT = registerSoundEvent("entity.phantom_skeleton.hurt");
+	public static final SoundEvent ENTITY_PHANTOM_SKELETON_SHOOT = registerSoundEvent("entity.phantom_skeleton.shoot");
+	public static final SoundEvent ENTITY_PHANTOM_SKELETON_STEP = registerSoundEvent("entity.phantom_skeleton.step");
+
+    //public static final SoundEvent BUTTERFLY_DEATH = registerSoundEvent("entity.butterfly.death");
+    //public static final SoundEvent BUTTERFLY_HURT = registerSoundEvent("entity.butterfly.hurt");
 
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_AMBIENT = registerSoundEvent("entity.alligator_gar.ambient");
     public static final SoundEvent ENTITY_ALLIGATOR_GAR_DEATH = registerSoundEvent("entity.alligator_gar.death");

@@ -3,14 +3,19 @@ package net.ent.entstupidstuff.client.entity.mob;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
+
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -136,5 +141,22 @@ public class FrostbittenZombieEntity extends Zombie{
 	public Variant getVariant() {
 		return Variant.byId(this.entityData.get(VARIANT)); // Ensure it retrieves from dataTracker
 	}
+
+    //Sound Code:
+    protected SoundEvent getAmbientSound() {
+        return SoundFactory.ENTITY_FROSTBITTEN_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return SoundFactory.ENTITY_FROSTBITTEN_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundFactory.ENTITY_FROSTBITTEN_DEATH;
+    }
+
+    protected SoundEvent getStepSound() {
+        return SoundFactory.ENTITY_FROSTBITTEN_STEP;
+    }
     
 }

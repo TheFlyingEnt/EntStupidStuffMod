@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.client.entity.ai.SporeperIgniteGoal;
-import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.particles.ExplosionParticleInfo;

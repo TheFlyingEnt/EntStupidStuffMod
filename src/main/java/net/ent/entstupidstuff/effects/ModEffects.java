@@ -17,6 +17,7 @@ public class ModEffects {
     public static final Holder<MobEffect> RGB_SHIFT = register("rgb_shift", new RGBShiftEffect());
     public static final Holder<MobEffect> BLUR = register("blur", new RGBShiftEffect());
     public static final Holder<MobEffect> CREEPER = register("creeper", new RGBShiftEffect());
+    public static final Holder<MobEffect> HALLUC = register("hallucinating", new HallucinatingEffect());
 
     /*
      * public static final RegistryEntry<StatusEffect> INVISIBILITY = register(

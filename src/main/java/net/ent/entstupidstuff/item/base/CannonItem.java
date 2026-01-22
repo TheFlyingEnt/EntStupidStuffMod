@@ -30,16 +30,65 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class CannonItem extends ProjectileWeaponItem{
+public class CannonItem extends ProjectileWeaponItem {
+
+	public static final Predicate<ItemStack> CANNON_ONLY = (itemStack) -> {
+    	return itemStack.is(ItemFactory.CANNON_BALL_ITEM);
+   	};
 
     public CannonItem(Item.Properties settings) {
         super(settings.stacksTo(1).durability(465).component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY));
     }
 
+	@Override
+	public Predicate<ItemStack> getSupportedHeldProjectiles() {
+        return CANNON_ONLY;
+    }
+
     @Override
     public Predicate<ItemStack> getAllSupportedProjectiles() {
-        return stack -> stack.is(ItemFactory.CANNON_BALL_ITEM);
+        return CANNON_ONLY;
     }
+
+	@Override
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        ItemStack itemStack = user.getItemInHand(hand);
+		ChargedProjectiles chargedProjectilesComponent = itemStack.get(DataComponents.CHARGED_PROJECTILES);
+		if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {
+			this.performShooting(world, user, hand, itemStack, getSpeed(chargedProjectilesComponent), 1.0F, null);
+			return InteractionResult.CONSUME;
+		} else if (!user.getProjectile(itemStack).isEmpty()) {
+			this.charged = false;
+			this.loaded = false;
+			user.startUsingItem(hand);
+			return InteractionResult.CONSUME;
+		} else {
+			return InteractionResult.FAIL;
+		}
+
+    }
+
+	@Override
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
+		int i = this.getUseDuration(stack, user) - remainingUseTicks;
+		return getPullProgress(i, stack, user) >= 1.0F && isCharged(stack);
+	}
+
+	//tryLoadProjectiles
+	private static boolean loadProjectiles(LivingEntity shooter, ItemStack crossbow) {
+		List<ItemStack> list = draw(crossbow, shooter.getProjectile(crossbow), shooter);
+		if (!list.isEmpty()) {
+			crossbow.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(list));
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+
+	// OLD
+
 
     @Override
 	public int getDefaultProjectileRange() {
@@ -64,7 +113,7 @@ public class CannonItem extends ProjectileWeaponItem{
 
 		projectile.shoot((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), speed, divergence);
 
-		shooter.level().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_HAMMER_GROUND, shooter.getSoundSource(), 1.0f, 1.0f); 
+		shooter.level().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundFactory.COMBAT_CANNON_FIRE, shooter.getSoundSource(), 1.0f, 1.0f); 
 
 	}
 
@@ -99,45 +148,12 @@ public class CannonItem extends ProjectileWeaponItem{
     private boolean charged = false;
 	private boolean loaded = false;
 
-    @Override
-    public InteractionResult use(Level world, Player user, InteractionHand hand)
-    {
 
-        ItemStack itemStack = user.getItemInHand(hand);
-		ChargedProjectiles chargedProjectilesComponent = itemStack.get(DataComponents.CHARGED_PROJECTILES);
-		if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {
-			this.shootAll(world, user, hand, itemStack, getSpeed(chargedProjectilesComponent), 1.0F, null);
-			return InteractionResult.CONSUME;
-		} else if (!user.getProjectile(itemStack).isEmpty()) {
-			this.charged = false;
-			this.loaded = false;
-			user.startUsingItem(hand);
-			return InteractionResult.CONSUME;
-		} else {
-			return InteractionResult.FAIL;
-		}
-
-    }
 
     private static float getSpeed(ChargedProjectiles stack) {
 		return stack.contains(ItemFactory.CANNON_BALL_ITEM) ? 1.6F : 3.15F;
 	}
 
-    @Override
-	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
-		int i = this.getUseDuration(stack, user) - remainingUseTicks;
-		return getPullProgress(i, stack, user) >= 1.0F && isCharged(stack);
-	}
-
-    private static boolean loadProjectiles(LivingEntity shooter, ItemStack crossbow) {
-		List<ItemStack> list = draw(crossbow, shooter.getProjectile(crossbow), shooter);
-		if (!list.isEmpty()) {
-			crossbow.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(list));
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public static boolean isCharged(ItemStack stack) {
 		ChargedProjectiles chargedProjectilesComponent = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
@@ -158,7 +174,7 @@ public class CannonItem extends ProjectileWeaponItem{
 		return Mth.floor(f * 20.0F);
 	}
 
-    public void shootAll(Level world, LivingEntity shooter, InteractionHand hand, ItemStack stack, float speed, float divergence, @Nullable LivingEntity target) {
+    public void performShooting(Level world, LivingEntity shooter, InteractionHand hand, ItemStack stack, float speed, float divergence, @Nullable LivingEntity target) {
 		if (world instanceof ServerLevel serverWorld) {
 			ChargedProjectiles chargedProjectilesComponent = stack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
 			if (chargedProjectilesComponent != null && !chargedProjectilesComponent.isEmpty()) {

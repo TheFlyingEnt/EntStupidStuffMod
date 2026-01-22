@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.component;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
@@ -11,6 +13,7 @@ import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModDataComponentTypes {
@@ -57,6 +60,11 @@ public class ModDataComponentTypes {
             .networkSynchronized(MahiMahiEntity.Variant.PACKET_CODEC)
     );
 
+    public static final DataComponentType<Integer> LOADED_ARROWS = DataComponentType.<Integer>builder()
+            .persistent(Codec.INT)
+            .networkSynchronized(ByteBufCodecs.INT)
+            .build();
+
 
     private static <T> DataComponentType<T> register(String name, java.util.function.UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return Registry.register(
@@ -77,6 +85,12 @@ public class ModDataComponentTypes {
     public static void register() {
         // Call this method in your main mod class EntStupidStuff.java 
         // to ensure components are registered.
+
+        Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "loaded_arrows"),
+            LOADED_ARROWS
+        );
     }
     
 }
