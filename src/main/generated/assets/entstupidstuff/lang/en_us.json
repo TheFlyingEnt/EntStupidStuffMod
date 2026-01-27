@@ -443,6 +443,8 @@
   "block.entstupidstuff.waxed_weathered_copper_glass_trapdoor": "Waxed Weathered Copper Glass Trapdoor",
   "block.entstupidstuff.weathered_copper_glass_door": "Weathered Copper Glass Door",
   "block.entstupidstuff.weathered_copper_glass_trapdoor": "Weathered Copper Glass Trapdoor",
+  "combat.cannon.fire": "Cannon Fired",
+  "combat.hammer.ground": "Hammer Smash",
   "entity.entstupidstuff.alligator_gar": "Alligator Gar",
   "entity.entstupidstuff.bass": "Bass",
   "entity.entstupidstuff.fur_trout": "Fur Trout",
@@ -499,7 +501,9 @@
   "item.entstupidstuff.diamond_shield.red": "Red DiamondShield",
   "item.entstupidstuff.diamond_shield.white": "White DiamondShield",
   "item.entstupidstuff.diamond_shield.yellow": "Yellow DiamondShield",
+  "item.entstupidstuff.double_barrel_crossbow": "Double-barrel Crossbow",
   "item.entstupidstuff.double_hand.tooltip": "Double Handed",
+  "item.entstupidstuff.flintlock_crossbow": "Flintlock Crossbow",
   "item.entstupidstuff.fur_trout": "Fur Trout",
   "item.entstupidstuff.fur_trout_bucket": "Bucket of Fur Trout",
   "item.entstupidstuff.golden_claymore": "Golden Claymore",
@@ -793,5 +797,7 @@
   "subtitles.ent.entity.snapper.hurt": "Snapper hurts ",
   "subtitles.ent.entity.zebra_fish.death": "Zebra Fish Dies",
   "subtitles.ent.entity.zebra_fish.flop": "Zebra Fish Flops",
-  "subtitles.ent.entity.zebra_fish.hurt": "Zebra Fish hurts "
+  "subtitles.ent.entity.zebra_fish.hurt": "Zebra Fish hurts ",
+  "subtitles.entity.generic.underwater_explode": "Underwater Explosion",
+  "subtitles.entity.sporeper.explode": "Sporeper Explodes"
 }

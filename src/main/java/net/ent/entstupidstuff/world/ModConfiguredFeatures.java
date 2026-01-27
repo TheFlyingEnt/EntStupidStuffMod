@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.item.ModTags;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeature;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeatureConfig;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
@@ -128,6 +129,7 @@ public class ModConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> MUD_LAYER_KEY = registerKey("mud_layer");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_VEGETATION_KEY  = registerKey("shroomium_floor_vegetation");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_SPORE_KEY  = registerKey("mushroom_spore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_AURA_BLOSSOM_KEY  = registerKey("mushroom_aura_block_key");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_THALASSITE = registerKey("ore_thalassite");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> CRYSTAL_SPIKES  = registerKey("crystal_spikes");
@@ -338,7 +340,7 @@ public class ModConfiguredFeatures {
 			SHROOMIUM_FLOOR_KEY,
 			Feature.VEGETATION_PATCH,
 			new VegetationPatchConfiguration(
-				BlockTags.BASE_STONE_OVERWORLD,
+				ModTags.SHROOMIUM_REPLACE,
 				BlockStateProvider.simple(BlockFactory.callBlock("shroomium")),
 				PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
 				new SimpleBlockConfiguration(
@@ -365,6 +367,10 @@ public class ModConfiguredFeatures {
 
 		FeatureUtils.register(
 			context, MUSHROOM_SPORE_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockFactory.callBlock("fungal_spore_blossom")))
+		);
+
+        FeatureUtils.register(
+			context, MUSHROOM_AURA_BLOSSOM_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockFactory.callBlock("mushroom_aura_block")))
 		);
 
 		// # ICY CAVE

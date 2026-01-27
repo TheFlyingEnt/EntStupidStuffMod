@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "group": "wooden_slab",
+  "group": "wooden_mosic_slab",
   "key": {
-    "#": "entstupidstuff:maple_planks"
+    "#": "entstupidstuff:maple_mosaic"
   },
   "pattern": [
     "###"

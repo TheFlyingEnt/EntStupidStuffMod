@@ -1,7 +1,7 @@
 {
-  "parent": "entstupidstuff:block/templete_glow_mushrooom",
+  "parent": "entstupidstuff:block/templete_glow_mushroom",
   "textures": {
     "texture": "entstupidstuff:block/blue_mushroom_block",
-    "glow": "entstupidstuff:block/blue_mushroom_glow"
+    "glow": "entstupidstuff:block/blue_mushroom_block_glow"
   }
 }

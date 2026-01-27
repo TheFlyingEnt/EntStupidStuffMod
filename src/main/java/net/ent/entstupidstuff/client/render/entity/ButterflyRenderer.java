@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.client.render.entity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
-import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.state.ButterflyRenderState;

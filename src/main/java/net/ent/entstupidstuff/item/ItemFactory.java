@@ -198,7 +198,7 @@ public class ItemFactory {
     public static final Item ASHEN_SKELETON_SPAWN = null;
 
     public static final Item SUNKEN_DROWN_SPAWN = null;
-    public static final Item ANCIENT_DROWN_SPAWN = registerItem("ancient_drowned", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.ANCIENT_DROWNED)));
+    public static final Item ANCIENT_DROWN_SPAWN = registerItem("ancient_drowned_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.ANCIENT_DROWNED)));
     public static final Item ANCIENT_TRIDENT = registerItem("ancient_trident", settings -> new AncientTridentItem((settings).rarity(Rarity.EPIC).durability(250).attributes(AncientTridentItem.createAttributes()).component(DataComponents.TOOL, AncientTridentItem.createToolProperties())));
 
     public static final Item PHANTOM_SKELETON_SPAWN = registerItem("skeleton_phantom_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.PHANTOM_SKELETON)));
@@ -316,13 +316,13 @@ public class ItemFactory {
     public static final Item DIAMOND_GLAIVE = registerItem("diamond_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_GLAIVE = registerItem("netherite_glaive", settings -> new WeaponGlaiveItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
-    public static final Item WOODEN_HAMMER = registerItem("wooden_hammer", settings -> new WeaponHammerItem(ToolMaterial.WOOD, settings));
-    public static final Item STONE_HAMMER = registerItem("stone_hammer", settings -> new WeaponHammerItem(ToolMaterial.STONE, settings));
-    public static final Item GOLDEN_HAMMER = registerItem("golden_hammer", settings -> new WeaponHammerItem(ToolMaterial.GOLD, settings));
-    public static final Item COPPER_HAMMER = registerItem("copper_hammer", settings -> new WeaponHammerItem(ToolMaterial.COPPER, settings));
-    public static final Item IRON_HAMMER = registerItem("iron_hammer", settings -> new WeaponHammerItem(ToolMaterial.IRON, settings));
-    public static final Item DIAMOND_HAMMER = registerItem("diamond_hammer", settings -> new WeaponHammerItem(ToolMaterial.DIAMOND, settings));
-    public static final Item NETHERITE_HAMMER = registerItem("netherite_hammer", settings -> new WeaponHammerItem(ToolMaterial.NETHERITE, settings.fireResistant()));
+    public static final Item WOODEN_HAMMER = registerItem("wooden_hammer", settings -> new WeaponHammerItem(ToolMaterial.WOOD, settings.stacksTo(1)));
+    public static final Item STONE_HAMMER = registerItem("stone_hammer", settings -> new WeaponHammerItem(ToolMaterial.STONE, settings.stacksTo(1)));
+    public static final Item GOLDEN_HAMMER = registerItem("golden_hammer", settings -> new WeaponHammerItem(ToolMaterial.GOLD, settings.stacksTo(1)));
+    public static final Item COPPER_HAMMER = registerItem("copper_hammer", settings -> new WeaponHammerItem(ToolMaterial.COPPER, settings.stacksTo(1)));
+    public static final Item IRON_HAMMER = registerItem("iron_hammer", settings -> new WeaponHammerItem(ToolMaterial.IRON, settings.stacksTo(1)));
+    public static final Item DIAMOND_HAMMER = registerItem("diamond_hammer", settings -> new WeaponHammerItem(ToolMaterial.DIAMOND, settings.stacksTo(1)));
+    public static final Item NETHERITE_HAMMER = registerItem("netherite_hammer", settings -> new WeaponHammerItem(ToolMaterial.NETHERITE, settings.fireResistant().stacksTo(1)));
 
     public static final Item WOODEN_DAGGER = registerItem("wooden_dagger", settings -> new DaggerItem(ToolMaterial.WOOD, settings));
     public static final Item STONE_DAGGER = registerItem("stone_dagger", settings -> new DaggerItem(ToolMaterial.STONE, settings));

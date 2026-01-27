@@ -12,7 +12,7 @@ public class ModEffects {
 
     public static final MobEffect SUNKEN_EFFECT = new SunkenEffect();
     //public static final StatusEffect RGB_SHIFT = new RGBShiftEffect();
-    public static final Holder<MobEffect> BLEEDING = register("bleeding", new BleedingEffect(MobEffectCategory.HARMFUL, 0x8B0000));
+    //public static final Holder<MobEffect> BLEEDING = register("bleeding", new BleedingEffect(MobEffectCategory.HARMFUL, 0x8B0000));
 
     public static final Holder<MobEffect> RGB_SHIFT = register("rgb_shift", new RGBShiftEffect());
     public static final Holder<MobEffect> BLUR = register("blur", new RGBShiftEffect());

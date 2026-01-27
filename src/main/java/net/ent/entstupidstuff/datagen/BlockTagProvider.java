@@ -3,13 +3,17 @@ package net.ent.entstupidstuff.datagen;
 import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.item.ModTags;
+//import net.fabricmc.devlaunchinjector.Main;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.tags.BlockTags;
+//import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
-public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
+public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     public BlockTagProvider(FabricDataOutput output, CompletableFuture<Provider> registriesFuture) {
         super(output, registriesFuture);
@@ -18,46 +22,175 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
     @Override
     protected void addTags(Provider wrapperLookup) {
 
-        //Fungal Planks
-        addWoodFamily("fungal", null, false, false);
-        addWoodFamily("redwood", null, true, true);
-        //addWoodFamily("desert_iron", null, true, false);
-        addWoodFamily("maple", null, true, true);
-        addWoodFamily("phantom", null, true, false);
-        addWoodFamily("fir", null, true, true);
+        // Added Tags:
+        // this.tag(BlockTags.OVERWORLD_NATURAL_LOGS)
+        // this.tag(BlockTags.FLOWER_POTS)
 
-        // Fungal (Colored) Wood    
-        for (String color : BlockFactory.COLORS) {addWoodFamily("fungal", color, false, false);}
+        // Updated:
+        groupWoodFamilty("redwood", "", true);
+        groupWoodFamilty("fir", "", true);
+        groupWoodFamilty("maple", "", true);
+        groupWoodFamilty("phantom", "", false);
+        valueLookupBuilder(BlockTags.LANTERNS).add(
+                BlockFactory.callBlock("phantom_lantern"));
 
-        // Textured Wool
-        for (String color : BlockFactory.COLORS) {addWoolFamily("textured_wool", color);}
+        groupWoodFamilty("fungal", "", false, false);
+        for (String color : BlockFactory.COLORS) {
+            groupWoodFamilty("fungal", "_" + color, false, false);
+        }
 
-        addVanillaStoneFamily("granite_brick");
-        addVanillaStoneFamily("diorite_brick");
-        addVanillaStoneFamily("andesite_brick");
-        
+        valueLookupBuilder(BlockTags.FLOWER_POTS).add(
+                BlockFactory.callBlock("potted_blue_mushroom"));
 
-         valueLookupBuilder(BlockTags.WALLS)
-        .add((BlockFactory.callBlock("polished_andesite" + "_wall")))
-        .add((BlockFactory.callBlock("polished_diorite" + "_wall")))
-        .add((BlockFactory.callBlock("polished_granite" + "_wall")));
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add(
+                BlockFactory.callBlock("blue_mushroom_block"));
 
-        addLimestoneStoneFamily();
+        valueLookupBuilder(BlockTags.REPLACEABLE_BY_MUSHROOMS).add(
+                BlockFactory.callBlock("blue_mushroom_block"));
+
+        valueLookupBuilder(BlockTags.MUSHROOM_GROW_BLOCK).add(
+                BlockFactory.callBlock("shroomium"));
+
+        valueLookupBuilder(BlockTags.SNIFFER_DIGGABLE_BLOCK).add(
+                BlockFactory.callBlock("shroomium"));
+
+        valueLookupBuilder(BlockTags.BIG_DRIPLEAF_PLACEABLE).add(
+                BlockFactory.callBlock("shroomium"));
+
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_SHOVEL).add(
+                BlockFactory.callBlock("shroomium"));
+
+        valueLookupBuilder(BlockTags.CRYSTAL_SOUND_BLOCKS).add(
+                BlockFactory.callBlock("crystal_block"));
+
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                BlockFactory.callBlock("crystal_block"));
+
+        valueLookupBuilder(BlockTags.VIBRATION_RESONATORS).add(
+                BlockFactory.callBlock("crystal_block"));
+
+        valueLookupBuilder(BlockTags.INSIDE_STEP_SOUND_BLOCKS).add(
+                BlockFactory.callBlock("mushroom_bed"));
+
+        // # Adding Andersite, Diorite and Granite
+        valueLookupBuilder(BlockTags.BASE_STONE_OVERWORLD).add(
+                BlockFactory.callBlock("andesite_bricks"),
+                BlockFactory.callBlock("polished_andesite" + "_wall"),
+                BlockFactory.callBlock("granite_bricks"),
+                BlockFactory.callBlock("polished_granite" + "_wall"),
+                BlockFactory.callBlock("diorite_bricks"),
+                BlockFactory.callBlock("polished_diorite" + "_wall"));
+        groupStoneFamily("granite_brick", true);
+        groupStoneFamily("diorite_brick", true);
+        ;
+        groupStoneFamily("diorite_brick", true);
+
+        // # Adding Limestone and Limestone Bricks
+        valueLookupBuilder(BlockTags.BASE_STONE_OVERWORLD).add(
+                BlockFactory.callBlock("limestone"),
+                BlockFactory.callBlock("polished_limestone"),
+                BlockFactory.callBlock("polished_limestone_bricks"));
+        groupStoneFamily("limestone", false);
+        groupStoneFamily("polished_limestone", false);
+        groupStoneFamily("polished_limestone_brick", true);
+
+        // # Adding IronGates
+        valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL).add(
+                BlockFactory.callBlock("iron_grate"),
+                BlockFactory.callBlock("iron_grate_stairs"),
+                BlockFactory.callBlock("iron_grate_slab"));
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                BlockFactory.callBlock("iron_grate"),
+                BlockFactory.callBlock("iron_grate_stairs"),
+                BlockFactory.callBlock("iron_grate_slab"));
+
+        // ## Adding Vanilla Additions
+        // MOB_INTERACTABLE_DOORS
+        // MINEABLE_WITH_PICKAXE
+
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                BlockFactory.callBlock("copper_glass_door"),
+                BlockFactory.callBlock("exposed_copper_glass_door"),
+                BlockFactory.callBlock("oxidized_copper_glass_door"),
+                BlockFactory.callBlock("weathered_copper_glass_door"),
+                BlockFactory.callBlock("waxed_copper_glass_door"),
+                BlockFactory.callBlock("waxed_exposed_copper_glass_door"),
+                BlockFactory.callBlock("waxed_oxidized_copper_glass_door"),
+                BlockFactory.callBlock("waxed_weathered_copper_glass_door"),
+                BlockFactory.callBlock("iron_glass_door"),
+                BlockFactory.callBlock("copper_glass_trapdoor"),
+                BlockFactory.callBlock("exposed_copper_glass_trapdoor"),
+                BlockFactory.callBlock("oxidized_copper_glass_trapdoor"),
+                BlockFactory.callBlock("weathered_copper_glass_trapdoor"),
+                BlockFactory.callBlock("waxed_copper_glass_trapdoor"),
+                BlockFactory.callBlock("waxed_exposed_copper_glass_trapdoor"),
+                BlockFactory.callBlock("waxed_oxidized_copper_glass_trapdoor"),
+                BlockFactory.callBlock("waxed_weathered_copper_glass_trapdoor"),
+                BlockFactory.callBlock("iron_glass_trapdoor"));
+
+        valueLookupBuilder(BlockTags.MOB_INTERACTABLE_DOORS).add(
+                BlockFactory.callBlock("copper_glass_door"),
+                BlockFactory.callBlock("exposed_copper_glass_door"),
+                BlockFactory.callBlock("oxidized_copper_glass_door"),
+                BlockFactory.callBlock("weathered_copper_glass_door"),
+                BlockFactory.callBlock("waxed_copper_glass_door"),
+                BlockFactory.callBlock("waxed_exposed_copper_glass_door"),
+                BlockFactory.callBlock("waxed_oxidized_copper_glass_door"),
+                BlockFactory.callBlock("waxed_weathered_copper_glass_door"),
+                BlockFactory.callBlock("oak_glass_door"),
+                BlockFactory.callBlock("spruce_glass_door"),
+                BlockFactory.callBlock("jungle_glass_door"),
+                BlockFactory.callBlock("birch_glass_door"),
+                BlockFactory.callBlock("dark_oak_glass_door"),
+                BlockFactory.callBlock("acacia_glass_door"),
+                BlockFactory.callBlock("mangrove_glass_door"),
+                BlockFactory.callBlock("cherry_glass_door"),
+                BlockFactory.callBlock("bamboo_glass_door"),
+                BlockFactory.callBlock("pale_oak_glass_door"),
+                BlockFactory.callBlock("crimson_glass_door"),
+                BlockFactory.callBlock("warped_glass_door"));
+
+        valueLookupBuilder(BlockTags.WOODEN_DOORS).add(
+                BlockFactory.callBlock("oak_glass_door"),
+                BlockFactory.callBlock("spruce_glass_door"),
+                BlockFactory.callBlock("jungle_glass_door"),
+                BlockFactory.callBlock("birch_glass_door"),
+                BlockFactory.callBlock("dark_oak_glass_door"),
+                BlockFactory.callBlock("acacia_glass_door"),
+                BlockFactory.callBlock("mangrove_glass_door"),
+                BlockFactory.callBlock("cherry_glass_door"),
+                BlockFactory.callBlock("bamboo_glass_door"),
+                BlockFactory.callBlock("pale_oak_glass_door"),
+                BlockFactory.callBlock("crimson_glass_door"),
+                BlockFactory.callBlock("warped_glass_door"));
+
+        valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS).add(
+                BlockFactory.callBlock("oak_glass_trapdoor"),
+                BlockFactory.callBlock("spruce_glass_trapdoor"),
+                BlockFactory.callBlock("jungle_glass_trapdoor"),
+                BlockFactory.callBlock("birch_glass_trapdoor"),
+                BlockFactory.callBlock("dark_oak_glass_trapdoor"),
+                BlockFactory.callBlock("acacia_glass_trapdoor"),
+                BlockFactory.callBlock("mangrove_glass_trapdoor"),
+                BlockFactory.callBlock("cherry_glass_trapdoor"),
+                BlockFactory.callBlock("bamboo_glass_trapdoor"),
+                BlockFactory.callBlock("pale_oak_glass_trapdoor"),
+                BlockFactory.callBlock("crimson_glass_trapdoor"),
+                BlockFactory.callBlock("warped_glass_trapdoor"));
+
+        MosicFamily("oak", "");
+        MosicFamily("spruce", "");
+        MosicFamily("jungle", "");
+        MosicFamily("birch", "");
+        MosicFamily("dark_oak", "");
+        MosicFamily("acacia", "");
+        MosicFamily("mangrove", "");
+        MosicFamily("cherry", "");
+        MosicFamily("pale_oak", "");
+        MosicFamily("crimson", "");
+        MosicFamily("warped", "");
 
         // Vanilla Wood
-        addVanillaGlassDoor("oak");
-        addVanillaGlassDoor("spruce");
-        addVanillaGlassDoor("jungle");
-        addVanillaGlassDoor("birch");
-        addVanillaGlassDoor("dark_oak");
-        addVanillaGlassDoor("acacia");
-        addVanillaGlassDoor("mangrove");
-        addVanillaGlassDoor("cherry");
-        addVanillaGlassDoor("bamboo");
-        addVanillaGlassDoor("warped");
-        addVanillaGlassDoor("crimson");
-        //addVanillaGlassDoor("pale_oak"); //FUTURE UPDATE
-
         addVanillaGlassDoorM("iron");
         addVanillaGlassDoorM("copper");
         addVanillaGlassDoorM("exposed_copper");
@@ -68,309 +201,135 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider{
         addVanillaGlassDoorM("waxed_oxidized_copper");
         addVanillaGlassDoorM("waxed_weathered_copper");
 
-        valueLookupBuilder(BlockTags.MUSHROOM_GROW_BLOCK)
-            .add((BlockFactory.callBlock("shroomium")));
-        
+        // # Adding Custom
+        valueLookupBuilder(ModTags.SHROOMIUM_REPLACE)
+            .addTag(BlockTags.BASE_STONE_OVERWORLD)
+            .add(BlockFactory.callBlock("shroomium"))
+            .add(Blocks.MUD);
+
     }
 
-    public void addWoodFamily(String FamilyBase, String varient, Boolean isNatural, boolean alsoLeaves) {
+    public void groupWoodFamilty(String MainName, String Varient, Boolean natural) {
+        groupWoodFamilty(MainName, Varient, true, natural);
+    }
 
-        if (varient == null) {varient = "";}
-        else {varient = "_" + varient;}
+    public void groupWoodFamilty(String MainName, String Varient, Boolean log, Boolean natural) {
+        valueLookupBuilder(BlockTags.PLANKS).add(
+                BlockFactory.callBlock(MainName + "_planks" + Varient));
 
-        if (isNatural) {
-             valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));  
-             valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
+        valueLookupBuilder(BlockTags.WOODEN_STAIRS).add(
+                BlockFactory.callBlock(MainName + "_stairs" + Varient),
+                BlockFactory.callBlock(MainName + "_mosaic_stairs" + Varient));
 
-             valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));  
-             valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
+        valueLookupBuilder(BlockTags.WOODEN_SLABS).add(
+                BlockFactory.callBlock(MainName + "_slab" + Varient),
+                BlockFactory.callBlock(MainName + "_mosaic_slab" + Varient));
 
-             valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));  
-             valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
+        valueLookupBuilder(BlockTags.WOODEN_FENCES).add(
+                BlockFactory.callBlock(MainName + "_fence" + Varient));
 
-             valueLookupBuilder(BlockTags.OVERWORLD_NATURAL_LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));  
-             valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.SNAPS_GOAT_HORN).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.COMPLETES_FIND_TREE_TUTORIAL).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.PARROTS_SPAWNABLE_ON).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-             valueLookupBuilder(BlockTags.LOGS).add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
+        valueLookupBuilder(BlockTags.FENCE_GATES).add(
+                BlockFactory.callBlock(MainName + "_fence_gate" + Varient));
 
-            if (alsoLeaves) {
-                 valueLookupBuilder(BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient)));
-                 valueLookupBuilder(BlockTags.MINEABLE_WITH_HOE).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient))); 
-                 valueLookupBuilder(BlockTags.LEAVES).add((BlockFactory.callBlock(FamilyBase + "_leaves" + varient))); 
-            }
+        valueLookupBuilder(BlockTags.WOODEN_DOORS).add(
+                BlockFactory.callBlock(MainName + "_door" + Varient),
+                BlockFactory.callBlock(MainName + "_glass_door" + Varient));
+
+        valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS).add(
+                BlockFactory.callBlock(MainName + "_trapdoor" + Varient),
+                BlockFactory.callBlock(MainName + "_glass_trapdoor" + Varient));
+
+        valueLookupBuilder(BlockTags.WOODEN_PRESSURE_PLATES).add(
+                BlockFactory.callBlock(MainName + "_pressure_plate" + Varient));
+
+        if (log) {
+            valueLookupBuilder(BlockTags.LOGS_THAT_BURN).add(
+                    BlockFactory.callBlock(MainName + "_log" + Varient),
+                    BlockFactory.callBlock("stripped_" + MainName + "_log" + Varient),
+                    BlockFactory.callBlock(MainName + "_wood" + Varient),
+                    BlockFactory.callBlock("stripped_" + MainName + "_wood" + Varient));
+
+            valueLookupBuilder(BlockTags.LOGS).add(
+                    BlockFactory.callBlock(MainName + "_log" + Varient),
+                    BlockFactory.callBlock("stripped_" + MainName + "_log" + Varient),
+                    BlockFactory.callBlock(MainName + "_wood" + Varient),
+                    BlockFactory.callBlock("stripped_" + MainName + "_wood" + Varient));
 
         }
 
-         valueLookupBuilder(BlockTags.PLANKS)
-            .add((BlockFactory.callBlock(FamilyBase + "_planks" + varient)));
-        
-         valueLookupBuilder(BlockTags.WOODEN_BUTTONS)
-            .add((BlockFactory.callBlock(FamilyBase + "_button" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_door" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_FENCES)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_FENCES)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_PRESSURE_PLATES)
-            .add((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)));
-         valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
+        MosicFamily(MainName, Varient);
 
-        
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_planks" + varient)));
-        
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_button" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_door" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
-        
-        //Add Hanging Sign + Sign 
+        if (natural) {
+            valueLookupBuilder(BlockTags.LEAVES).add(
+                    BlockFactory.callBlock(MainName + "_leaves" + Varient));
 
-        /*FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_planks" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_button" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_fence" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_fence_gate" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_pressure_plate" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_slab" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_stairs" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_trapdoor" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_door" + varient)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactoryUpt.callBlock(FamilyBase + "_glass_door" + varient)), 5, 20);*/
-        //Add Hanging Sign + Sign 
+            valueLookupBuilder(BlockTags.SAPLINGS).add(
+                    BlockFactory.callBlock(MainName + "_sapling" + Varient));
 
+            valueLookupBuilder(BlockTags.FLOWER_POTS).add(
+                    BlockFactory.callBlock("potted_" + MainName + "_sapling" + Varient));
+        }
 
     }
 
-    public void addWoolFamily(String FamilyBase, String color){
-         valueLookupBuilder(BlockTags.WOOL)
-            .add((BlockFactory.callBlock(FamilyBase + "_" + color)));
-
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactory.callBlock(FamilyBase + "_" + color)), 30, 60);
+    public void MosicFamily(String MainName, String Varient) {
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE).add(
+                BlockFactory.callBlock(MainName + "_mosaic" + Varient),
+                BlockFactory.callBlock(MainName + "_mosaic_stairs" + Varient),
+                BlockFactory.callBlock(MainName + "_mosaic_slab" + Varient));
     }
 
-    public void addVanillaGlassDoor(String FamilyBase){
-         valueLookupBuilder(BlockTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
+    public void groupStoneFamily(String MainName, Boolean Brick) {
 
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door")), 5, 20);
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                BlockFactory.callBlock(MainName + "_stairs"),
+                BlockFactory.callBlock(MainName + "_slab"),
+                BlockFactory.callBlock(MainName + "_wall"));
 
-         valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
+        if (Brick) {
+            valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                    BlockFactory.callBlock(MainName + "_chiseled"),
+                    BlockFactory.callBlock("cracked_" + MainName + "s"));
+        }
 
-        FlammableBlockRegistry.getDefaultInstance()
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")), 5, 20);
     }
 
-    public void addVanillaGlassDoorM(String FamilyBase){
-         valueLookupBuilder(BlockTags.DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
 
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
-
-         valueLookupBuilder(BlockTags.TRAPDOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
-
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
-
-        if (FamilyBase != "iron"){ //For Copper Doors
-             valueLookupBuilder(BlockTags.MOB_INTERACTABLE_DOORS)
+    public void addVanillaGlassDoorM(String FamilyBase) {
+        valueLookupBuilder(BlockTags.DOORS)
                 .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
 
-             valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
 
-             valueLookupBuilder(BlockTags.INCORRECT_FOR_GOLD_TOOL)
-                .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
-
-             valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL)
-                .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
-
-             valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL)
+        valueLookupBuilder(BlockTags.TRAPDOORS)
                 .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
 
-             valueLookupBuilder(BlockTags.INCORRECT_FOR_GOLD_TOOL)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
 
-             valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL)
-                .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
+        if (FamilyBase != "iron") { // For Copper Doors
+            valueLookupBuilder(BlockTags.MOB_INTERACTABLE_DOORS)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
+
+            valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
+
+            valueLookupBuilder(BlockTags.INCORRECT_FOR_GOLD_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
+
+            valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_door")));
+
+            valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
+
+            valueLookupBuilder(BlockTags.INCORRECT_FOR_GOLD_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
+
+            valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL)
+                    .add((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
         }
     }
 
-    
-
-    public void addVanillaStoneFamily(String FamilyBase) {
-         valueLookupBuilder(BlockTags.STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.WALLS)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_chiseled")));
-    }
-
-    public void addLimestoneStoneFamily() {
-
-        String FamilyBase = "limestone";
-
-         valueLookupBuilder(BlockTags.STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.WALLS)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-        FamilyBase = "polished_limestone";
-
-         valueLookupBuilder(BlockTags.STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.WALLS)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-        FamilyBase = "polished_limestone_brick";
-
-         valueLookupBuilder(BlockTags.STONE_BRICKS)
-            .add((BlockFactory.callBlock(FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.WALLS)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-
-
-
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_wall")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
-         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-            .add((BlockFactory.callBlock(FamilyBase + "_chiseled")));
-    }
-
-
-    @Deprecated
-    public void addWoodTags(String base, String endTag){ 
-         valueLookupBuilder(BlockTags.WOODEN_BUTTONS).add((BlockFactory.callBlock(base + "_button" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_DOORS).add((BlockFactory.callBlock(base + "_door" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_FENCES).add((BlockFactory.callBlock(base + "_fence" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_FENCES).add((BlockFactory.callBlock(base + "_fence_gate" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_PRESSURE_PLATES).add((BlockFactory.callBlock(base + "_pressure_plate" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_SLABS).add((BlockFactory.callBlock(base + "_slab" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_STAIRS).add((BlockFactory.callBlock(base + "_stairs" + endTag)));
-         valueLookupBuilder(BlockTags.WOODEN_TRAPDOORS).add((BlockFactory.callBlock(base + "_trapdoor" + endTag)));
-
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_button" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_fence" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_fence_gate" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_pressure_plate" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_slab" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_stairs" + endTag)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(base + "_trapdoor" + endTag)), 5, 20);
-
-    }
-    
 }

@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.effects;
 
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -9,8 +10,9 @@ public class HallucinatingEffect extends MobEffect {
 
     public HallucinatingEffect() {
         super(
-            MobEffectCategory.HARMFUL,
-            0xFF33CC // neon pink-ish color
+            MobEffectCategory.NEUTRAL,
+            1484454,
+            ParticleTypesFactory.FALLING_MUSHROOM_SPORE
         );
     }
 

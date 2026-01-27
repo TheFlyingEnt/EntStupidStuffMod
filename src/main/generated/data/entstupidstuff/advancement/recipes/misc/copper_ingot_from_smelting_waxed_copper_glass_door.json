@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:copper_ingot_from_smelting_waxed_copper_glass_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_waxed_copper_glass_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:waxed_copper_glass_door"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_waxed_copper_glass_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:copper_ingot_from_smelting_waxed_copper_glass_door"
+    ]
+  }
+}

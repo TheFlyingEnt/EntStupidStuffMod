@@ -44,7 +44,7 @@ public class DarkEnchantingTableBlockEntity extends BlockEntity implements Namea
         protected void applyImplicitComponents(DataComponentGetter components) {
       super.applyImplicitComponents(components);
       this.customName = (Component)components.get(DataComponents.CUSTOM_NAME);
-   }
+    }
     
         @Override
         protected void collectImplicitComponents(Builder componentMapBuilder) {

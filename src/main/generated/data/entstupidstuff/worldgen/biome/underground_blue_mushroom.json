@@ -68,8 +68,7 @@
     ],
     [
       "entstupidstuff:mud_layer_placed",
-      "entstupidstuff:shroomium_floor_placed",
-      "entstupidstuff:crystal_spike"
+      "entstupidstuff:shroomium_floor_placed"
     ],
     [
       "minecraft:spring_water",
@@ -79,7 +78,8 @@
       "minecraft:glow_lichen",
       "entstupidstuff:huge_blue_mushroom_placed",
       "entstupidstuff:mushroom_bed_patch_placed",
-      "entstupidstuff:fungal_spore_blossom_placed"
+      "entstupidstuff:fungal_spore_blossom_placed",
+      "entstupidstuff:mushroom_aura_block_placed"
     ],
     [
       "minecraft:freeze_top_layer"

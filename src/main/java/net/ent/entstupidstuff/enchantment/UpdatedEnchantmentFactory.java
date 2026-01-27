@@ -4,7 +4,7 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.enchantment.effect.FrostbiteEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.GravityEnchantmentEffect;
 import net.ent.entstupidstuff.enchantment.effect.LightningStrikerEnchantmentEffect;
-import net.ent.entstupidstuff.item.ModItemTags;
+import net.ent.entstupidstuff.item.ModTags;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.EntityTypePredicate;
@@ -125,8 +125,8 @@ public class UpdatedEnchantmentFactory {
         register(registry, LIGHTNING_STRIKER, // Has a 30% chance to summon a lightning strike that damages nearby enemies.
         Enchantment.enchantment(
             Enchantment.definition(
-                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
-                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
+                items.getOrThrow(ModTags.HAMMER),
+                items.getOrThrow(ModTags.HAMMER),
                 5,
                 2,
                 Enchantment.dynamicCost(5, 7),
@@ -141,8 +141,8 @@ public class UpdatedEnchantmentFactory {
         register(registry, GRAVITY, // Pulls in Entity towards target
         Enchantment.enchantment(
             Enchantment.definition(
-                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
-                items.getOrThrow(ModItemTags.HAMMER_ENCHANTABLE),
+                items.getOrThrow(ModTags.HAMMER),
+                items.getOrThrow(ModTags.HAMMER),
                 5,
                 1,
                 Enchantment.dynamicCost(5, 7),

@@ -2,19 +2,14 @@ package net.ent.entstupidstuff.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.ModItemTags;
+import net.ent.entstupidstuff.item.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     /*
@@ -27,38 +22,62 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider wrapperLookup) {
+    protected void addTags(Provider wrapperLookup) {
 
-        addWoodFamily("fungal", null, false);
-        for (String color : BlockFactory.COLORS) {addWoodFamily("fungal", color, false);}
-        for (String color : BlockFactory.COLORS) {addWoolFamily("textured_wool", color);}
-        /*for (String tm : MBlockFactory.TOOL_MATERIAL) {addCombatFamily("tm");}*/
-        for (String wood : ModBlocks.V_WOOD_VARIENTS) {addVanillaGlassDoor(wood);}
-        addVanillaGlassDoor("iron");
+        groupWoodFamilty("redwood", "", true);
+        groupWoodFamilty("fir", "", true);
+        groupWoodFamilty("maple", "", true);
+        groupWoodFamilty("phantom", "", false);
+        valueLookupBuilder(ItemTags.LANTERNS).add(
+                ItemFactory.callItem("phantom_lantern"));
 
-        for (String c : ModBlocks.COPPER_VARIENTS) {addVanillaGlassDoor(c);}
+        groupWoodFamilty("fungal", "", false, false);
+        for (String color : BlockFactory.COLORS) {
+            groupWoodFamilty("fungal", "_" + color, false, false);
+        }
 
-        addCombatFamily("wooden");
-        addCombatFamily("golden");
-        addCombatFamily("stone");
-        addCombatFamily("iron");
-        addCombatFamily("diamond");
-        addCombatFamily("netherite");
+        valueLookupBuilder(ItemTags.WOODEN_DOORS).add(
+                ItemFactory.callItem("oak_glass_door"),
+                ItemFactory.callItem("spruce_glass_door"),
+                ItemFactory.callItem("jungle_glass_door"),
+                ItemFactory.callItem("birch_glass_door"),
+                ItemFactory.callItem("dark_oak_glass_door"),
+                ItemFactory.callItem("acacia_glass_door"),
+                ItemFactory.callItem("mangrove_glass_door"),
+                ItemFactory.callItem("cherry_glass_door"),
+                ItemFactory.callItem("bamboo_glass_door"),
+                ItemFactory.callItem("pale_oak_glass_door"),
+                ItemFactory.callItem("crimson_glass_door"),
+                ItemFactory.callItem("warped_glass_door"));
 
-        addWoodFamily("redwood", null, true);
-        //addWoodFamily("desert_iron", null, true);
-        addWoodFamily("maple", null, true);
-        addWoodFamily("fir", null, true);
-        addWoodFamily("phantom", null, true);
+        valueLookupBuilder(ItemTags.WOODEN_TRAPDOORS).add(
+                ItemFactory.callItem("oak_glass_trapdoor"),
+                ItemFactory.callItem("spruce_glass_trapdoor"),
+                ItemFactory.callItem("jungle_glass_trapdoor"),
+                ItemFactory.callItem("birch_glass_trapdoor"),
+                ItemFactory.callItem("dark_oak_glass_trapdoor"),
+                ItemFactory.callItem("acacia_glass_trapdoor"),
+                ItemFactory.callItem("mangrove_glass_trapdoor"),
+                ItemFactory.callItem("cherry_glass_trapdoor"),
+                ItemFactory.callItem("bamboo_glass_trapdoor"),
+                ItemFactory.callItem("pale_oak_glass_trapdoor"),
+                ItemFactory.callItem("crimson_glass_trapdoor"),
+                ItemFactory.callItem("warped_glass_trapdoor"));
 
-        valueLookupBuilder(ItemTags.LEAVES)
-        .add((BlockFactory.callBlock("maple" + "_leaves").asItem()));
+        // Vanilla Wood
+        addVanillaGlassDoorM("iron");
+        addVanillaGlassDoorM("copper");
+        addVanillaGlassDoorM("exposed_copper");
+        addVanillaGlassDoorM("oxidized_copper");
+        addVanillaGlassDoorM("weathered_copper");
+        addVanillaGlassDoorM("waxed_copper");
+        addVanillaGlassDoorM("waxed_exposed_copper");
+        addVanillaGlassDoorM("waxed_oxidized_copper");
+        addVanillaGlassDoorM("waxed_weathered_copper");
 
         //Combat and Food
 
-        valueLookupBuilder(ModItemTags.HAMMER_ENCHANTABLE).addTag(ModItemTags.HAMMER);
-
-        valueLookupBuilder(ModItemTags.HAMMER)
+        valueLookupBuilder(ModTags.HAMMER)
         .add(ItemFactory.callItem("wooden_hammer"))
         .add(ItemFactory.callItem("stone_hammer"))
         .add(ItemFactory.callItem("iron_hammer"))
@@ -66,17 +85,17 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         .add(ItemFactory.callItem("diamond_hammer"))
         .add(ItemFactory.callItem("netherite_hammer"));
 
-        this.valueLookupBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES).addTag(ModItemTags.HAMMER);
+        this.valueLookupBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES).addTag(ModTags.HAMMER);
 
         valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE)
-		.addTag(ModItemTags.HAMMER)
+		.addTag(ModTags.HAMMER)
         .add(ItemFactory.callItem("ancient_trident"));
 
         valueLookupBuilder(ItemTags.MINING_ENCHANTABLE)
-        .addTag(ModItemTags.HAMMER);
+        .addTag(ModTags.HAMMER);
 
         valueLookupBuilder(ItemTags.MINING_LOOT_ENCHANTABLE)
-        .addTag(ModItemTags.HAMMER);
+        .addTag(ModTags.HAMMER);
 
         valueLookupBuilder(ItemTags.TRIDENT_ENCHANTABLE)
         .add(ItemFactory.callItem("ancient_trident"));
@@ -90,158 +109,74 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         valueLookupBuilder(ItemTags.PIGLIN_LOVED)
         .add(ItemFactory.callItem("golden_hammer"));
 
-
-
-
-
-
-
-
-
-
-
-
         
-        //Setting For Fungal wood
-        /*setWoodGroupTags("fungal", "");
 
-        //Setting for Color Types (Colored Fungal + Texture Wool)
-        for (String inputC : MBlockFactoryUpt.COLORS) {
-            setWoodGroupTags("fungal", "_" + inputC);
-            valueLookupBuilder(ItemTags.WOOL).add(MBlockFactoryUpt.callBlock("textured_wool_" + inputC).asItem());
-        }*/
     }
 
-    private static TagKey<Item> of(String id) {
-		return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
-	}
+    public void groupWoodFamilty(String MainName, String Varient, Boolean natural) {
+        groupWoodFamilty(MainName, Varient, true, natural);
+    }
 
-    public void addWoodFamily(String FamilyBase, String varient, Boolean isNatural) {
+    public void groupWoodFamilty(String MainName, String Varient, Boolean log, Boolean natural) {
+        valueLookupBuilder(ItemTags.PLANKS).add(
+                ItemFactory.callItem(MainName + "_planks" + Varient));
 
-        if (varient == null) {varient = "";}
-        else {varient = "_" + varient;}
+        valueLookupBuilder(ItemTags.WOODEN_STAIRS).add(
+                ItemFactory.callItem(MainName + "_stairs" + Varient),
+                ItemFactory.callItem(MainName + "_mosaic_stairs" + Varient));
 
-        if (isNatural) {
+        valueLookupBuilder(ItemTags.WOODEN_SLABS).add(
+                ItemFactory.callItem(MainName + "_slab" + Varient),
+                ItemFactory.callItem(MainName + "_mosaic_slab" + Varient));
 
-            //Logs: log, logs_that_burn
+        valueLookupBuilder(ItemTags.WOODEN_FENCES).add(
+                ItemFactory.callItem(MainName + "_fence" + Varient));
 
-            valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactory.callBlock(FamilyBase + "_log" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS)
-                .add((BlockFactory.callBlock(FamilyBase + "_log" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactory.callBlock(FamilyBase + "_wood" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS)
-                .add((BlockFactory.callBlock(FamilyBase + "_wood" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS)
-                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
-                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
-            valueLookupBuilder(ItemTags.LOGS)
-                .add((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient).asItem()));
+        valueLookupBuilder(ItemTags.FENCE_GATES).add(
+                ItemFactory.callItem(MainName + "_fence_gate" + Varient));
+
+        valueLookupBuilder(ItemTags.WOODEN_DOORS).add(
+                ItemFactory.callItem(MainName + "_door" + Varient),
+                ItemFactory.callItem(MainName + "_glass_door" + Varient));
+
+        valueLookupBuilder(ItemTags.WOODEN_TRAPDOORS).add(
+                ItemFactory.callItem(MainName + "_trapdoor" + Varient),
+                ItemFactory.callItem(MainName + "_glass_trapdoor" + Varient));
+
+        valueLookupBuilder(ItemTags.WOODEN_PRESSURE_PLATES).add(
+                ItemFactory.callItem(MainName + "_pressure_plate" + Varient));
+
+        if (log) {
+            valueLookupBuilder(ItemTags.LOGS_THAT_BURN).add(
+                    ItemFactory.callItem(MainName + "_log" + Varient),
+                    ItemFactory.callItem("stripped_" + MainName + "_log" + Varient),
+                    ItemFactory.callItem(MainName + "_wood" + Varient),
+                    ItemFactory.callItem("stripped_" + MainName + "_wood" + Varient));
+
+            valueLookupBuilder(ItemTags.LOGS).add(
+                    ItemFactory.callItem(MainName + "_log" + Varient),
+                    ItemFactory.callItem("stripped_" + MainName + "_log" + Varient),
+                    ItemFactory.callItem(MainName + "_wood" + Varient),
+                    ItemFactory.callItem("stripped_" + MainName + "_wood" + Varient));
 
         }
 
-        valueLookupBuilder(ItemTags.PLANKS)
-            .add((BlockFactory.callBlock(FamilyBase + "_planks" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_BUTTONS)
-            .add((BlockFactory.callBlock(FamilyBase + "_button" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_door" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_FENCES)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_FENCES)
-            .add((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_PRESSURE_PLATES)
-            .add((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_SLABS)
-            .add((BlockFactory.callBlock(FamilyBase + "_slab" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_STAIRS)
-            .add((BlockFactory.callBlock(FamilyBase + "_stairs" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_TRAPDOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient).asItem()));
-        valueLookupBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient).asItem()));
-        //Add Hanging Sign + Sign 
+        if (natural) {
+            valueLookupBuilder(ItemTags.LEAVES).add(
+                    ItemFactory.callItem(MainName + "_leaves" + Varient));
+
+            valueLookupBuilder(ItemTags.SAPLINGS).add(
+                    ItemFactory.callItem(MainName + "_sapling" + Varient));
+        }
 
     }
 
-    public void addVanillaGlassDoor(String FamilyBase) {
-        valueLookupBuilder(ItemTags.WOODEN_DOORS)
-            .add((BlockFactory.callBlock(FamilyBase + "_glass_door").asItem()));
-    }
+    public void addVanillaGlassDoorM(String FamilyBase) {
+        valueLookupBuilder(ItemTags.DOORS)
+            .add((ItemFactory.callItem(FamilyBase + "_glass_door")));
 
-    public void addWoolFamily(String FamilyBase, String color){
-        valueLookupBuilder(ItemTags.WOOL)
-            .add((BlockFactory.callBlock(FamilyBase + "_" + color).asItem()));
-    }
-
-    public void addCombatFamily(String tm){
-        //Adding new Tags
-
-        //valueLookupBuilder(LONG_SWORD).add(ItemFactory.callItem(tm + "_long_sword"));
-        //valueLookupBuilder(BATTLE_AXE).add(ItemFactory.callItem(tm + "_battle_axe"));
-        //valueLookupBuilder(DAGGER).add(ItemFactory.callItem(tm + "_dagger"));
-        //valueLookupBuilder(KATANA).add(ItemFactory.callItem(tm + "_katana"));
-        //valueLookupBuilder(HAMMER).add(ItemFactory.callItem(tm + "_hammer"));
-
-        //Enchantments
-        valueLookupBuilder(ItemTags.SWORD_ENCHANTABLE).add(ItemFactory.callItem(tm + "_long_sword"));
-        valueLookupBuilder(ItemTags.SWORD_ENCHANTABLE).add(ItemFactory.callItem(tm + "_dagger"));
-        //valueLookupBuilder(ItemTags.SWORD_ENCHANTABLE).add(ItemFactory.callItem(tm + "_katana"));
-
-        //Battle Axe Enchantments
-        //valueLookupBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_battle_axe"));
-
-        //WEAPON ENCHANTABLE
-        valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_long_sword"));
-        //valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_battle_axe"));
-        valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_dagger"));
-        //valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_katana"));
-        valueLookupBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ItemFactory.callItem(tm + "_hammer"));
-
-        //FIRE ASPECT ENCHANTABLE
-        valueLookupBuilder(ItemTags.FIRE_ASPECT_ENCHANTABLE).add(ItemFactory.callItem(tm + "_long_sword"));
-        //valueLookupBuilder(ItemTags.FIRE_ASPECT_ENCHANTABLE).add(ItemFactory.callItem(tm + "_battle_axe"));
-        valueLookupBuilder(ItemTags.FIRE_ASPECT_ENCHANTABLE).add(ItemFactory.callItem(tm + "_dagger"));
-
-        //Add Long Bows
-    }
-
-
-
-
-
-
-
-
-
-
-
-    //Used to Set a Wood Blocks Tags
-    @Deprecated
-    public void setWoodGroupTags(String baseName, String entTag) {
-
-        valueLookupBuilder(ItemTags.PLANKS).add(BlockFactory.callBlock(baseName + "_planks" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_STAIRS).add(BlockFactory.callBlock(baseName + "_stairs" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_SLABS).add(BlockFactory.callBlock(baseName + "_slab" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactory.callBlock(baseName + "_button" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_PRESSURE_PLATES).add(BlockFactory.callBlock(baseName + "_pressure_plate" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_BUTTONS).add(BlockFactory.callBlock(baseName + "_fence" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_FENCES).add(BlockFactory.callBlock(baseName + "_fence_gate" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_TRAPDOORS).add(BlockFactory.callBlock(baseName + "_trapdoor" + entTag).asItem());
-        valueLookupBuilder(ItemTags.WOODEN_DOORS).add(BlockFactory.callBlock(baseName + "_door" + entTag).asItem());
-
-        valueLookupBuilder(ItemTags.PLANKS).add(BlockFactory.callBlock(baseName + "_planks" + entTag).asItem());
-        valueLookupBuilder(ItemTags.STAIRS).add(BlockFactory.callBlock(baseName + "_stairs" + entTag).asItem());
-        valueLookupBuilder(ItemTags.SLABS).add(BlockFactory.callBlock(baseName + "_slab" + entTag).asItem());
-        valueLookupBuilder(ItemTags.BUTTONS).add(BlockFactory.callBlock(baseName + "_button" + entTag).asItem());
-        valueLookupBuilder(ItemTags.FENCES).add(BlockFactory.callBlock(baseName + "_fence" + entTag).asItem());
-        valueLookupBuilder(ItemTags.FENCE_GATES).add(BlockFactory.callBlock(baseName + "_fence_gate" + entTag).asItem());
-        valueLookupBuilder(ItemTags.TRAPDOORS).add(BlockFactory.callBlock(baseName + "_trapdoor" + entTag).asItem());
-        valueLookupBuilder(ItemTags.DOORS).add(BlockFactory.callBlock(baseName + "_door" + entTag).asItem());
+        valueLookupBuilder(ItemTags.TRAPDOORS)
+            .add((ItemFactory.callItem(FamilyBase + "_glass_trapdoor")));
     }
 
 }

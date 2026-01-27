@@ -49,9 +49,10 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
     private static final int COOLDOWN_TICKS = 60;
     private static final double BASE_ATTACK_DAMAGE = 6.5;
     private static double ATTACK_DAMAGE;
+    //.component(DataComponents.WEAPON, new Weapon(2, h));
 
     public WeaponHammerItem(ToolMaterial toolMaterial, Properties settings) {
-        super(toolMaterial, settings.attributes(
+        super(toolMaterial, settings.enchantable(15).attributes(
             WeaponUpdatedItem.createAttributeModifiers(
                 toolMaterial, 
                 BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 

@@ -25,6 +25,7 @@ import net.ent.entstupidstuff.client.render.entity.PrismerineArrowRenderer;
 import net.ent.entstupidstuff.client.render.entity.RedPandaRenderer;
 import net.ent.entstupidstuff.client.render.entity.RedStoneGolemRenderer;
 import net.ent.entstupidstuff.client.render.entity.ScorchedEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.SilkmothRenderer;
 import net.ent.entstupidstuff.client.render.entity.MetalSkeletonRenderer;
 import net.ent.entstupidstuff.client.render.entity.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.SlimedZombieEntityRenderer;
@@ -51,6 +52,7 @@ import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
+import net.ent.entstupidstuff.client.render.entity.model.SilkmothModel;
 import net.ent.entstupidstuff.client.render.entity.model.MetalSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
@@ -141,6 +143,9 @@ public class ModEntityModelLayers {
 
     public static final ModelLayerLocation SPOREPER =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sporeper"), "main");
+
+    public static final ModelLayerLocation SILKMOTH =
+    new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "silkmoth"), "main");
 
     // Fires of the Hunt Update:
 
@@ -293,6 +298,9 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.SPOREPER, (EntityRendererProvider.Context context) -> new SporeperRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SPOREPER, () ->  SporeperModel.getTexturedModelData(new CubeDeformation(0.5F)));
+
+        EntityRenderers.register(EntityFactory.SILKMOTH, (EntityRendererProvider.Context context) -> new SilkmothRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SILKMOTH, SilkmothModel::createBodyLayer);
 
         //The Fire of the Hunt Update
 

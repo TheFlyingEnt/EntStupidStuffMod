@@ -1,15 +1,15 @@
 {
   "values": [
-    "entstupidstuff:fungal_door",
-    "entstupidstuff:fungal_glass_door",
     "entstupidstuff:redwood_door",
     "entstupidstuff:redwood_glass_door",
+    "entstupidstuff:fir_door",
+    "entstupidstuff:fir_glass_door",
     "entstupidstuff:maple_door",
     "entstupidstuff:maple_glass_door",
     "entstupidstuff:phantom_door",
     "entstupidstuff:phantom_glass_door",
-    "entstupidstuff:fir_door",
-    "entstupidstuff:fir_glass_door",
+    "entstupidstuff:fungal_door",
+    "entstupidstuff:fungal_glass_door",
     "entstupidstuff:fungal_door_white",
     "entstupidstuff:fungal_glass_door_white",
     "entstupidstuff:fungal_door_light_gray",
@@ -51,7 +51,8 @@
     "entstupidstuff:mangrove_glass_door",
     "entstupidstuff:cherry_glass_door",
     "entstupidstuff:bamboo_glass_door",
-    "entstupidstuff:warped_glass_door",
-    "entstupidstuff:crimson_glass_door"
+    "entstupidstuff:pale_oak_glass_door",
+    "entstupidstuff:crimson_glass_door",
+    "entstupidstuff:warped_glass_door"
   ]
 }

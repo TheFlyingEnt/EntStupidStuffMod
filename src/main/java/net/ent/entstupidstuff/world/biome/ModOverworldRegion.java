@@ -30,8 +30,8 @@ public class ModOverworldRegion extends Region {
 
         VanillaParameterOverlayBuilder builder = new VanillaParameterOverlayBuilder();
 
-        //Sunken Seas
-        new ParameterPointListBuilder()
+        // ## Sunken Seas
+        /*new ParameterPointListBuilder()
             .temperature(Temperature.span(Temperature.COOL, Temperature.NEUTRAL))
             .humidity(Humidity.span(Humidity.WET, Humidity.HUMID))
             .continentalness(Continentalness.span(
@@ -47,7 +47,7 @@ public class ModOverworldRegion extends Region {
                 Weirdness.MID_SLICE_NORMAL_ASCENDING, 
                 Weirdness.MID_SLICE_NORMAL_DESCENDING //PEAK_NORMAL
             ))
-        .build().forEach(point -> builder.add(point, ModBiomes.SUNKEN_SEA)); //0.6f)
+        .build().forEach(point -> builder.add(point, ModBiomes.SUNKEN_SEA)); //0.6f)*/
 
         // I need mushroom biomes to spawn in cheese caves
         
@@ -63,7 +63,7 @@ public class ModOverworldRegion extends Region {
         .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));*/
 
 
-        //ChatGPT
+        // ## UNDERGROUND_BLUE_MUSHROOM - ChatGPT
         new ParameterPointListBuilder()
             // Temperature/humidity: keep full range so biome can appear under many surface biomes
             .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))

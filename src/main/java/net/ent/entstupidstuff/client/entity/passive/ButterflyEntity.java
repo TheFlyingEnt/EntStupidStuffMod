@@ -13,7 +13,7 @@ import io.netty.buffer.ByteBuf;
 import net.ent.entstupidstuff.client.entity.Jarredable;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.ModItemTags;
+import net.ent.entstupidstuff.item.ModTags;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -33,7 +33,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.DifficultyInstance;
@@ -53,7 +52,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +63,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -74,15 +76,15 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
 
     // === Variant Enum ===
     public static enum Variant implements StringRepresentable {
-        BIRCH(0, "birch", true, List.of(ModItemTags.SPAWN_BIRCH_BUTTERFLY)),
-        EMPEROR(1, "emperor", true, List.of(ModItemTags.SPAWN_EMPEROR_BUTTERFLY)),
-        MONARCH(2, "monarch", true, List.of(ModItemTags.SPAWN_MONARCH_BUTTERFLY)),
-        YELLOW(3, "yellow", true, List.of(ModItemTags.SPAWN_YELLOW_BUTTERFLY)),
-        LUMINOUS(4, "luminous", true, List.of(ModItemTags.SPAWN_LUMINOUS_BUTTERFLY)),
-        REDWOOD(5, "redwood", true, List.of(ModItemTags.SPAWN_REDWOOD_BUTTERFLY)),
-        BLUE(6, "blue", true, List.of(ModItemTags.SPAWN_BLUE_BUTTERFLY)),
-        SEELE(7, "seele", false, List.of(ModItemTags.SPAWN_SEELE_BUTTERFLY)),
-        CREEPER(8, "creeper", false, List.of(ModItemTags.SPAWN_CREEPER_BUTTERFLY));
+        BIRCH(0, "birch", true, List.of(ModTags.SPAWN_BIRCH_BUTTERFLY)),
+        EMPEROR(1, "emperor", true, List.of(ModTags.SPAWN_EMPEROR_BUTTERFLY)),
+        MONARCH(2, "monarch", true, List.of(ModTags.SPAWN_MONARCH_BUTTERFLY)),
+        YELLOW(3, "yellow", true, List.of(ModTags.SPAWN_YELLOW_BUTTERFLY)),
+        LUMINOUS(4, "luminous", true, List.of(ModTags.SPAWN_LUMINOUS_BUTTERFLY)),
+        REDWOOD(5, "redwood", true, List.of(ModTags.SPAWN_REDWOOD_BUTTERFLY)),
+        BLUE(6, "blue", true, List.of(ModTags.SPAWN_BLUE_BUTTERFLY)),
+        SEELE(7, "seele", false, List.of(ModTags.SPAWN_SEELE_BUTTERFLY)),
+        CREEPER(8, "creeper", false, List.of(ModTags.SPAWN_CREEPER_BUTTERFLY));
 
         public static final Variant DEFAULT = BIRCH;
 
@@ -156,7 +158,7 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
         this.moveControl = new FlyingMoveControl(this, 20, true);
     }
 
-    // === Data NBT ===
+    // ## Data NBT
     @Override
     public void addAdditionalSaveData(ValueOutput view) {
         super.addAdditionalSaveData(view);
@@ -164,19 +166,10 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
         view.putBoolean("FromJar", this.isFromJar());
     }
 
-    /**
-     * Called when creating the jar/bottle ItemStack from the entity (saving entity -> item).
-     * Writes both "Variant" and "BucketVariantTag" to the BUCKET_ENTITY_DATA component so
-     * both your jar item and vanilla-style loading can read it.
-     */
     @Override
     public void copyDataToStack(ItemStack stack) {
-        //super.copyDataToStack(stack);
         Jarredable.copyDataToStack(this, stack);
         stack.copyFrom(ModDataComponentTypes.BUTTERFLY_VARIANT, this);
-        /*NbtComponent.set(DataComponentTypes.BUCKET_ENTITY_DATA, stack, (nbtCompound) -> {
-        	nbtCompound.putInt("Variant", this.getVariant().getId());
-    	});*/
     }
 
     @Override
@@ -189,11 +182,6 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
     @Override
 	public void copyDataFromNbt(CompoundTag nbt) {
 		Jarredable.copyDataFromNbt(this, nbt);
-		/*if (nbt.contains("BucketVariantTag", 3)) { // INT_TYPE
-			this.setVariant(Variant.byId(nbt.getInt("BucketVariantTag")));
-		} else if (nbt.contains("Variant", 3)) {
-			this.setVariant(Variant.byId(nbt.getInt("Variant")));
-		}*/
 	}
 
     private void setVariant(ButterflyEntity.Variant variant) {
@@ -259,35 +247,48 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
 
     public static AttributeSupplier.Builder createButterflyAttributes() {
         return Mob.createMobAttributes()
-            .add(Attributes.MAX_HEALTH, 8.0)
-            .add(Attributes.MOVEMENT_SPEED, 0.2)
-            .add(Attributes.FLYING_SPEED, 0.35)
-            .add(Attributes.TEMPT_RANGE, 10.0);
+        .add(Attributes.MAX_HEALTH, 8.0)
+        .add(Attributes.FLYING_SPEED, 0.6)
+        .add(Attributes.MOVEMENT_SPEED, 0.2)
+        .add(Attributes.TEMPT_RANGE, 10.0);
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new FloatGoal(this));
+
         this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
         this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, (itemStack) -> {
             return itemStack.is(ItemTags.BEE_FOOD);
         }, false));
-        this.goalSelector.addGoal(3, new BFWanderAroundGoal(this));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(5, new ButterflyEntity.ButterflyEntityWanderGoal());
+        this.goalSelector.addGoal(6, new FloatGoal(this));
+
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        FlyingPathNavigation nav = new FlyingPathNavigation(this, level);
+        nav.setCanOpenDoors(false);
+        nav.setCanFloat(true);
+        return nav;
+    }
+
+    @Override
+	protected void checkFallDamage(double d, boolean bl, BlockState blockState, BlockPos blockPos) {
+	}
+
+    @Override
+    public boolean isFlying() {
+        return !this.onGround();
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.horizontalCollision || this.verticalCollision) {
-            this.getMoveControl().setWantedPosition(
-                this.getX() + this.random.nextGaussian() * 2,
-                this.getY() + 1.0,
-                this.getZ() + this.random.nextGaussian() * 2,
-                0.3
-            );
+        if (!this.onGround() && this.getDeltaMovement().y < 0) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.6, 1.0));
         }
 
         updateAnimations();
@@ -308,68 +309,53 @@ public class ButterflyEntity extends PathfinderMob implements FlyingAnimal, Jarr
         return lightCheck && world.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.ANIMALS_SPAWNABLE_ON);
     }
 
-    // === Wander AI Goal ===
-    class BFWanderAroundGoal extends Goal {
-        private final ButterflyEntity butterfly;
-        private Vec3 target;
-        private int cooldown = 0;
 
-        public BFWanderAroundGoal(ButterflyEntity butterfly) {
-            this.butterfly = butterfly;
-            this.setFlags(EnumSet.of(Flag.MOVE));
-        }
 
-        @Override
+
+
+
+
+   
+    // ## Butterfly Goals:
+
+    class ButterflyEntityWanderGoal extends Goal {
+		ButterflyEntityWanderGoal() {
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
         public boolean canUse() {
-            return true;
+            return !ButterflyEntity.this.isPassenger()
+                && ButterflyEntity.this.random.nextInt(7) == 0;
         }
 
-        @Override
-        public boolean canContinueToUse() {
-            return true;
-        }
+		@Override
+		public boolean canContinueToUse() {
+			return ButterflyEntity.this.navigation.isInProgress();
+		}
 
-        @Override
-        public void tick() {
-            if (--cooldown <= 0 || target == null || butterfly.distanceToSqr(target) < 1.5) {
-                setNewTarget();
-                cooldown = 40 + butterfly.random.nextInt(60);
-            }
+		@Override
+		public void start() {
+			Vec3 vec3 = this.findPos();
+			if (vec3 != null) {
+				ButterflyEntity.this.navigation.moveTo(ButterflyEntity.this.navigation.createPath(BlockPos.containing(vec3), 1), 1.0);
+			}
+		}
 
-            butterfly.getMoveControl().setWantedPosition(target.x, target.y, target.z, 1.0);
+		@Nullable
+		private Vec3 findPos() {
+			Vec3 vec32;
+			vec32 = ButterflyEntity.this.getViewVector(0.0F);
 
-            Vec3 direction = target.subtract(butterfly.position());
-            double dx = direction.x;
-            double dz = direction.z;
-            butterfly.setYRot((float)(Math.toDegrees(Math.atan2(dz, dx)) - 90));
-            butterfly.setYBodyRot(butterfly.getYRot());
-            butterfly.setYHeadRot(butterfly.getYRot());
-        }
+			int i = 8;
+			Vec3 vec33 = HoverRandomPos.getPos(ButterflyEntity.this, 8, 7, vec32.x, vec32.z, (float) (Math.PI / 2), 3, 1);
+			return vec33 != null ? vec33 : AirAndWaterRandomPos.getPos(ButterflyEntity.this, 8, 4, -2, vec32.x, vec32.z, (float) (Math.PI / 2));
+		}
 
-        private void setNewTarget() {
-            double dx = (butterfly.random.nextDouble() - 0.5) * 20;
-            double dz = (butterfly.random.nextDouble() - 0.5) * 20;
-
-            int topY = butterfly.level().getHeight(Heightmap.Types.WORLD_SURFACE, butterfly.getBlockX(), butterfly.getBlockZ());
-
-            double minY = topY + 1;
-            double maxY = topY + 10;
-            double dy = butterfly.getY() + (butterfly.random.nextDouble() - 0.5) * 6.0;
-            double y = Mth.clamp(dy, minY, maxY);
-
-            this.target = new Vec3(
-                butterfly.getX() + dx,
-                y,
-                butterfly.getZ() + dz
-            );
-        }
-    }
-
-    // Flutterer method
-    @Override
-    public boolean isFlying() {
-        return !this.onGround();
-    }
+		private int getWanderThreshold() {
+			return 48;
+		}
+	}
 
     @Nullable
 	@Override

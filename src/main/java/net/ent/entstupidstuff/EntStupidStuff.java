@@ -6,17 +6,16 @@ import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
-import net.ent.entstupidstuff.event.callback.DualDaggerHandler;
-import net.ent.entstupidstuff.event.callback.ModDataComponents;
-import net.ent.entstupidstuff.event.callback.ServerDelayedTasks;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
+import net.ent.entstupidstuff.mixin.ArmPoseMixin;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -74,7 +73,7 @@ public class EntStupidStuff implements ModInitializer {
 	);
 
 
-
+    
 
 	@Override
 	public void onInitialize() {

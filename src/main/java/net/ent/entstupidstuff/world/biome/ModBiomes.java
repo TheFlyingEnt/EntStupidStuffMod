@@ -261,10 +261,14 @@ public class ModBiomes {
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
             ModPlacedFeatures.FUNGAL_SPORE_BLOSSOM_PLACED);
 
-        biomeBuilder.addFeature(
-            GenerationStep.Decoration.UNDERGROUND_DECORATION,
-            ModPlacedFeatures.CRYSTAL_SPIKE_PLACED
-        );
+        // Add fungal aura spore blossoms
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
+            ModPlacedFeatures.MUSHROOM_AURA_BLOSSOM_PLACED);
+
+        //biomeBuilder.addFeature(
+        //    GenerationStep.Decoration.UNDERGROUND_DECORATION,
+        //    ModPlacedFeatures.CRYSTAL_SPIKE_PLACED
+        //);
 
             
 

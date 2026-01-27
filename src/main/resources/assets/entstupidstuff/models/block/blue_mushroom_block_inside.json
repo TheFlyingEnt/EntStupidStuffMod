@@ -1,5 +1,5 @@
 {
-  "parent": "entstupidstuff:block/templete_glow_mushrooom_inside",
+  "parent": "entstupidstuff:block/templete_glow_mushroom_inside",
   "textures": {
     "texture": "entstupidstuff:block/blue_mushroom_block_inside",
     "glow": "entstupidstuff:block/blue_mushroom_block_inside"

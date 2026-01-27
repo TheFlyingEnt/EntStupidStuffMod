@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "group": "wooden_stairs",
+  "group": "wooden_mosic_stairs",
   "key": {
-    "#": "entstupidstuff:maple_planks"
+    "#": "entstupidstuff:maple_mosaic"
   },
   "pattern": [
     "#  ",

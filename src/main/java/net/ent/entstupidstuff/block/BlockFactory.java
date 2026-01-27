@@ -127,6 +127,7 @@ public class BlockFactory {
         // # Added REDWOOD Natural + Planks
         Block REDWOOD_PLANKS = register3("redwood" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.CRIMSON_NYLIUM))));
         BlockGroupFactory.groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.CRIMSON_NYLIUM, MapColor.CRIMSON_NYLIUM);
+        BlockFactoryHelper.addSaplings("redwood", SaplingGeneratorFactory.FIR); //TODO: Change to Redwood when Ready
 
         // # Added FIR Natural + Planks
         Block FIR_PLANKS = register3("fir" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
@@ -171,7 +172,7 @@ public class BlockFactory {
         Block BLUE_MUSHROOM = register_custom_mushroom(
 		"blue_mushroom",
 		(settings) -> new BlueMushroomPlantBlock(
-			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY,settings
+			ModConfiguredFeatures.HUGE_BLUE_MUSHROOM_KEY, settings
 		),
 		BlockBehaviour.Properties.of()
 			.mapColor(MapColor.COLOR_BLUE)
@@ -182,6 +183,10 @@ public class BlockFactory {
 			.hasPostProcess(Blocks::always)
 			.pushReaction(PushReaction.DESTROY)
 		);
+
+        Block POTTED_BLUE_MUSHROOM = register3(
+            "potted_blue_mushroom", settings -> new FlowerPotBlock(BLUE_MUSHROOM, settings), Blocks.flowerPotProperties()
+        );
 
         Block BLUE_MUSHROOM_BLOCK = register3(
             "blue_mushroom_block",
@@ -196,18 +201,6 @@ public class BlockFactory {
                 .noOcclusion()
                         .isRedstoneConductor(Blocks::never)
                         .isViewBlocking(Blocks::never)
-        );
-
-        Block SHROOMIUM_BLOCK = register3(
-            "shroomium",
-            ShroomiumBlock::new,
-            BlockBehaviour.Properties.of()
-                .mapColor(MapColor.WARPED_NYLIUM)
-                .isValidSpawn(Blocks::always)
-                .isRedstoneConductor(Blocks::always)
-                .isViewBlocking(Blocks::always)
-                .isSuffocating(Blocks::always)
-                .sound(SoundType.MUD)
         );
 
         Block CRYSTAL = register3(
@@ -230,10 +223,6 @@ public class BlockFactory {
             "mushroom_bed",
             MushroombedBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).noCollision().sound(SoundType.FUNGUS).pushReaction(PushReaction.DESTROY).lightLevel(state -> 1)
-        );
-
-        Block POTTED_MUSHROOM_BED = register3(
-            "potted_blue_mushroom", settings -> new FlowerPotBlock(BLUE_MUSHROOM, settings), Blocks.flowerPotProperties()
         );
 
         Block FUNGAL_SPORE_BLOSSOM = register3(
@@ -1107,7 +1096,7 @@ public class BlockFactory {
 
     }
 
-
+    // ## Static Block Registated
 
 
 
@@ -1153,13 +1142,53 @@ public class BlockFactory {
                 .strength(5.0F, 1200.0F)
     );
 
+    // # adding Abyssal_stone
+    public static final Block ABYSSAL_STONE = register3(
+        "abyssal_stone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE)
+    );
 
-    public static final Block ABYSSAL_STONE = register3("abyssal_stone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
+    public static final Block SHROOMIUM_BLOCK = register3(
+        "shroomium",
+        ShroomiumBlock::new,
+        BlockBehaviour.Properties.of()
+            .mapColor(MapColor.WARPED_NYLIUM)
+            .isValidSpawn(Blocks::always)
+            .isRedstoneConductor(Blocks::always)
+            .isViewBlocking(Blocks::always)
+            .isSuffocating(Blocks::always)
+            .sound(SoundType.MUD)
+    );
+
+    // # Adding DARK_ENCHANTMENT_TABLE
+    public static final Block MUSHROOM_AURA_BLOCK = register3(
+        "mushroom_aura_block", 
+        MushroomAuraBlock::new,
+		    BlockBehaviour.Properties.of()
+                .instabreak()
+                .noCollision()
+                .sound(SoundType.SPORE_BLOSSOM)
+                .pushReaction(PushReaction.DESTROY)
+                .lightLevel(state -> 3)
+                .noOcclusion()
+    );
+
+    // # Adding DARK_ENCHANTMENT_TABLE
+    public static final Block MUSHROOM_AURA_BLOCK_2 = register3(
+        "mushroom_aura_block_2", 
+        MushroomAuraBlock_2::new,
+		    BlockBehaviour.Properties.of()
+                .instabreak()
+                .noCollision()
+                .sound(SoundType.SPORE_BLOSSOM)
+                .pushReaction(PushReaction.DESTROY)
+                .lightLevel(state -> 3)
+                .noOcclusion()
+    );
 
 
 
 
-
+    // ## Ulti
 
     private static BlockBehaviour.Properties copyLootTable(Block block, boolean copyTranslationKey) {
 		@SuppressWarnings("unused")
@@ -1172,13 +1201,7 @@ public class BlockFactory {
 		return settings2;
 	}
 
-
-
-
-
-
-
-    //Registation:
+    // ## Registation
 
     public static Block register(String id, Block block) {
         ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
@@ -1246,7 +1269,7 @@ public class BlockFactory {
 		return Registry.register(BuiltInRegistries.BLOCK, key, block);
 	}
 
-    //Adding for Blue Mushroom
+    // ## Added Custom Blocks
 
     public static Block register_custom_mushroom(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
 		return register_custom_mushroom(keyOf(id), factory, settings, id);

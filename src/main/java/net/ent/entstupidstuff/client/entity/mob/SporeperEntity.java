@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.client.entity.ai.SporeperIgniteGoal;
+import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.particles.ExplosionParticleInfo;
@@ -273,24 +274,26 @@ public class SporeperEntity extends Monster {
 	}
 
 	private void spawnEffectsCloud() {
-		Collection<MobEffectInstance> collection = this.getActiveEffects();
-		//collection.add(new StatusEffectInstance(ModEffects.RGB_SHIFT, 140 * 1));
-		//collection.add(new StatusEffectInstance(StatusEffects.NAUSEA, 140 * 1));
-		if (!collection.isEmpty()) {
-			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
-			areaEffectCloudEntity.setRadius(2.5F);
-			areaEffectCloudEntity.setRadiusOnUse(-0.5F);
-			areaEffectCloudEntity.setWaitTime(10);
-			areaEffectCloudEntity.setDuration(300);
-			areaEffectCloudEntity.setPotionDurationScale(0.25F);
-			areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
 
-			for (MobEffectInstance statusEffectInstance : collection) {
-				areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
-			}
+        AreaEffectCloud cloud = new AreaEffectCloud(
+            this.level(),
+            this.getX(),
+            this.getY(),
+            this.getZ()
+        );
 
-			this.level().addFreshEntity(areaEffectCloudEntity);
-		}
+        cloud.setRadius(3.0F);
+        cloud.setRadiusOnUse(-0.5F);
+        cloud.setWaitTime(10);
+        cloud.setDuration(200); // 10 seconds
+        cloud.setRadiusPerTick(-cloud.getRadius() / cloud.getDuration());
+
+        cloud.addEffect(new MobEffectInstance(
+            ModEffects.HALLUC,
+            200,   // effect duration
+            0      // amplifier
+        ));
+
 	}
 
 	public boolean isIgnited() {

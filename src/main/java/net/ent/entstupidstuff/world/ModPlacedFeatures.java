@@ -109,6 +109,7 @@ public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
     public static final ResourceKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
     public static final ResourceKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
+    public static final ResourceKey<PlacedFeature> MUSHROOM_AURA_BLOSSOM_PLACED = registerKey("mushroom_aura_block_placed");
 
     public static final ResourceKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
 
@@ -373,6 +374,15 @@ public class ModPlacedFeatures {
             PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
             EnvironmentScanPlacement.scanningFor(Direction.UP, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
             RandomOffsetPlacement.vertical(ConstantInt.of(-1)),
+            BiomeFilter.biome());
+
+        register(context, MUSHROOM_AURA_BLOSSOM_PLACED, 
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MUSHROOM_AURA_BLOSSOM_KEY),
+            CountPlacement.of(24),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(1)),
             BiomeFilter.biome());
 
 

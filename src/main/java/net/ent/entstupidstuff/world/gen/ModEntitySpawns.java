@@ -7,7 +7,7 @@ import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
-import net.ent.entstupidstuff.item.ModItemTags;
+import net.ent.entstupidstuff.item.ModTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.world.biome.ModBiomes;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -29,7 +29,7 @@ public class ModEntitySpawns  {
     public static void addSpawns() {
 
         //Butterfly
-        BiomeModifications.addSpawn(BiomeSelectors.tag(ModItemTags.SPAWN_BUTTERFLY),
+        BiomeModifications.addSpawn(BiomeSelectors.tag(ModTags.SPAWN_BUTTERFLY),
             MobCategory.AMBIENT, EntityFactory.BUTTERFLY, 30, 3, 5); //100, 3, 5
         SpawnPlacements.register(EntityFactory.BUTTERFLY, SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING, ButterflyEntity::isValidNaturalSpawn);

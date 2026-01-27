@@ -10,7 +10,7 @@
         "Name": "entstupidstuff:shroomium"
       }
     },
-    "replaceable": "#minecraft:base_stone_overworld",
+    "replaceable": "#entstupidstuff:shroomium_replace",
     "surface": "floor",
     "vegetation_chance": 0.08,
     "vegetation_feature": {

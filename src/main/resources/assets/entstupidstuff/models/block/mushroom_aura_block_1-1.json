@@ -1,0 +1,186 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"bmb": "entstupidstuff:block/blue_mushroom_block",
+		"bmbglowing": "entstupidstuff:block/blue_mushroom_block_glow",
+		"stem": "minecraft:block/mushroom_stem",
+		"bluemush": "entstupidstuff:block/blue_mushroom",
+		"bed": "entstupidstuff:block/mushroom_bed",
+		"particle": "entstupidstuff:block/blue_mushroom_block"
+	},
+	"elements": [
+		{
+			"name": "stem",
+			"from": [7, 0, 7],
+			"to": [9, 13, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [6, 1, 10, 13], "texture": "#stem"},
+				"east": {"uv": [7, 1, 11, 13], "texture": "#stem"},
+				"south": {"uv": [6, 1, 10, 13], "texture": "#stem"},
+				"west": {"uv": [6, 1, 10, 13], "texture": "#stem"},
+				"up": {"uv": [6, 1, 10, 5], "texture": "#stem"},
+				"down": {"uv": [6, 2, 10, 6], "texture": "#stem"}
+			}
+		},
+		{
+			"name": "mushroom_head",
+			"from": [1, 10, 2],
+			"to": [15, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 14, 7]},
+			"faces": {
+				"north": {"uv": [0, 10, 14, 16], "texture": "#bmb"},
+				"east": {"uv": [0, 10, 12, 16], "texture": "#bmb"},
+				"south": {"uv": [0, 10, 14, 16], "texture": "#bmb"},
+				"west": {"uv": [0, 10, 12, 16], "texture": "#bmb"},
+				"up": {"uv": [0, 0, 14, 12], "texture": "#bmb"},
+				"down": {"uv": [0, 0, 14, 12], "texture": "#bmb"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [14, 0, 6],
+			"to": [14, 16, 22],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 0, 6]},
+			"faces": {
+				"north": {"uv": [2, 0, 2, 16], "texture": "#bluemush"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"south": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"down": {"uv": [0, 0, 0, 16], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [6, 0, 14],
+			"to": [22, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 0, 6]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#bluemush"},
+				"east": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 8, 16, 8], "texture": "#bluemush"},
+				"down": {"uv": [0, 8, 16, 8], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [2, 0, -5],
+			"to": [2, 16, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, -5]},
+			"faces": {
+				"north": {"uv": [2, 0, 2, 16], "texture": "#bluemush"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"south": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"down": {"uv": [0, 0, 0, 16], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [-6, 0, 3],
+			"to": [10, 16, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 0, -5]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#bluemush"},
+				"east": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 8, 16, 8], "texture": "#bluemush"},
+				"down": {"uv": [0, 8, 16, 8], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [13, 0, -5],
+			"to": [13, 13, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, -3, -5]},
+			"faces": {
+				"north": {"uv": [2, 0, 2, 16], "texture": "#bluemush"},
+				"east": {"uv": [16, 0, 0, 13], "texture": "#bluemush"},
+				"south": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [0, 0, 16, 13], "texture": "#bluemush"},
+				"up": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"down": {"uv": [0, 0, 0, 16], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [5, 0, 3],
+			"to": [21, 13, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, -3, -5]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 13], "texture": "#bluemush"},
+				"east": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 8, 16, 8], "texture": "#bluemush"},
+				"down": {"uv": [0, 8, 16, 8], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [3, 0, 4],
+			"to": [3, 13, 20],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, -3, 4]},
+			"faces": {
+				"north": {"uv": [2, 0, 2, 16], "texture": "#bluemush"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "#bluemush"},
+				"south": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"west": {"uv": [0, 0, 16, 13], "texture": "#bluemush"},
+				"up": {"uv": [0, 0, 0, 16], "texture": "#bluemush"},
+				"down": {"uv": [0, 0, 0, 16], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "mushroom",
+			"from": [-5, 0, 12],
+			"to": [11, 13, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, -3, 4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 13], "texture": "#bluemush"},
+				"east": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"south": {"uv": [16, 0, 0, 13], "texture": "#bluemush"},
+				"west": {"uv": [8, 0, 8, 16], "texture": "#bluemush"},
+				"up": {"uv": [0, 8, 16, 8], "texture": "#bluemush"},
+				"down": {"uv": [0, 8, 16, 8], "texture": "#bluemush"}
+			}
+		},
+		{
+			"name": "flower_bed",
+			"from": [0, 1, 0],
+			"to": [16, 1, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [14, 1, 0]},
+			"faces": {
+				"north": {"uv": [0, 2, 16, 2], "texture": "#bed"},
+				"east": {"uv": [0, 2, 16, 2], "texture": "#bed"},
+				"south": {"uv": [0, 2, 16, 2], "texture": "#bed"},
+				"west": {"uv": [0, 2, 16, 2], "texture": "#bed"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#bed"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#bed"}
+			},
+            "shade": false,
+            "light_emission": 10
+		},
+		{
+			"name": "mushroom_head",
+			"from": [1, 10, 2],
+			"to": [15, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 14, 7]},
+			"faces": {
+				"north": {"uv": [0, 10, 14, 16], "texture": "#bmb"},
+				"east": {"uv": [0, 10, 12, 16], "texture": "#bmb"},
+				"south": {"uv": [0, 10, 14, 16], "texture": "#bmb"},
+				"west": {"uv": [0, 10, 12, 16], "texture": "#bmb"},
+				"up": {"uv": [0, 0, 14, 12], "texture": "#bmb"},
+				"down": {"uv": [0, 0, 14, 12], "texture": "#bmb"}
+			},
+            "shade": false,
+            "light_emission": 10
+		}
+	]
+}

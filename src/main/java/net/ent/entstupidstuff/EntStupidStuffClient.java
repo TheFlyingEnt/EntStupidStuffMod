@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class EntStupidStuffClient implements ClientModInitializer {
 
+    
+
     @SuppressWarnings("deprecation")
     @Override
     public void onInitializeClient() {
@@ -27,9 +29,6 @@ public class EntStupidStuffClient implements ClientModInitializer {
         //ModelPredicateFactory.onInitialize();
         ModSpecialModelTypes.onInit();
         ParticlesClient.initalize();
-
-
-
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             Minecraft client = Minecraft.getInstance();
@@ -45,6 +44,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
                 }
             }
         });
+
+        
 
         MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
         

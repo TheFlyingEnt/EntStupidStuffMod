@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
+  "group": "combat_hammer",
   "key": {
     "#": "#minecraft:stone_tool_materials",
     "S": "minecraft:stick"

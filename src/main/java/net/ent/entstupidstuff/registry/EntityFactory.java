@@ -15,6 +15,7 @@ import net.ent.entstupidstuff.client.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.client.entity.mob.RedStoneGolemEntity;
 import net.ent.entstupidstuff.client.entity.mob.ScorchedZombieEntity;
+import net.ent.entstupidstuff.client.entity.mob.SilkmothEntity;
 import net.ent.entstupidstuff.client.entity.mob.SkeletonCrossbowEntity;
 import net.ent.entstupidstuff.client.entity.mob.SkeletonPirateCaptainEntity;
 import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
@@ -194,6 +195,15 @@ public class EntityFactory {
         .eyeHeight(0.25F)
         .clientTrackingRange(8)
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"red_panda")))
+    );
+
+    public static final EntityType<SilkmothEntity> SILKMOTH = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "silkmoth"),
+        EntityType.Builder.of(SilkmothEntity::new, MobCategory.AMBIENT)
+        .sized(0.5f, 0.5F)
+        .eyeHeight(0.25F)
+        .clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"silkmoth")))
     );
 
     public static final EntityType<CustomBoatEntity> CUSTOMBOAT = Registry.register(BuiltInRegistries.ENTITY_TYPE,
@@ -445,6 +455,8 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON, Skeleton.createAttributes());
 
         FabricDefaultAttributeRegistry.register(SPOREPER, SporeperEntity.createCreeperAttributes());
+
+        FabricDefaultAttributeRegistry.register(SILKMOTH, SilkmothEntity.createAttributes());
         
 
        

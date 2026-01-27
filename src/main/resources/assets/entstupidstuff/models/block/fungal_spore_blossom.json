@@ -5,7 +5,7 @@
 		"bottom": "entstupidstuff:block/fungal_blossom",
 		"mushroom": "entstupidstuff:block/blue_mushroom_block",
 		"stem": "minecraft:block/mushroom_stem",
-		"glowing": "entstupidstuff:block/blue_mushroom_glow"
+		"glowing": "entstupidstuff:block/blue_mushroom_block_glow"
 	},
 	"elements": [
 		{

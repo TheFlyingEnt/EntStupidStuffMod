@@ -26,5 +26,25 @@ public class BlueMushroomPlantBlock extends MushroomBlock{
 
 		return valid ? true : world.getRawBrightness(pos, 0) < 13 && this.mayPlaceOn(blockState, world, blockPos);
 	}
+
+    /*@Override
+	public void animateTick(BlockState blockState, Level serverLevel, BlockPos blockPos, RandomSource randomSource) {
+        AABB box = new AABB(blockPos).inflate(3);
+        List<Player> players = serverLevel.getEntitiesOfClass(Player.class, box);
+
+        for (Player player : players) {
+            player.addEffect(new MobEffectInstance(
+                MobEffects.NAUSEA,
+                //ModEffects.HALLUC, //
+                80,                 // duration (2 seconds)
+                1,                  // amplifier
+                true,               // ambient
+                true               // show particles
+            ));
+        }
+
+
+		super.animateTick(blockState, serverLevel, blockPos, randomSource);
+	}*/
     
 }

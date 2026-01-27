@@ -50,6 +50,7 @@ public class BlockGroupFactory {
             .trapdoor(BlockFactory.callBlock(MainName + "_" + "glass_trapdoor" + Varient))
             .door(BlockFactory.callBlock(MainName + "_" + "door" + Varient)) 
             .door(BlockFactory.callBlock(MainName + "_" + "glass_door" + Varient))
+            .mosaic(BlockFactory.callBlock(MainName + "_" + "mosic" + Varient))
         .recipeGroupPrefix("wooden")
         .recipeUnlockedBy("has_planks")
         .getFamily();

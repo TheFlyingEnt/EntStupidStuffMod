@@ -26,7 +26,7 @@ public class ModGroup {
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_NATURAL_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_natural_group"));
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_DEFAULT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_default_group"));
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_COMBAT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_combat_group"));
-
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_NEXT_UPDATE = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_next_update_group"));
 
     public static final Map<ResourceLocation, Item> Natural_Group = new LinkedHashMap<>();
 
@@ -57,6 +57,11 @@ public class ModGroup {
             Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_COMBAT_GROUP, FabricItemGroup.builder()
             .icon(() -> new ItemStack(ItemFactory.callItem("diamond_hammer")))
             .title(Component.translatable("item.entstupidstuff.combat_group")) //Advance Combat
+            .build());
+
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NEXT_UPDATE, FabricItemGroup.builder()
+            .icon(() -> new ItemStack(ItemFactory.callItem("cannon")))
+            .title(Component.translatable("item.entstupidstuff.next_update_group")) //Advance Combat
             .build());
 
             //addToCombat();
@@ -111,9 +116,30 @@ public class ModGroup {
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
     }
 
+    public static void addToNextUpdate(String item){
+        ItemLike  id = ItemFactory.callItem(item);
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_NEXT_UPDATE).register(entries -> entries.accept(id));
+    }
+
     public static void addToServerBlock(String block){
         ItemLike  id = BlockFactory.callBlock(block).asItem();
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
+    }
+
+    public static void NextUpdateItem() {
+        ModGroup.addToNextUpdate("iron_grate");
+        ModGroup.addToNextUpdate("iron_grate_stairs");
+        ModGroup.addToNextUpdate("iron_grate_slab");
+        ModGroup.addToNextUpdate("bottle_of_rum");
+        ModGroup.addToNextUpdate("cannon_ball");
+        ModGroup.addToNextUpdate("cannon");
+        ModGroup.addToNextUpdate("flintlock_crossbow");
+        ModGroup.addToNextUpdate("double_barrel_crossbow");
+        ModGroup.addToNextUpdate("sunken_skeleton_spawn_egg");
+        ModGroup.addToNextUpdate("skeleton_metal_spawn_egg");
+        ModGroup.addToNextUpdate("skeleton_phantom_spawn_egg");
+        ModGroup.addToNextUpdate("ancient_drowned");
+        ModGroup.addToNextUpdate("ancient_trident");
     }
 
     public static void LaunchItem() {
