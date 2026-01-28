@@ -204,7 +204,7 @@ public class BlockFactory {
         );
 
         Block CRYSTAL = register3(
-            "crystal_block",
+            "blue_crystal_block",
             TransparentBlock::new,
             BlockBehaviour.Properties.of()
                 .instrument(NoteBlockInstrument.XYLOPHONE)
@@ -219,8 +219,8 @@ public class BlockFactory {
                 .lightLevel(state -> 1)
         );
 
-        Block MUSHROOM_BED = register3(
-            "mushroom_bed",
+        Block AZURE_FLOWER_BED = register3(
+            "azure_flower_bed",
             MushroombedBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).noCollision().sound(SoundType.FUNGUS).pushReaction(PushReaction.DESTROY).lightLevel(state -> 1)
         );
@@ -334,6 +334,44 @@ public class BlockFactory {
 
         // # Legacy (Textured Wool)
         onInitializeOLD();
+
+        // # Adding Glowing Silk Wool + Colors:
+        Block GLOWING_SILK_WOOL = register3("glowing_silk_wool", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).mapColor(MapColor.ICE));
+        FlammableBlockRegistry.getDefaultInstance().add(GLOWING_SILK_WOOL, 30, 60);
+
+        Block GSW_WHITE_WOOL = register3("glowing_silk_wool_white", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL));
+        Block GSW_LIGHT_GRAY_WOOL = register3("glowing_silk_wool_light_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL));
+        Block GSW_GRAY_WOOL = register3("glowing_silk_wool_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL));
+        Block GSW_BLACK_WOOL = register3("glowing_silk_wool_black", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL));
+        Block GSW_BROWN_WOOL = register3("glowing_silk_wool_brown", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL));
+        Block GSW_RED_WOOL = register3("glowing_silk_wool_red", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL));
+        Block GSW_ORANGE_WOOL = register3("glowing_silk_wool_orange", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL));
+        Block GSW_YELLOW_WOOL = register3("glowing_silk_wool_yellow", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL));
+        Block GSW_LIME_WOOL = register3("glowing_silk_wool_lime", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL));
+        Block GSW_GREEN_WOOL = register3("glowing_silk_wool_green", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL));
+        Block GSW_CYAN_WOOL = register3("glowing_silk_wool_cyan", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL));
+        Block GSW_LIGHT_BLUE_WOOL = register3("glowing_silk_wool_light_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL));
+        Block GSW_BLUE_WOOL = register3("glowing_silk_wool_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL));
+        Block GSW_PURPLE_WOOL = register3("glowing_silk_wool_purple", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL));
+        Block GSW_MAGENTA_WOOL = register3("glowing_silk_wool_magenta", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL));
+        Block GSW_PINK_WOOL = register3("glowing_silk_wool_pink", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL));
+
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_WHITE_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIGHT_GRAY_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_GRAY_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BLACK_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BROWN_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_RED_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_ORANGE_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_YELLOW_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIME_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_GREEN_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_CYAN_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIGHT_BLUE_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BLUE_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_PURPLE_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_MAGENTA_WOOL, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_PINK_WOOL, 30, 60);
 
     }
 

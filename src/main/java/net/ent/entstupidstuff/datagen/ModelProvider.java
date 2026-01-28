@@ -162,10 +162,10 @@ public class ModelProvider extends FabricModelProvider{
         this.registerMushroomBlockCustom(BlockFactory.callBlock("blue_mushroom_block"));
         this.registerMudBottomCustomTop(BlockFactory.callBlock("shroomium"));
 
-        blockStateModelGenerator.createFlowerBed(BlockFactory.callBlock("mushroom_bed"));
+        blockStateModelGenerator.createFlowerBed(BlockFactory.callBlock("azure_flower_bed"));
         blockStateModelGenerator.createPlantWithDefaultItem(BlockFactory.callBlock("blue_mushroom"), BlockFactory.callBlock("potted_blue_mushroom"), BlockModelGenerators.PlantType.NOT_TINTED);
 
-        blockStateModelGenerator.family(BlockFactory.callBlock("crystal_block"));
+        blockStateModelGenerator.family(BlockFactory.callBlock("blue_crystal_block"));
         
         // # Adding Andersite, Diorite and Granite
         generateGroupBricksFamilty("andesite", "");

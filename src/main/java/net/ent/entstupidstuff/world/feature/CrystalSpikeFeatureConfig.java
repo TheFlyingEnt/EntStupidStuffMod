@@ -16,7 +16,7 @@ public class CrystalSpikeFeatureConfig implements FeatureConfiguration {
 
             // Which block the spike is made of
             BlockState.CODEC
-                .fieldOf("crystal_block")
+                .fieldOf("blue_crystal_block")
                 .forGetter(config -> config.crystalBlock),
 
             // Blocks the spike can replace (stone, deepslate, abyssal, etc.)

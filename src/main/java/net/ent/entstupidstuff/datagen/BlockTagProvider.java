@@ -61,16 +61,16 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 BlockFactory.callBlock("shroomium"));
 
         valueLookupBuilder(BlockTags.CRYSTAL_SOUND_BLOCKS).add(
-                BlockFactory.callBlock("crystal_block"));
+                BlockFactory.callBlock("blue_crystal_block"));
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
-                BlockFactory.callBlock("crystal_block"));
+                BlockFactory.callBlock("blue_crystal_block"));
 
         valueLookupBuilder(BlockTags.VIBRATION_RESONATORS).add(
-                BlockFactory.callBlock("crystal_block"));
+                BlockFactory.callBlock("blue_crystal_block"));
 
         valueLookupBuilder(BlockTags.INSIDE_STEP_SOUND_BLOCKS).add(
-                BlockFactory.callBlock("mushroom_bed"));
+                BlockFactory.callBlock("azure_flower_bed"));
 
         // # Adding Andersite, Diorite and Granite
         valueLookupBuilder(BlockTags.BASE_STONE_OVERWORLD).add(

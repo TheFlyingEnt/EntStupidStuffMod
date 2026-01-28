@@ -27,7 +27,7 @@ public class ModBiomes {
     public static final ResourceKey<Biome> ICY_CAVES = ResourceKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "icy_caves"));
     public static final ResourceKey<Biome> UNDERGROUND_BLUE_MUSHROOM = ResourceKey.create(Registries.BIOME,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "underground_blue_mushroom"));
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "underground_blue_mushroom")); //TODO: Might change into azure_mushroom_grove
     public static final ResourceKey<Biome> SUNKEN_SEA = ResourceKey.create(Registries.BIOME,
             ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sunken_sea"));
 
@@ -255,7 +255,7 @@ public class ModBiomes {
 
         // Add extra mushroom bed patches
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
-            ModPlacedFeatures.MUSHROOM_BED_PATCH_PLACED);
+            ModPlacedFeatures.AZURE_FLOWER_BED_PATCH_PLACED);
 
         // Add fungal spore blossoms
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 

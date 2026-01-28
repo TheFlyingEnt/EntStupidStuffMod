@@ -6,8 +6,8 @@
       "max_inclusive": 3,
       "min_inclusive": 1
     },
-    "crystal_block": {
-      "Name": "entstupidstuff:crystal_block"
+    "blue_crystal_block": {
+      "Name": "entstupidstuff:blue_crystal_block"
     },
     "length": {
       "type": "minecraft:uniform",

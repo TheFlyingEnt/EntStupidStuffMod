@@ -8,6 +8,7 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,6 +68,11 @@ public class SilkmothEntity extends Animal implements FlyingAnimal{
         return nav;
     }
 
+    public static boolean isValidNaturalSpawn(EntityType<? extends SilkmothEntity> type, LevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        boolean lightCheck = world.getRawBrightness(pos, 0) > 8;
+        return lightCheck && world.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.ANIMALS_SPAWNABLE_ON);
+    }
+
     @Override
 	protected void checkFallDamage(double d, boolean bl, BlockState blockState, BlockPos blockPos) {
 	}
@@ -94,6 +101,7 @@ public class SilkmothEntity extends Animal implements FlyingAnimal{
         return EntityFactory.SILKMOTH.create(serverLevel, EntitySpawnReason.BREEDING);
 
     }
+    
 
     // ## Silkmoth Goals:
 

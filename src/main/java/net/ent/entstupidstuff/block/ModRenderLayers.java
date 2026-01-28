@@ -149,11 +149,11 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom_block"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom_block"), ChunkSectionLayer.TRANSLUCENT);
 
-        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crystal_block"), ChunkSectionLayer.CUTOUT);
-        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crystal_block"), ChunkSectionLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_crystal_block"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_crystal_block"), ChunkSectionLayer.TRANSLUCENT);
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("blue_mushroom"), ChunkSectionLayer.CUTOUT);
-        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mushroom_bed"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("azure_flower_bed"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("potted_blue_mushroom"), ChunkSectionLayer.CUTOUT);
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("fungal_spore_blossom"), ChunkSectionLayer.CUTOUT);

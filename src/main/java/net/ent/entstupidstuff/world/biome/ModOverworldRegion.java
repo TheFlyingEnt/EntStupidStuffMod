@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.biome.Climate.Parameter;
 import com.mojang.datafixers.util.Pair;
 import terrablender.api.ParameterUtils.Continentalness;
 import terrablender.api.ParameterUtils.Erosion;

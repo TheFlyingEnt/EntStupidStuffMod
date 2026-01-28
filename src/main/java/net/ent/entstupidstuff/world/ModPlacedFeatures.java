@@ -107,7 +107,7 @@ public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
     public static final ResourceKey<PlacedFeature> MUD_LAYER_PLACED = registerKey("mud_layer_placed");
     public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED = registerKey("huge_blue_mushroom_placed");
-    public static final ResourceKey<PlacedFeature> MUSHROOM_BED_PATCH_PLACED = registerKey("mushroom_bed_patch_placed");
+    public static final ResourceKey<PlacedFeature> AZURE_FLOWER_BED_PATCH_PLACED = registerKey("azure_flower_bed_patch_placed");
     public static final ResourceKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
     public static final ResourceKey<PlacedFeature> MUSHROOM_AURA_BLOSSOM_PLACED = registerKey("mushroom_aura_block_placed");
 
@@ -358,7 +358,7 @@ public class ModPlacedFeatures {
             BiomeFilter.biome());
 
         // Additional mushroom bed patches
-        register(context, MUSHROOM_BED_PATCH_PLACED, 
+        register(context, AZURE_FLOWER_BED_PATCH_PLACED, 
             context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SHROOMIUM_FLOOR_VEGETATION_KEY),
             CountPlacement.of(50),
             InSquarePlacement.spread(),

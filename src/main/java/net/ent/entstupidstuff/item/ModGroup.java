@@ -280,8 +280,8 @@ public class ModGroup {
         ModGroup.addToServerBlock("blue_mushroom");
         ModGroup.addToServerBlock("blue_mushroom_block");
         ModGroup.addToServerBlock("shroomium");
-        ModGroup.addToServerBlock("crystal_block");
-        ModGroup.addToServerBlock("mushroom_bed");
+        ModGroup.addToServerBlock("blue_crystal_block");
+        ModGroup.addToServerBlock("azure_flower_bed");
         ModGroup.addToServerBlock("fungal_spore_blossom");
 
         

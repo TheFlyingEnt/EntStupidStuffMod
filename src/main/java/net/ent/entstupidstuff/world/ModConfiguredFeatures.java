@@ -176,7 +176,7 @@ public class ModConfiguredFeatures {
 			new SimpleBlockFeatureConfig(
 				new WeightedBlockStateProvider(
 					Pool.<BlockState>builder()
-						.add(BlockFactory.callBlock("mushroom_bed").getDefaultState(), 10)
+						.add(BlockFactory.callBlock("azure_flower_bed").getDefaultState(), 10)
 				)
 			)
 		);
@@ -313,7 +313,7 @@ public class ModConfiguredFeatures {
 			CRYSTAL_SPIKES,
 			CRYSTAL_SPIKES_FEATURE,
 			new CrystalSpikeFeatureConfig(
-				BlockFactory.callBlock("crystal_block").defaultBlockState(),
+				BlockFactory.callBlock("blue_crystal_block").defaultBlockState(),
 				//Blocks.GLOWSTONE.getDefaultState(),
                 //ModBlocks.BLUE_CRYSTAL.getDefaultState(),
 				BlockTags.STONE_ORE_REPLACEABLES,
@@ -324,14 +324,14 @@ public class ModConfiguredFeatures {
             )
 		);
 
-		Block MUSHROOM_BED = BlockFactory.callBlock("mushroom_bed");
+		Block AZURE_FLOWER_BED = BlockFactory.callBlock("azure_flower_bed");
 
 		FeatureUtils.register(
 			context,
 			SHROOMIUM_FLOOR_VEGETATION_KEY,
 			Feature.FLOWER,
 			new RandomPatchConfiguration(
-				96, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))))
+				96, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(segmentedBlock(AZURE_FLOWER_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))))
 			)
 		);
 
@@ -344,7 +344,7 @@ public class ModConfiguredFeatures {
 				BlockStateProvider.simple(BlockFactory.callBlock("shroomium")),
 				PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
 				new SimpleBlockConfiguration(
-					new WeightedStateProvider(segmentedBlock(MUSHROOM_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))
+					new WeightedStateProvider(segmentedBlock(AZURE_FLOWER_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))
 				)),
 				CaveSurface.FLOOR,
 				ConstantInt.of(1),

@@ -294,7 +294,7 @@
 			}
 		},
 		{
-			"name": "mushroom_bed",
+			"name": "azure_flower_bed",
 			"from": [0, 1, 0],
 			"to": [16, 1, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, -1, 0]},
@@ -635,7 +635,7 @@
             "light_emission": 10
 		},
 		{
-			"name": "mushroom_bed",
+			"name": "azure_flower_bed",
 			"from": [0, 1, 0],
 			"to": [16, 1, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, -1, 0]},

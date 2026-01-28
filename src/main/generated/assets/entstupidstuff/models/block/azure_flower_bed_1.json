@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/flowerbed_1",
+  "textures": {
+    "flowerbed": "entstupidstuff:block/azure_flower_bed",
+    "stem": "entstupidstuff:block/azure_flower_bed_stem"
+  }
+}

@@ -4,6 +4,7 @@ import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.FungalSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.mob.FungalZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
+import net.ent.entstupidstuff.client.entity.mob.SilkmothEntity;
 import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
@@ -33,6 +34,12 @@ public class ModEntitySpawns  {
             MobCategory.AMBIENT, EntityFactory.BUTTERFLY, 30, 3, 5); //100, 3, 5
         SpawnPlacements.register(EntityFactory.BUTTERFLY, SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING, ButterflyEntity::isValidNaturalSpawn);
+
+        //Butterfly
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(ModBiomes.UNDERGROUND_BLUE_MUSHROOM),
+            MobCategory.AMBIENT, EntityFactory.SILKMOTH, 30, 2, 3); //100, 3, 5
+        SpawnPlacements.register(EntityFactory.SILKMOTH, SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING, SilkmothEntity::isValidNaturalSpawn);
 
         //Lobber
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.DRIPSTONE_CAVES, Biomes.LUSH_CAVES),

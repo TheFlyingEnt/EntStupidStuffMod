@@ -6,7 +6,7 @@
 		"bmbglowing": "entstupidstuff:block/blue_mushroom_block_glow",
 		"stem": "minecraft:block/mushroom_stem",
 		"bluemush": "entstupidstuff:block/blue_mushroom",
-		"bed": "entstupidstuff:block/mushroom_bed",
+		"bed": "entstupidstuff:block/azure_flower_bed",
 		"particle": "entstupidstuff:block/blue_mushroom_block"
 	},
 	"elements": [

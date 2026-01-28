@@ -55,8 +55,8 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         this.add(BlockFactory.callBlock("blue_mushroom_block"), this.createMushroomBlockDrop(BlockFactory.callBlock("blue_mushroom_block"), BlockFactory.callBlock("blue_mushroom")));
         this.add(BlockFactory.callBlock("shroomium"), this.createSingleItemTableWithSilkTouch(BlockFactory.callBlock("shroomium"), Blocks.MUD));
 
-        dropSelf((BlockFactory.callBlock("crystal_block")));
-        this.add(BlockFactory.callBlock("mushroom_bed"), this.createSegmentedBlockDrops(BlockFactory.callBlock("mushroom_bed")));
+        dropSelf((BlockFactory.callBlock("blue_crystal_block")));
+        this.add(BlockFactory.callBlock("azure_flower_bed"), this.createSegmentedBlockDrops(BlockFactory.callBlock("azure_flower_bed")));
         dropSelf((BlockFactory.callBlock("fungal_spore_blossom")));
         dropSelf(BlockFactory.MUSHROOM_AURA_BLOCK);
 
