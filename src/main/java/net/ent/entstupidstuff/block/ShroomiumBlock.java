@@ -1,8 +1,15 @@
 package net.ent.entstupidstuff.block;
 
 import com.mojang.serialization.MapCodec;
+
+import net.ent.entstupidstuff.world.ModConfiguredFeatures;
+import net.ent.entstupidstuff.world.ModPlacedFeatures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.features.NetherFeatures;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -11,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.lighting.LightEngine;
 
 public class ShroomiumBlock extends Block implements BonemealableBlock {
@@ -51,9 +60,26 @@ public class ShroomiumBlock extends Block implements BonemealableBlock {
     }
 
     @Override
-    public void performBonemeal(ServerLevel world, RandomSource random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
         //Nothing yet: TBA
+        BlockState blockState2 = serverLevel.getBlockState(blockPos);
+		BlockPos blockPos2 = blockPos.above();
+		ChunkGenerator chunkGenerator = serverLevel.getChunkSource().getGenerator();
+		Registry<ConfiguredFeature<?, ?>> registry = serverLevel.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+
+        this.place(registry, ModConfiguredFeatures.MUSHROOM_FOREST_VEGETATION_BONEMEAL, serverLevel, chunkGenerator, randomSource, blockPos2);
     }
+
+    private void place(
+		Registry<ConfiguredFeature<?, ?>> registry,
+		ResourceKey<ConfiguredFeature<?, ?>> resourceKey,
+		ServerLevel serverLevel,
+		ChunkGenerator chunkGenerator,
+		RandomSource randomSource,
+		BlockPos blockPos
+	) {
+		registry.get(resourceKey).ifPresent(reference -> ((ConfiguredFeature)reference.value()).place(serverLevel, chunkGenerator, randomSource, blockPos));
+	}
 
     @Override
 	public BonemealableBlock.Type getType() {

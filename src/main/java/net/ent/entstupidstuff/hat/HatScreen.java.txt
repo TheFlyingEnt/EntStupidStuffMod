@@ -1,0 +1,211 @@
+package net.ent.entstupidstuff.hat;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HatScreen extends AbstractContainerScreen<HatScreenHandler> {
+    private static final int SLOTS_PER_ROW = 7;
+    private static final int SLOT_SIZE = 18;
+    private static final int PADDING = 4;
+    
+    private final List<HatSlot> hatSlots = new ArrayList<>();
+    private ResourceLocation currentHat;
+    
+    public HatScreen(HatScreenHandler handler, Inventory inventory, Component title) {
+        super(handler, inventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 166;
+        
+        // Get current hat
+        currentHat = ClientHatData.getPlayerHat(Minecraft.getInstance().player.getUUID());
+        
+        // Create hat slots
+        int index = 0;
+        for (var entry : HatRegistry.getHats().entrySet()) {
+            int row = index / SLOTS_PER_ROW;
+            int col = index % SLOTS_PER_ROW;
+            
+            int x = leftPos + 8 + col * (SLOT_SIZE + PADDING);
+            int y = topPos + 20 + row * (SLOT_SIZE + PADDING);
+            
+            hatSlots.add(new HatSlot(entry.getValue(), x, y));
+            index++;
+        }
+    }
+    
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        
+        // Draw background
+        graphics.fill(x, y, x + imageWidth, y + imageHeight, 0xC0101010);
+        graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + imageHeight - 1, 0xFF8B8B8B);
+    }
+    
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        
+        // Check if player has the advancement for each hat
+        var player = Minecraft.getInstance().player;
+        
+        // Render hat slots
+        for (HatSlot slot : hatSlots) {
+            boolean unlocked = false;
+            if (player != null) {
+                ClientPacketListener  connection = Minecraft.getInstance().getConnection();
+                if (connection != null) {
+                    AdvancementHolder advancementHolder = connection.getAdvancements().get(slot.hat.getRequiredAdvancement());
+                    if (advancementHolder != null) {
+                        unlocked = advancementHolder.progress().isDone();
+                    }
+                }
+            }
+            
+            slot.render(graphics, mouseX, mouseY, unlocked, slot.hat.getId().equals(currentHat));
+        }
+        
+        // Render "Remove Hat" button
+        renderRemoveHatButton(graphics, mouseX, mouseY);
+        
+        // Render tooltips
+        for (HatSlot slot : hatSlots) {
+            if (slot.isHovered(mouseX, mouseY)) {
+                boolean unlocked = false;
+                if (player != null) {
+                    var connection = Minecraft.getInstance().getConnection();
+                    if (connection != null) {
+                        var advancementHolder = connection.getAdvancements().get(slot.hat.getRequiredAdvancement());
+                        if (advancementHolder != null) {
+                            unlocked = advancementHolder.progress().isDone();
+                        }
+                    }
+                }
+                
+                List<Component> tooltip = new ArrayList<>();
+                tooltip.add(Component.literal(slot.hat.getName()));
+                if (!unlocked) {
+                    tooltip.add(Component.literal("§7Locked").withStyle(style -> style.withItalic(true)));
+                    tooltip.add(Component.literal("§7Requires: " + slot.hat.getRequiredAdvancement().getPath()));
+                }
+                graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+            }
+        }
+    }
+    
+    private void renderRemoveHatButton(GuiGraphics graphics, int mouseX, int mouseY) {
+        int buttonX = leftPos + imageWidth / 2 - 40;
+        int buttonY = topPos + imageHeight - 25;
+        int buttonWidth = 80;
+        int buttonHeight = 20;
+        
+        boolean hovered = mouseX >= buttonX && mouseX < buttonX + buttonWidth && 
+                         mouseY >= buttonY && mouseY < buttonY + buttonHeight;
+        
+        // Draw button
+        graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight, 
+                     hovered ? 0xFF666666 : 0xFF555555);
+        graphics.fill(buttonX + 1, buttonY + 1, buttonX + buttonWidth - 1, buttonY + buttonHeight - 1,
+                     hovered ? 0xFF444444 : 0xFF333333);
+        
+        // Draw text
+        Component text = Component.literal("Remove Hat");
+        graphics.drawString(font, text, 
+                          buttonX + buttonWidth / 2 - font.width(text) / 2, 
+                          buttonY + 6, 0xFFFFFF);
+    }
+    
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            // Check hat slots
+            for (HatSlot slot : hatSlots) {
+                if (slot.isHovered((int)mouseX, (int)mouseY)) {
+                    var player = Minecraft.getInstance().player;
+                    if (player != null) {
+                        var connection = Minecraft.getInstance().getConnection();
+                        if (connection != null) {
+                            var advancementHolder = connection.getAdvancements().get(slot.hat.getRequiredAdvancement());
+                            if (advancementHolder != null && advancementHolder.progress().isDone()) {
+                                ClientPlayNetworking.send(new SelectHatPacket(slot.hat.getId()));
+                                currentHat = slot.hat.getId();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Check remove hat button
+            int buttonX = leftPos + imageWidth / 2 - 40;
+            int buttonY = topPos + imageHeight - 25;
+            int buttonWidth = 80;
+            int buttonHeight = 20;
+            
+            if (mouseX >= buttonX && mouseX < buttonX + buttonWidth && 
+                mouseY >= buttonY && mouseY < buttonY + buttonHeight) {
+                ClientPlayNetworking.send(new SelectHatPacket(null));
+                currentHat = null;
+                return true;
+            }
+        }
+        
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+    
+    private static class HatSlot {
+        private final HatRegistry.HatDefinition hat;
+        private final int x;
+        private final int y;
+        
+        public HatSlot(HatRegistry.HatDefinition hat, int x, int y) {
+            this.hat = hat;
+            this.x = x;
+            this.y = y;
+        }
+        
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, boolean unlocked, boolean selected) {
+            boolean hovered = isHovered(mouseX, mouseY);
+            
+            // Draw slot background
+            int color;
+            if (selected) {
+                color = 0xFF00FF00; // Green for selected
+            } else if (!unlocked) {
+                color = 0xFF444444; // Dark gray for locked
+            } else if (hovered) {
+                color = 0xFF666666; // Light gray for hovered
+            } else {
+                color = 0xFF555555; // Medium gray for normal
+            }
+            
+            graphics.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, color);
+            graphics.fill(x + 1, y + 1, x + SLOT_SIZE - 1, y + SLOT_SIZE - 1, 
+                         unlocked ? 0xFF8B8B8B : 0xFF222222);
+            
+            // Draw item
+            if (unlocked) {
+                graphics.renderItem(new ItemStack(hat.getDisplayItem()), x + 1, y + 1);
+            } else {
+                // Draw locked icon (barrier)
+                graphics.renderItem(new ItemStack(net.minecraft.world.item.Items.BARRIER), x + 1, y + 1);
+            }
+        }
+        
+        public boolean isHovered(int mouseX, int mouseY) {
+            return mouseX >= x && mouseX < x + SLOT_SIZE && mouseY >= y && mouseY < y + SLOT_SIZE;
+        }
+    }
+}

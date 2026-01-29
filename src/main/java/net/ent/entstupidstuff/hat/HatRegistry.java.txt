@@ -1,0 +1,79 @@
+package net.ent.entstupidstuff.hat;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HatRegistry {
+    private static final Map<ResourceLocation, HatDefinition> HATS = new HashMap<>();
+    
+    public static void register() {
+        // Register hats with their required advancements
+        registerHat("crown", Items.GOLD_BLOCK, "story/mine_diamond");
+        registerHat("wizard_hat", Items.PURPLE_WOOL, "story/enchant_item");
+        registerHat("santa_hat", Items.RED_WOOL, "husbandry/plant_seed");
+        registerHat("top_hat", Items.BLACK_WOOL, "story/smelt_iron");
+        registerHat("party_hat", Items.PINK_WOOL, "adventure/kill_a_mob");
+        registerHat("propeller_hat", Items.OAK_PLANKS, "story/upgrade_tools");
+        registerHat("viking_helmet", Items.IRON_HELMET, "story/iron_tools");
+        registerHat("chef_hat", Items.WHITE_WOOL, "husbandry/breed_an_animal");
+    }
+    
+    private static void registerHat(String id, Item displayItem, String advancementPath) {
+        ResourceLocation hatId = ResourceLocation.fromNamespaceAndPath("entstupidstuff", id);
+        ResourceLocation advancement = ResourceLocation.fromNamespaceAndPath("minecraft", advancementPath);
+        HATS.put(hatId, new HatDefinition(hatId, displayItem, advancement));
+    }
+    
+    public static Map<ResourceLocation, HatDefinition> getHats() {
+        return HATS;
+    }
+    
+    public static HatDefinition getHat(ResourceLocation id) {
+        return HATS.get(id);
+    }
+
+    public static Collection<HatDefinition> values() {
+        return HATS.values();
+    }
+    
+    public static class HatDefinition {
+        private final ResourceLocation id;
+        private final Item displayItem;
+        private final ResourceLocation requiredAdvancement;
+        
+        public HatDefinition(ResourceLocation id, Item displayItem, ResourceLocation requiredAdvancement) {
+            this.id = id;
+            this.displayItem = displayItem;
+            this.requiredAdvancement = requiredAdvancement;
+        }
+        
+        public ResourceLocation getId() {
+            return id;
+        }
+        
+        public Item getDisplayItem() {
+            return displayItem;
+        }
+        
+        public ResourceLocation getRequiredAdvancement() {
+            return requiredAdvancement;
+        }
+        
+        public String getName() {
+            String path = id.getPath();
+            String[] words = path.split("_");
+            StringBuilder result = new StringBuilder();
+            for (String word : words) {
+                if (result.length() > 0) result.append(" ");
+                result.append(Character.toUpperCase(word.charAt(0)));
+                result.append(word.substring(1));
+            }
+            return result.toString();
+        }
+    }
+}

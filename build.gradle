@@ -32,7 +32,7 @@ tasks.register("incrementVersion") {
 }
 // Automatically update after build
 tasks.named("build") {
-    //finalizedBy("incrementVersion")
+    finalizedBy("incrementVersion")
 }
 
 //Original File

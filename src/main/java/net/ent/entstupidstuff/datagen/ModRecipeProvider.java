@@ -91,6 +91,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 groupWoodFamilty("fungal", "", false);
                 shapeless(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("fungal_planks"), 4)
                         .requires(Blocks.MUSHROOM_STEM.asItem())
+                        .requires(Blocks.RED_MUSHROOM_BLOCK.asItem())
+                        .requires(BlockFactory.callBlock("blue_mushroom_block").asItem())
+                        .requires(Blocks.MUSHROOM_STEM.asItem())
                         .group("planks")
                         .unlockedBy(getHasName(Blocks.MUSHROOM_STEM), has(Blocks.MUSHROOM_STEM))
                         .save(output);

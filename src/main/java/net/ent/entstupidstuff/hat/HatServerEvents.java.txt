@@ -1,0 +1,32 @@
+package net.ent.entstupidstuff.hat;
+
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+
+public class HatServerEvents {
+    public static void register() {
+        // Sync hat data when player joins
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerPlayer player = handler.getPlayer();
+            ServerLevel level = (ServerLevel) player.level();
+            HatSavedData data = HatSavedData.get(level);
+            
+            ResourceLocation hatId = data.getPlayerHat(player.getUUID());
+            if (hatId != null) {
+                SyncHatPacket.send(player, hatId);
+            }
+            
+            // Also sync all other players' hats to the joining player
+            for (ServerPlayer otherPlayer : server.getPlayerList().getPlayers()) {
+                if (otherPlayer != player) {
+                    ResourceLocation otherHat = data.getPlayerHat(otherPlayer.getUUID());
+                    if (otherHat != null) {
+                        sender.sendPacket(new SyncHatPacket(otherPlayer.getUUID(), otherHat));
+                    }
+                }
+            }
+        });
+    }
+}

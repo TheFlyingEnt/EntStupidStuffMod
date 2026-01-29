@@ -1,0 +1,49 @@
+package net.ent.entstupidstuff.hat;
+
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.UUID;
+
+public record SyncHatPacket(UUID playerId, ResourceLocation hatId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncHatPacket> TYPE = 
+        new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "sync_hat"));
+    
+    public static final StreamCodec<FriendlyByteBuf, SyncHatPacket> CODEC = StreamCodec.of(
+        (buf, packet) -> {
+            buf.writeUUID(packet.playerId);
+            buf.writeBoolean(packet.hatId != null);
+            if (packet.hatId != null) {
+                buf.writeResourceLocation(packet.hatId);
+            }
+        },
+        buf -> {
+            UUID playerId = buf.readUUID();
+            boolean hasHat = buf.readBoolean();
+            return new SyncHatPacket(playerId, hasHat ? buf.readResourceLocation() : null);
+        }
+    );
+    
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+    
+    public static void send(ServerPlayer player, ResourceLocation hatId) {
+        SyncHatPacket packet = new SyncHatPacket(player.getUUID(), hatId);
+        
+        // Send to all players tracking this player
+        for (ServerPlayer trackingPlayer : PlayerLookup.tracking(player)) {
+            ServerPlayNetworking.send(trackingPlayer, packet);
+        }
+        
+        // Send to the player themselves
+        ServerPlayNetworking.send(player, packet);
+    }
+}
+

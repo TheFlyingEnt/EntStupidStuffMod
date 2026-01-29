@@ -1,0 +1,59 @@
+package net.ent.entstupidstuff.hat;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+
+public class HatScreenHandler extends AbstractContainerMenu {
+    
+    private final Player player;
+    
+    public HatScreenHandler(int syncId, Inventory playerInventory, Object data) {
+        this(syncId, playerInventory);
+    }
+    
+    public HatScreenHandler(int syncId, Inventory playerInventory) {
+        super(ScreenHandlerFactory.HAT_SCREEN_HANDLER, syncId);
+        this.player = playerInventory.player;
+    }
+    
+    @Override
+    public ItemStack quickMoveStack(Player player, int slot) {
+        return ItemStack.EMPTY;
+    }
+    
+    @Override
+    public boolean stillValid(Player player) {
+        return true;
+    }
+    
+    public Player getPlayer() {
+        return player;
+    }
+    
+    public static void openForPlayer(ServerPlayer player) {
+        player.openMenu(new ExtendedScreenHandlerFactory<Object>() {
+            @Override
+            public Object getScreenOpeningData(ServerPlayer player) {
+                return null;
+            }
+            
+            @Override
+            public Component getDisplayName() {
+                return Component.literal("Select Hat");
+            }
+            
+            @Override
+            public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
+                return new HatScreenHandler(syncId, inv);
+            }
+        });
+    }
+}
+
+

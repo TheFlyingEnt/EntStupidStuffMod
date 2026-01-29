@@ -39,6 +39,7 @@ import net.ent.entstupidstuff.item.itemType.DaggerItem;
 import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,11 +60,13 @@ import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.material.Fluids;
 
@@ -214,6 +217,8 @@ public class ItemFactory {
     public static final Item PIRATE_VINDICATOR_SPAWN = null;
     public static final Item PIRATE_CAPTAIN_SPAWN = null;
     public static final Item GIANT_CLAB_SPAWN = null;
+
+    public static final Item PHANTOM_TORCH = registerItem("phantom_torch", setting -> new StandingAndWallBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, Direction.DOWN, setting));
 
 
     // Shields

@@ -1,0 +1,65 @@
+package net.ent.entstupidstuff.hat;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+public class HatSavedData extends SavedData {
+    private static final String DATA_NAME = "entstupidstuff_hat_data";
+    private final Map<UUID, ResourceLocation> playerHats = new HashMap<>();
+    
+    public HatSavedData() {
+        super();
+    }
+    
+    public static HatSavedData load(CompoundTag tag, HolderLookup.Provider provider) {
+        HatSavedData data = new HatSavedData();
+        Optional<CompoundTag> hatsTag = tag.getCompound("PlayerHats");
+        for (String key : hatsTag.getAllKeys()) {
+            UUID playerId = UUID.fromString(key);
+            String hatId = hatsTag.getString(key);
+            if (!hatId.isEmpty()) {
+                data.playerHats.put(playerId, ResourceLocation.parse(hatId));
+            }
+        }
+        return data;
+    }
+    
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
+        CompoundTag hatsTag = new CompoundTag();
+        for (Map.Entry<UUID, ResourceLocation> entry : playerHats.entrySet()) {
+            hatsTag.putString(entry.getKey().toString(), entry.getValue().toString());
+        }
+        tag.put("PlayerHats", hatsTag);
+        return tag;
+    }
+    
+    public ResourceLocation getPlayerHat(UUID playerId) {
+        return playerHats.get(playerId);
+    }
+    
+    public void setPlayerHat(UUID playerId, ResourceLocation hatId) {
+        if (hatId == null) {
+            playerHats.remove(playerId);
+        } else {
+            playerHats.put(playerId, hatId);
+        }
+        setDirty();
+    }
+    
+    public static HatSavedData get(ServerLevel level) {
+        return level.getDataStorage().computeIfAbsent(
+            new SavedData.Factory<>(HatSavedData::new, HatSavedData::load),
+            DATA_NAME
+        );
+    }
+}
+

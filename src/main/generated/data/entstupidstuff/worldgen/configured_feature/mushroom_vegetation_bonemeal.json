@@ -1,0 +1,34 @@
+{
+  "type": "entstupidstuff:mushroom_forest_vegetation",
+  "config": {
+    "spread_height": 1,
+    "spread_width": 3,
+    "state_provider": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "entstupidstuff:blue_mushroom"
+          },
+          "weight": 20
+        },
+        {
+          "data": {
+            "Name": "entstupidstuff:mushroom_aura_block"
+          },
+          "weight": 11
+        },
+        {
+          "data": {
+            "Name": "entstupidstuff:azure_flower_bed",
+            "Properties": {
+              "facing": "north",
+              "flower_amount": "1"
+            }
+          },
+          "weight": 30
+        }
+      ]
+    }
+  }
+}

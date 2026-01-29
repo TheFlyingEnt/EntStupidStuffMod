@@ -8,6 +8,7 @@ import net.ent.entstupidstuff.item.ModTags;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeature;
 import net.ent.entstupidstuff.world.feature.CrystalSpikeFeatureConfig;
 import net.ent.entstupidstuff.world.feature.LargerSpikedIceFeature;
+import net.ent.entstupidstuff.world.feature.MushroomVegetationFeature;
 import net.ent.entstupidstuff.world.feature.SmallSpikedIceFeature;
 import net.ent.entstupidstuff.world.feature.SpikedIceClusterFeature;
 import net.ent.entstupidstuff.world.tree.FirFoliagePlacer;
@@ -51,6 +52,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.DripstoneCluste
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.HugeMushroomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.LargeDripstoneConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NetherForestVegetationConfig;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.PointedDripstoneConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
@@ -133,6 +135,7 @@ public class ModConfiguredFeatures {
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_THALASSITE = registerKey("ore_thalassite");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> CRYSTAL_SPIKES  = registerKey("crystal_spikes");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_FOREST_VEGETATION_BONEMEAL  = registerKey("mushroom_vegetation_bonemeal");
 
     // # Features
 
@@ -157,6 +160,13 @@ public class ModConfiguredFeatures {
             ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "crystal_spikes"),
             new CrystalSpikeFeature(CrystalSpikeFeatureConfig.CODEC)
         );
+
+    public static final Feature<NetherForestVegetationConfig> MUSHROOM_FOREST_VEGETATION = 
+    Registry.register(
+        BuiltInRegistries.FEATURE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mushroom_forest_vegetation"),
+		new MushroomVegetationFeature(NetherForestVegetationConfig.CODEC)
+	);
 
     
 
@@ -324,6 +334,17 @@ public class ModConfiguredFeatures {
             )
 		);
 
+        WeightedStateProvider weightedStateProvider = new WeightedStateProvider(
+			WeightedList.<BlockState>builder()
+				.add(BlockFactory.callBlock("blue_mushroom").defaultBlockState(), 20)
+				.add(BlockFactory.callBlock("mushroom_aura_block").defaultBlockState(), 11)
+                .add(BlockFactory.callBlock("azure_flower_bed").defaultBlockState(), 30)
+		);
+
+        FeatureUtils.register(
+			context, MUSHROOM_FOREST_VEGETATION_BONEMEAL, MUSHROOM_FOREST_VEGETATION, new NetherForestVegetationConfig(weightedStateProvider, 3, 1)
+		);
+
 		Block AZURE_FLOWER_BED = BlockFactory.callBlock("azure_flower_bed");
 
 		FeatureUtils.register(
@@ -360,7 +381,7 @@ public class ModConfiguredFeatures {
 		new DiskConfiguration(
 			RuleBasedBlockStateProvider.simple(Blocks.MUD),
 			BlockPredicate.matchesBlocks(List.of(Blocks.STONE, Blocks.DEEPSLATE, Blocks.DIORITE, 
-				Blocks.ANDESITE, Blocks.GRANITE, BlockFactory.callBlock("shroomium"))), // Blocks to replace
+				Blocks.ANDESITE, Blocks.GRANITE, BlockFactory.callBlock("shroomium"))), // Blplocks to replace
 			UniformInt.of(2, 4), // Radius (2-4 blocks)
 			2 // Half height (2 blocks deep of mud)
 		));

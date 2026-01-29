@@ -1,0 +1,104 @@
+package net.ent.entstupidstuff.hat;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.Minecraft;
+
+//@Environment(EnvType.CLIENT)
+public class HatFeatureRenderer extends RenderLayer<AvatarRenderState, PlayerModel> {
+
+    public HatFeatureRenderer(RenderLayerParent<AvatarRenderState, PlayerModel> context) {
+        super(context);
+    }
+
+    @Override
+    public void submit(
+            PoseStack poseStack,
+            SubmitNodeCollector collector,
+            int packedLight,
+            AvatarRenderState state,
+            float partialTick,
+            float animationProgress
+    ) {
+        // Invisible / spectator checks
+        if (state.isInvisible || state.isSpectator) return;
+        if (!state.showHat) return;
+
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
+
+        Entity entity = level.getEntity(state.id);
+        if (!(entity instanceof Player player)) return;
+
+        var hatId = ClientHatData.getPlayerHat(player.getUUID());
+        if (hatId == null) return;
+
+        var hat = HatRegistry.getHat(hatId);
+        if (hat == null) return;
+
+        poseStack.pushPose();
+
+        // Attach to head bone
+        this.getParentModel().head.translateAndRotate(poseStack);
+
+        // Offset above head
+        poseStack.translate(0.0D, -0.35D, 0.0D);
+
+        // Scale to hat size
+        poseStack.scale(0.625F, 0.625F, 0.625F);
+
+        // Correct facing
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+
+        ItemStack stack = new ItemStack(hat.getDisplayItem());
+
+        // Submit item to render graph
+        /*Minecraft.getInstance().getItemRenderer().submit(
+                stack,
+                ItemDisplayContext.HEAD,
+                packedLight
+                state.overlay,
+                poseStack,
+                collector,
+                state.seed
+        );*/
+
+        // Submit item to render graph
+            state.heldOnHead.clear();
+            state.heldOnHead.submit(poseStack, collector, packedLight, packedLight, packedLight);
+
+        poseStack.popPose();
+    }
+
+    // ✅ Correct registration for new pipeline
+    public static void register() {
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register(
+                (entityType, renderer, helper, context) -> {
+                    if (renderer instanceof RenderLayerParent<?, ?> parent
+                            && parent.getModel() instanceof PlayerModel) {
+
+                        @SuppressWarnings("unchecked")
+                        RenderLayerParent<AvatarRenderState, PlayerModel> playerRenderer =
+                                (RenderLayerParent<AvatarRenderState, PlayerModel>) parent;
+
+                        helper.register(new HatFeatureRenderer(playerRenderer));
+                    }
+                }
+        );
+    }
+}

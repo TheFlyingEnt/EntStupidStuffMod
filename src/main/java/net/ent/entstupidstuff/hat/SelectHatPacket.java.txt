@@ -1,0 +1,65 @@
+package net.ent.entstupidstuff.hat;
+
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+
+public record SelectHatPacket(ResourceLocation hatId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SelectHatPacket> TYPE = 
+        new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "select_hat"));
+    
+    public static final StreamCodec<FriendlyByteBuf, SelectHatPacket> CODEC = StreamCodec.of(
+        (buf, packet) -> {
+            buf.writeBoolean(packet.hatId != null);
+            if (packet.hatId != null) {
+                buf.writeResourceLocation(packet.hatId);
+            }
+        },
+        buf -> {
+            boolean hasHat = buf.readBoolean();
+            return new SelectHatPacket(hasHat ? buf.readResourceLocation() : null);
+        }
+    );
+    
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+    
+    public static void register() {
+        ServerPlayNetworking.registerGlobalReceiver(TYPE, (packet, context) -> {
+            context.player().level().getServer().execute(() -> {
+                handle(packet, context.player());
+            });
+        });
+    }
+    
+    private static void handle(SelectHatPacket packet, ServerPlayer player) {
+        ServerLevel level = (ServerLevel) player.level();
+        HatSavedData data = HatSavedData.get(level);
+        
+        if (packet.hatId == null) {
+            // Remove hat
+            data.setPlayerHat(player.getUUID(), null);
+            SyncHatPacket.send(player, null);
+            return;
+        }
+        
+        HatRegistry.HatDefinition hat = HatRegistry.getHat(packet.hatId);
+        if (hat != null) {
+            // Check if player has the required advancement
+            var advancementHolder = player.level().getServer().getAdvancements().get(hat.getRequiredAdvancement());
+            if (advancementHolder != null) {
+                var progress = player.getAdvancements().getOrStartProgress(advancementHolder);
+                if (progress.isDone()) {
+                    data.setPlayerHat(player.getUUID(), packet.hatId);
+                    SyncHatPacket.send(player, packet.hatId);
+                }
+            }
+        }
+    }
+}

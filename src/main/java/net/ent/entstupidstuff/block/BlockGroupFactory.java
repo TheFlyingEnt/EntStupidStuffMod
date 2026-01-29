@@ -14,19 +14,19 @@ public class BlockGroupFactory {
         //Stairs + Slab + Walls
         BlockFactoryHelper.BaseFamily(MainName, "", MainBlock, false);
 
-        Block Wall = BlockFactory.register3(MainName + "_wall",
+        Block Wall = BlockFactory.register4(MainName + "_wall",
             (settings) -> new WallBlock(settings),
             BlockBehaviour.Properties.ofFullCopy(MainBlock)
         );
 
         if (Bricks) {
             //Chizeled + Cracked
-            Block Chiseled = BlockFactory.register3(MainName + "_chiseled",
+            Block Chiseled = BlockFactory.register4(MainName + "_chiseled",
                     (settings) -> new Block(settings),
                     BlockBehaviour.Properties.ofFullCopy(MainBlock)
                 );
 
-            Block Cracked = BlockFactory.register3("cracked_" + MainName + "s",
+            Block Cracked = BlockFactory.register4("cracked_" + MainName + "s",
                 (settings) -> new Block(settings),
                 BlockBehaviour.Properties.ofFullCopy(MainBlock)
             );
@@ -57,7 +57,7 @@ public class BlockGroupFactory {
     }
 
     public static void groupFungalFamily(String Varient, MapColor MainColor) {
-        Block FUNGAL_PLANKS = BlockFactory.register3("fungal" + "_planks" + Varient, Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MainColor))));
+        Block FUNGAL_PLANKS = BlockFactory.register4("fungal" + "_planks" + Varient, Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MainColor))));
         
         BlockFactoryHelper.BaseFamily("fungal", Varient, FUNGAL_PLANKS, true);
         BlockFactoryHelper.InteractionFamily("fungal", Varient, FUNGAL_PLANKS, MainColor, true, true);

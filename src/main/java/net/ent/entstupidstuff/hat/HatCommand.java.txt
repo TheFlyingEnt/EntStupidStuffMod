@@ -1,0 +1,25 @@
+package net.ent.entstupidstuff.hat;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+public class HatCommand {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("hat")
+            .executes(HatCommand::openHatGui));
+    }
+    
+    private static int openHatGui(CommandContext<CommandSourceStack> context) {
+        if (context.getSource().getEntity() instanceof ServerPlayer player) {
+            HatScreenHandler.openForPlayer(player);
+            return 1;
+        } else {
+            context.getSource().sendFailure(Component.literal("This command can only be used by players"));
+            return 0;
+        }
+    }
+}

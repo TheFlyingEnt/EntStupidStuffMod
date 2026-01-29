@@ -1,0 +1,27 @@
+package net.ent.entstupidstuff.hat;
+
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class ClientHatData {
+    private static final Map<UUID, ResourceLocation> playerHats = new HashMap<>();
+    
+    public static void setPlayerHat(UUID playerId, ResourceLocation hatId) {
+        if (hatId == null) {
+            playerHats.remove(playerId);
+        } else {
+            playerHats.put(playerId, hatId);
+        }
+    }
+    
+    public static ResourceLocation getPlayerHat(UUID playerId) {
+        return playerHats.get(playerId);
+    }
+    
+    public static void clear() {
+        playerHats.clear();
+    }
+}

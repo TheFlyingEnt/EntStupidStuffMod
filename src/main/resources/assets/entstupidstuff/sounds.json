@@ -47,9 +47,9 @@
   },
   "entity.fungal_skeleton.ambient": {
     "sounds": [
-      "minecraft:skeleton/say1",
-      "minecraft:skeleton/say2",
-      "minecraft:skeleton/say3"
+      "minecraft:mob/skeleton/say1",
+      "minecraft:mob/skeleton/say2",
+      "minecraft:mob/skeleton/say3"
     ],
     "subtitle": "subtitles.ent.entity.fungal_skeleton.ambient"
   },
@@ -63,16 +63,16 @@
   },
   "entity.fungal_skeleton.death": {
     "sounds": [
-      "minecraft:skeleton/death"
+      "minecraft:mob/skeleton/death"
     ],
     "subtitle": "subtitles.ent.entity.fungal_skeleton.death"
   },
   "entity.fungal_skeleton.hurt": {
     "sounds": [
-      "minecraft:skeleton/hurt1",
-      "minecraft:skeleton/hurt2",
-      "minecraft:skeleton/hurt3",
-      "minecraft:skeleton/hurt4"
+      "minecraft:mob/skeleton/hurt1",
+      "minecraft:mob/skeleton/hurt2",
+      "minecraft:mob/skeleton/hurt3",
+      "minecraft:mob/skeleton/hurt4"
     ],
     "subtitle": "subtitles.ent.entity.fungal_skeleton.hurt"
   },
@@ -84,18 +84,18 @@
   },
   "entity.fungal_skeleton.step": {
     "sounds": [
-      "minecraft:skeleton/step1",
-      "minecraft:skeleton/step2",
-      "minecraft:skeleton/step3",
-      "minecraft:skeleton/step4"
+      "minecraft:mob/skeleton/step1",
+      "minecraft:mob/skeleton/step2",
+      "minecraft:mob/skeleton/step3",
+      "minecraft:mob/skeleton/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
   "entity.phantom_skeleton.ambient": {
     "sounds": [
-      "minecraft:skeleton/say1",
-      "minecraft:skeleton/say2",
-      "minecraft:skeleton/say3"
+      "minecraft:mob/skeleton/say1",
+      "minecraft:mob/skeleton/say2",
+      "minecraft:mob/skeleton/say3"
     ],
     "subtitle": "subtitles.ent.entity.phantom_skeleton.ambient"
   },
@@ -109,16 +109,16 @@
   },
   "entity.phantom_skeleton.death": {
     "sounds": [
-      "minecraft:skeleton/death"
+      "minecraft:mob/skeleton/death"
     ],
     "subtitle": "subtitles.ent.entity.phantom_skeleton.death"
   },
   "entity.phantom_skeleton.hurt": {
     "sounds": [
-      "minecraft:skeleton/hurt1",
-      "minecraft:skeleton/hurt2",
-      "minecraft:skeleton/hurt3",
-      "minecraft:skeleton/hurt4"
+      "minecraft:mob/skeleton/hurt1",
+      "minecraft:mob/skeleton/hurt2",
+      "minecraft:mob/skeleton/hurt3",
+      "minecraft:mob/skeleton/hurt4"
     ],
     "subtitle": "subtitles.ent.entity.phantom_skeleton.hurt"
   },
@@ -130,10 +130,10 @@
   },
   "entity.phantom_skeleton.step": {
     "sounds": [
-      "minecraft:skeleton/step1",
-      "minecraft:skeleton/step2",
-      "minecraft:skeleton/step3",
-      "minecraft:skeleton/step4"
+      "minecraft:mob/skeleton/step1",
+      "minecraft:mob/skeleton/step2",
+      "minecraft:mob/skeleton/step3",
+      "minecraft:mob/skeleton/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
@@ -425,54 +425,54 @@
   },
   "entity.lobber.ambient": {
     "sounds": [
-      "minecraft:entity/zombie/say1",
-      "minecraft:entity/zombie/say2",
-      "minecraft:entity/zombie/say3"
+      "minecraft:mob/zombie/say1",
+      "minecraft:mob/zombie/say2",
+      "minecraft:mob/zombie/say3"
     ],
     "subtitle": "subtitles.ent.entity.lobber.ambient"
   },
   "entity.lobber.attack_iron_door": {
     "sounds": [
-      "minecraft:entity/zombie/metal1",
-      "minecraft:entity/zombie/metal2",
-      "minecraft:entity/zombie/metal3"
+      "minecraft:mob/zombie/metal1",
+      "minecraft:mob/zombie/metal2",
+      "minecraft:mob/zombie/metal3"
     ],
     "subtitle": "subtitles.ent.entity.lobber.attack_iron_door"
   },
   "entity.lobber.attack_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/wood1",
-      "minecraft:entity/zombie/wood2",
-      "minecraft:entity/zombie/wood3"
+      "minecraft:mob/zombie/wood1",
+      "minecraft:mob/zombie/wood2",
+      "minecraft:mob/zombie/wood3"
     ],
     "subtitle": "subtitles.ent.entity.lobber.attack_wooden_door"
   },
   "entity.lobber.break_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/break_wooden_door"
+      "minecraft:mob/zombie/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.lobber.break_wooden_door"
   },
   "entity.lobber.converted_to_drowned": {
     "sounds": [
-      "minecraft:entity/zombie/convert1",
-      "minecraft:entity/zombie/convert2",
-      "minecraft:entity/zombie/convert3"
+      "minecraft:mob/zombie/convert1",
+      "minecraft:mob/zombie/convert2",
+      "minecraft:mob/zombie/convert3"
     ],
     "subtitle": "subtitles.ent.entity.lobber.converted_to_drowned"
   },
   "entity.lobber.death": {
     "sounds": [
-      "minecraft:entity/zombie/death"
+      "minecraft:mob/zombie/death"
     ],
     "subtitle": "subtitles.ent.entity.lobber.death"
   },
   "entity.lobber.destroy_egg": {
     "sounds": [
-      "minecraft:entity/turtle/egg/jump_egg1",
-      "minecraft:entity/turtle/egg/jump_egg2",
-      "minecraft:entity/turtle/egg/jump_egg3",
-      "minecraft:entity/turtle/egg/jump_egg4"
+      "minecraft:mob/turtle/egg/jump_egg1",
+      "minecraft:mob/turtle/egg/jump_egg2",
+      "minecraft:mob/turtle/egg/jump_egg3",
+      "minecraft:mob/turtle/egg/jump_egg4"
     ],
     "subtitle": "subtitles.ent.entity.lobber.destroy_egg"
   },
@@ -485,69 +485,69 @@
   },
   "entity.lobber.infect": {
     "sounds": [
-      "minecraft:entity/zombie/infect"
+      "minecraft:mob/zombie/infect"
     ],
     "subtitle": "subtitles.ent.entity.lobber.infect"
   },
   "entity.lobber.step": {
     "sounds": [
-      "minecraft:entity/zombie/step1",
-      "minecraft:entity/zombie/step2",
-      "minecraft:entity/zombie/step3",
-      "minecraft:entity/zombie/step4"
+      "minecraft:mob/zombie/step1",
+      "minecraft:mob/zombie/step2",
+      "minecraft:mob/zombie/step3",
+      "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
     "entity.scorched.ambient": {
     "sounds": [
-      "minecraft:entity/zombie/say1",
-      "minecraft:entity/zombie/say2",
-      "minecraft:entity/zombie/say3"
+      "minecraft:mob/zombie/say1",
+      "minecraft:mob/zombie/say2",
+      "minecraft:mob/zombie/say3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.ambient"
   },
   "entity.scorched.attack_iron_door": {
     "sounds": [
-      "minecraft:entity/zombie/metal1",
-      "minecraft:entity/zombie/metal2",
-      "minecraft:entity/zombie/metal3"
+      "minecraft:mob/zombie/metal1",
+      "minecraft:mob/zombie/metal2",
+      "minecraft:mob/zombie/metal3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.attack_iron_door"
   },
   "entity.scorched.attack_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/wood1",
-      "minecraft:entity/zombie/wood2",
-      "minecraft:entity/zombie/wood3"
+      "minecraft:mob/zombie/wood1",
+      "minecraft:mob/zombie/wood2",
+      "minecraft:mob/zombie/wood3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.attack_wooden_door"
   },
   "entity.scorched.break_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/break_wooden_door"
+      "minecraft:mob/zombie/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.scorched.break_wooden_door"
   },
   "entity.scorched.converted_to_drowned": {
     "sounds": [
-      "minecraft:entity/zombie/convert1",
-      "minecraft:entity/zombie/convert2",
-      "minecraft:entity/zombie/convert3"
+      "minecraft:mob/zombie/convert1",
+      "minecraft:mob/zombie/convert2",
+      "minecraft:mob/zombie/convert3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.converted_to_drowned"
   },
   "entity.scorched.death": {
     "sounds": [
-      "minecraft:entity/zombie/death"
+      "minecraft:mob/zombie/death"
     ],
     "subtitle": "subtitles.ent.entity.scorched.death"
   },
   "entity.scorched.destroy_egg": {
     "sounds": [
-      "minecraft:entity/turtle/egg/jump_egg1",
-      "minecraft:entity/turtle/egg/jump_egg2",
-      "minecraft:entity/turtle/egg/jump_egg3",
-      "minecraft:entity/turtle/egg/jump_egg4"
+      "minecraft:mob/turtle/egg/jump_egg1",
+      "minecraft:mob/turtle/egg/jump_egg2",
+      "minecraft:mob/turtle/egg/jump_egg3",
+      "minecraft:mob/turtle/egg/jump_egg4"
     ],
     "subtitle": "subtitles.ent.entity.scorched.destroy_egg"
   },
@@ -560,69 +560,69 @@
   },
   "entity.scorched.infect": {
     "sounds": [
-      "minecraft:entity/zombie/infect"
+      "minecraft:mob/zombie/infect"
     ],
     "subtitle": "subtitles.ent.entity.scorched.infect"
   },
   "entity.scorched.step": {
     "sounds": [
-      "minecraft:entity/zombie/step1",
-      "minecraft:entity/zombie/step2",
-      "minecraft:entity/zombie/step3",
-      "minecraft:entity/zombie/step4"
+      "minecraft:mob/zombie/step1",
+      "minecraft:mob/zombie/step2",
+      "minecraft:mob/zombie/step3",
+      "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
     "entity.slimed.ambient": {
     "sounds": [
-      "minecraft:entity/zombie/say1",
-      "minecraft:entity/zombie/say2",
-      "minecraft:entity/zombie/say3"
+      "minecraft:mob/zombie/say1",
+      "minecraft:mob/zombie/say2",
+      "minecraft:mob/zombie/say3"
     ],
     "subtitle": "subtitles.ent.entity.slimed.ambient"
   },
   "entity.slimed.attack_iron_door": {
     "sounds": [
-      "minecraft:entity/zombie/metal1",
-      "minecraft:entity/zombie/metal2",
-      "minecraft:entity/zombie/metal3"
+      "minecraft:mob/zombie/metal1",
+      "minecraft:mob/zombie/metal2",
+      "minecraft:mob/zombie/metal3"
     ],
     "subtitle": "subtitles.ent.entity.slimed.attack_iron_door"
   },
   "entity.slimed.attack_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/wood1",
-      "minecraft:entity/zombie/wood2",
-      "minecraft:entity/zombie/wood3"
+      "minecraft:mob/zombie/wood1",
+      "minecraft:mob/zombie/wood2",
+      "minecraft:mob/zombie/wood3"
     ],
     "subtitle": "subtitles.ent.entity.slimed.attack_wooden_door"
   },
   "entity.slimed.break_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/break_wooden_door"
+      "minecraft:mob/zombie/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.slimed.break_wooden_door"
   },
   "entity.slimed.converted_to_drowned": {
     "sounds": [
-      "minecraft:entity/zombie/convert1",
-      "minecraft:entity/zombie/convert2",
-      "minecraft:entity/zombie/convert3"
+      "minecraft:mob/zombie/convert1",
+      "minecraft:mob/zombie/convert2",
+      "minecraft:mob/zombie/convert3"
     ],
     "subtitle": "subtitles.ent.entity.slimed.converted_to_drowned"
   },
   "entity.slimed.death": {
     "sounds": [
-      "minecraft:entity/zombie/death"
+      "minecraft:mob/zombie/death"
     ],
     "subtitle": "subtitles.ent.entity.slimed.death"
   },
   "entity.slimed.destroy_egg": {
     "sounds": [
-      "minecraft:entity/turtle/egg/jump_egg1",
-      "minecraft:entity/turtle/egg/jump_egg2",
-      "minecraft:entity/turtle/egg/jump_egg3",
-      "minecraft:entity/turtle/egg/jump_egg4"
+      "minecraft:mob/turtle/egg/jump_egg1",
+      "minecraft:mob/turtle/egg/jump_egg2",
+      "minecraft:mob/turtle/egg/jump_egg3",
+      "minecraft:mob/turtle/egg/jump_egg4"
     ],
     "subtitle": "subtitles.ent.entity.slimed.destroy_egg"
   },
@@ -635,69 +635,69 @@
   },
   "entity.slimed.infect": {
     "sounds": [
-      "minecraft:entity/zombie/infect"
+      "minecraft:mob/zombie/infect"
     ],
     "subtitle": "subtitles.ent.entity.slimed.infect"
   },
   "entity.slimed.step": {
     "sounds": [
-      "minecraft:entity/zombie/step1",
-      "minecraft:entity/zombie/step2",
-      "minecraft:entity/zombie/step3",
-      "minecraft:entity/zombie/step4"
+      "minecraft:mob/zombie/step1",
+      "minecraft:mob/zombie/step2",
+      "minecraft:mob/zombie/step3",
+      "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
     "entity.frostbitten.ambient": {
     "sounds": [
-      "minecraft:entity/zombie/say1",
-      "minecraft:entity/zombie/say2",
-      "minecraft:entity/zombie/say3"
+      "minecraft:mob/zombie/say1",
+      "minecraft:mob/zombie/say2",
+      "minecraft:mob/zombie/say3"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.ambient"
   },
   "entity.frostbitten.attack_iron_door": {
     "sounds": [
-      "minecraft:entity/zombie/metal1",
-      "minecraft:entity/zombie/metal2",
-      "minecraft:entity/zombie/metal3"
+      "minecraft:mob/zombie/metal1",
+      "minecraft:mob/zombie/metal2",
+      "minecraft:mob/zombie/metal3"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.attack_iron_door"
   },
   "entity.frostbitten.attack_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/wood1",
-      "minecraft:entity/zombie/wood2",
-      "minecraft:entity/zombie/wood3"
+      "minecraft:mob/zombie/wood1",
+      "minecraft:mob/zombie/wood2",
+      "minecraft:mob/zombie/wood3"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.attack_wooden_door"
   },
   "entity.frostbitten.break_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/break_wooden_door"
+      "minecraft:mob/zombie/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.break_wooden_door"
   },
   "entity.frostbitten.converted_to_drowned": {
     "sounds": [
-      "minecraft:entity/zombie/convert1",
-      "minecraft:entity/zombie/convert2",
-      "minecraft:entity/zombie/convert3"
+      "minecraft:mob/zombie/convert1",
+      "minecraft:mob/zombie/convert2",
+      "minecraft:mob/zombie/convert3"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.converted_to_drowned"
   },
   "entity.frostbitten.death": {
     "sounds": [
-      "minecraft:entity/zombie/death"
+      "minecraft:mob/zombie/death"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.death"
   },
   "entity.frostbitten.destroy_egg": {
     "sounds": [
-      "minecraft:entity/turtle/egg/jump_egg1",
-      "minecraft:entity/turtle/egg/jump_egg2",
-      "minecraft:entity/turtle/egg/jump_egg3",
-      "minecraft:entity/turtle/egg/jump_egg4"
+      "minecraft:mob/turtle/egg/jump_egg1",
+      "minecraft:mob/turtle/egg/jump_egg2",
+      "minecraft:mob/turtle/egg/jump_egg3",
+      "minecraft:mob/turtle/egg/jump_egg4"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.destroy_egg"
   },
@@ -710,69 +710,69 @@
   },
   "entity.frostbitten.infect": {
     "sounds": [
-      "minecraft:entity/zombie/infect"
+      "minecraft:mob/zombie/infect"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.infect"
   },
   "entity.frostbitten.step": {
     "sounds": [
-      "minecraft:entity/zombie/step1",
-      "minecraft:entity/zombie/step2",
-      "minecraft:entity/zombie/step3",
-      "minecraft:entity/zombie/step4"
+      "minecraft:mob/zombie/step1",
+      "minecraft:mob/zombie/step2",
+      "minecraft:mob/zombie/step3",
+      "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
     "entity.zombie_fungal.ambient": {
     "sounds": [
-      "minecraft:entity/zombie/say1",
-      "minecraft:entity/zombie/say2",
-      "minecraft:entity/zombie/say3"
+      "minecraft:mob/zombie/say1",
+      "minecraft:mob/zombie/say2",
+      "minecraft:mob/zombie/say3"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.ambient"
   },
   "entity.zombie_fungal.attack_iron_door": {
     "sounds": [
-      "minecraft:entity/zombie/metal1",
-      "minecraft:entity/zombie/metal2",
-      "minecraft:entity/zombie/metal3"
+      "minecraft:mob/zombie/metal1",
+      "minecraft:mob/zombie/metal2",
+      "minecraft:mob/zombie/metal3"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.attack_iron_door"
   },
   "entity.zombie_fungal.attack_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/wood1",
-      "minecraft:entity/zombie/wood2",
-      "minecraft:entity/zombie/wood3"
+      "minecraft:mob/zombie/wood1",
+      "minecraft:mob/zombie/wood2",
+      "minecraft:mob/zombie/wood3"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.attack_wooden_door"
   },
   "entity.zombie_fungal.break_wooden_door": {
     "sounds": [
-      "minecraft:entity/zombie/break_wooden_door"
+      "minecraft:mob/zombie/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.break_wooden_door"
   },
   "entity.zombie_fungal.converted_to_drowned": {
     "sounds": [
-      "minecraft:entity/zombie/convert1",
-      "minecraft:entity/zombie/convert2",
-      "minecraft:entity/zombie/convert3"
+      "minecraft:mob/zombie/convert1",
+      "minecraft:mob/zombie/convert2",
+      "minecraft:mob/zombie/convert3"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.converted_to_drowned"
   },
   "entity.zombie_fungal.death": {
     "sounds": [
-      "minecraft:entity/zombie/death"
+      "minecraft:mob/zombie/death"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.death"
   },
   "entity.zombie_fungal.destroy_egg": {
     "sounds": [
-      "minecraft:entity/turtle/egg/jump_egg1",
-      "minecraft:entity/turtle/egg/jump_egg2",
-      "minecraft:entity/turtle/egg/jump_egg3",
-      "minecraft:entity/turtle/egg/jump_egg4"
+      "minecraft:mob/turtle/egg/jump_egg1",
+      "minecraft:mob/turtle/egg/jump_egg2",
+      "minecraft:mob/turtle/egg/jump_egg3",
+      "minecraft:mob/turtle/egg/jump_egg4"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.destroy_egg"
   },
@@ -785,16 +785,16 @@
   },
   "entity.zombie_fungal.infect": {
     "sounds": [
-      "minecraft:entity/zombie/infect"
+      "minecraft:mob/zombie/infect"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.infect"
   },
   "entity.zombie_fungal.step": {
     "sounds": [
-      "minecraft:entity/zombie/step1",
-      "minecraft:entity/zombie/step2",
-      "minecraft:entity/zombie/step3",
-      "minecraft:entity/zombie/step4"
+      "minecraft:mob/zombie/step1",
+      "minecraft:mob/zombie/step2",
+      "minecraft:mob/zombie/step3",
+      "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   }

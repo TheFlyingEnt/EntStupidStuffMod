@@ -73,6 +73,7 @@ public class ModDataComponentTypes {
             builderOperator.apply(DataComponentType.builder()).build()
         );
     }
+    
 
     /*public static final ComponentType<ButterflyEntity.Variant> BUTTERFLY_VARIANT = register(
 		"butterfly/variant", builder -> builder.codec(ButterflyEntity.Variant.INDEX_CODEC).packetCodec(ButterflyEntity.Variant.PACKET_CODEC)

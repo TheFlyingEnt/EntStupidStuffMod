@@ -3,6 +3,9 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
+    "minecraft:mushroom_stem",
+    "minecraft:red_mushroom_block",
+    "entstupidstuff:blue_mushroom_block",
     "minecraft:mushroom_stem"
   ],
   "result": {

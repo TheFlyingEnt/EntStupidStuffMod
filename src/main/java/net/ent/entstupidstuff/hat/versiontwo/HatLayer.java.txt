@@ -1,0 +1,75 @@
+package net.ent.entstupidstuff.hat.versiontwo;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerEarsModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+
+public class HatLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+    private final HumanoidModel<AvatarRenderState> model;
+
+    /*public HatLayer(AvatarRenderer parent) {
+        super(parent);
+    }*/
+
+    public HatLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderLayerParent, EntityModelSet entityModelSet) {
+		super(renderLayerParent);
+		this.model = new PlayerEarsModel(entityModelSet.bakeLayer(ModelLayers.PLAYER_EARS));
+	}
+
+
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, AvatarRenderState avatarRenderState, float f, float g) {
+
+		//if (avatarRenderState.showExtraEars && !avatarRenderState.isInvisible) {
+			int j = LivingEntityRenderer.getOverlayCoords(avatarRenderState, 0.0F);
+			submitNodeCollector.submitModel(
+				this.model, avatarRenderState, poseStack, RenderType.entitySolid(avatarRenderState.skin.body().texturePath()), i, j, avatarRenderState.outlineColor, null
+			);
+		//}
+	}
+
+    /*@Override
+    public void render(
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int light,
+            Player player,
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTick,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch
+    ) {
+        Hat hat = HatManager.get(player);
+        if (hat == null) return;
+
+        poseStack.pushPose();
+
+        // Attach to head
+        getParentModel().head.translateAndRotate(poseStack);
+
+        // Slight offset
+        poseStack.translate(0.0D, -0.25D, 0.0D);
+
+        // Render model
+        HatModelRenderer.render(
+                hat.model(),
+                poseStack,
+                buffer,
+                light,
+                OverlayTexture.NO_OVERLAY
+        );
+
+        poseStack.popPose();
+    }*/
+}
