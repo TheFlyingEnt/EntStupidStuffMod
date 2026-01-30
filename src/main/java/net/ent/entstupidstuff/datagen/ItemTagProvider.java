@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.block.Blocks;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     /*
@@ -108,6 +109,12 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         valueLookupBuilder(ItemTags.PIGLIN_LOVED)
         .add(ItemFactory.callItem("golden_hammer"));
+
+        valueLookupBuilder(ModTags.MUSHROOM_CRAFTING).add(
+        Blocks.MUSHROOM_STEM.asItem(),
+        Blocks.RED_MUSHROOM_BLOCK.asItem(),
+        BlockFactory.callBlock("blue_mushroom_block").asItem(),
+        Blocks.BROWN_MUSHROOM_BLOCK.asItem());
 
         
 

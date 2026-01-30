@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_fence_gate_dyed",
+  "ingredients": [
+    "minecraft:cyan_dye",
+    [
+      "entstupidstuff:fungal_fence_gate_black",
+      "entstupidstuff:fungal_fence_gate_blue",
+      "entstupidstuff:fungal_fence_gate_brown",
+      "entstupidstuff:fungal_fence_gate_gray",
+      "entstupidstuff:fungal_fence_gate_green",
+      "entstupidstuff:fungal_fence_gate_light_blue",
+      "entstupidstuff:fungal_fence_gate_light_gray",
+      "entstupidstuff:fungal_fence_gate_lime",
+      "entstupidstuff:fungal_fence_gate_magenta",
+      "entstupidstuff:fungal_fence_gate_orange",
+      "entstupidstuff:fungal_fence_gate_pink",
+      "entstupidstuff:fungal_fence_gate_purple",
+      "entstupidstuff:fungal_fence_gate_red",
+      "entstupidstuff:fungal_fence_gate_yellow",
+      "entstupidstuff:fungal_fence_gate_white",
+      "entstupidstuff:fungal_fence_gate"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_fence_gate_cyan"
+  }
+}

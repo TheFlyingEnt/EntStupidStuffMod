@@ -1,0 +1,7 @@
+{
+  "parent": "entstupidstuff:block/templete_cross_glowing",
+  "textures": {
+    "cross": "entstupidstuff:block/silkworm_vines",
+    "glowing": "entstupidstuff:block/silkworm_vines"
+  }
+}

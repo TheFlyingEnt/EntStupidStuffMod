@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_mosaic_stairs_dyed",
+  "ingredients": [
+    "minecraft:light_blue_dye",
+    [
+      "entstupidstuff:fungal_mosaic_stairs_black",
+      "entstupidstuff:fungal_mosaic_stairs_blue",
+      "entstupidstuff:fungal_mosaic_stairs_brown",
+      "entstupidstuff:fungal_mosaic_stairs_cyan",
+      "entstupidstuff:fungal_mosaic_stairs_gray",
+      "entstupidstuff:fungal_mosaic_stairs_green",
+      "entstupidstuff:fungal_mosaic_stairs_light_gray",
+      "entstupidstuff:fungal_mosaic_stairs_lime",
+      "entstupidstuff:fungal_mosaic_stairs_magenta",
+      "entstupidstuff:fungal_mosaic_stairs_orange",
+      "entstupidstuff:fungal_mosaic_stairs_pink",
+      "entstupidstuff:fungal_mosaic_stairs_purple",
+      "entstupidstuff:fungal_mosaic_stairs_red",
+      "entstupidstuff:fungal_mosaic_stairs_yellow",
+      "entstupidstuff:fungal_mosaic_stairs_white",
+      "entstupidstuff:fungal_mosaic_stairs"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_mosaic_stairs_light_blue"
+  }
+}

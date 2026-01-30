@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "glowing_silk_wool_carpet",
+  "ingredients": [
+    "minecraft:lime_dye",
+    [
+      "entstupidstuff:glowing_silk_wool_black_carpet",
+      "entstupidstuff:glowing_silk_wool_blue_carpet",
+      "entstupidstuff:glowing_silk_wool_brown_carpet",
+      "entstupidstuff:glowing_silk_wool_cyan_carpet",
+      "entstupidstuff:glowing_silk_wool_gray_carpet",
+      "entstupidstuff:glowing_silk_wool_green_carpet",
+      "entstupidstuff:glowing_silk_wool_light_blue_carpet",
+      "entstupidstuff:glowing_silk_wool_light_gray_carpet",
+      "entstupidstuff:glowing_silk_wool_magenta_carpet",
+      "entstupidstuff:glowing_silk_wool_orange_carpet",
+      "entstupidstuff:glowing_silk_wool_pink_carpet",
+      "entstupidstuff:glowing_silk_wool_purple_carpet",
+      "entstupidstuff:glowing_silk_wool_red_carpet",
+      "entstupidstuff:glowing_silk_wool_yellow_carpet",
+      "entstupidstuff:glowing_silk_wool_white_carpet"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:glowing_silk_wool_lime_carpet"
+  }
+}

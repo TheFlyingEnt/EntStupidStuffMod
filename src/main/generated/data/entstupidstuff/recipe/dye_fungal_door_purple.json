@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_door_dyed",
+  "ingredients": [
+    "minecraft:purple_dye",
+    [
+      "entstupidstuff:fungal_door_black",
+      "entstupidstuff:fungal_door_blue",
+      "entstupidstuff:fungal_door_brown",
+      "entstupidstuff:fungal_door_cyan",
+      "entstupidstuff:fungal_door_gray",
+      "entstupidstuff:fungal_door_green",
+      "entstupidstuff:fungal_door_light_blue",
+      "entstupidstuff:fungal_door_light_gray",
+      "entstupidstuff:fungal_door_lime",
+      "entstupidstuff:fungal_door_magenta",
+      "entstupidstuff:fungal_door_orange",
+      "entstupidstuff:fungal_door_pink",
+      "entstupidstuff:fungal_door_red",
+      "entstupidstuff:fungal_door_yellow",
+      "entstupidstuff:fungal_door_white",
+      "entstupidstuff:fungal_door"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_door_purple"
+  }
+}

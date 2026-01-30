@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:block/templete_carpet_glowing",
+  "textures": {
+    "wool": "entstupidstuff:block/glowing_silk_wool_blue"
+  }
+}

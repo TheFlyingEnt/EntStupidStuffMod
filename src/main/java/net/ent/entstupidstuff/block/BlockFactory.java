@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.block;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
@@ -12,12 +11,10 @@ import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.BlockFamilies;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -26,28 +23,22 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.DropExperienceBlock;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.FlowerBedBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LanternBlock;
-import net.minecraft.world.level.block.PressurePlateBlock;
-import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -61,7 +52,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -81,7 +71,10 @@ public class BlockFactory {
     public static final Map<ResourceLocation, Block> BlockItem = new LinkedHashMap<>(); 
     public static final Map<ResourceLocation, Item> ItemList = new LinkedHashMap<>();
 
+    public final static String[] RECIPES_COLORS = {"black", "blue", "brown", "cyan", "gray", "green", "light_blue", "light_gray", "lime", "magenta", "orange", "pink", "purple", "red", "yellow", "white"};
+
     public final static String[] COLORS = {"white", "light_gray", "gray", "black", "brown", "red", "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple", "magenta", "pink"};
+
     public static Block getWoolColor(String covColor) {
         if (covColor == "white") {return Blocks.WHITE_WOOL;}
         if (covColor == "light_gray") {return Blocks.LIGHT_GRAY_WOOL;}
@@ -127,27 +120,27 @@ public class BlockFactory {
     public static void onInitialize() {
 
         // # Added REDWOOD Natural + Planks
-        Block REDWOOD_PLANKS = register4("redwood" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.CRIMSON_NYLIUM))));
+        Block REDWOOD_PLANKS = register("redwood" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.CRIMSON_NYLIUM))));
         BlockGroupFactory.groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.CRIMSON_NYLIUM, MapColor.CRIMSON_NYLIUM);
         BlockFactoryHelper.addSaplings("redwood", SaplingGeneratorFactory.FIR); //TODO: Change to Redwood when Ready
 
         // # Added FIR Natural + Planks
-        Block FIR_PLANKS = register4("fir" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
+        Block FIR_PLANKS = register("fir" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
         BlockGroupFactory.groupWoodFamilty("fir", "", FIR_PLANKS, true, MapColor.TERRACOTTA_GRAY, MapColor.PODZOL);
         BlockFactoryHelper.addSaplings("fir", SaplingGeneratorFactory.FIR);
 
         // # Added MAPLE Natural + Planks
-        Block MAPLE_PLANKS = register4("maple" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.PODZOL))));
+        Block MAPLE_PLANKS = register("maple" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.PODZOL))));
         BlockGroupFactory.groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT, MapColor.PODZOL);
         BlockFactoryHelper.addSaplings("maple", SaplingGeneratorFactory.MAPLE);
-        register4("orange_petals", FlowerBedBlock::new,
+        register("orange_petals", FlowerBedBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().sound(SoundType.PINK_PETALS).pushReaction(PushReaction.DESTROY)
         );
 
         // # Added PHANTOM Natural + Planks + Lantern
-        Block PHANTOM_PLANKS = register4("phantom" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.GLOW_LICHEN)).noOcclusion()));
+        Block PHANTOM_PLANKS = register("phantom" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.GLOW_LICHEN)).noOcclusion()));
         BlockGroupFactory.groupWoodFamilty("phantom", "", PHANTOM_PLANKS, true, MapColor.GLOW_LICHEN, MapColor.PLANT);
-        Block PHANTOM_LANTERN = register4("phantom_lantern", (settings) -> new LanternBlock(settings.mapColor(MapColor.METAL).forceSolidOn().requiresCorrectToolForDrops().strength(3.5F).sound(SoundType.LANTERN).lightLevel((state) -> {
+        Block PHANTOM_LANTERN = register("phantom_lantern", (settings) -> new LanternBlock(settings.mapColor(MapColor.METAL).forceSolidOn().requiresCorrectToolForDrops().strength(3.5F).sound(SoundType.LANTERN).lightLevel((state) -> {
             return 10;
         }).noOcclusion().pushReaction(PushReaction.DESTROY)), BlockBehaviour.Properties.of());
 
@@ -186,11 +179,11 @@ public class BlockFactory {
 			.pushReaction(PushReaction.DESTROY)
 		);
 
-        Block POTTED_BLUE_MUSHROOM = register4(
+        Block POTTED_BLUE_MUSHROOM = register(
             "potted_blue_mushroom", settings -> new FlowerPotBlock(BLUE_MUSHROOM, settings), Blocks.flowerPotProperties()
         );
 
-        Block BLUE_MUSHROOM_BLOCK = register4(
+        Block BLUE_MUSHROOM_BLOCK = register(
             "blue_mushroom_block",
             TransparentMushroomBlock::new,
             BlockBehaviour.Properties.of()
@@ -205,7 +198,7 @@ public class BlockFactory {
                         .isViewBlocking(Blocks::never)
         );
 
-        Block CRYSTAL = register4(
+        Block CRYSTAL = register(
             "blue_crystal_block",
             TransparentBlock::new,
             BlockBehaviour.Properties.of()
@@ -221,13 +214,13 @@ public class BlockFactory {
                 .lightLevel(state -> 1)
         );
 
-        Block AZURE_FLOWER_BED = register4(
+        Block AZURE_FLOWER_BED = register(
             "azure_flower_bed",
             MushroombedBlock::new,
-            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).noCollision().sound(SoundType.FUNGUS).pushReaction(PushReaction.DESTROY).lightLevel(state -> 1)
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).noCollision().sound(SoundType.FUNGUS).pushReaction(PushReaction.DESTROY).lightLevel(state -> 5)
         );
 
-        Block FUNGAL_SPORE_BLOSSOM = register4(
+        Block FUNGAL_SPORE_BLOSSOM = register(
             "fungal_spore_blossom",
             MushroomSporeBlossomBlock::new,
             BlockBehaviour.Properties.of()
@@ -240,46 +233,46 @@ public class BlockFactory {
         );
 
         // # Adding Andersite, Diorite and Granite
-        Block ANDERSITE_BRICKS = register4("andesite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_ANDESITE));
+        Block ANDERSITE_BRICKS = register("andesite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_ANDESITE));
         BlockGroupFactory.groupStoneFamily("andesite_brick", ANDERSITE_BRICKS, MapColor.STONE, true);
-        register4("polished_andesite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_ANDESITE));
+        register("polished_andesite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_ANDESITE));
 
-        Block GRANITE_BRICKS = register4("granite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_GRANITE));
+        Block GRANITE_BRICKS = register("granite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_GRANITE));
         BlockGroupFactory.groupStoneFamily("granite_brick", GRANITE_BRICKS, MapColor.DIRT, true);
-        register4("polished_granite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_GRANITE));
+        register("polished_granite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_GRANITE));
 
-        Block DIORITE_BRICKS = register4("diorite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_DIORITE));
+        Block DIORITE_BRICKS = register("diorite_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_DIORITE));
         BlockGroupFactory.groupStoneFamily("diorite_brick", DIORITE_BRICKS, MapColor.QUARTZ, true);
-        register4("polished_diorite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_DIORITE));
+        register("polished_diorite" + "_wall", (settings) -> new WallBlock(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.POLISHED_DIORITE));
 
         // # Adding Limestone and Limestone Bricks
-        Block LIMESTONE = register4("limestone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        Block LIMESTONE = register("limestone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
         BlockGroupFactory.groupStoneFamily("limestone", LIMESTONE, MapColor.TERRACOTTA_LIGHT_GRAY, false);
 
-        Block POLISHED_LIMESTONE = register4("polished_limestone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        Block POLISHED_LIMESTONE = register("polished_limestone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
         BlockGroupFactory.groupStoneFamily("polished_limestone", POLISHED_LIMESTONE, MapColor.TERRACOTTA_LIGHT_GRAY, false);
 
-        Block LIMESTONE_BRICKS = register4("polished_limestone_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
+        Block LIMESTONE_BRICKS = register("polished_limestone_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_TERRACOTTA));
         BlockGroupFactory.groupStoneFamily("polished_limestone_brick", LIMESTONE_BRICKS, MapColor.TERRACOTTA_LIGHT_GRAY, true);
 
         // # Adding IronGates
-        Block IRON_GRATE = register4("iron_grate",
+        Block IRON_GRATE = register("iron_grate",
             (settings) -> new WaterloggedTransparentBlock(settings.requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion()),
             BlockBehaviour.Properties.of()
         );
 
-        Block IRON_GRATE_STAIRS = register4("iron_grate_stairs",
+        Block IRON_GRATE_STAIRS = register("iron_grate_stairs",
             (settings) -> new GrateStairsBlock(IRON_GRATE.defaultBlockState(), settings),
             BlockBehaviour.Properties.ofFullCopy(IRON_GRATE)
         );
 
-        Block IRON_GRATE_SLAB = register4("iron_grate_slab",
+        Block IRON_GRATE_SLAB = register("iron_grate_slab",
             (settings) -> new GrateSlabBlock(settings),
             BlockBehaviour.Properties.ofFullCopy(IRON_GRATE)
         );
 
         // # Adding StringGates
-        Block STRING_GATE = register4("string_gate", 
+        Block STRING_GATE = register("string_gate", 
             (settings) -> new IronBarsBlock(settings.noOcclusion()
                         .isValidSpawn(Blocks::never)
                         .isRedstoneConductor(Blocks::never)
@@ -288,7 +281,7 @@ public class BlockFactory {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
         );
 
-        Block STRING_BLOCK = register4("string_block", 
+        Block STRING_BLOCK = register("string_block", 
             (settings) -> new TransparentBlock(settings.noOcclusion()
                         .isValidSpawn(Blocks::never)
                         .isRedstoneConductor(Blocks::never)
@@ -298,35 +291,35 @@ public class BlockFactory {
         );
 
         // # Adding Abyssal Stone and Abyssal Stone Bricks
-        //Block ABYSSAL_STONE = register4("abyssal_stone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
+        //Block ABYSSAL_STONE = register("abyssal_stone", (settings) -> new Block(settings), AbstractBlock.Settings.copy(Blocks.BLACKSTONE));
         BlockGroupFactory.groupStoneFamily("abyssal_stone", ABYSSAL_STONE, MapColor.WARPED_STEM, false);
 
-        Block POLISHED_ABYSSAL_STONE = register4("polished_abyssal_stone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
+        Block POLISHED_ABYSSAL_STONE = register("polished_abyssal_stone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
         BlockGroupFactory.groupStoneFamily("polished_abyssal_stone", POLISHED_ABYSSAL_STONE, MapColor.WARPED_STEM, false);
 
-        Block ABYSSAL_STONE_BRICKS = register4("polished_abyssal_stone_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
+        Block ABYSSAL_STONE_BRICKS = register("polished_abyssal_stone_bricks", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
         BlockGroupFactory.groupStoneFamily("polished_abyssal_stone_brick", ABYSSAL_STONE_BRICKS, MapColor.WARPED_STEM, true);
 
-        Block POLISHED_ABYSSAL_STONE_SEAWEED = BlockFactory.register4("polished_abyssal_stone_seaweed",
+        Block POLISHED_ABYSSAL_STONE_SEAWEED = BlockFactory.register("polished_abyssal_stone_seaweed",
             (settings) -> new Block(settings),
             BlockBehaviour.Properties.ofFullCopy(POLISHED_ABYSSAL_STONE)
         );
 
         // # Adding Thalassite Ore and Thalassite Block
-        Block THALASSITE_ORE = register4(
+        Block THALASSITE_ORE = register(
 		    "thalassite_ore",
 		    settings -> new DropExperienceBlock(UniformInt.of(3, 7), settings),
 		    BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
 	    );
 
-        Block THALASSITE_BLOCK = register4(
+        Block THALASSITE_BLOCK = register(
             "thalassite_block", 
             (settings) -> new Block(settings), 
             BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE).mapColor(MapColor.WARPED_STEM).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)
         );
 
         // # Adding Hardend Sandstone
-        Block HARDEND_SANDSTONE = register4("hardend_sandstone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
+        Block HARDEND_SANDSTONE = register("hardend_sandstone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE));
         BlockGroupFactory.groupStoneFamily("hardend_sandstone", HARDEND_SANDSTONE, MapColor.SAND, false);
 
         Block DATE = register_dates("date", DateBlock::new, Properties.of().mapColor(MapColor.PLANT).randomTicks().strength(0.2F, 3.0F).sound(SoundType.WOOD).noOcclusion().pushReaction(PushReaction.DESTROY));
@@ -337,26 +330,41 @@ public class BlockFactory {
         // # Legacy (Textured Wool)
         onInitializeOLD();
 
-        // # Adding Glowing Silk Wool + Colors:
-        Block GLOWING_SILK_WOOL = register4("glowing_silk_wool", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).mapColor(MapColor.ICE));
-        FlammableBlockRegistry.getDefaultInstance().add(GLOWING_SILK_WOOL, 30, 60);
+        // # Adding Glowing Silk Wool + :
 
-        Block GSW_WHITE_WOOL = register4("glowing_silk_wool_white", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL));
-        Block GSW_LIGHT_GRAY_WOOL = register4("glowing_silk_wool_light_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL));
-        Block GSW_GRAY_WOOL = register4("glowing_silk_wool_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL));
-        Block GSW_BLACK_WOOL = register4("glowing_silk_wool_black", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL));
-        Block GSW_BROWN_WOOL = register4("glowing_silk_wool_brown", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL));
-        Block GSW_RED_WOOL = register4("glowing_silk_wool_red", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL));
-        Block GSW_ORANGE_WOOL = register4("glowing_silk_wool_orange", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL));
-        Block GSW_YELLOW_WOOL = register4("glowing_silk_wool_yellow", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL));
-        Block GSW_LIME_WOOL = register4("glowing_silk_wool_lime", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL));
-        Block GSW_GREEN_WOOL = register4("glowing_silk_wool_green", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL));
-        Block GSW_CYAN_WOOL = register4("glowing_silk_wool_cyan", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL));
-        Block GSW_LIGHT_BLUE_WOOL = register4("glowing_silk_wool_light_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL));
-        Block GSW_BLUE_WOOL = register4("glowing_silk_wool_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL));
-        Block GSW_PURPLE_WOOL = register4("glowing_silk_wool_purple", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL));
-        Block GSW_MAGENTA_WOOL = register4("glowing_silk_wool_magenta", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL));
-        Block GSW_PINK_WOOL = register4("glowing_silk_wool_pink", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL));
+        Block GSW_WHITE_WOOL = register("glowing_silk_wool_white", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL).lightLevel(state -> 3));
+        Block GSW_LIGHT_GRAY_WOOL = register("glowing_silk_wool_light_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL).lightLevel(state -> 3));
+        Block GSW_GRAY_WOOL = register("glowing_silk_wool_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL).lightLevel(state -> 3));
+        Block GSW_BLACK_WOOL = register("glowing_silk_wool_black", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL).lightLevel(state -> 3));
+        Block GSW_BROWN_WOOL = register("glowing_silk_wool_brown", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL).lightLevel(state -> 3));
+        Block GSW_RED_WOOL = register("glowing_silk_wool_red", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL).lightLevel(state -> 3));
+        Block GSW_ORANGE_WOOL = register("glowing_silk_wool_orange", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL).lightLevel(state -> 3));
+        Block GSW_YELLOW_WOOL = register("glowing_silk_wool_yellow", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL).lightLevel(state -> 3));
+        Block GSW_LIME_WOOL = register("glowing_silk_wool_lime", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL).lightLevel(state -> 3));
+        Block GSW_GREEN_WOOL = register("glowing_silk_wool_green", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL).lightLevel(state -> 3));
+        Block GSW_CYAN_WOOL = register("glowing_silk_wool_cyan", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL).lightLevel(state -> 3));
+        Block GSW_LIGHT_BLUE_WOOL = register("glowing_silk_wool_light_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL).lightLevel(state -> 3));
+        Block GSW_BLUE_WOOL = register("glowing_silk_wool_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL).lightLevel(state -> 3));
+        Block GSW_PURPLE_WOOL = register("glowing_silk_wool_purple", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL).lightLevel(state -> 3));
+        Block GSW_MAGENTA_WOOL = register("glowing_silk_wool_magenta", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL).lightLevel(state -> 3));
+        Block GSW_PINK_WOOL = register("glowing_silk_wool_pink", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL).lightLevel(state -> 3));
+
+        Block GSW_WHITE_WOOL_CARPET = register("glowing_silk_wool_white_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_CARPET).lightLevel(state -> 3));
+        Block GSW_LIGHT_GRAY_WOOL_CARPET = register("glowing_silk_wool_light_gray_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_CARPET).lightLevel(state -> 3));
+        Block GSW_GRAY_WOOL_CARPET = register("glowing_silk_wool_gray_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_CARPET).lightLevel(state -> 3));
+        Block GSW_BLACK_WOOL_CARPET = register("glowing_silk_wool_black_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_CARPET).lightLevel(state -> 3));
+        Block GSW_BROWN_WOOL_CARPET = register("glowing_silk_wool_brown_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_CARPET).lightLevel(state -> 3));
+        Block GSW_RED_WOOL_CARPET = register("glowing_silk_wool_red_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_CARPET).lightLevel(state -> 3));
+        Block GSW_ORANGE_WOOL_CARPET = register("glowing_silk_wool_orange_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_CARPET).lightLevel(state -> 3));
+        Block GSW_YELLOW_WOOL_CARPET = register("glowing_silk_wool_yellow_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_CARPET).lightLevel(state -> 3));
+        Block GSW_LIME_WOOL_CARPET = register("glowing_silk_wool_lime_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_CARPET).lightLevel(state -> 3));
+        Block GSW_GREEN_WOOL_CARPET = register("glowing_silk_wool_green_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_CARPET).lightLevel(state -> 3));
+        Block GSW_CYAN_WOOL_CARPET = register("glowing_silk_wool_cyan_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET).lightLevel(state -> 3));
+        Block GSW_LIGHT_BLUE_WOOL_CARPET = register("glowing_silk_wool_light_blue_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_CARPET).lightLevel(state -> 3));
+        Block GSW_BLUE_WOOL_CARPET = register("glowing_silk_wool_blue_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_CARPET).lightLevel(state -> 3));
+        Block GSW_PURPLE_WOOL_CARPET = register("glowing_silk_wool_purple_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_CARPET).lightLevel(state -> 3));
+        Block GSW_MAGENTA_WOOL_CARPET = register("glowing_silk_wool_magenta_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_CARPET).lightLevel(state -> 3));
+        Block GSW_PINK_WOOL_CARPET = register("glowing_silk_wool_pink_carpet", CarpetBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_CARPET).lightLevel(state -> 3));
 
         FlammableBlockRegistry.getDefaultInstance().add(GSW_WHITE_WOOL, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(GSW_LIGHT_GRAY_WOOL, 30, 60);
@@ -375,26 +383,48 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(GSW_MAGENTA_WOOL, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(GSW_PINK_WOOL, 30, 60);
 
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_WHITE_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIGHT_GRAY_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_GRAY_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BLACK_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BROWN_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_RED_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_ORANGE_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_YELLOW_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIME_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_GREEN_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_CYAN_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_LIGHT_BLUE_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_BLUE_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_PURPLE_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_MAGENTA_WOOL_CARPET, 30, 60);
+        FlammableBlockRegistry.getDefaultInstance().add(GSW_PINK_WOOL_CARPET, 30, 60);
+
+        //TODO: Add Glowing Bed, Glowing Banners
+
+
+
+
     }
 
     public static void addVanilla() {
         OxidizableFamily();
-        register4("iron" + "_glass_door", (settings) -> new DoorBlock(BlockSetType.IRON, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR));
-        register4("iron" + "_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.IRON, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR));
+        register("iron" + "_glass_door", (settings) -> new DoorBlock(BlockSetType.IRON, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR));
+        register("iron" + "_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.IRON, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR));
 
-        Block OAK_DOOR = register4("oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR));
-        Block SPRUCE_DOOR = register4("spruce_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_DOOR));
-        Block JUNGLE_DOOR = register4("jungle_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.JUNGLE_DOOR));
-        Block BIRCH_DOOR = register4("birch_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BIRCH_DOOR));
-        Block DARK_OAK_DOOR = register4("dark_oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_DOOR));
-        Block ACACIA_DOOR = register4("acacia_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_DOOR));
-        Block MANGROVE_DOOR = register4("mangrove_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.MANGROVE_DOOR));
-        Block CHERRY_DOOR = register4("cherry_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_DOOR));
-        Block BAMBOO_DOOR = register4("bamboo_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BAMBOO_DOOR));
-        Block PALE_OAK_DOOR = register4("pale_oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.PALE_OAK_DOOR));
+        Block OAK_DOOR = register("oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR));
+        Block SPRUCE_DOOR = register("spruce_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_DOOR));
+        Block JUNGLE_DOOR = register("jungle_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.JUNGLE_DOOR));
+        Block BIRCH_DOOR = register("birch_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BIRCH_DOOR));
+        Block DARK_OAK_DOOR = register("dark_oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_DOOR));
+        Block ACACIA_DOOR = register("acacia_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_DOOR));
+        Block MANGROVE_DOOR = register("mangrove_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.MANGROVE_DOOR));
+        Block CHERRY_DOOR = register("cherry_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_DOOR));
+        Block BAMBOO_DOOR = register("bamboo_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BAMBOO_DOOR));
+        Block PALE_OAK_DOOR = register("pale_oak_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.PALE_OAK_DOOR));
 
-        register4("crimson_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CRIMSON_DOOR));
-        register4("warped_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_DOOR));
+        register("crimson_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CRIMSON_DOOR));
+        register("warped_glass_door", (settings) -> new DoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_DOOR));
 
         FlammableBlockRegistry.getDefaultInstance().add(OAK_DOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(SPRUCE_DOOR, 5, 20);
@@ -407,19 +437,19 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(BAMBOO_DOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(PALE_OAK_DOOR, 5, 20);
 
-        Block OAK_TRAPDOOR = register4("oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR));
-        Block SPRUCE_TRAPDOOR = register4("spruce_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_TRAPDOOR));
-        Block JUNGLE_TRAPDOOR = register4("jungle_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.JUNGLE_TRAPDOOR));
-        Block BIRCH_TRAPDOOR = register4("birch_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BIRCH_TRAPDOOR));
-        Block DARK_OAK_TRAPDOOR = register4("dark_oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_TRAPDOOR));
-        Block ACACIA_TRAPDOOR = register4("acacia_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_TRAPDOOR));
-        Block MANGROVE_TRAPDOOR = register4("mangrove_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.MANGROVE_TRAPDOOR));
-        Block CHERRY_TRAPDOOR = register4("cherry_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_TRAPDOOR));
-        Block BAMBOO_TRAPDOOR = register4("bamboo_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BAMBOO_TRAPDOOR));
-        Block PALE_OAK_TRAPDOOR = register4("pale_oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.PALE_OAK_TRAPDOOR));
+        Block OAK_TRAPDOOR = register("oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR));
+        Block SPRUCE_TRAPDOOR = register("spruce_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_TRAPDOOR));
+        Block JUNGLE_TRAPDOOR = register("jungle_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.JUNGLE_TRAPDOOR));
+        Block BIRCH_TRAPDOOR = register("birch_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BIRCH_TRAPDOOR));
+        Block DARK_OAK_TRAPDOOR = register("dark_oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_TRAPDOOR));
+        Block ACACIA_TRAPDOOR = register("acacia_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_TRAPDOOR));
+        Block MANGROVE_TRAPDOOR = register("mangrove_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.MANGROVE_TRAPDOOR));
+        Block CHERRY_TRAPDOOR = register("cherry_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CHERRY_TRAPDOOR));
+        Block BAMBOO_TRAPDOOR = register("bamboo_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BAMBOO_TRAPDOOR));
+        Block PALE_OAK_TRAPDOOR = register("pale_oak_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.PALE_OAK_TRAPDOOR));
 
-        register4("crimson_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CRIMSON_TRAPDOOR));
-        register4("warped_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_TRAPDOOR));
+        register("crimson_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.CRIMSON_TRAPDOOR));
+        register("warped_glass_trapdoor", (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings), BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_TRAPDOOR));
 
         FlammableBlockRegistry.getDefaultInstance().add(OAK_TRAPDOOR, 5, 20);
         FlammableBlockRegistry.getDefaultInstance().add(SPRUCE_TRAPDOOR, 5, 20);
@@ -451,22 +481,22 @@ public class BlockFactory {
     public static void onInitializeOLD() {
 
         //Textured Wools
-        Block TEXTURED_WHITE_WOOL = register4("textured_wool_white", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL));
-        Block TEXTURED_LIGHT_GRAY_WOOL = register4("textured_wool_light_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL));
-        Block TEXTURED_GRAY_WOOL = register4("textured_wool_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL));
-        Block TEXTURED_BLACK_WOOL = register4("textured_wool_black", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL));
-        Block TEXTURED_BROWN_WOOL = register4("textured_wool_brown", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL));
-        Block TEXTURED_RED_WOOL = register4("textured_wool_red", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL));
-        Block TEXTURED_ORANGE_WOOL = register4("textured_wool_orange", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL));
-        Block TEXTURED_YELLOW_WOOL = register4("textured_wool_yellow", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL));
-        Block TEXTURED_LIME_WOOL = register4("textured_wool_lime", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL));
-        Block TEXTURED_GREEN_WOOL = register4("textured_wool_green", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL));
-        Block TEXTURED_CYAN_WOOL = register4("textured_wool_cyan", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL));
-        Block TEXTURED_LIGHT_BLUE_WOOL = register4("textured_wool_light_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL));
-        Block TEXTURED_BLUE_WOOL = register4("textured_wool_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL));
-        Block TEXTURED_PURPLE_WOOL = register4("textured_wool_purple", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL));
-        Block TEXTURED_MAGENTA_WOOL = register4("textured_wool_magenta", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL));
-        Block TEXTURED_PINK_WOOL = register4("textured_wool_pink", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL));
+        Block TEXTURED_WHITE_WOOL = register("textured_wool_white", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL));
+        Block TEXTURED_LIGHT_GRAY_WOOL = register("textured_wool_light_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL));
+        Block TEXTURED_GRAY_WOOL = register("textured_wool_gray", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL));
+        Block TEXTURED_BLACK_WOOL = register("textured_wool_black", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL));
+        Block TEXTURED_BROWN_WOOL = register("textured_wool_brown", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL));
+        Block TEXTURED_RED_WOOL = register("textured_wool_red", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL));
+        Block TEXTURED_ORANGE_WOOL = register("textured_wool_orange", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL));
+        Block TEXTURED_YELLOW_WOOL = register("textured_wool_yellow", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL));
+        Block TEXTURED_LIME_WOOL = register("textured_wool_lime", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL));
+        Block TEXTURED_GREEN_WOOL = register("textured_wool_green", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL));
+        Block TEXTURED_CYAN_WOOL = register("textured_wool_cyan", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL));
+        Block TEXTURED_LIGHT_BLUE_WOOL = register("textured_wool_light_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL));
+        Block TEXTURED_BLUE_WOOL = register("textured_wool_blue", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL));
+        Block TEXTURED_PURPLE_WOOL = register("textured_wool_purple", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL));
+        Block TEXTURED_MAGENTA_WOOL = register("textured_wool_magenta", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL));
+        Block TEXTURED_PINK_WOOL = register("textured_wool_pink", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL));
 
         FlammableBlockRegistry.getDefaultInstance().add(TEXTURED_WHITE_WOOL, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(TEXTURED_LIGHT_GRAY_WOOL, 30, 60);
@@ -487,370 +517,36 @@ public class BlockFactory {
 
     }
 
-
-
-    
-
-    // -------------------------
-    // 1.21.10 Style Registration
-    // -------------------------
-
-    /*public static Block register(RegistryKey<Block> key, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings) {
-        Block block = factory.apply(settings.registryKey(key));
-
-        Registry.register(Registries.BLOCK, key, block);
-        registerBlockItem(key.getValue(), block);
-
-        if (EntStupidStuff.DEV_MODE)
-            System.out.println(key.getValue());
-
-        BlockList.put(key.getValue(), block);
-        return block;
-    }
-
-    public static Block register(RegistryKey<Block> key, AbstractBlock.Settings settings) {
-        return register(key, Block::new, settings);
-    }*/
-
-    public static ResourceKey<Block> keyOf(String id) {
-        return ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
-    }
-    /*
-    public static Block register(String id, Function<AbstractBlock.Settings, Block> factory, AbstractBlock.Settings settings) {
-        return register(keyOf(id), factory, settings);
-    }
-
-    public static Block register(String id, AbstractBlock.Settings settings) {
-        return register(id, Block::new, settings);
-    }*/
-
-
-
-
-    // -------------------------
-    // Old-style pre-constructed block registration
-    // -------------------------
-
-    /*public static Block register(String id, Block block) {
-        RegistryKey<Block> key = keyOf(id);
-
-        Registry.register(Registries.BLOCK, key, block);
-        registerBlockItem(key.getValue(), block);
-
-        if (EntStupidStuff.DEV_MODE)
-            System.out.println(key.getValue());
-
-        BlockList.put(key.getValue(), block);
-        return block;
-    }*/
-
-    // -------------------------
-    // Non-Registry / Internal Helper (does not create BlockItem)
-    // -------------------------
-    /*public static Block registerNonReg(String id, Block block) {
-        RegistryKey<Block> key = keyOf(id);
-
-        Registry.register(Registries.BLOCK, key, block);
-        BlockList.put(key.getValue(), block);
-        return block;
-    }*/
-
-    // -------------------------
-    // Accessor for already registered blocks
-    // -------------------------
-    public static Block callBlock(String id) {
-        try {
-            ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
-            return BlockList.get(identifier);
-        } catch (Exception e) {
-            System.out.println("An Error occurred in callBlock()... Tried to call: " + id);
-            return null;
-        }
-    }
-
-    // -------------------------
-    // Private Helper to register BlockItem automatically
-    // -------------------------
-    /*private static void registerBlockItem(Identifier id, Block block) {
-        BlockItem blockItem = new BlockItem(block, new Item.Settings());
-        ItemFactory.registerItems(id.getPath(), blockItem);
-    }*/
-
-    /* Support */
-
-    @Deprecated
-    public static void BlockSystem(Block block, String blockName, String suffix, MapColor mapColor) {
-
-        if (suffix == null) {suffix = "";}
-        else {suffix = "_" + suffix;}
-
-        Block STAIRS = register(blockName + "_stairs" + suffix, 
-            new StairBlock(block.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_STAIRS).mapColor((mapColor)))); 
-
-        Block SLAB = register(blockName + "_slab" + suffix, 
-            new SlabBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SLAB).mapColor((mapColor)))); 
-
-        Block FENCE = register(blockName + "_fence" + suffix, 
-            new FenceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE).mapColor((mapColor)))); 
-
-        Block FENCE_GATE = register(blockName + "_fence_gate" + suffix, 
-            new FenceGateBlock(WoodType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE).mapColor((mapColor)))); 
-
-        Block P_PLATE = register(blockName + "_pressure_plate" + suffix, 
-            new PressurePlateBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE).mapColor((mapColor)))); 
-
-        Block BUTTON = register(blockName + "_button" + suffix, 
-            new ButtonBlock(BlockSetType.OAK, 30, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON).mapColor((mapColor)))); 
-
-        BlockFamilies.familyBuilder(block)
-            .button(BUTTON)
-            .fence(FENCE)
-            .fenceGate(FENCE_GATE)
-            .pressurePlate(P_PLATE)
-            .slab(SLAB)
-            .stairs(STAIRS)
-		.recipeGroupPrefix("log")
-        .recipeUnlockedBy("has_logs")
-		.getFamily();
-
-        //ModGroup.addToDeco(blockName + "_stairs" + suffix);
-        //ModGroup.addToDeco(blockName + "_slab" + suffix);
-        //ModGroup.addToDeco(blockName + "_fence" + suffix);
-        //ModGroup.addToDeco(blockName + "_fence_gate" + suffix);
-        //ModGroup.addToDeco(blockName + "_pressure_plate" + suffix);
-        //ModGroup.addToDeco(blockName + "_button" + suffix);
-
-
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
-
-        
-
-    }
-    
-    @Deprecated
-    public static void WoodSystem(String blockName, String suffix, MapColor mapColor, Boolean isNatural) {
-
-        if (suffix == null) {suffix = "";}
-        else {suffix = "_" + suffix;}
-
-        if (isNatural) {
-
-
-            @SuppressWarnings("unused")
-            Block LOG = register2(blockName + "_log" + suffix, 
-            (settings) -> new RotatedPillarBlock(settings),
-                Blocks.logProperties(mapColor, mapColor, SoundType.WOOD));
-
-            @SuppressWarnings("unused")
-            Block STRIPPED_LOG = register2("stripped_" + blockName + "_log" + suffix, 
-            (settings) -> new RotatedPillarBlock(settings),
-                Blocks.logProperties(mapColor, mapColor, SoundType.WOOD));
-
-            @SuppressWarnings("unused")
-            Block WOOD = register(blockName + "_wood" + suffix, 
-                new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
-
-            @SuppressWarnings("unused")
-            Block STRIPPED_WOOD = register("stripped_" + blockName + "_wood" + suffix, 
-                new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
-
-            //Block LEAVES = register(blockName + "_leaves" + suffix, new LeavesBlock(AbstractBlock.Settings.copy(Blocks.OAK_LEAVES)));
-
-            //ModGroup.addToNatural(blockName + "_log" + suffix);
-            //ModGroup.addToNatural("stripped_" + blockName + "_log" + suffix);
-            //ModGroup.addToNatural(blockName + "_wood" + suffix);
-            //ModGroup.addToNatural("stripped_" + blockName + "_wood" + suffix);
-
-            //ModGroup.addToDeco(blockName + "_log" + suffix);
-            //ModGroup.addToDeco("stripped_" + blockName + "_log" + suffix);
-            //ModGroup.addToDeco(blockName + "_wood" + suffix);
-            //ModGroup.addToDeco("stripped_" + blockName + "_wood" + suffix);
-
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
-            
-
-        }
-
-        Block PLANKS = register(blockName + "_planks" + suffix, 
-            new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((mapColor))));
-
-        Block STAIRS = register(blockName + "_stairs" + suffix, 
-            new StairBlock(PLANKS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_STAIRS).mapColor((mapColor)))); 
-
-        Block SLAB = register(blockName + "_slab" + suffix, 
-            new SlabBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SLAB).mapColor((mapColor)))); 
-
-        Block FENCE = register(blockName + "_fence" + suffix, 
-            new FenceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE).mapColor((mapColor)))); 
-
-        Block FENCE_GATE = register(blockName + "_fence_gate" + suffix, 
-            new FenceGateBlock(WoodType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE).mapColor((mapColor)))); 
-
-        Block DOOR = register(blockName + "_door" + suffix, 
-            new DoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR).noOcclusion().mapColor((mapColor))));
-
-        Block GLASS_DOOR = register(blockName + "_glass_door" + suffix, 
-            new DoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR).noOcclusion().mapColor((mapColor)))); 
-
-        Block TRAP_DOOR = register(blockName + "_trapdoor" + suffix, 
-            new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
-
-        @SuppressWarnings("unused")
-        Block GLASS_TRAP_DOOR = register(blockName + "_glass_trapdoor" + suffix, 
-            new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor))));
-
-        Block P_PLATE = register(blockName + "_pressure_plate" + suffix, 
-            new PressurePlateBlock(BlockSetType.OAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE).mapColor((mapColor)))); 
-
-        Block BUTTON = register(blockName + "_button" + suffix, 
-            new ButtonBlock(BlockSetType.OAK, 30, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON).mapColor((mapColor)))); 
-
-        //Mosic
-        MosicFamily(blockName, suffix, PLANKS);
-
-        /*Block SIGN = registerNonReg(blockName + "_sign" + suffix,
-		    new SignBlock(WoodType.OAK, AbstractBlock.Settings.create().mapColor(mapColor).solid().instrument(NoteBlockInstrument.BASS).noCollision().strength(1.0F).burnable())); //CHECK
-
-        Block WALL_SIGN = registerNonReg(blockName + "_wall_sign" + suffix,
-		    new WallSignBlock(WoodType.OAK, AbstractBlock.Settings.create().mapColor(mapColor).solid().instrument(NoteBlockInstrument.BASS).noCollision().strength(1.0F).dropsLike(SIGN).burnable())); //CHECK
-
-        Block HANGING_SIGN = registerNonReg(blockName + "_hanging_sign" + suffix, 
-            new HangingSignBlock(WoodType.OAK, AbstractBlock.Settings.create().mapColor(mapColor).solid().instrument(NoteBlockInstrument.BASS).noCollision().strength(1.0F).burnable())); //CHECK
-
-        Block WALL_HANGING_SIGN = registerNonReg(blockName + "_wall_hanging_sign" + suffix, 
-            new WallHangingSignBlock(WoodType.OAK,  AbstractBlock.Settings.create().mapColor(mapColor).solid().instrument(NoteBlockInstrument.BASS).noCollision().strength(1.0F).burnable().dropsLike(HANGING_SIGN))); //CHECK
-        */
-        BlockFamilies.familyBuilder(PLANKS)
-            .button(BUTTON)
-            .fence(FENCE)
-            .fenceGate(FENCE_GATE)
-            .pressurePlate(P_PLATE)
-            .slab(SLAB)
-            .stairs(STAIRS)
-            .trapdoor(TRAP_DOOR)
-            //.sign(SIGN, WALL_SIGN)
-            .door(DOOR).door(GLASS_DOOR)
-		.recipeGroupPrefix("wooden")
-        .recipeUnlockedBy("has_planks")
-		.getFamily();
-
-        //ModGroup.addToDeco(blockName + "_planks" + suffix);
-        //ModGroup.addToDeco(blockName + "_stairs" + suffix);
-        //ModGroup.addToDeco(blockName + "_slab" + suffix);
-        //ModGroup.addToDeco(blockName + "_fence" + suffix);
-        //ModGroup.addToDeco(blockName + "_fence_gate" + suffix);
-        //ModGroup.addToDeco(blockName + "_door" + suffix);
-        //ModGroup.addToDeco(blockName + "_glass_door" + suffix);
-        //ModGroup.addToDeco(blockName + "_trapdoor" + suffix);
-        //ModGroup.addToDeco(blockName + "_glass_trapdoor" + suffix);
-        //ModGroup.addToDeco(blockName + "_pressure_plate" + suffix);
-        //ModGroup.addToDeco(blockName + "_button" + suffix);
-        ////ModGroup.addToDeco(blockName + "_sign" + suffix);
-        ////ModGroup.addToDeco(blockName + "_hanging_sign" + suffix);
-
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
-
-
-    }
-
-    @Deprecated
-    public static void MosicFamily(String blockName, String varient, Block baseBlock){
-
-        /*if (varient == null) {varient = "";}
-        else {varient = "_" + varient;}*/
-
-        Block MOSAIC  = register(blockName + "_mosaic" + varient,
-            new Block(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
-
-        Block MOSAIC_STAIRS = register(blockName + "_mosaic_stairs" + varient, 
-            new StairBlock(baseBlock.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(baseBlock))); 
-
-        Block MOSAIC_SLAB = register(blockName + "_mosaic_slab" + varient, 
-            new SlabBlock(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
-
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC, 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC_STAIRS, 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC_SLAB, 5, 20);
-
-        //ModGroup.addToDeco(blockName + "_mosaic" + varient);
-        //ModGroup.addToDeco(blockName + "_mosaic_stairs" + varient);
-        //ModGroup.addToDeco(blockName + "_mosaic_slab" + varient);
-    }
-
-    @Deprecated
-    public static void MosicFamily(String blockName, String varient, Block baseBlock, Boolean ent){
-
-        /*if (varient == null) {varient = "";}
-        else {varient = "_" + varient;}*/
-
-        @SuppressWarnings("unused")
-        Block MOSAIC  = register(blockName + "_mosaic" + varient,
-            new Block(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
-
-        @SuppressWarnings("unused")
-        Block MOSAIC_STAIRS = register(blockName + "_mosaic_stairs" + varient, 
-            new StairBlock(baseBlock.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(baseBlock))); 
-
-        @SuppressWarnings("unused")
-        Block MOSAIC_SLAB = register(blockName + "_mosaic_slab" + varient, 
-            new SlabBlock(BlockBehaviour.Properties.ofFullCopy(baseBlock)));
-
-        //ModGroup.addToDeco(blockName + "_mosaic" + varient);
-        //ModGroup.addToDeco(blockName + "_mosaic_stairs" + varient);
-        //ModGroup.addToDeco(blockName + "_mosaic_slab" + varient);
-    }
-
-    
     public static void OxidizableFamily() { /* Make this Dynamic */
-        Block COPPER = register4("copper_glass_door",
+        Block COPPER = register("copper_glass_door",
             settings -> new WeatheringCopperDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.UNAFFECTED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_DOOR));
 
-        Block EXPOSED_COPPER = register4("exposed_copper_glass_door",
+        Block EXPOSED_COPPER = register("exposed_copper_glass_door",
             settings -> new WeatheringCopperDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.EXPOSED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_DOOR));
 
-        Block OXIDIZED_COPPER = register4("oxidized_copper_glass_door",
+        Block OXIDIZED_COPPER = register("oxidized_copper_glass_door",
             settings -> new WeatheringCopperDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.OXIDIZED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_DOOR));
 
-        Block WEATHERED_COPPER = register4("weathered_copper_glass_door",
+        Block WEATHERED_COPPER = register("weathered_copper_glass_door",
             settings -> new WeatheringCopperDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.WEATHERED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_DOOR));
 
-        Block WAXED_COPPER = register4("waxed_copper_glass_door",
+        Block WAXED_COPPER = register("waxed_copper_glass_door",
             settings -> new DoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(COPPER));
 
-        Block WAXED_EXPOSED_COPPER = register4("waxed_exposed_copper_glass_door",
+        Block WAXED_EXPOSED_COPPER = register("waxed_exposed_copper_glass_door",
             settings -> new DoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(EXPOSED_COPPER));
 
-        Block WAXED_OXIDIZED_COPPER = register4("waxed_oxidized_copper_glass_door",
+        Block WAXED_OXIDIZED_COPPER = register("waxed_oxidized_copper_glass_door",
             settings -> new DoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(OXIDIZED_COPPER));
 
-        Block WAXED_WEATHERED_COPPER = register4("waxed_weathered_copper_glass_door",
+        Block WAXED_WEATHERED_COPPER = register("waxed_weathered_copper_glass_door",
             settings -> new DoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(WEATHERED_COPPER));
 
@@ -865,35 +561,35 @@ public class BlockFactory {
 
         // Trapdoors
 
-        Block COPPER_1 = register4("copper_glass_trapdoor",
+        Block COPPER_1 = register("copper_glass_trapdoor",
             settings -> new WeatheringCopperTrapDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.UNAFFECTED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR));
 
-        Block EXPOSED_COPPER_1 = register4("exposed_copper_glass_trapdoor",
+        Block EXPOSED_COPPER_1 = register("exposed_copper_glass_trapdoor",
             settings -> new WeatheringCopperTrapDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.EXPOSED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR));
 
-        Block OXIDIZED_COPPER_1 = register4("oxidized_copper_glass_trapdoor",
+        Block OXIDIZED_COPPER_1 = register("oxidized_copper_glass_trapdoor",
             settings -> new WeatheringCopperTrapDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.OXIDIZED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR));
 
-        Block WEATHERED_COPPER_1 = register4("weathered_copper_glass_trapdoor",
+        Block WEATHERED_COPPER_1 = register("weathered_copper_glass_trapdoor",
             settings -> new WeatheringCopperTrapDoorBlock(BlockSetType.COPPER, WeatheringCopper.WeatherState.WEATHERED, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR));
 
-        Block WAXED_COPPER_1 = register4("waxed_copper_glass_trapdoor",
+        Block WAXED_COPPER_1 = register("waxed_copper_glass_trapdoor",
             settings -> new TrapDoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(COPPER_1));
 
-        Block WAXED_EXPOSED_COPPER_1 = register4("waxed_exposed_copper_glass_trapdoor",
+        Block WAXED_EXPOSED_COPPER_1 = register("waxed_exposed_copper_glass_trapdoor",
             settings -> new TrapDoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(EXPOSED_COPPER_1));
 
-        Block WAXED_OXIDIZED_COPPER_1 = register4("waxed_oxidized_copper_glass_trapdoor",
+        Block WAXED_OXIDIZED_COPPER_1 = register("waxed_oxidized_copper_glass_trapdoor",
             settings -> new TrapDoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(OXIDIZED_COPPER_1));
 
-        Block WAXED_WEATHERED_COPPER_1 = register4("waxed_weathered_copper_glass_trapdoor",
+        Block WAXED_WEATHERED_COPPER_1 = register("waxed_weathered_copper_glass_trapdoor",
             settings -> new TrapDoorBlock(BlockSetType.COPPER, settings),
             BlockBehaviour.Properties.ofFullCopy(WEATHERED_COPPER_1));
 
@@ -908,246 +604,25 @@ public class BlockFactory {
     }
 
 
-    @Deprecated
-    public static void StoneSystem(String blockName, MapColor mapColor, Boolean isBricksOnly, Block familyBlock) { 
 
-        if (isBricksOnly) {
-            Block Bricks = register4(blockName + "_bricks",
-                (settings) -> new Block(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Stairs = register4(blockName + "_brick_stairs",
-                (settings) -> new StairBlock(Bricks.defaultBlockState(), settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Slab = register4(blockName + "_brick_slab",
-                (settings) -> new SlabBlock(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Wall = register4(blockName + "_brick_wall",
-                (settings) -> new WallBlock(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Chiseled = register4(blockName + "_brick_chiseled",
-                (settings) -> new Block(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Cracked = register4("cracked_" + blockName + "_bricks",
-                (settings) -> new Block(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-        } else {  
-            @SuppressWarnings("unused")
-            Block Normal_Stairs = register4(blockName + "_stairs",
-                (settings) -> new StairBlock(familyBlock.defaultBlockState(), settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
 
-            @SuppressWarnings("unused")
-            Block Normal_Slab = register4(blockName + "_slab",
-                (settings) -> new SlabBlock(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
-
-            @SuppressWarnings("unused")
-            Block Normal_Wall = register4(blockName + "_wall",
-                (settings) -> new WallBlock(settings),
-                BlockBehaviour.Properties.ofFullCopy(familyBlock)
-            );
-        }
-    }
-
-    @Deprecated
-    public static void CustomPhantomWoodSystem() {
-
-        String blockName = "phantom";
-        String suffix = "";
-        MapColor mapColor = MapColor.GLOW_LICHEN;
-        Boolean isNatural = true;
-
-        if (isNatural) {
-
-            @SuppressWarnings("unused")
-            Block LOG = register4(blockName + "_log" + suffix,
-                settings -> new RotatedPillarBlock(settings
-                    .mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? mapColor : mapColor)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2.0F)
-                    .sound(SoundType.WOOD)
-                    .ignitedByLava()
-                    .noOcclusion()
-                ),
-                BlockBehaviour.Properties.of());
-
-            @SuppressWarnings("unused")
-            Block STRIPPED_LOG = register4("stripped_" + blockName + "_log" + suffix,
-                settings -> new RotatedPillarBlock(settings
-                    .mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? mapColor : mapColor)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2.0F)
-                    .sound(SoundType.WOOD)
-                    .ignitedByLava()
-                    .noOcclusion()
-                ),
-                BlockBehaviour.Properties.of());
-
-            @SuppressWarnings("unused")
-            Block WOOD = register4(blockName + "_wood" + suffix,
-                settings -> new RotatedPillarBlock(settings
-                    .mapColor(mapColor)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2.0F)
-                    .sound(SoundType.WOOD)
-                    .ignitedByLava()
-                    .noOcclusion()
-                ),
-                BlockBehaviour.Properties.of());
-
-            @SuppressWarnings("unused")
-            Block STRIPPED_WOOD = register4("stripped_" + blockName + "_wood" + suffix,
-                settings -> new RotatedPillarBlock(settings
-                    .mapColor(mapColor)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2.0F)
-                    .sound(SoundType.WOOD)
-                    .ignitedByLava()
-                    .noOcclusion()
-                ),
-                BlockBehaviour.Properties.of());
-
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
-
-        }
-
-        @SuppressWarnings("static-access")
-        Block PLANKS = register4(blockName + "_planks" + suffix,
-            settings -> new Block(settings.ofFullCopy(Blocks.OAK_PLANKS).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block STAIRS = register4(blockName + "_stairs" + suffix,
-            settings -> new StairBlock(PLANKS.defaultBlockState(), settings.ofFullCopy(Blocks.OAK_STAIRS).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block SLAB = register4(blockName + "_slab" + suffix,
-            settings -> new SlabBlock(settings.ofFullCopy(Blocks.OAK_SLAB).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block FENCE = register4(blockName + "_fence" + suffix,
-            settings -> new FenceBlock(settings.ofFullCopy(Blocks.OAK_FENCE).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block FENCE_GATE = register4(blockName + "_fence_gate" + suffix,
-            settings -> new FenceGateBlock(WoodType.OAK, settings.ofFullCopy(Blocks.OAK_FENCE_GATE).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block DOOR = register4(blockName + "_door" + suffix,
-            settings -> new DoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_DOOR).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block GLASS_DOOR = register4(blockName + "_glass_door" + suffix,
-            settings -> new DoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_DOOR).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block TRAP_DOOR = register4(blockName + "_trapdoor" + suffix,
-            settings -> new TrapDoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings({ "static-access", "unused" })
-        Block GLASS_TRAP_DOOR = register4(blockName + "_glass_trapdoor" + suffix,
-            settings -> new TrapDoorBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block P_PLATE = register4(blockName + "_pressure_plate" + suffix,
-            settings -> new PressurePlateBlock(BlockSetType.OAK, settings.ofFullCopy(Blocks.OAK_PRESSURE_PLATE).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block BUTTON = register4(blockName + "_button" + suffix,
-            settings -> new ButtonBlock(BlockSetType.OAK, 30, settings.ofFullCopy(Blocks.OAK_BUTTON).mapColor(mapColor).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        BlockFamilies.familyBuilder(PLANKS)
-            .button(BUTTON)
-            .fence(FENCE)
-            .fenceGate(FENCE_GATE)
-            .pressurePlate(P_PLATE)
-            .slab(SLAB)
-            .stairs(STAIRS)
-            .trapdoor(TRAP_DOOR)
-            .door(DOOR)
-            .door(GLASS_DOOR)
-            .recipeGroupPrefix("wooden")
-            .recipeUnlockedBy("has_planks")
-            .getFamily();
-
-        @SuppressWarnings("static-access")
-        Block MOSAIC = register4(blockName + "_mosaic" + suffix,
-            settings -> new Block(settings.ofFullCopy(PLANKS).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block MOSAIC_STAIRS = register4(blockName + "_mosaic_stairs" + suffix,
-            settings -> new StairBlock(PLANKS.defaultBlockState(), settings.ofFullCopy(PLANKS).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        @SuppressWarnings("static-access")
-        Block MOSAIC_SLAB = register4(blockName + "_mosaic_slab" + suffix,
-            settings -> new SlabBlock(settings.ofFullCopy(PLANKS).noOcclusion()),
-            BlockBehaviour.Properties.of());
-
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC, 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC_STAIRS, 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add(MOSAIC_SLAB, 5, 20);
-
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_planks" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_stairs" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_slab" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_fence_gate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_door" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_glass_trapdoor" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_pressure_plate" + suffix)), 5, 20);
-        FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_button" + suffix)), 5, 20);
-
-    }
 
     // ## Static Block Registated
 
-
-
     // # Adding PHANTOM TORCH
-    public static final Block PHANTOM_TORCH = register4WithoutItem(
+    public static final Block PHANTOM_TORCH = registerWithoutItem(
         "phantom_torch",
         settings -> new TorchBlock(ParticleTypes.FLAME, settings),
 		BlockBehaviour.Properties.of().noCollision().instabreak().lightLevel(state -> 14).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY)
 	);
 
-    public static final Block PHANTOM_WALL_TORCH = register4WithoutItem(
+    public static final Block PHANTOM_WALL_TORCH = registerWithoutItem(
         "phantom_wall_torch",
         settings -> new WallTorchBlock(ParticleTypes.FLAME, settings),
         wallVariant(PHANTOM_TORCH, true).noCollision().instabreak().lightLevel(blockStatex -> 14).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY)
@@ -1155,7 +630,7 @@ public class BlockFactory {
 	);
 
     // # Adding POINTED_ICE
-    public static final Block POINTED_ICE = register4(
+    public static final Block POINTED_ICE = register(
 		"pointed_ice",
 		PointedIceBlock::new,
 			BlockBehaviour.Properties.of()
@@ -1173,7 +648,7 @@ public class BlockFactory {
 	);
 
     // # Adding DARK_ENCHANTMENT_TABLE
-    public static final Block DARK_ENCHANTMENT_TABLE = register4(
+    public static final Block DARK_ENCHANTMENT_TABLE = register(
         "dark_enchantment_table", 
         DarkEnchantingTableBlock::new,
 		    BlockBehaviour.Properties.of()
@@ -1184,11 +659,11 @@ public class BlockFactory {
     );
 
     // # adding Abyssal_stone
-    public static final Block ABYSSAL_STONE = register4(
+    public static final Block ABYSSAL_STONE = register(
         "abyssal_stone", (settings) -> new Block(settings), BlockBehaviour.Properties.ofFullCopy(Blocks.BLACKSTONE)
     );
 
-    public static final Block SHROOMIUM_BLOCK = register4(
+    public static final Block SHROOMIUM_BLOCK = register(
         "shroomium",
         ShroomiumBlock::new,
         BlockBehaviour.Properties.ofFullCopy(Blocks.MUD)
@@ -1203,7 +678,7 @@ public class BlockFactory {
     );
 
     // # Adding DARK_ENCHANTMENT_TABLE
-    public static final Block MUSHROOM_AURA_BLOCK = register4(
+    public static final Block MUSHROOM_AURA_BLOCK = register(
         "mushroom_aura_block", 
         MushroomAuraBlock::new,
 		    BlockBehaviour.Properties.of()
@@ -1215,8 +690,7 @@ public class BlockFactory {
                 .noOcclusion()
     );
 
-    // # Adding DARK_ENCHANTMENT_TABLE
-    public static final Block MUSHROOM_AURA_BLOCK_2 = register4(
+    public static final Block MUSHROOM_AURA_BLOCK_2 = register(
         "mushroom_aura_block_2", 
         MushroomAuraBlock_2::new,
 		    BlockBehaviour.Properties.of()
@@ -1227,6 +701,26 @@ public class BlockFactory {
                 .lightLevel(state -> 3)
                 .noOcclusion()
     );
+
+    // # Adding SILKWORM_VINES
+    public static final Block SILKWORM_VINES = register(
+		"silkworm_vines",
+		SilkwormVineBlock::new,
+		BlockBehaviour.Properties.of()
+			.mapColor(MapColor.NETHER)
+			.randomTicks()
+			.noCollision()
+			.instabreak()
+			.sound(SoundType.WEEPING_VINES)
+			.pushReaction(PushReaction.DESTROY)
+            .lightLevel(state -> 5)
+            .noOcclusion()
+	);
+	public static final Block SILKWORM_VINES_PLANT = registerWithoutItem(
+		"silkworm_vines_plant",
+		SilkwormVinePlantBlock::new,
+		BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).noCollision().instabreak().sound(SoundType.WEEPING_VINES).pushReaction(PushReaction.DESTROY).lightLevel(state -> 5)
+	);
 
 
 
@@ -1248,72 +742,24 @@ public class BlockFactory {
 		return properties2;
 	}
 
-    // ### Registation V1
-
-    @Deprecated
-    public static Block register(String id, Block block) {
-        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
-
-        Registry.register(BuiltInRegistries.BLOCK, blockId, block);
-
-        BlockItem blockItem = new BlockItem(block, new Item.Properties());
-        Registry.register(BuiltInRegistries.ITEM, blockId, blockItem);
-
-        if (EntStupidStuff.DEV_MODE) {
-            System.out.println("Registered block + item: " + blockId);
+    public static Block callBlock(String id) {
+        try {
+            ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
+            return BlockList.get(identifier);
+        } catch (Exception e) {
+            System.out.println("An Error occurred in callBlock()... Tried to call: " + id);
+            return null;
         }
-
-        System.out.println("Registered block + item: " + blockId);
-
-        BlockList.put(blockId, block);
-
-        return block;
     }
 
-    // ## Registation V2
+    public static ResourceKey<Block> keyOf(String id) {
+        return ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id));
+    }
 
-    public static Block register2(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
-		return register2(keyOf(id), factory, settings, id);
-	}
 
-    public static Block register2(ResourceKey<Block> key, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings, String id) {
-		Block block = (Block)factory.apply(settings.setId(key));
+    // ## Registation V4 - Merged both register3 Methods,  fORMALLY REGISTATION4
 
-        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
-        BlockList.put(blockId, block);
-
-        BlockItem blockItem = new BlockItem(block, new Item.Properties());
-        Registry.register(BuiltInRegistries.ITEM, blockId, blockItem);
-        ItemList.put(blockId, blockItem);
-
-		return Registry.register(BuiltInRegistries.BLOCK, key, block);
-	}
-
-    // ## Registation V3
-
-    @Deprecated
-    public static Block register3(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
-		return register3(keyOf(id), factory, settings, id);
-	}
-
-    @Deprecated
-    public static Block register3(ResourceKey<Block> key, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings, String id) {
-		Block block = (Block)factory.apply(settings.setId(key));
-
-        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
-        BlockList.put(blockId, block);
-
-        System.out.println("Adding Block: " + blockId);
-
-        registerBlockItem(id, block);
-        ModGroup.addToDefault(id);
-
-		return Registry.register(BuiltInRegistries.BLOCK, key, block);
-	}
-
-    // ## Registation V4 - Merged both register 3 Methods
-
-    public static Block register4(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
+    public static Block register(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
 
         ResourceKey<Block> key = keyOf(id);
 
@@ -1341,11 +787,8 @@ public class BlockFactory {
         System.out.println("Adding Item: " + item);
     }
 
-    public static Block register4WithoutItem(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
-		return register4WithoutItem(keyOf(id), factory, settings, id);
-	}
-
-    public static Block register4WithoutItem(ResourceKey<Block> key, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings, String id) {
+    public static Block registerWithoutItem(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
+        ResourceKey<Block> key = keyOf(id);
 		Block block = (Block)factory.apply(settings.setId(key));
 
         ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);

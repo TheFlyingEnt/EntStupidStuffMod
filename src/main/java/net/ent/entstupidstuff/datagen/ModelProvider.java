@@ -98,6 +98,7 @@ public class ModelProvider extends FabricModelProvider{
         //ANCIENT_TRIDENT is done via Manually
 
         itemModelGenerator.generateFlatItem(ItemFactory.PHANTOM_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.GLOWING_SILK, ModelTemplates.FLAT_ITEM);
 
         //itemModelGenerator2.register(ItemFactory.DIAMOND_SHIELD, Models.);
 
@@ -216,6 +217,43 @@ public class ModelProvider extends FabricModelProvider{
 
         registerPointedIce();
 
+        blockStateModelGenerator.registerSimpleItemModel(BlockFactory.SILKWORM_VINES.asItem(), BlockModelGenerators.PlantType.NOT_TINTED.createItemModel(blockStateModelGenerator, BlockFactory.SILKWORM_VINES));
+        blockStateModelGenerator.createCrossBlock(BlockFactory.SILKWORM_VINES, BlockModelGenerators.PlantType.NOT_TINTED);
+        blockStateModelGenerator.createCrossBlock(BlockFactory.SILKWORM_VINES_PLANT, BlockModelGenerators.PlantType.NOT_TINTED);
+
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_white"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_light_gray"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_gray"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_black"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_brown"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_red"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_orange"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_yellow"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_lime"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_green"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_cyan"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_light_blue"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_blue"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_purple"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_magenta"));
+        //blockStateModelGenerator.family(BlockFactory.callBlock("glowing_silk_wool_pink"));
+
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_white"), BlockFactory.callBlock("glowing_silk_wool_white_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_light_gray"), BlockFactory.callBlock("glowing_silk_wool_light_gray_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_gray"), BlockFactory.callBlock("glowing_silk_wool_gray_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_black"), BlockFactory.callBlock("glowing_silk_wool_black_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_brown"), BlockFactory.callBlock("glowing_silk_wool_brown_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_red"), BlockFactory.callBlock("glowing_silk_wool_red_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_orange"), BlockFactory.callBlock("glowing_silk_wool_orange_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_yellow"), BlockFactory.callBlock("glowing_silk_wool_yellow_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_lime"), BlockFactory.callBlock("glowing_silk_wool_lime_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_green"), BlockFactory.callBlock("glowing_silk_wool_green_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_cyan"), BlockFactory.callBlock("glowing_silk_wool_cyan_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_light_blue"), BlockFactory.callBlock("glowing_silk_wool_light_blue_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_blue"), BlockFactory.callBlock("glowing_silk_wool_blue_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_purple"), BlockFactory.callBlock("glowing_silk_wool_purple_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_magenta"), BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"));
+        blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_pink"), BlockFactory.callBlock("glowing_silk_wool_pink_carpet"));
 
 
         

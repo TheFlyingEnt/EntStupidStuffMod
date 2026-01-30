@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "group": "wooden_mosic_slab",
+  "group": "wooden_mosaic_slab",
   "key": {
     "#": "entstupidstuff:redwood_mosaic"
   },

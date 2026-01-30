@@ -1,8 +1,11 @@
 package net.ent.entstupidstuff.datagen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.item.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -68,6 +71,144 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
         return new RecipeProvider(wrapperLookup, recipeExporter) {
 
+        // ## List
+        List<Item> list_dye = List.of(
+			Items.BLACK_DYE,
+			Items.BLUE_DYE,
+			Items.BROWN_DYE,
+			Items.CYAN_DYE,
+			Items.GRAY_DYE,
+			Items.GREEN_DYE,
+			Items.LIGHT_BLUE_DYE,
+			Items.LIGHT_GRAY_DYE,
+			Items.LIME_DYE,
+			Items.MAGENTA_DYE,
+			Items.ORANGE_DYE,
+			Items.PINK_DYE,
+			Items.PURPLE_DYE,
+			Items.RED_DYE,
+			Items.YELLOW_DYE,
+			Items.WHITE_DYE
+		);
+
+        List<Item> list_bed = List.of(
+			Items.BLACK_BED,
+			Items.BLUE_BED,
+			Items.BROWN_BED,
+			Items.CYAN_BED,
+			Items.GRAY_BED,
+			Items.GREEN_BED,
+			Items.LIGHT_BLUE_BED,
+			Items.LIGHT_GRAY_BED,
+			Items.LIME_BED,
+			Items.MAGENTA_BED,
+			Items.ORANGE_BED,
+			Items.PINK_BED,
+			Items.PURPLE_BED,
+			Items.RED_BED,
+			Items.YELLOW_BED,
+			Items.WHITE_BED
+		);
+
+        List<Item> list_banner = List.of(
+			Items.BLACK_BANNER,
+			Items.BLUE_BANNER,
+			Items.BROWN_BANNER,
+			Items.CYAN_BANNER,
+			Items.GRAY_BANNER,
+			Items.GREEN_BANNER,
+			Items.LIGHT_BLUE_BANNER,
+			Items.LIGHT_GRAY_BANNER,
+			Items.LIME_BANNER,
+			Items.MAGENTA_BANNER,
+			Items.ORANGE_BANNER,
+			Items.PINK_BANNER,
+			Items.PURPLE_BANNER,
+			Items.RED_BANNER,
+			Items.YELLOW_BANNER,
+			Items.WHITE_BANNER
+		);
+
+        List<Item> list_harness = List.of(
+			Items.BLACK_HARNESS,
+			Items.BLUE_HARNESS,
+			Items.BROWN_HARNESS,
+			Items.CYAN_HARNESS,
+			Items.GRAY_HARNESS,
+			Items.GREEN_HARNESS,
+			Items.LIGHT_BLUE_HARNESS,
+			Items.LIGHT_GRAY_HARNESS,
+			Items.LIME_HARNESS,
+			Items.MAGENTA_HARNESS,
+			Items.ORANGE_HARNESS,
+			Items.PINK_HARNESS,
+			Items.PURPLE_HARNESS,
+			Items.RED_HARNESS,
+			Items.YELLOW_HARNESS,
+			Items.WHITE_HARNESS
+		);
+
+        List<Item> list_glowing_silk = List.of(
+            ItemFactory.callItem("glowing_silk_wool_black"),
+            ItemFactory.callItem("glowing_silk_wool_blue"),
+            ItemFactory.callItem("glowing_silk_wool_brown"),
+            ItemFactory.callItem("glowing_silk_wool_cyan"),
+            ItemFactory.callItem("glowing_silk_wool_gray"),
+            ItemFactory.callItem("glowing_silk_wool_green"),
+            ItemFactory.callItem("glowing_silk_wool_light_blue"),
+            ItemFactory.callItem("glowing_silk_wool_light_gray"),
+            ItemFactory.callItem("glowing_silk_wool_lime"),
+            ItemFactory.callItem("glowing_silk_wool_magenta"),
+            ItemFactory.callItem("glowing_silk_wool_orange"),
+            ItemFactory.callItem("glowing_silk_wool_pink"),
+            ItemFactory.callItem("glowing_silk_wool_purple"),
+            ItemFactory.callItem("glowing_silk_wool_red"),
+            ItemFactory.callItem("glowing_silk_wool_yellow"),
+            ItemFactory.callItem("glowing_silk_wool_white")
+		);
+
+        List<Item> list_glowing_silk_carpet = List.of(
+            ItemFactory.callItem("glowing_silk_wool_black_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_blue_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_brown_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_cyan_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_gray_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_green_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_light_blue_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_light_gray_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_lime_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_magenta_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_orange_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_pink_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_purple_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_red_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_yellow_carpet"),
+            ItemFactory.callItem("glowing_silk_wool_white_carpet")
+		);
+
+		List<Item> list_wool = List.of(
+			Items.BLACK_WOOL,
+			Items.BLUE_WOOL,
+			Items.BROWN_WOOL,
+			Items.CYAN_WOOL,
+			Items.GRAY_WOOL,
+			Items.GREEN_WOOL,
+			Items.LIGHT_BLUE_WOOL,
+			Items.LIGHT_GRAY_WOOL,
+			Items.LIME_WOOL,
+			Items.MAGENTA_WOOL,
+			Items.ORANGE_WOOL,
+			Items.PINK_WOOL,
+			Items.PURPLE_WOOL,
+			Items.RED_WOOL,
+			Items.YELLOW_WOOL,
+			Items.WHITE_WOOL
+		);
+
+
+
+            // ## Recipes
+
             @Override
             public void buildRecipes() {
 
@@ -90,16 +231,79 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 // # Added Fungal Natural + Planks (Regular + Colored)
                 groupWoodFamilty("fungal", "", false);
                 shapeless(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("fungal_planks"), 4)
-                        .requires(Blocks.MUSHROOM_STEM.asItem())
-                        .requires(Blocks.RED_MUSHROOM_BLOCK.asItem())
-                        .requires(BlockFactory.callBlock("blue_mushroom_block").asItem())
-                        .requires(Blocks.MUSHROOM_STEM.asItem())
-                        .group("planks")
-                        .unlockedBy(getHasName(Blocks.MUSHROOM_STEM), has(Blocks.MUSHROOM_STEM))
-                        .save(output);
-                for (String color : BlockFactory.COLORS) {
-                    groupFungalPlank(color);
+                    .requires(ModTags.MUSHROOM_CRAFTING)
+                    .group("planks")
+                    .unlockedBy(getHasName(Blocks.MUSHROOM_STEM), has(Blocks.MUSHROOM_STEM))
+                .save(output);
+
+                List<Item> list_planks = new ArrayList<>();
+                List<Item> list_stairs = new ArrayList<>();
+                List<Item> list_slab = new ArrayList<>();
+                List<Item> list_fence = new ArrayList<>();
+                List<Item> list_fence_gate = new ArrayList<>();
+                List<Item> list_door = new ArrayList<>();
+                List<Item> list_glass_door = new ArrayList<>();
+                List<Item> list_trapdoor = new ArrayList<>();
+                List<Item> list_glass_trapdoor = new ArrayList<>();
+                List<Item> list_pressure_plate = new ArrayList<>();
+                List<Item> list_button = new ArrayList<>();
+                List<Item> list_mosaic = new ArrayList<>();
+                List<Item> list_mosaic_stairs = new ArrayList<>();
+                List<Item> list_mosaic_slab = new ArrayList<>();
+
+
+                for (String color : BlockFactory.RECIPES_COLORS) {
+                    list_planks.add(ItemFactory.callItem("fungal" + "_planks_" + color));
+                    list_stairs.add(ItemFactory.callItem("fungal" + "_stairs_" + color));
+                    list_slab.add(ItemFactory.callItem("fungal" + "_slab_" + color));
+                    list_fence.add(ItemFactory.callItem("fungal" + "_fence_" + color));
+                    list_fence_gate.add(ItemFactory.callItem("fungal" + "_fence_gate_" + color));
+                    list_door.add(ItemFactory.callItem("fungal" + "_door_" + color));
+                    list_glass_door.add(ItemFactory.callItem("fungal" + "_glass_door_" + color));
+                    list_trapdoor.add(ItemFactory.callItem("fungal" + "_trapdoor_" + color));
+                    list_glass_trapdoor.add(ItemFactory.callItem("fungal" + "_glass_trapdoor_" + color));
+                    list_pressure_plate.add(ItemFactory.callItem("fungal" + "_pressure_plate_" + color));
+                    list_button.add(ItemFactory.callItem("fungal" + "_button_" + color));
+                    list_mosaic.add(ItemFactory.callItem("fungal" + "_mosaic_" + color));
+                    list_mosaic_stairs.add(ItemFactory.callItem("fungal" + "_mosaic_stairs_" + color));
+                    list_mosaic_slab.add(ItemFactory.callItem("fungal" + "_mosaic_slab_" + color));
+
+                    //this.colorWithDye(list_dye, List.of(), null, "fungal", recipeCategory);
+                    //List.of(
+
                 }
+
+                list_planks.add(ItemFactory.callItem("fungal" + "_planks"));
+                list_stairs.add(ItemFactory.callItem("fungal" + "_stairs"));
+                list_slab.add(ItemFactory.callItem("fungal" + "_slab"));
+                list_fence.add(ItemFactory.callItem("fungal" + "_fence"));
+                list_fence_gate.add(ItemFactory.callItem("fungal" + "_fence_gate"));
+                list_door.add(ItemFactory.callItem("fungal" + "_door"));
+                list_glass_door.add(ItemFactory.callItem("fungal" + "_glass_door"));
+                list_trapdoor.add(ItemFactory.callItem("fungal" + "_trapdoor"));
+                list_glass_trapdoor.add(ItemFactory.callItem("fungal" + "_glass_trapdoor"));
+                list_pressure_plate.add(ItemFactory.callItem("fungal" + "_pressure_plate"));
+                list_button.add(ItemFactory.callItem("fungal" + "_button"));
+                list_mosaic.add(ItemFactory.callItem("fungal" + "_mosaic"));
+                list_mosaic_stairs.add(ItemFactory.callItem("fungal" + "_mosaic_stairs"));
+                list_mosaic_slab.add(ItemFactory.callItem("fungal" + "_mosaic_slab"));
+
+                this.colorItemWithDye(list_dye, list_planks, "fungal_planks_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_stairs, "fungal_stairs_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_slab, "fungal_slab_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_fence, "fungal_fence_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_fence_gate, "fungal_fence_gate_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_door, "fungal_door_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_glass_door, "fungal_glass_door_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_trapdoor, "fungal_trapdoor_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_glass_trapdoor, "fungal_glass_trapdoor_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_pressure_plate, "fungal_pressure_plate_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_button, "fungal_button_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_mosaic, "fungal_mosaic_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_mosaic_stairs, "fungal_mosaic_stairs_dyed", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_mosaic_slab, "fungal_mosaic_slab_dyed", RecipeCategory.BUILDING_BLOCKS);
+
+
 
                 // # Adding Andersite, Diorite and Granite
                 if (enableAdditionalStone) {
@@ -374,6 +578,57 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 netheriteSmithing(ItemFactory.callItem("diamond_hammer"), RecipeCategory.COMBAT,
                         ItemFactory.callItem("netherite_hammer"));
 
+
+                // # Glowing Silk Wool
+
+                shaped(RecipeCategory.MISC, ItemFactory.GLOWING_SILK)
+                    .define('#', ItemFactory.callItem("silkworm_vines"))
+                    .pattern("##")
+                    .pattern("##")
+                    .unlockedBy(getHasName(ItemFactory.callItem("silkworm_vines")), has(ItemFactory.callItem("silkworm_vines")))
+                .save(output);
+
+                shaped(RecipeCategory.BUILDING_BLOCKS, BlockFactory.callBlock("glowing_silk_wool_light_blue").asItem())
+                    .define('#', ItemFactory.GLOWING_SILK)
+                    .pattern("##")
+                    .pattern("##")
+                    .unlockedBy(getHasName(ItemFactory.GLOWING_SILK), has(ItemFactory.GLOWING_SILK))
+                .save(output);
+
+                int i = 0;
+                for (String color : BlockFactory.RECIPES_COLORS) {
+                    ItemLike WOOL = ItemFactory.callItem("glowing_silk_wool_" + color);
+                    this.carpet(ItemFactory.callItem("glowing_silk_wool_" + color + "_carpet"), WOOL);
+                    this.bedFromPlanksAndWool(list_bed.get(i), WOOL);
+                    this.banner(list_banner.get(i), WOOL);
+                    this.harness(list_harness.get(i), MARSHMELLOW_RAW);
+                    i++;
+                }
+
+                this.colorItemWithDye(list_dye, list_glowing_silk, "glowing_silk_wool", RecipeCategory.BUILDING_BLOCKS);
+                this.colorItemWithDye(list_dye, list_glowing_silk_carpet, "glowing_silk_wool_carpet", RecipeCategory.BUILDING_BLOCKS);
+
+
+
+    
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
             public void createGlassDoorRecipe(Block GLASSDOOR, Block DOOR, Item UNLOCK_Item, Boolean wooden) {
@@ -593,18 +848,18 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("#")
                         .unlockedBy(getHasName(BlockFactory.callBlock(MainName + "_slab" + Varient)),
                                 this.has(BlockFactory.callBlock(MainName + "_slab" + Varient)))
-                        .group("wooden_mosic")
+                        .group("wooden_mosaic")
                         .save(this.output);
 
                 stairBuilder(BlockFactory.callBlock(MainName + "_mosaic_stairs" + Varient).asItem(), MOSIC_I)
-                        .group("wooden_mosic_stairs")
+                        .group("wooden_mosaic_stairs")
                         .unlockedBy(getHasName(BlockFactory.callBlock(MainName + "_mosaic" + Varient)),
                                 has(BlockFactory.callBlock(MainName + "_mosaic" + Varient)))
                         .save(output);
 
                 slabBuilder(RecipeCategory.BUILDING_BLOCKS,
                         BlockFactory.callBlock(MainName + "_mosaic_slab" + Varient).asItem(), MOSIC_I)
-                        .group("wooden_mosic_slab")
+                        .group("wooden_mosaic_slab")
                         .unlockedBy(getHasName(BlockFactory.callBlock(MainName + "_mosaic" + Varient)),
                                 has(BlockFactory.callBlock(MainName + "_mosaic" + Varient)))
                         .save(output);

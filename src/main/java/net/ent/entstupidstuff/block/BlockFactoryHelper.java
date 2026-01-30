@@ -32,19 +32,19 @@ public class BlockFactoryHelper {
 
     public static void NatureFamily(String blockName, String suffix, MapColor mapColor, MapColor mapColor2, Boolean flamable, Boolean withLeaves){ //1.21.10 Tracker - Completed
 
-        Block LOG = BlockFactory.register4(
+        Block LOG = BlockFactory.register(
             blockName + "_log" + suffix,
             (settings) -> new RotatedPillarBlock(settings),
             Blocks.logProperties(mapColor, mapColor, SoundType.WOOD)
         );
 
-        Block STRIPPED_LOG = BlockFactory.register4(
+        Block STRIPPED_LOG = BlockFactory.register(
             "stripped_" + blockName + "_log" + suffix,
             (settings) -> new RotatedPillarBlock(settings),
             Blocks.logProperties(mapColor, mapColor, SoundType.WOOD)
         );
 
-        Block WOOD = BlockFactory.register4(
+        Block WOOD = BlockFactory.register(
             blockName + "_wood" + suffix,
             (settings) -> new RotatedPillarBlock(settings),
             BlockBehaviour.Properties.of()
@@ -55,7 +55,7 @@ public class BlockFactoryHelper {
                 .ignitedByLava()
         );
 
-        Block STRIPPED_WOOD = BlockFactory.register4(
+        Block STRIPPED_WOOD = BlockFactory.register(
             "stripped_" + blockName + "_wood" + suffix,
             (settings) -> new RotatedPillarBlock(settings),
             BlockBehaviour.Properties.of()
@@ -72,13 +72,13 @@ public class BlockFactoryHelper {
             Block LEAVES;
 
             if (tint) { //Updated
-                LEAVES = BlockFactory.register4(
+                LEAVES = BlockFactory.register(
                     blockName + "_leaves" + suffix, (settings) -> new TintedParticleLeavesBlock(0.01F, settings),
                     BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)
                 );
             }
             else {
-                LEAVES = BlockFactory.register4( //TODO: 1.21.10 Updating
+                LEAVES = BlockFactory.register( //TODO: 1.21.10 Updating
                     blockName + "_leaves" + suffix,
                     (settings) -> new UntintedParticleLeavesBlock(
                         0.1F,
@@ -131,11 +131,11 @@ public class BlockFactoryHelper {
 
     public static void BaseFamily(String blockName, String varient, Block baseBlock, Boolean flamable){
 
-        Block STAIRS = BlockFactory.register4(blockName + "_stairs" + varient, 
+        Block STAIRS = BlockFactory.register(blockName + "_stairs" + varient, 
             (settings) -> new StairBlock(baseBlock.defaultBlockState(), settings),
             BlockBehaviour.Properties.ofFullCopy(baseBlock)); 
 
-        Block SLAB = BlockFactory.register4(blockName + "_slab" + varient, 
+        Block SLAB = BlockFactory.register(blockName + "_slab" + varient, 
             SlabBlock::new,
             BlockBehaviour.Properties.ofFullCopy(baseBlock));
 
@@ -152,15 +152,15 @@ public class BlockFactoryHelper {
 
     public static void MosicFamily(String blockName, String varient, Block baseBlock, Boolean flamable){
 
-        Block MOSAIC  = BlockFactory.register4(blockName + "_mosaic" + varient,
+        Block MOSAIC  = BlockFactory.register(blockName + "_mosaic" + varient,
             Block::new,
             BlockBehaviour.Properties.ofFullCopy(baseBlock));
 
-        Block MOSAIC_STAIRS = BlockFactory.register4(blockName + "_mosaic_stairs" + varient, 
+        Block MOSAIC_STAIRS = BlockFactory.register(blockName + "_mosaic_stairs" + varient, 
             (settings) -> new StairBlock(baseBlock.defaultBlockState(), settings),
             BlockBehaviour.Properties.ofFullCopy(baseBlock)); 
 
-        Block MOSAIC_SLAB = BlockFactory.register4(blockName + "_mosaic_slab" + varient, 
+        Block MOSAIC_SLAB = BlockFactory.register(blockName + "_mosaic_slab" + varient, 
             SlabBlock::new,
             BlockBehaviour.Properties.ofFullCopy(baseBlock));
 
@@ -177,35 +177,35 @@ public class BlockFactoryHelper {
     
     public static void InteractionFamily(String blockName, String suffix, Block baseBlock, MapColor mapColor, Boolean flamable, Boolean IsWooden){
 
-        Block FENCE = BlockFactory.register4(blockName + "_fence" + suffix, 
+        Block FENCE = BlockFactory.register(blockName + "_fence" + suffix, 
             FenceBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE).mapColor((mapColor))); 
 
-        Block FENCE_GATE = BlockFactory.register4(blockName + "_fence_gate" + suffix, 
+        Block FENCE_GATE = BlockFactory.register(blockName + "_fence_gate" + suffix, 
             (settings) -> new FenceGateBlock(WoodType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE).mapColor((mapColor))); 
 
-        Block DOOR = BlockFactory.register4(blockName + "_door" + suffix, 
+        Block DOOR = BlockFactory.register(blockName + "_door" + suffix, 
             (settings) -> new DoorBlock(BlockSetType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR).noOcclusion().mapColor((mapColor)));
 
-        Block GLASS_DOOR = BlockFactory.register4(blockName + "_glass_door" + suffix, 
+        Block GLASS_DOOR = BlockFactory.register(blockName + "_glass_door" + suffix, 
             (settings) -> new DoorBlock(BlockSetType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR).noOcclusion().mapColor((mapColor))); 
 
-        Block TRAP_DOOR = BlockFactory.register4(blockName + "_trapdoor" + suffix, 
+        Block TRAP_DOOR = BlockFactory.register(blockName + "_trapdoor" + suffix, 
             (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor)));
 
-        Block GLASS_TRAP_DOOR = BlockFactory.register4(blockName + "_glass_trapdoor" + suffix, 
+        Block GLASS_TRAP_DOOR = BlockFactory.register(blockName + "_glass_trapdoor" + suffix, 
             (settings) -> new TrapDoorBlock(BlockSetType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor((mapColor)));
 
-        Block P_PLATE = BlockFactory.register4(blockName + "_pressure_plate" + suffix, 
+        Block P_PLATE = BlockFactory.register(blockName + "_pressure_plate" + suffix, 
             (settings) -> new PressurePlateBlock(BlockSetType.OAK, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE).mapColor((mapColor))); 
 
-        Block BUTTON = BlockFactory.register4(blockName + "_button" + suffix, 
+        Block BUTTON = BlockFactory.register(blockName + "_button" + suffix, 
             (settings) -> new ButtonBlock(BlockSetType.OAK, 30, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON).mapColor((mapColor))); 
 
@@ -231,15 +231,15 @@ public class BlockFactoryHelper {
     }
 
     public static void StoneFamily(String blockName, String varient, Block baseBlock, Boolean onlyWall) {
-        Block Wall = BlockFactory.register4(blockName + "_wall" + varient, 
+        Block Wall = BlockFactory.register(blockName + "_wall" + varient, 
             WallBlock::new,
             BlockBehaviour.Properties.ofFullCopy(baseBlock));
             
         if (!onlyWall) {
-            Block Chizeled = BlockFactory.register4(blockName + "chiseled" + varient, 
+            Block Chizeled = BlockFactory.register(blockName + "chiseled" + varient, 
                 Block::new,
                 BlockBehaviour.Properties.ofFullCopy(baseBlock));
-            Block Cracked = BlockFactory.register4("cracked_" + blockName + "_" + varient, 
+            Block Cracked = BlockFactory.register("cracked_" + blockName + "_" + varient, 
                 Block::new,
                 BlockBehaviour.Properties.ofFullCopy(baseBlock));
         }
@@ -247,23 +247,23 @@ public class BlockFactoryHelper {
 
     public static void VanillaAdditions_Wood(String blockName, Block baseBlock, BlockSetType bST, Block trapdoor, Block door, Boolean flamable){
         MosicFamily(blockName, "", baseBlock, flamable);
-        Block GLASS_TRAPDOOR = BlockFactory.register4(blockName  + "_glass_trapdoor", 
+        Block GLASS_TRAPDOOR = BlockFactory.register(blockName  + "_glass_trapdoor", 
             (settings) -> new TrapDoorBlock(bST, settings),
             BlockBehaviour.Properties.ofFullCopy(trapdoor));
-        Block GLASS_DOOR = BlockFactory.register4(blockName  + "_glass_door", 
+        Block GLASS_DOOR = BlockFactory.register(blockName  + "_glass_door", 
             (settings) -> new DoorBlock(bST, settings),
             BlockBehaviour.Properties.ofFullCopy(door));
     }
 
     public static void addSaplings(String blockName, TreeGrower generator) {
 
-        Block SAPLING = BlockFactory.register4(
+        Block SAPLING = BlockFactory.register(
             blockName + "_sapling",
             (settings) -> new SaplingBlock(generator, settings),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)
         );
 
-        Block POT_SAPLING = BlockFactory.register4(
+        Block POT_SAPLING = BlockFactory.register(
             "potted_" + blockName + "_sapling",
             (settings) -> new FlowerPotBlock(SAPLING, settings),
             Blocks.flowerPotProperties()

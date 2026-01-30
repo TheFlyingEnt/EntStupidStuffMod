@@ -165,6 +165,12 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mushroom_aura_block_2"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("mushroom_aura_block_2"), ChunkSectionLayer.TRANSLUCENT);
 
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines"), ChunkSectionLayer.TRANSLUCENT);
+
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines_plant"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines_plant"), ChunkSectionLayer.TRANSLUCENT);
+
         //Change underground_mushroom to Azure_grove
 
 

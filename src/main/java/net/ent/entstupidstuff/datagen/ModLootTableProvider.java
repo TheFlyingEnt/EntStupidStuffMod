@@ -155,6 +155,41 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         this.dropSelf(BlockFactory.POINTED_ICE);
 
         //Minecraft Mobs
+
+        this.addNetherVinesDropTable(BlockFactory.SILKWORM_VINES, BlockFactory.SILKWORM_VINES_PLANT);
+
+        this.dropSelf(BlockFactory.PHANTOM_TORCH);
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_white"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_light_gray"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_gray"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_black"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_brown"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_red"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_orange"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_yellow"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_lime"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_green"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_light_blue"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_blue"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_purple"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_magenta"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_pink"));
+
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_white_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_light_gray_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_gray_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_black_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_brown_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_red_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_orange_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_yellow_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_lime_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_green_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_light_blue_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_blue_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_purple_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"));
+        this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_pink_carpet"));
         
 
     }

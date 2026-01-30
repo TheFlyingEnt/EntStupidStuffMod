@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_glass_door_dyed",
+  "ingredients": [
+    "minecraft:blue_dye",
+    [
+      "entstupidstuff:fungal_glass_door_black",
+      "entstupidstuff:fungal_glass_door_brown",
+      "entstupidstuff:fungal_glass_door_cyan",
+      "entstupidstuff:fungal_glass_door_gray",
+      "entstupidstuff:fungal_glass_door_green",
+      "entstupidstuff:fungal_glass_door_light_blue",
+      "entstupidstuff:fungal_glass_door_light_gray",
+      "entstupidstuff:fungal_glass_door_lime",
+      "entstupidstuff:fungal_glass_door_magenta",
+      "entstupidstuff:fungal_glass_door_orange",
+      "entstupidstuff:fungal_glass_door_pink",
+      "entstupidstuff:fungal_glass_door_purple",
+      "entstupidstuff:fungal_glass_door_red",
+      "entstupidstuff:fungal_glass_door_yellow",
+      "entstupidstuff:fungal_glass_door_white",
+      "entstupidstuff:fungal_glass_door"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_glass_door_blue"
+  }
+}

@@ -207,6 +207,47 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .add(BlockFactory.callBlock("shroomium"))
             .add(Blocks.MUD);
 
+        valueLookupBuilder(ModTags.SILKMOTH_SPAWNABLE_ON)
+            //.addTag(BlockTags.ANIMALS_SPAWNABLE_ON)
+            .add(BlockFactory.callBlock("shroomium"))
+            .add(BlockFactory.callBlock("azure_flower_bed"))
+            .add(Blocks.MUD)
+            .add(Blocks.DEEPSLATE);
+
+        valueLookupBuilder(BlockTags.WOOL)
+        .add(BlockFactory.callBlock("glowing_silk_wool_white"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_light_gray"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_gray"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_black"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_brown"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_red"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_orange"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_yellow"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_lime"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_green"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_light_blue"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_blue"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_purple"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_magenta"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_pink"));
+
+        valueLookupBuilder(BlockTags.WOOL_CARPETS)
+        .add(BlockFactory.callBlock("glowing_silk_wool_white_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_light_gray_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_gray_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_black_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_brown_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_red_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_orange_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_yellow_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_lime_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_green_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_light_blue_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_blue_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_purple_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"))
+        .add(BlockFactory.callBlock("glowing_silk_wool_pink_carpet"));
+
     }
 
     public void groupWoodFamilty(String MainName, String Varient, Boolean natural) {

@@ -29,14 +29,14 @@ public class MushroomAuraBlockEntity extends BlockEntity {
         for (Player player : players) {
             player.addEffect(new MobEffectInstance(
                 ModEffects.HALLUC,
-                40,                 // duration (2 seconds)
+                20 * 5,                 // duration (2 seconds)
                 1,                  // amplifier
                 true,               // ambient
                 true               // show particles
             ));
             player.addEffect(new MobEffectInstance(
                 MobEffects.NAUSEA,
-                40,                 // duration (2 seconds)
+                20 * 5,                 // duration (2 seconds)
                 1,                  // amplifier
                 true,               // ambient
                 true               // show particles

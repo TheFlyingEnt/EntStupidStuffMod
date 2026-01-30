@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "group": "wooden_mosic",
+  "group": "wooden_mosaic",
   "key": {
     "#": "entstupidstuff:maple_slab"
   },

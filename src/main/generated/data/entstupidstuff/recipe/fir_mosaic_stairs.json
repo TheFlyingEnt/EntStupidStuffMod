@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "group": "wooden_mosic_stairs",
+  "group": "wooden_mosaic_stairs",
   "key": {
     "#": "entstupidstuff:fir_mosaic"
   },

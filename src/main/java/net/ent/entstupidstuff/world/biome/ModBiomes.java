@@ -265,6 +265,10 @@ public class ModBiomes {
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
             ModPlacedFeatures.MUSHROOM_AURA_BLOSSOM_PLACED);
 
+        //Add Mud Biome Features
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, 
+            ModPlacedFeatures.SILKWORM_VINE_PLACED);
+
         //biomeBuilder.addFeature(
         //    GenerationStep.Decoration.UNDERGROUND_DECORATION,
         //    ModPlacedFeatures.CRYSTAL_SPIKE_PLACED

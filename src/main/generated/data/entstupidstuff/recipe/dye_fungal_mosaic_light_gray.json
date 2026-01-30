@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_mosaic_dyed",
+  "ingredients": [
+    "minecraft:light_gray_dye",
+    [
+      "entstupidstuff:fungal_mosaic_black",
+      "entstupidstuff:fungal_mosaic_blue",
+      "entstupidstuff:fungal_mosaic_brown",
+      "entstupidstuff:fungal_mosaic_cyan",
+      "entstupidstuff:fungal_mosaic_gray",
+      "entstupidstuff:fungal_mosaic_green",
+      "entstupidstuff:fungal_mosaic_light_blue",
+      "entstupidstuff:fungal_mosaic_lime",
+      "entstupidstuff:fungal_mosaic_magenta",
+      "entstupidstuff:fungal_mosaic_orange",
+      "entstupidstuff:fungal_mosaic_pink",
+      "entstupidstuff:fungal_mosaic_purple",
+      "entstupidstuff:fungal_mosaic_red",
+      "entstupidstuff:fungal_mosaic_yellow",
+      "entstupidstuff:fungal_mosaic_white",
+      "entstupidstuff:fungal_mosaic"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_mosaic_light_gray"
+  }
+}

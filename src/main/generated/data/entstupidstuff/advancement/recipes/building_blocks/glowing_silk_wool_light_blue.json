@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_glowing_silk": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:glowing_silk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:glowing_silk_wool_light_blue"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_glowing_silk"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:glowing_silk_wool_light_blue"
+    ]
+  }
+}

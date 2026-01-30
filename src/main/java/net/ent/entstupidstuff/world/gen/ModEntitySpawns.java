@@ -35,7 +35,7 @@ public class ModEntitySpawns  {
         SpawnPlacements.register(EntityFactory.BUTTERFLY, SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING, ButterflyEntity::isValidNaturalSpawn);
 
-        //Butterfly
+        //Silkmoth
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(ModBiomes.UNDERGROUND_BLUE_MUSHROOM),
             MobCategory.AMBIENT, EntityFactory.SILKMOTH, 30, 2, 3); //100, 3, 5
         SpawnPlacements.register(EntityFactory.SILKMOTH, SpawnPlacementTypes.ON_GROUND,

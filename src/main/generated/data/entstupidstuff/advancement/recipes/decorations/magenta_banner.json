@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_glowing_silk_wool_magenta": {
+      "conditions": {
+        "items": [
+          {
+            "items": "entstupidstuff:glowing_silk_wool_magenta"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "entstupidstuff:magenta_banner"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_glowing_silk_wool_magenta"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "entstupidstuff:magenta_banner"
+    ]
+  }
+}

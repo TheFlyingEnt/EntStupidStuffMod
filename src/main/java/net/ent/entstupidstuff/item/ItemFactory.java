@@ -115,8 +115,6 @@ public class ItemFactory {
     public static final Item ZOMBIE_SLIMED_SPAWN_EGG = registerItem("zombie_slimed_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ZOMBIE_SLIMED)));
     public static final Item ARMORED_PILLAGER_SPAWN_EGG = registerItem("armored_pillager_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.ARMORED_PILLAGER)));
 
-    public static final Item GLOWING_SILK_STRING = registerItem("glowing_silk_string", settings -> new Item(settings));
-
 
     //public static final Item NOODEL_BOWL = new Item(settings.maxCount(1).food(FoodComponents.RABBIT_STEW));
     //public static final Item APPLE_PIE = new Item(settings.food(FoodComponents.PUMPKIN_PIE));
@@ -219,6 +217,7 @@ public class ItemFactory {
     public static final Item GIANT_CLAB_SPAWN = null;
 
     public static final Item PHANTOM_TORCH = registerItem("phantom_torch", setting -> new StandingAndWallBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, Direction.DOWN, setting));
+    public static final Item GLOWING_SILK = registerItem("glowing_silk", settings -> new Item(settings));
 
 
     // Shields

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "fungal_button_dyed",
+  "ingredients": [
+    "minecraft:red_dye",
+    [
+      "entstupidstuff:fungal_button_black",
+      "entstupidstuff:fungal_button_blue",
+      "entstupidstuff:fungal_button_brown",
+      "entstupidstuff:fungal_button_cyan",
+      "entstupidstuff:fungal_button_gray",
+      "entstupidstuff:fungal_button_green",
+      "entstupidstuff:fungal_button_light_blue",
+      "entstupidstuff:fungal_button_light_gray",
+      "entstupidstuff:fungal_button_lime",
+      "entstupidstuff:fungal_button_magenta",
+      "entstupidstuff:fungal_button_orange",
+      "entstupidstuff:fungal_button_pink",
+      "entstupidstuff:fungal_button_purple",
+      "entstupidstuff:fungal_button_yellow",
+      "entstupidstuff:fungal_button_white",
+      "entstupidstuff:fungal_button"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:fungal_button_red"
+  }
+}

@@ -3,15 +3,11 @@ package net.ent.entstupidstuff.datagen;
 import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.BlockGroupFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
-import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.level.material.MapColor;
 
 public class ModLangProvider extends FabricLanguageProvider  {
 
@@ -274,47 +270,47 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic"), "Oak" + " Mosaic");
         translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic_stairs"), "Oak" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic_slab"), "Oak" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("oak" + "_mosaic_slab"), "Oak" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic"), "Spruce" + " Mosaic");
         translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic_stairs"), "Spruce" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic_slab"), "Spruce" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("spruce" + "_mosaic_slab"), "Spruce" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic"), "Jungle" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_stairs"), "Jungle" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_slab"), "Jungle" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_stairs"), "Jungle" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("jungle" + "_mosaic_slab"), "Jungle" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic"), "Birch" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_stairs"), "Birch" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_slab"), "Birch" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_stairs"), "Birch" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("birch" + "_mosaic_slab"), "Birch" +  "Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic"), "Dark Oak" + " Mosaic");
         translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic_stairs"), "Dark Oak" + "Mosaic Stairs");
         translationBuilder.add(BlockFactory.callBlock("dark_oak" + "_mosaic_slab"), "Dark Oak" + "Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic"), "Acacia" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_stairs"), "Acacia" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_slab"), "Acacia" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_stairs"), "Acacia" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("acacia" + "_mosaic_slab"), "Acacia" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic"), "Mangrove" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_stairs"), "Mangrove" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_slab"), "Mangrove" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_stairs"), "Mangrove" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("mangrove" + "_mosaic_slab"), "Mangrove" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic"), "Cherry" + " Mosaic");
         translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic_stairs"), "Cherry" + "Mosaic Stairs");
         translationBuilder.add(BlockFactory.callBlock("cherry" + "_mosaic_slab"), "Cherry" + "Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("pale_oak" + "_mosaic"), "Pale Oak" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("pale_oak" + "_mosaic_stairs"), "Pale Oak" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("pale_oak" + "_mosaic_slab"), "Pale Oak" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("pale_oak" + "_mosaic_stairs"), "Pale Oak" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("pale_oak" + "_mosaic_slab"), "Pale Oak" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic"), "Crimson" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_stairs"), "Crimson" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_slab"), "Crimson" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_stairs"), "Crimson" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("crimson" + "_mosaic_slab"), "Crimson" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic"), "Warped" + " Mosaic");
-        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_stairs"), "Warped" + "Mosaic Stairs");
-        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_slab"), "Warped" + "Mosaic Slab");
+        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_stairs"), "Warped" + " Mosaic Stairs");
+        translationBuilder.add(BlockFactory.callBlock("warped" + "_mosaic_slab"), "Warped" + " Mosaic Slab");
 
         translationBuilder.add(BlockFactory.callBlock("phantom_torch"), "Phantom Torch");
         //translationBuilder.add(BlockFactory.callBlock("phantom_wall_torch"), "Phantom Wall Torch (WHY DO YOU HAVE THIS?)");
@@ -322,6 +318,41 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(BlockFactory.callBlock("abyssal_stone"), "Abyssal Stone");
         translationBuilder.add(BlockFactory.callBlock("shroomium"), "Shroomium");
         translationBuilder.add(BlockFactory.callBlock("mushroom_aura_block"), "Fungal Spore Emitter");
+        translationBuilder.add(BlockFactory.callBlock("silkworm_vines"), "Silkworm Vines");
+
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_white"), "Glowing Wool White");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_light_gray"), "Glowing Wool Light Gray");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_gray"), "Glowing Wool Gray");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_black"), "Glowing Wool Black");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_brown"), "Glowing Wool Brown");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_red"), "Glowing Wool Red");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_orange"), "Glowing Wool Orange");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_yellow"), "Glowing Wool Yellow");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_lime"), "Glowing Wool Lime");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_green"), "Glowing Wool Green");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_cyan"), "Glowing Wool Cyan");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_light_blue"), "Glowing Wool Light Blue");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_blue"), "Glowing Wool Blue");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_purple"), "Glowing Wool Purple");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_magenta"), "Glowing Wool Magenta");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_pink"), "Glowing Wool Pink");
+
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_white_carpet"), "Glowing Wool White Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_light_gray_carpet"), "Glowing Wool Light Gray Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_gray_carpet"), "Glowing Wool Gray Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_black_carpet"), "Glowing Wool Black Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_brown_carpet"), "Glowing Wool Brown Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_red_carpet"), "Glowing Wool Red Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_orange_carpet"), "Glowing Wool Orange Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_yellow_carpet"), "Glowing Wool Yellow Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_lime_carpet"), "Glowing Wool Lime Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_green_carpet"), "Glowing Wool Green Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_cyan_carpet"), "Glowing Wool Cyan Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_light_blue_carpet"), "Glowing Wool Light Blue Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_blue_carpet"), "Glowing Wool Blue Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_purple_carpet"), "Glowing Wool Purple Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"), "Glowing Wool Magenta Carpet");
+        translationBuilder.add(BlockFactory.callBlock("glowing_silk_wool_pink_carpet"), "Glowing Wool Pink Carpet");
 
         // ### Items
 
@@ -338,13 +369,11 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.ZOMBIE_SLIMED_SPAWN_EGG, "Slimed Spawn Egg");
         translationBuilder.add(ItemFactory.ARMORED_PILLAGER_SPAWN_EGG, "Armored Pillager Spawn Egg");
 
-        translationBuilder.add(ItemFactory.GLOWING_SILK_STRING, "Glowing Silk String");
-
-        translationBuilder.add(ItemFactory.WITHER_BONE, "Glowing Silk String");
-        translationBuilder.add(ItemFactory.ANCIENT_DEBRIS_NUGGET, "Glowing Silk String");
-        translationBuilder.add(ItemFactory.PIGLIN_WARRIOR_SPAWN, "Glowing Silk String");
-        translationBuilder.add(ItemFactory.BLAZING_INFERNO_SPAWN, "Glowing Silk String");
-        translationBuilder.add(ItemFactory.SOUL_SKELETON_SPAWN, "Glowing Silk String");
+        translationBuilder.add(ItemFactory.WITHER_BONE, "Wither Bone");
+        translationBuilder.add(ItemFactory.ANCIENT_DEBRIS_NUGGET, "Ancient Debris Nugget");
+        translationBuilder.add(ItemFactory.PIGLIN_WARRIOR_SPAWN, "Piglin Warrior Spawn Egg");
+        translationBuilder.add(ItemFactory.BLAZING_INFERNO_SPAWN, "Blazing Inferno Spawn Egg");
+        translationBuilder.add(ItemFactory.SOUL_SKELETON_SPAWN, "Soul Skeleton Spawn Egg");
 
         translationBuilder.add(ItemFactory.ZEBRA_FISH, "Zebra Fish");
         translationBuilder.add(ItemFactory.ZEBRA_FISH_BUCKET, "Zebra Fish bucket");
@@ -413,6 +442,8 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.DIAMOND_HAMMER, "Diamond Hammer");
         translationBuilder.add(ItemFactory.NETHERITE_HAMMER, "Netherite Hammer");
 
+        translationBuilder.add(ItemFactory.GLOWING_SILK, "Glowing Silk");
+
         // # Potion Effects
         translationBuilder.add("effect.entstupidstuff.hallucinating", "Hallucinating");
         translationBuilder.add("effect.entstupidstuff.rgb_shift", "RGB Shift");
@@ -473,6 +504,8 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff." + "combat_group", "Modded Combat");
         translationBuilder.add("item.entstupidstuff." + "default_group", "Default (Everything)");
         translationBuilder.add("item.entstupidstuff." + "natural_group", "Natural");
+        translationBuilder.add("item.entstupidstuff.server_group", "[RELEASE] Server");
+        translationBuilder.add("item.entstupidstuff.next_update_group", "[DEV] Next Update");
 
         //tooltip
 
@@ -529,6 +562,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
     } 
 
     public void groupFungalFamily(TranslationBuilder translationBuilder, String Varient, String VarientString) {
+        translationBuilder.add(BlockFactory.callBlock("fungal" + "_planks" + Varient), VarientString + " Fungal Planks");
         BaseFamily(translationBuilder, "fungal", Varient, "Fungal", VarientString);
         InteractionFamily(translationBuilder, "fungal", Varient, "Fungal", VarientString);
         MosicFamily(translationBuilder, "fungal", Varient, "Fungal", VarientString);

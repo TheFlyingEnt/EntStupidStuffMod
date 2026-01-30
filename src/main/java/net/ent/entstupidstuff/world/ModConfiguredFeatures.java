@@ -38,6 +38,8 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.util.valueproviders.WeightedListInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CaveVines;
+import net.minecraft.world.level.block.CaveVinesBlock;
 import net.minecraft.world.level.block.FlowerBedBlock;
 import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,6 +49,7 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.HugeFungusConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.BlockColumnConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.DripstoneClusterConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -64,6 +67,7 @@ import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSi
 import net.minecraft.world.level.levelgen.feature.foliageplacers.CherryFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RandomizedIntStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.CherryTrunkPlacer;
@@ -132,6 +136,7 @@ public class ModConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_VEGETATION_KEY  = registerKey("shroomium_floor_vegetation");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_SPORE_KEY  = registerKey("mushroom_spore");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_AURA_BLOSSOM_KEY  = registerKey("mushroom_aura_block_key");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> SILKWORM_VINE_KEY  = registerKey("silkworm_vine_key");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_THALASSITE = registerKey("ore_thalassite");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> CRYSTAL_SPIKES  = registerKey("crystal_spikes");
@@ -392,6 +397,38 @@ public class ModConfiguredFeatures {
 
         FeatureUtils.register(
 			context, MUSHROOM_AURA_BLOSSOM_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(BlockFactory.callBlock("mushroom_aura_block")))
+		);
+
+        WeightedStateProvider weightedStateProvider_vines = new WeightedStateProvider(
+			WeightedList.<BlockState>builder()
+				.add(BlockFactory.SILKWORM_VINES_PLANT.defaultBlockState(), 4)
+				.add(BlockFactory.SILKWORM_VINES_PLANT.defaultBlockState(), 1)
+		);
+		RandomizedIntStateProvider randomizedIntStateProvider_vines = new RandomizedIntStateProvider(
+			new WeightedStateProvider(
+				WeightedList.<BlockState>builder()
+					.add(BlockFactory.SILKWORM_VINES.defaultBlockState(), 4)
+					.add(BlockFactory.SILKWORM_VINES.defaultBlockState(), 1)
+			),
+			CaveVinesBlock.AGE,
+			UniformInt.of(23, 25)
+		);
+
+        FeatureUtils.register(
+			context,
+			SILKWORM_VINE_KEY,
+			Feature.BLOCK_COLUMN,
+			new BlockColumnConfiguration(
+				List.of(
+					BlockColumnConfiguration.layer(
+						new WeightedListInt(WeightedList.<IntProvider>builder().add(UniformInt.of(0, 3), 5).add(UniformInt.of(1, 7), 1).build()), weightedStateProvider_vines
+					),
+					BlockColumnConfiguration.layer(ConstantInt.of(1), randomizedIntStateProvider_vines)
+				),
+				Direction.DOWN,
+				BlockPredicate.ONLY_IN_AIR_PREDICATE,
+				true
+			)
 		);
 
 		// # ICY CAVE

@@ -28,6 +28,11 @@ public class ModTags {
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "exclusive_set/hammer")
     );
 
+    public static final TagKey<Item> MUSHROOM_CRAFTING = TagKey.create(
+        Registries.ITEM, 
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mushroom_crafting")
+    );
+
     // # Biomes
 
     public static final TagKey<Biome> SPAWN_BUTTERFLY = TagKey.create(
@@ -85,6 +90,11 @@ public class ModTags {
     public static final TagKey<Block> SHROOMIUM_REPLACE = TagKey.create(
         Registries.BLOCK, 
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shroomium_replace")
+    );
+
+    public static final TagKey<Block> SILKMOTH_SPAWNABLE_ON = TagKey.create(
+        Registries.BLOCK, 
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "silkmoth_spawnable_on")
     );
     
 }

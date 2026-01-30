@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "glowing_silk_wool",
+  "ingredients": [
+    "minecraft:yellow_dye",
+    [
+      "entstupidstuff:glowing_silk_wool_black",
+      "entstupidstuff:glowing_silk_wool_blue",
+      "entstupidstuff:glowing_silk_wool_brown",
+      "entstupidstuff:glowing_silk_wool_cyan",
+      "entstupidstuff:glowing_silk_wool_gray",
+      "entstupidstuff:glowing_silk_wool_green",
+      "entstupidstuff:glowing_silk_wool_light_blue",
+      "entstupidstuff:glowing_silk_wool_light_gray",
+      "entstupidstuff:glowing_silk_wool_lime",
+      "entstupidstuff:glowing_silk_wool_magenta",
+      "entstupidstuff:glowing_silk_wool_orange",
+      "entstupidstuff:glowing_silk_wool_pink",
+      "entstupidstuff:glowing_silk_wool_purple",
+      "entstupidstuff:glowing_silk_wool_red",
+      "entstupidstuff:glowing_silk_wool_white"
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "entstupidstuff:glowing_silk_wool_yellow"
+  }
+}

@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.item.ModTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -68,9 +69,12 @@ public class SilkmothEntity extends Animal implements FlyingAnimal{
         return nav;
     }
 
+    
+
     public static boolean isValidNaturalSpawn(EntityType<? extends SilkmothEntity> type, LevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
-        boolean lightCheck = world.getRawBrightness(pos, 0) > 8;
-        return lightCheck && world.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.ANIMALS_SPAWNABLE_ON);
+        //return true;
+        boolean lightCheck = world.getRawBrightness(pos, 0) < 8; //> 8;
+        return lightCheck; //&& world.getBlockState(pos.below()).is(ModTags.SILKMOTH_SPAWNABLE_ON);
     }
 
     @Override

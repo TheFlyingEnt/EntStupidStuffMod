@@ -110,6 +110,7 @@ public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> AZURE_FLOWER_BED_PATCH_PLACED = registerKey("azure_flower_bed_patch_placed");
     public static final ResourceKey<PlacedFeature> FUNGAL_SPORE_BLOSSOM_PLACED = registerKey("fungal_spore_blossom_placed");
     public static final ResourceKey<PlacedFeature> MUSHROOM_AURA_BLOSSOM_PLACED = registerKey("mushroom_aura_block_placed");
+    public static final ResourceKey<PlacedFeature> SILKWORM_VINE_PLACED = registerKey("silk_worm_vine_placed");
 
     public static final ResourceKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
 
@@ -383,7 +384,16 @@ public class ModPlacedFeatures {
             PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
             EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
             RandomOffsetPlacement.vertical(ConstantInt.of(1)),
-            BiomeFilter.biome());
+        BiomeFilter.biome());
+
+        register(context, SILKWORM_VINE_PLACED, //Done
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.SILKWORM_VINE_KEY),
+            CountPlacement.of(125),
+            InSquarePlacement.spread(),
+            PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
+            EnvironmentScanPlacement.scanningFor(Direction.UP, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(-1)),
+        BiomeFilter.biome());
 
 
     }
