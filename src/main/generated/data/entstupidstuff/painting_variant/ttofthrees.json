@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:ttofthrees",
+  "author": {
+    "color": "gray",
+    "translate": "painting.entstupidstuff.ttofthrees.author"
+  },
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.ttofthrees.title"
+  },
+  "width": 4
+}

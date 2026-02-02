@@ -116,6 +116,13 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         BlockFactory.callBlock("blue_mushroom_block").asItem(),
         Blocks.BROWN_MUSHROOM_BLOCK.asItem());
 
+
+
+        for (String color : BlockFactory.COLORS) {
+            valueLookupBuilder(ItemTags.WOOL).add(BlockFactory.callBlock("glowing_silk_wool_" + color).asItem());
+            valueLookupBuilder(ItemTags.WOOL_CARPETS).add(BlockFactory.callBlock("glowing_silk_wool_" + color + "_carpet").asItem());
+        }
+
         
 
     }

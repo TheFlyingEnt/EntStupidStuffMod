@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.block.ModBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
@@ -37,39 +38,35 @@ public class ModGroup {
         .title(Component.translatable("item.entstupidstuff.server_group"))
         .build());
 
-        //if (EntStupidStuff.DEV_MODE) {
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(BlockFactory.callBlock("fungal_planks_cyan").asItem()))
+        .title(Component.translatable("item.entstupidstuff.deco_group"))
+        .build());
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DECO_GROUP, FabricItemGroup.builder()
-            .icon(() -> new ItemStack(BlockFactory.callBlock("fungal_planks_cyan").asItem()))
-            .title(Component.translatable("item.entstupidstuff.deco_group"))
-            .build());
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NATURAL_GROUP, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(BlockFactory.callBlock("redwood_log").asItem()))
+        .title(Component.translatable("item.entstupidstuff.natural_group"))
+        .build());
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NATURAL_GROUP, FabricItemGroup.builder()
-            .icon(() -> new ItemStack(BlockFactory.callBlock("redwood_log").asItem()))
-            .title(Component.translatable("item.entstupidstuff.natural_group"))
-            .build());
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DEFAULT_GROUP, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(ItemFactory.callItem("raw_marshmellow")))
+        .title(Component.translatable("item.entstupidstuff.default_group")) //MISC
+        .build());
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_DEFAULT_GROUP, FabricItemGroup.builder()
-            .icon(() -> new ItemStack(ItemFactory.callItem("raw_marshmellow")))
-            .title(Component.translatable("item.entstupidstuff.default_group")) //MISC
-            .build());
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_COMBAT_GROUP, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(ItemFactory.callItem("diamond_hammer")))
+        .title(Component.translatable("item.entstupidstuff.combat_group")) //Advance Combat
+        .build());
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_COMBAT_GROUP, FabricItemGroup.builder()
-            .icon(() -> new ItemStack(ItemFactory.callItem("diamond_hammer")))
-            .title(Component.translatable("item.entstupidstuff.combat_group")) //Advance Combat
-            .build());
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NEXT_UPDATE, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(ItemFactory.callItem("cannon")))
+        .title(Component.translatable("item.entstupidstuff.next_update_group")) //Advance Combat
+        .build());
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_NEXT_UPDATE, FabricItemGroup.builder()
-            .icon(() -> new ItemStack(ItemFactory.callItem("cannon")))
-            .title(Component.translatable("item.entstupidstuff.next_update_group")) //Advance Combat
-            .build());
 
-            //addToCombat();
-
-            AddItem();
-
-        //}
-        LaunchItem() ;
+        LaunchItem();
+        NextUpdateItem();
+        AddItem();
 
         /*
          * Natural Group
@@ -133,12 +130,12 @@ public class ModGroup {
         ModGroup.addToNextUpdate("bottle_of_rum");
         ModGroup.addToNextUpdate("cannon_ball");
         ModGroup.addToNextUpdate("cannon");
-        ModGroup.addToNextUpdate("flintlock_crossbow");
+        //ModGroup.addToNextUpdate("flintlock_crossbow");
         ModGroup.addToNextUpdate("double_barrel_crossbow");
         ModGroup.addToNextUpdate("sunken_skeleton_spawn_egg");
         ModGroup.addToNextUpdate("skeleton_metal_spawn_egg");
         ModGroup.addToNextUpdate("skeleton_phantom_spawn_egg");
-        ModGroup.addToNextUpdate("ancient_drowned");
+        ModGroup.addToNextUpdate("ancient_drowned_spawn_egg");
         ModGroup.addToNextUpdate("ancient_trident");
     }
 
@@ -228,8 +225,7 @@ public class ModGroup {
         addMosaicnInteration("cherry");
         ModGroup.addToServerBlock("bamboo" + "_glass_trapdoor");
         ModGroup.addToServerBlock("bamboo" + "_glass_door");
-
-        ModGroup.addToServer("zombie_lobber_spawn_egg");
+        
 
         //Limestone
 
@@ -280,9 +276,21 @@ public class ModGroup {
         ModGroup.addToServerBlock("blue_mushroom");
         ModGroup.addToServerBlock("blue_mushroom_block");
         ModGroup.addToServerBlock("shroomium");
-        ModGroup.addToServerBlock("blue_crystal_block");
         ModGroup.addToServerBlock("azure_flower_bed");
         ModGroup.addToServerBlock("fungal_spore_blossom");
+        ModGroup.addToServerBlock("silkworm_vines");
+
+        //SilkBlocks
+        ModGroup.addToServer("glowing_silk");
+
+        for (String color: BlockFactory.COLORS) {
+            ModGroup.addToServer("glowing_silk_wool_" + color);
+        }
+
+        for (String color: BlockFactory.COLORS) {
+            ModGroup.addToServer("glowing_silk_wool_" + color + "_carpet");
+        }
+
 
         
         

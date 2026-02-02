@@ -51,6 +51,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -208,7 +209,8 @@ public class ItemFactory {
     public static final Item PHANTOM_PILLAGER_SPAWN = null;
     public static final Item PHANTOM_VINDICATOR_SPAWN = null;
 
-    //public static final Item PHANTOM_TORCH_ITEM = registerRaw(new VerticallyAttachableBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, settings, Direction.DOWN));
+    //public static final Item WHITE_BED = registerItem("glowing_white_bed", settings -> new BedItem(BlockFactory.GSW_WHITE_BED, settings.stacksTo(1)));
+
 
 
     public static final Item PIRATE_PILLAGER_SPAWN = null;

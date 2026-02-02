@@ -1,0 +1,8 @@
+{
+  "asset_id": "entstupidstuff:entity/cat/mufasa",
+  "spawn_conditions": [
+    {
+      "priority": 0
+    }
+  ]
+}

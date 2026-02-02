@@ -4,13 +4,10 @@ import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.ModTags;
-//import net.fabricmc.devlaunchinjector.Main;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.tags.BlockTags;
-//import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {

@@ -35,8 +35,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
             if (client.player != null) {
                 ItemStack stack = client.player.getMainHandItem();
                 if (stack.getItem() instanceof CannonItem && CannonItem.isCharged(stack)) {
-                    int x = drawContext.guiWidth() / 2;
-                    int y = drawContext.guiHeight() / 2;
+                    //int x = drawContext.guiWidth() / 2;
+                    //int y = drawContext.guiHeight() / 2;
                     //Identifier TEX = Identifier.of("entstupidstuff", "textures/gui/cannon_crosshair.png");
                     //Identifier TEX = Identifier.of("entstupidstuff", "textures/gui/sprites/hud/crosshair_cannon.png");
 

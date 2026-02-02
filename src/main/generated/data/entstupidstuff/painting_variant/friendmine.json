@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:friendmine",
+  "author": {
+    "color": "gray",
+    "translate": "painting.entstupidstuff.friendmine.author"
+  },
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.friendmine.title"
+  },
+  "width": 4
+}

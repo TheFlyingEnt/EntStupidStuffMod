@@ -12,10 +12,8 @@ import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
-import net.ent.entstupidstuff.mixin.ArmPoseMixin;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -99,12 +97,27 @@ public class EntStupidStuff implements ModInitializer {
 		ModDataComponentTypes.register();
 
 		//ServerDelayedTasks.init();
-
 		//ModDataComponents.register();
 
-		
-		
 	}
+
+    // # Update Plan:
+
+    //## Welcome to Stupidity
+
+    //## Tales from the Dead Sea
+
+    //Of Gold and Gear's
+    // Nether & Pillager Update
+
+    //The Lost Tales
+    // Dinosour and Underground Cave Update
+
+    //
+
+
+
+
 
 
 }

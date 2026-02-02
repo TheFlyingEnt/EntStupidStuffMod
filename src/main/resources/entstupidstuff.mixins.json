@@ -5,7 +5,9 @@
 	"mixins": [
 		"MudBlockMixin",
 		"GameRendererMixin",
-		"AvatarRendererMixin"
+		"AvatarRendererMixin",
+        "RaidMixin",
+        "PatrolMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

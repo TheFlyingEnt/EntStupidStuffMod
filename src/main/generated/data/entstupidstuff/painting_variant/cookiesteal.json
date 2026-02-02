@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:cookiesteal",
+  "author": {
+    "color": "gray",
+    "translate": "painting.entstupidstuff.cookiesteal.author"
+  },
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.cookiesteal.title"
+  },
+  "width": 4
+}

@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:amanandfox",
+  "author": {
+    "color": "gray",
+    "translate": "painting.entstupidstuff.amanandfox.author"
+  },
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.amanandfox.title"
+  },
+  "width": 4
+}

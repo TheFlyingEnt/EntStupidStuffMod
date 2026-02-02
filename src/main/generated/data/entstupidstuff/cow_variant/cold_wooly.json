@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:entity/cow/cold_cow_wooly",
+  "model": "cold",
+  "spawn_conditions": [
+    {
+      "condition": {
+        "type": "minecraft:biome",
+        "biomes": "#minecraft:spawns_cold_variant_farm_animals"
+      },
+      "priority": 1
+    }
+  ]
+}

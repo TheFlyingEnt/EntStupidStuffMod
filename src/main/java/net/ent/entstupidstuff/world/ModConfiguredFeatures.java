@@ -38,7 +38,6 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.util.valueproviders.WeightedListInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CaveVines;
 import net.minecraft.world.level.block.CaveVinesBlock;
 import net.minecraft.world.level.block.FlowerBedBlock;
 import net.minecraft.world.level.block.HugeMushroomBlock;
@@ -201,8 +200,11 @@ public class ModConfiguredFeatures {
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
 
 		RuleTest stoneReplacables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+        @SuppressWarnings("unused")
         RuleTest deepslateReplacables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        @SuppressWarnings("unused")
         RuleTest netherReplacables = new TagMatchTest(BlockTags.BASE_STONE_NETHER);
+        @SuppressWarnings("unused")
         RuleTest endReplacables = new BlockMatchTest(Blocks.END_STONE);
 
 		FeatureUtils.register(context, ORE_LIMESTONE, Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(stoneReplacables, BlockFactory.callBlock("limestone").defaultBlockState())), 64));
@@ -580,6 +582,7 @@ public class ModConfiguredFeatures {
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name));
     }
 
+    @SuppressWarnings("unused")
     private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstrapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> key, F feature, FC configuration) {
         context.register(key, new ConfiguredFeature<>(feature, configuration));
     }

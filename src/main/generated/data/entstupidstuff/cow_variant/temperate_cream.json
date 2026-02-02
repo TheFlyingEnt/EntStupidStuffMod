@@ -1,0 +1,8 @@
+{
+  "asset_id": "entstupidstuff:entity/cow/temperate_cow_cream",
+  "spawn_conditions": [
+    {
+      "priority": 0
+    }
+  ]
+}

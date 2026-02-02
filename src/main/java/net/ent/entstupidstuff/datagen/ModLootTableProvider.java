@@ -151,14 +151,14 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         MosicFamily("crimson", "");
         MosicFamily("warped", "");
 
-        this.dropSelf(BlockFactory.PHANTOM_TORCH);
+        //this.dropSelf(BlockFactory.PHANTOM_TORCH);
         this.dropSelf(BlockFactory.POINTED_ICE);
 
         //Minecraft Mobs
 
         this.addNetherVinesDropTable(BlockFactory.SILKWORM_VINES, BlockFactory.SILKWORM_VINES_PLANT);
 
-        this.dropSelf(BlockFactory.PHANTOM_TORCH);
+        //this.dropSelf(BlockFactory.PHANTOM_TORCH);
         this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_white"));
         this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_light_gray"));
         this.dropSelf(BlockFactory.callBlock("glowing_silk_wool_gray"));

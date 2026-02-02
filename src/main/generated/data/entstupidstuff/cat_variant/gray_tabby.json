@@ -1,0 +1,8 @@
+{
+  "asset_id": "entstupidstuff:entity/cat/gray_tabby",
+  "spawn_conditions": [
+    {
+      "priority": 0
+    }
+  ]
+}

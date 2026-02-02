@@ -500,18 +500,39 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         //Group (Item Group)
         
-        translationBuilder.add("item.entstupidstuff." + "deco_group", "Decoration");
-        translationBuilder.add("item.entstupidstuff." + "combat_group", "Modded Combat");
-        translationBuilder.add("item.entstupidstuff." + "default_group", "Default (Everything)");
-        translationBuilder.add("item.entstupidstuff." + "natural_group", "Natural");
+        translationBuilder.add("item.entstupidstuff." + "deco_group", "[LEGACY] Decoration");
+        translationBuilder.add("item.entstupidstuff." + "combat_group", "[WIP] Modded Combat");
+        translationBuilder.add("item.entstupidstuff." + "natural_group", "[LEGACY] Natural");
         translationBuilder.add("item.entstupidstuff.server_group", "[RELEASE] Server");
         translationBuilder.add("item.entstupidstuff.next_update_group", "[DEV] Next Update");
+        translationBuilder.add("item.entstupidstuff.default_group", "[DEV] Everything");
 
         //tooltip
 
         translationBuilder.add("item.entstupidstuff.double_hand.tooltip", "Double Handed");
         translationBuilder.add("item.entstupidstuff.blunt.tooltip", "Blunt");
-        translationBuilder.add("item.entstupidstuff.bleeding.tooltip", "Bleed");
+
+        //paintings
+        translationBuilder.add("painting.entstupidstuff.jco.title", "JustCraftingOn");
+        translationBuilder.add("painting.entstupidstuff.friendmine.title", "Friend's Mining");
+        translationBuilder.add("painting.entstupidstuff.cookiesteal.title", "Cookie Stealer");
+        translationBuilder.add("painting.entstupidstuff.trking.title", "The King Returns");
+        translationBuilder.add("painting.entstupidstuff.ttofthrees.title", "The Tale of 3 Sectniks");
+        translationBuilder.add("painting.entstupidstuff.rickroll.title", "Never gonna give you up!");
+        translationBuilder.add("painting.entstupidstuff.apex.title", "The Symbol of Apex City");
+        translationBuilder.add("painting.entstupidstuff.cocobeans.title", "The Symbol of the Cocobeans");
+        translationBuilder.add("painting.entstupidstuff.eon.title", "The Symbol of EON");
+        translationBuilder.add("painting.entstupidstuff.soviets.title", "The Symbol of the Soviets");
+        translationBuilder.add("painting.entstupidstuff.amanandfox.title", "A Man and his Fox");
+        
+
+
+
+        translationBuilder.add("painting.entstupidstuff.friendmine.author", "N.M - Ent");
+        translationBuilder.add("painting.entstupidstuff.cookiesteal.author", "N.M - Ent");
+        translationBuilder.add("painting.entstupidstuff.trking.author", "N.M - Ent");
+        translationBuilder.add("painting.entstupidstuff.ttofthrees.author", "N.M - Ent");
+        translationBuilder.add("painting.entstupidstuff.amanandfox.author", "N.M - Ent");
 
         
     }

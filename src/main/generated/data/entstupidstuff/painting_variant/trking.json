@@ -1,0 +1,13 @@
+{
+  "asset_id": "entstupidstuff:trking",
+  "author": {
+    "color": "gray",
+    "translate": "painting.entstupidstuff.trking.author"
+  },
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.trking.title"
+  },
+  "width": 4
+}

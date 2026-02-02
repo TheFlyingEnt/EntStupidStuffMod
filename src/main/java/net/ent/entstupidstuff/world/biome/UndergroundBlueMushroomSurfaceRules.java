@@ -3,7 +3,6 @@ package net.ent.entstupidstuff.world.biome;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import net.minecraft.world.level.levelgen.placement.CaveSurface;
 
 public class UndergroundBlueMushroomSurfaceRules {
 

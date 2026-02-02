@@ -17,6 +17,7 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -254,6 +255,8 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_purple"), BlockFactory.callBlock("glowing_silk_wool_purple_carpet"));
         blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_magenta"), BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"));
         blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_pink"), BlockFactory.callBlock("glowing_silk_wool_pink_carpet"));
+
+        //blockStateModelGenerator.createBed(BlockFactory.GSW_WHITE_BED, Blocks.WHITE_WOOL, DyeColor.WHITE);
 
 
         

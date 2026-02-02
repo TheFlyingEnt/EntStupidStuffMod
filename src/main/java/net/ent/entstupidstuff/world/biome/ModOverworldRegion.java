@@ -18,6 +18,7 @@ import terrablender.api.RegionType;
 import terrablender.api.VanillaParameterOverlayBuilder;
 
 //https://minecraft.wiki/w/World_generation#Biomes
+//OverworldBiomeBuilder.class
 
 public class ModOverworldRegion extends Region {
     public ModOverworldRegion(ResourceLocation name, int weight) {

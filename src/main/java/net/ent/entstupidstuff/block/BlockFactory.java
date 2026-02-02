@@ -23,7 +23,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
@@ -403,9 +402,17 @@ public class BlockFactory {
         //TODO: Add Glowing Bed, Glowing Banners
 
 
-
-
     }
+
+    //public static final Block GSW_WHITE_BED = registerWithoutItem("glowing_white_bed", settings -> new BedBlock(DyeColor.WHITE,settings), BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_BED));
+
+    /*public static final Block GSW_WHITE_BED = registerWithoutItem("glowing_white_bed", properties -> new BedBlock(DyeColor.WHITE, properties), BlockBehaviour.Properties.of()
+		.mapColor(blockState -> blockState.getValue(BedBlock.PART) == BedPart.FOOT ? DyeColor.WHITE.getMapColor() : MapColor.WOOL)
+		.sound(SoundType.WOOD)
+		.strength(0.2F)
+		.noOcclusion()
+		.ignitedByLava()
+	.pushReaction(PushReaction.DESTROY));*/
 
     public static void addVanilla() {
         OxidizableFamily();

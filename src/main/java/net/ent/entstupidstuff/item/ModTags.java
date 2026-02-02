@@ -32,6 +32,7 @@ public class ModTags {
         Registries.ITEM, 
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mushroom_crafting")
     );
+    
 
     // # Biomes
 

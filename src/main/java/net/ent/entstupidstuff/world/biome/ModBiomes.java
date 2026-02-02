@@ -200,7 +200,7 @@ public class ModBiomes {
 
         BiomeDefaultFeatures.addExtraEmeralds(biomeBuilder);
 		BiomeDefaultFeatures.addInfestedStone(biomeBuilder);
-		Music musicSound = Musics.createGameMusic(SoundEvents.MUSIC_BIOME_CHERRY_GROVE);
+		//Music musicSound = Musics.createGameMusic(SoundEvents.MUSIC_BIOME_CHERRY_GROVE);
 
         //biomeBuilder.feature(GenerationStep.Feature.FLUID_SPRINGS, ModPlacedFeatures.); 
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.MAPLE_TREE_PLACED_KEY);
