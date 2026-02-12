@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class MahiMahiRenderer extends MobRenderer<MahiMahiEntity, MahiMahiRenderState, MahiMahiModel>{
-    private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/mahimahi/mahimahi_blue.png");
-    private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/mahimahi/mahimahi_green.png");
+    private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/mahimahi_blue.png");
+    private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/mahimahi_green.png");
 
     public MahiMahiRenderer(EntityRendererProvider.Context context) {
         super(context, new MahiMahiModel(context.bakeLayer(ModEntityModelLayers.MAHIMAHI)), 0.3F);

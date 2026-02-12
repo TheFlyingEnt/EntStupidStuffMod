@@ -14,6 +14,7 @@ public class ModPaintingVariantTagsProvider extends KeyTagProvider<PaintingVaria
 		super(packOutput, Registries.PAINTING_VARIANT, completableFuture);
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
 	protected void addTags(HolderLookup.Provider provider) {
 		this.tag(PaintingVariantTags.PLACEABLE)

@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class MackerelRenderer extends MobRenderer<MackerelEntity, LivingEntityRenderState, MackerelModel> {
-   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/mackerel.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/mackerel.png");
 
    public MackerelRenderer(EntityRendererProvider.Context context) {
       super(context, new MackerelModel(context.bakeLayer(ModEntityModelLayers.MACKEREL)), 0.3F);

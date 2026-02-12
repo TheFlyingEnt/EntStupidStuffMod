@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -63,22 +64,22 @@ public class ScorchedZombieEntity extends Zombie{
     /* Sounds */
     @Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.HUSK_AMBIENT;
+		return SoundFactory.ENTITY_SCORCHED_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return SoundEvents.HUSK_HURT;
+		return SoundFactory.ENTITY_SCORCHED_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.HUSK_DEATH;
+		return SoundFactory.ENTITY_SCORCHED_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getStepSound() {
-		return SoundEvents.HUSK_STEP;
+		return SoundFactory.ENTITY_SCORCHED_STEP;
 	}
 
 	@Override

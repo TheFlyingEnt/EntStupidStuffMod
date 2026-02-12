@@ -13,11 +13,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class BassRenderer extends MobRenderer<BassEntity, BassRenderState, BassModel> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bass.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/bass.png");
 
-	private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bass/bass_1.png");
-	private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bass/bass_2.png");
-	private static final ResourceLocation TEXTURE_3 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bass/bass_3.png");
+	private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/bass_1.png");
+	private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/bass_2.png");
+	private static final ResourceLocation TEXTURE_3 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/bass_3.png");
 
 	// TODO: New Model/Textures based on Bass
 

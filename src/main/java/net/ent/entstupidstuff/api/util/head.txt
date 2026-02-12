@@ -1,0 +1,20 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+
+class Main {
+    public static void main(String[] args) {
+        String name = "coral_skeleton_fire";
+        System.out.println("public static final Block " + name.toUpperCase() + "_SKULL = registerWithoutItem(");
+        System.out.println("    $" + name + "$,");
+        System.out.println("    properties -> new SkullBlock(ModSkullStype." + name.toUpperCase() + ", properties),");
+        System.out.println("    BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)");
+        System.out.println(");");
+        
+        System.out.println("public static final Block " + name.toUpperCase() + "_WALL_SKULL = registerWithoutItem(");
+        System.out.println("    $" + name + "_wall_skull$,");
+        System.out.println("    properties -> new WallSkullBlock(ModSkullStype." + name.toUpperCase() + ", properties),");
+        System.out.println("wallVariant(" + name.toUpperCase() + "_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)");
+        System.out.println(");");  
+
+    }
+}

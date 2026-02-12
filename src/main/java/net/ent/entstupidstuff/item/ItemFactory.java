@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.datagen.ModJukeboxSongs;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
 import net.ent.entstupidstuff.item.base.BassBucketItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
@@ -51,7 +52,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
-import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -67,9 +67,9 @@ import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.waypoints.Waypoint;
 
 public class ItemFactory {
 
@@ -208,6 +208,14 @@ public class ItemFactory {
     public static final Item PHANTOM_SKELETON_SPAWN = registerItem("skeleton_phantom_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.PHANTOM_SKELETON)));
     public static final Item PHANTOM_PILLAGER_SPAWN = null;
     public static final Item PHANTOM_VINDICATOR_SPAWN = null;
+
+    public static final Item MUSIC_DISC_PIRATE_TAVERN = registerItem(
+	    "music_disc_pirate_tavern", settings -> new Item((settings).stacksTo(1).rarity(Rarity.UNCOMMON).jukeboxPlayable(ModJukeboxSongs.PIRATE_TAVERN))
+    );
+
+    public static final Item MUSIC_DISC_FUNGALDELIC = registerItem(
+	    "music_disc_fungaldelic", settings -> new Item((settings).stacksTo(1).rarity(Rarity.UNCOMMON).jukeboxPlayable(ModJukeboxSongs.FUNGALDELIC))
+    );
 
     //public static final Item WHITE_BED = registerItem("glowing_white_bed", settings -> new BedItem(BlockFactory.GSW_WHITE_BED, settings.stacksTo(1)));
 
@@ -348,6 +356,38 @@ public class ItemFactory {
     public static final Item DIAMOND_LONG_SWORD = registerItem("diamond_long_sword", settings -> new LongSwordItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_LONG_SWORD = registerItem("netherite_long_sword", settings -> new LongSwordItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
+    // # Mob Heads
+
+    public static final Item DROWNED_HEAD = registerItem( "drown_head", setting -> new StandingAndWallBlockItem(BlockFactory.DROWNED_HEAD, BlockFactory.DROWNED_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item BLAZE_HEAD = registerItem( "blaze_head", setting -> new StandingAndWallBlockItem(BlockFactory.BLAZE_HEAD, BlockFactory.BLAZE_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item BREEZE_HEAD = registerItem( "breeze_head", setting -> new StandingAndWallBlockItem(BlockFactory.BREEZE_HEAD, BlockFactory.BREEZE_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item HUSK_HEAD = registerItem( "husk_head", setting -> new StandingAndWallBlockItem(BlockFactory.HUSK_HEAD, BlockFactory.HUSK_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item STRAY_SKULL = registerItem( "stray_skull", setting -> new StandingAndWallBlockItem(BlockFactory.STRAY_SKULL, BlockFactory.STRAY_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item BOGGED_SKULL = registerItem( "bogged_skull", setting -> new StandingAndWallBlockItem(BlockFactory.BOGGED_SKULL, BlockFactory.BOGGED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item ZOMBIE_LOBBER_HEAD = registerItem( "zombie_lobber_head", setting -> new StandingAndWallBlockItem(BlockFactory.ZOMBIE_LOBBER_HEAD, BlockFactory.ZOMBIE_LOBBER_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item ZOMBIE_SCORCHED_HEAD = registerItem( "zombie_scorched_head", setting -> new StandingAndWallBlockItem(BlockFactory.ZOMBIE_SCORCHED_HEAD, BlockFactory.ZOMBIE_SCORCHED_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item ZOMBIE_SLIMED_HEAD = registerItem( "zombie_slimed_head", setting -> new StandingAndWallBlockItem(BlockFactory.ZOMBIE_SLIMED_HEAD, BlockFactory.ZOMBIE_SLIMED_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item ZOMBIE_FROSTBITTEN_HEAD = registerItem( "zombie_frostbitten_head", setting -> new StandingAndWallBlockItem(BlockFactory.ZOMBIE_FROSTBITTEN_HEAD, BlockFactory.ZOMBIE_FROSTBITTEN_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item ZOMBIE_FUNGAL_HEAD = registerItem( "zombie_fungal_head", setting -> new StandingAndWallBlockItem(BlockFactory.ZOMBIE_FUNGAL_HEAD, BlockFactory.ZOMBIE_FUNGAL_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item SPOREBONE_SKULL = registerItem( "sporebone_skull", setting -> new StandingAndWallBlockItem(BlockFactory.SPOREBONE_SKULL, BlockFactory.SPOREBONE_SKULL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item SPOREPER_HEAD = registerItem( "sporeper_head", setting -> new StandingAndWallBlockItem(BlockFactory.SPOREPER_HEAD, BlockFactory.SPOREPER_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item SOUL_SKELETON_SKULL = registerItem( "soul_skeleton", setting -> new StandingAndWallBlockItem(BlockFactory.SOUL_SKELETON_SKULL, BlockFactory.SOUL_SKELETON_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_BRAIN_SKULL = registerItem( "coral_skeleton_brain_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_BRAIN_SKULL, BlockFactory.SOUL_SKELETON_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_FIRE_SKULL = registerItem( "coral_skeleton_fire_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_FIRE_SKULL, BlockFactory.CORAL_SKELETON_FIRE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_HORN_SKULL = registerItem( "coral_skeleton_horn_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_HORN_SKULL, BlockFactory.CORAL_SKELETON_HORN_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_TUBE_SKULL = registerItem( "coral_skeleton_tube_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_TUBE_SKULL, BlockFactory.CORAL_SKELETON_TUBE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_BUBBLE_SKULL = registerItem( "coral_skeleton_bubble_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_BUBBLE_SKULL, BlockFactory.CORAL_SKELETON_BUBBLE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item CORAL_SKELETON_UNUSED_SKULL = registerItem( "coral_skeleton_unused_skull", setting -> new StandingAndWallBlockItem(BlockFactory.CORAL_SKELETON_UNUSED_SKULL, BlockFactory.CORAL_SKELETON_UNUSED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item METAL_SKELETON_DEFAULT_SKULL = registerItem( "metal_skeleton_default_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_DEFAULT_SKULL, BlockFactory.METAL_SKELETON_DEFAULT_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item METAL_SKELETON_RED_SKULL = registerItem( "metal_skeleton_red_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+    public static final Item METAL_SKELETON_BLUE_SKULL = registerItem( "metal_skeleton_blue_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
+
+
+    //public static final Item PHANTOM_TORCH = registerItem("phantom_torch", setting -> new StandingAndWallBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, Direction.DOWN, setting));
+
+
+
+
 
     /*
      * [plp]
@@ -470,7 +510,7 @@ public class ItemFactory {
 
         registerItemLegacy("piglin_warrior_spawn_egg", PIGLIN_WARRIOR_SPAWN);
         registerItemLegacy("blazing_inferno_spawn_egg", BLAZING_INFERNO_SPAWN);
-        registerItemLegacy("soul_skeleton_spawn_egg", SOUL_SKELETON_SPAWN);
+        registerItemLegacy("coral_skeleton_null_spawn_egg", SOUL_SKELETON_SPAWN);
 
         // Tale of the Seas Update: (aka The Sea of Dead (Pirate Life) - On Stranger Tides)
 
@@ -648,6 +688,10 @@ public class ItemFactory {
 	}
 
     // NEW //////////////////////////////////////////
+
+    private static Item registerItemTest(String name, Function<Item.Properties, Item> function) {
+        return register(keyOf(name), function, new Item.Properties(), name);
+    }
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         return register(keyOf(name), function, new Item.Properties(), name);

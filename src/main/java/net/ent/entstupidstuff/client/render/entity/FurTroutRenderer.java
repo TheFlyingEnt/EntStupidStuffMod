@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.animal.Cod;
 
 public class FurTroutRenderer extends MobRenderer<Cod, LivingEntityRenderState, FurTroutModel>{
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/furtrout.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/furtrout.png");
 
     public FurTroutRenderer(EntityRendererProvider.Context context) {
         super(context, new FurTroutModel(context.bakeLayer(ModEntityModelLayers.FURTROUT)), 0.3F);

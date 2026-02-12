@@ -41,11 +41,19 @@ public class SporeperModel extends EntityModel<CreeperRenderState> {
 		);
 		modelPartData.addOrReplaceChild(
 			PartNames.BODY,
-			CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, dilation)
-			// Creaper Top Layer
-            .texOffs(40, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 5.0F, 4.0F, new CubeDeformation(0.5F)),
+			CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, dilation),
             PartPose.offset(0.0F, 6.0F, 0.0F)
 		);
+
+        
+
+        modelPartData.addOrReplaceChild(
+			"body_upper",
+			CubeListBuilder.create() // Creaper Top Layer
+            .texOffs(40, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 5.0F, 4.0F, dilation.extend(0.25F)),
+            PartPose.offset(0.0F, 6.0F, 0.0F)
+		);
+
 		CubeListBuilder modelPartBuilder = CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, dilation);
 		modelPartData.addOrReplaceChild(PartNames.RIGHT_HIND_LEG, modelPartBuilder, PartPose.offset(-2.0F, 18.0F, 4.0F));
 		modelPartData.addOrReplaceChild(PartNames.LEFT_HIND_LEG, modelPartBuilder, PartPose.offset(2.0F, 18.0F, 4.0F));

@@ -23,85 +23,45 @@ import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.NoiseThresholdCountPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 
 public class ModPlacedFeatures {
-    public static final ResourceKey<PlacedFeature> MAPLE_TREE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "maple_tree_placed")
-    );
+    public static final ResourceKey<PlacedFeature> MAPLE_TREE_PLACED_KEY = registerKey("maple_tree_placed");
 
-    public static final ResourceKey<PlacedFeature> FIR_TREE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "fir_tree_placed")
-    );
+    public static final ResourceKey<PlacedFeature> MAPLE_FANCY_TREE_PLACED_KEY = registerKey("maple_fancy_tree_placed");
 
-    public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "huge_blue_mushroom_placed")
-    );
+    public static final ResourceKey<PlacedFeature> FIR_TREE_PLACED_KEY = registerKey("fir_tree_placed");
 
-    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone")
-    );
+    public static final ResourceKey<PlacedFeature> HUGE_BLUE_MUSHROOM_PLACED_KEY = registerKey("huge_blue_mushroom_placed");
 
-    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_LOWER_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone_lower")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_PLACED_KEY = registerKey("ore_limestone");
 
-    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_UPPER_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_limestone_upper")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_LOWER_PLACED_KEY = registerKey("ore_limestone_lower");
 
-    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_packed_ice")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_LIMESTONE_UPPER_PLACED_KEY = registerKey("ore_limestone_upper");
 
-    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_LOWER_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_packed_ice_lower")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_PLACED_KEY = registerKey("ore_packed_ice");
 
-    public static final ResourceKey<PlacedFeature> ORE_SNOW_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_snow")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_PACKED_ICE_LOWER_PLACED_KEY = registerKey("ore_packed_ice_lower");
 
-    public static final ResourceKey<PlacedFeature> ORE_SNOW_UPPER_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ore_snow_upper")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_SNOW_PLACED_KEY = registerKey("ore_snow");
 
-    public static final ResourceKey<PlacedFeature> SPIKED_ICE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice")
-    );
+    public static final ResourceKey<PlacedFeature> ORE_SNOW_UPPER_PLACED_KEY = registerKey("ore_snow_upper");
 
-    public static final ResourceKey<PlacedFeature> LARGE_SPIKED_ICE_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "large_spiked_ice")
-    );
+    public static final ResourceKey<PlacedFeature> SPIKED_ICE_PLACED_KEY = registerKey("spiked_ice");
 
-    public static final ResourceKey<PlacedFeature> SPIKED_ICE_CLUSTER_PLACED_KEY = ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice_cluster")
-    );
+    public static final ResourceKey<PlacedFeature> LARGE_SPIKED_ICE_PLACED_KEY = registerKey("large_spiked_ice");
 
-    public static final ResourceKey<PlacedFeature> THALASSITE_ORE_PLACE_KEY =
-        ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "thalassite_ore")
-    );
+    public static final ResourceKey<PlacedFeature> SPIKED_ICE_CLUSTER_PLACED_KEY = registerKey("spiked_ice_cluster");
 
-    public static final ResourceKey<PlacedFeature> DATE_PALM_PLACED =
-            ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "date_palm_placed"));
+    public static final ResourceKey<PlacedFeature> THALASSITE_ORE_PLACE_KEY = registerKey("thalassite_ore");
 
-    public static final ResourceKey<PlacedFeature> DESERT_WILLOW_PLACED =
-            ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "desert_willow_placed"));
+    public static final ResourceKey<PlacedFeature> DATE_PALM_PLACED = registerKey("date_palm_placed");
+
+    public static final ResourceKey<PlacedFeature> DESERT_WILLOW_PLACED = registerKey("desert_willow_placed");
 
     public static final ResourceKey<PlacedFeature> SHROOMIUM_FLOOR_PLACED = registerKey("shroomium_floor_placed");
     public static final ResourceKey<PlacedFeature> SHROOMIUM_FLOOR_VEGETATION_PLACED = registerKey("shroomium_floor_vegetation_placed");
@@ -114,6 +74,8 @@ public class ModPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> CRYSTAL_SPIKE_PLACED = registerKey("crystal_spike");
 
+    public static final ResourceKey<PlacedFeature> ORANGE_PETALS_BED_PATCH_PLACED = registerKey("orange_petals_bed_patch_placed");
+
     // # Bootstrap
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
@@ -121,7 +83,15 @@ public class ModPlacedFeatures {
         // # Tree
 
         context.register(MAPLE_TREE_PLACED_KEY, new PlacedFeature(
-                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_KEY),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_TREE_KEY),
+                VegetationPlacements.treePlacement(
+                        PlacementUtils.countExtra(5, 0.1f, 1), // base count, chance, extra
+                        BlockFactory.callBlock("maple_sapling")
+                )
+        ));
+
+        context.register(MAPLE_FANCY_TREE_PLACED_KEY, new PlacedFeature(
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_FANCY_TREE_KEY),
                 VegetationPlacements.treePlacement(
                         PlacementUtils.countExtra(5, 0.1f, 1), // base count, chance, extra
                         BlockFactory.callBlock("maple_sapling")
@@ -129,7 +99,7 @@ public class ModPlacedFeatures {
         ));
 
         context.register(FIR_TREE_PLACED_KEY, new PlacedFeature(
-                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.FIR_KEY),
+                context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.FIR_TREE_KEY),
                 VegetationPlacements.treePlacement(
                         PlacementUtils.countExtra(5, 0.1f, 1), // base count, chance, extra
                         BlockFactory.callBlock("fir_sapling")
@@ -138,7 +108,7 @@ public class ModPlacedFeatures {
 
         context.register(DATE_PALM_PLACED, new PlacedFeature(
                 context.lookup(Registries.CONFIGURED_FEATURE)
-                        .getOrThrow(ModConfiguredFeatures.DATE_PALM),
+                        .getOrThrow(ModConfiguredFeatures.DATE_PALM_TREE_KEY),
                 List.of(
                         CountPlacement.of(1),
                         InSquarePlacement.spread(),
@@ -149,7 +119,7 @@ public class ModPlacedFeatures {
 
         context.register(DESERT_WILLOW_PLACED, new PlacedFeature(
                 context.lookup(Registries.CONFIGURED_FEATURE)
-                        .getOrThrow(ModConfiguredFeatures.DESERT_WILLOW),
+                        .getOrThrow(ModConfiguredFeatures.DESERT_WILLOW_TREE_KEY),
                 List.of(
                         CountPlacement.of(2),
                         InSquarePlacement.spread(),
@@ -394,6 +364,13 @@ public class ModPlacedFeatures {
             EnvironmentScanPlacement.scanningFor(Direction.UP, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
             RandomOffsetPlacement.vertical(ConstantInt.of(-1)),
         BiomeFilter.biome());
+
+        register(context, ORANGE_PETALS_BED_PATCH_PLACED, 
+            context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(ModConfiguredFeatures.MAPLE_FLOOR_VEGETATION_KEY),
+            NoiseThresholdCountPlacement.of(-0.8, 5, 10),
+			InSquarePlacement.spread(),
+			PlacementUtils.HEIGHTMAP,
+			BiomeFilter.biome());
 
 
     }

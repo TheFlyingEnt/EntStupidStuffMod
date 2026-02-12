@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class ScorchedEntityRenderer extends AbstractZombieRenderer<ScorchedZombieEntity, ZombieRenderState, ScorchedModel>{
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_scorched.png");
 
     protected ScorchedEntityRenderer(Context context, ScorchedModel mainModel, ScorchedModel babyMainModel, ArmorModelSet<ScorchedModel> equipmentModelData, ArmorModelSet<ScorchedModel> equipmentModelData2) {
         super(context, mainModel, babyMainModel, equipmentModelData, equipmentModelData2);
@@ -33,7 +34,7 @@ public class ScorchedEntityRenderer extends AbstractZombieRenderer<ScorchedZombi
 
     @Override //Getting Texture of Mob
     public ResourceLocation getTextureLocation(ZombieRenderState entity) {
-        return ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_scorched.png");
+        return TEXTURE;
     }
 
     @Override

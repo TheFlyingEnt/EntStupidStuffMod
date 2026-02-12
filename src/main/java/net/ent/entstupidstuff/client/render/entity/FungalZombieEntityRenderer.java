@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class FungalZombieEntityRenderer extends AbstractZombieRenderer<FungalZombieEntity, ZombieRenderState, ZombieModel<ZombieRenderState>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_fungal.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_fungal.png");
 
 	public ZombieRenderState createRenderState() {
 		return new ZombieRenderState();

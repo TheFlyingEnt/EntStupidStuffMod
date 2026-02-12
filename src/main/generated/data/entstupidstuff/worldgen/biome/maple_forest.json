@@ -7,8 +7,19 @@
   "downfall": 0.8,
   "effects": {
     "fog_color": 12638463,
-    "foliage_color": 16747660,
-    "grass_color": 9158743,
+    "foliage_color": 11983713,
+    "grass_color": 11983713,
+    "music": [
+      {
+        "data": {
+          "max_delay": 24000,
+          "min_delay": 12000,
+          "replace_current_music": false,
+          "sound": "minecraft:music.overworld.cherry_grove"
+        },
+        "weight": 1
+      }
+    ],
     "music_volume": 1.0,
     "sky_color": 7843327,
     "water_color": 6401774,
@@ -71,7 +82,11 @@
     [
       "minecraft:glow_lichen",
       "minecraft:patch_tall_grass_2",
-      "entstupidstuff:maple_tree_placed"
+      "minecraft:patch_grass_meadow",
+      "minecraft:flower_flower_forest",
+      "entstupidstuff:maple_tree_placed",
+      "entstupidstuff:maple_fancy_tree_placed",
+      "entstupidstuff:orange_petals_bed_patch_placed"
     ],
     [
       "minecraft:freeze_top_layer"

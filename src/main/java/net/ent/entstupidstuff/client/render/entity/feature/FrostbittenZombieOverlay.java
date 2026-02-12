@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 
 public class FrostbittenZombieOverlay extends RenderLayer<FrostbittenEntityRenderState, FrostbittenZombieModel> {
-   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite_o.png");
+   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_frostbitten_outer_layer.png");
    private final FrostbittenZombieModel model;
    private final FrostbittenZombieModel babyModel;
 

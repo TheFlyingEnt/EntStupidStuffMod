@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,10 +25,6 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-
-
-
-
 
 public class SoulSkeletonEntity extends Skeleton{
 
@@ -89,5 +86,36 @@ public class SoulSkeletonEntity extends Skeleton{
 	public static AttributeSupplier.Builder createSoulSkeletonAttributes() {
 		return Skeleton.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.25);
 	}
+
+    @Override
+	public void tick() {
+		super.tick();
+		/*if (this.level().isClientSide() && !this.isUnderWater()) {
+			if (this.getDeltaMovement().lengthSqr() > 0.01) {
+				this.level().addParticle(
+						ParticleTypes.SOUL_FIRE_FLAME,
+						this.getX(),
+						this.getY(),
+						this.getZ(),
+						this.random.nextGaussian() * 0.05,
+						-this.getDeltaMovement().y * 0.5,
+						this.random.nextGaussian() * 0.05);
+			}
+	    }*/
+
+        if (this.level().isClientSide() && !this.isUnderWater()) {
+            for (int i = 0; i < 2; i++) {
+                double x = this.getX() + (this.random.nextDouble() - 0.5) * 0.6;
+                double y = this.getY() + this.random.nextDouble() * 1.8;
+                double z = this.getZ() + (this.random.nextDouble() - 0.5) * 0.6;
+
+                this.level().addParticle(
+                        net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME,
+                        x, y, z,
+                        0.0, 0.02, 0.0
+                );
+            }
+        }
+    }
 
 }

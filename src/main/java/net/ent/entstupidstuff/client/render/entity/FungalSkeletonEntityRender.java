@@ -12,20 +12,20 @@ import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class FungalSkeletonEntityRender extends AbstractSkeletonRenderer<FungalSkeletonEntity, SkeletonRenderState>  {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fungal_skeleton.png");
-	private static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/fungal_skeleton_overlay.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/sporebone.png");
+	private static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/skeleton/sporebone_overlay.png");
 
 	public FungalSkeletonEntityRender(EntityRendererProvider.Context context) {
 		super(context, ModelLayers.SKELETON, ModelLayers.SKELETON_ARMOR);
 		
 		this.addLayer(new FungalSkeletonGlowRender(this));
-		//this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, context.getEntityModels(), ModEntityModelLayers.FUNGAL_SKELTON_OUTER, OVERLAY_TEXTURE));
+		//this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, context.getEntityModels(), ModEntityModelLayers.SPOREBONE_OUTER, OVERLAY_TEXTURE));
 	}
 
 	public FungalSkeletonEntityRender(EntityRendererProvider.Context ctx, ModelLayerLocation layer, ArmorModelSet<ModelLayerLocation> armor) {
 		super(ctx, layer, armor);
 		this.addLayer(new FungalSkeletonGlowRender(this));
-        //this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, ctx.getEntityModels(), ModEntityModelLayers.FUNGAL_SKELTON_OUTER, OVERLAY_TEXTURE));
+        //this.addFeature(new SkeletonOverlayFeatureRenderer<>(this, ctx.getEntityModels(), ModEntityModelLayers.SPOREBONE_OUTER, OVERLAY_TEXTURE));
 
 	}
 

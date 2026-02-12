@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class FungalZombieOverlay extends RenderLayer<ZombieRenderState, ZombieModel<ZombieRenderState>> {
-   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_fungal_overlay.png");
+   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_fungal_overlay.png");
    private final ZombieModel<ZombieRenderState> model;
    private final ZombieModel<ZombieRenderState> babyModel;
 

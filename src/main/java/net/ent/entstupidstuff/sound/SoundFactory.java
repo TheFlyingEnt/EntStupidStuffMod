@@ -9,6 +9,10 @@ import net.minecraft.sounds.SoundEvent;
 
 public class SoundFactory {
 
+    //public static final SoundEvent MUSIC_DISC_PIRATE_TAVERN = registerSoundEvent("music_disc.pirate_tavern");
+    public static final Holder.Reference<SoundEvent> MUSIC_DISC_PIRATE_TAVERN = registerReference("music_disc.pirate_tavern");
+    public static final Holder.Reference<SoundEvent> MUSIC_DISC_FUNGALDELIC = registerReference("music_disc.fungaldelic");
+
     public static final SoundEvent ENTITY_METAL_SKELETON_AMBIENT = registerSoundEvent("entity.metal_skeleton.ambient");
 	public static final SoundEvent ENTITY_METAL_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.metal_skeleton.converted_to_stray");
 	public static final SoundEvent ENTITY_METAL_SKELETON_DEATH = registerSoundEvent("entity.metal_skeleton.death");
@@ -52,7 +56,7 @@ public class SoundFactory {
         ZOMBIE_SLIMED
         ZOMBIE_FROSTBITTEN
         ZOMBIE_FUNGAL
-        FUNGAL_SKELETON //name change to Sporekin or Veil?
+        SPORE_BONE //name change to Sporekin or Veil?
 
         BUTTERFLY
         PHANTOM_SKELETON
@@ -82,12 +86,12 @@ public class SoundFactory {
     public static final SoundEvent ENTITY_FROSTBITTEN_HURT = registerSoundEvent("entity.frostbitten.hurt");
     public static final SoundEvent ENTITY_FROSTBITTEN_STEP = registerSoundEvent("entity.frostbitten.step");
 
-    public static final SoundEvent ENTITY_FUNGAL_SKELETON_AMBIENT = registerSoundEvent("entity.fungal_skeleton.ambient");
-	public static final SoundEvent ENTITY_FUNGAL_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.fungal_skeleton.converted_to_stray");
-	public static final SoundEvent ENTITY_FUNGAL_SKELETON_DEATH = registerSoundEvent("entity.fungal_skeleton.death");
-	public static final SoundEvent ENTITY_FUNGAL_SKELETON_HURT = registerSoundEvent("entity.fungal_skeleton.hurt");
-	public static final SoundEvent ENTITY_FUNGAL_SKELETON_SHOOT = registerSoundEvent("entity.fungal_skeleton.shoot");
-	public static final SoundEvent ENTITY_FUNGAL_SKELETON_STEP = registerSoundEvent("entity.fungal_skeleton.step");
+    public static final SoundEvent ENTITY_SPORE_BONE_AMBIENT = registerSoundEvent("entity.sporebone.ambient");
+	public static final SoundEvent ENTITY_SPORE_BONE_CONVERTED_TO_STRAY = registerSoundEvent("entity.sporebone.converted_to_stray");
+	public static final SoundEvent ENTITY_SPORE_BONE_DEATH = registerSoundEvent("entity.sporebone.death");
+	public static final SoundEvent ENTITY_SPORE_BONE_HURT = registerSoundEvent("entity.sporebone.hurt");
+	public static final SoundEvent ENTITY_SPORE_BONE_SHOOT = registerSoundEvent("entity.sporebone.shoot");
+	public static final SoundEvent ENTITY_SPORE_BONE_STEP = registerSoundEvent("entity.sporebone.step");
 
     public static final SoundEvent ENTITY_PHANTOM_SKELETON_AMBIENT = registerSoundEvent("entity.phantom_skeleton.ambient");
 	public static final SoundEvent ENTITY_PHANTOM_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.phantom_skeleton.converted_to_stray");

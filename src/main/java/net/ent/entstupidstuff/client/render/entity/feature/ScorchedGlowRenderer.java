@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ScorchedGlowRenderer extends EyesLayer<ZombieRenderState, ScorchedModel> {
 
     private static final RenderType SKIN = RenderType.eyes(
-        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_scorched_e.png")
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_scorched_glow.png")
     );
 
     public ScorchedGlowRenderer(RenderLayerParent<ZombieRenderState, ScorchedModel> context) {

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
@@ -111,6 +110,11 @@ public class ModGroup {
     public static void addToServer(String item){
         ItemLike  id = ItemFactory.callItem(item);
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
+        //if (id == null) {
+        //    System.out.println("addToServer: " + id);
+        //}
+
+        //System.out.println("addToServer: " + id);
     }
 
     public static void addToNextUpdate(String item){
@@ -121,6 +125,8 @@ public class ModGroup {
     public static void addToServerBlock(String block){
         ItemLike  id = BlockFactory.callBlock(block).asItem();
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
+        //System.out.println("addToServerBlock: " + id);
+        //System.out.println("[EntStupidStuff: Error] - addToServerBlock: " + block);
     }
 
     public static void NextUpdateItem() {
@@ -151,6 +157,7 @@ public class ModGroup {
         ModGroup.addToServer("wooden_hammer");
         ModGroup.addToServer("stone_hammer");
         ModGroup.addToServer("golden_hammer");
+        ModGroup.addToServer("copper_hammer");
         ModGroup.addToServer("iron_hammer");
         ModGroup.addToServer("diamond_hammer");
         ModGroup.addToServer("netherite_hammer");

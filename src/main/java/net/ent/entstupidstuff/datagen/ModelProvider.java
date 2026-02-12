@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.datagen;
 
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -17,7 +18,6 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -101,6 +101,9 @@ public class ModelProvider extends FabricModelProvider{
         itemModelGenerator.generateFlatItem(ItemFactory.PHANTOM_SKELETON_SPAWN, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.GLOWING_SILK, ModelTemplates.FLAT_ITEM);
 
+        itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_FUNGALDELIC, ModelTemplates.FLAT_ITEM);
+
         //itemModelGenerator2.register(ItemFactory.DIAMOND_SHIELD, Models.);
 
         //ItemModel.Unbaked unbakedShield = ItemModels.basic(itemModelGenerator2.upload(ItemFactory.DIAMOND_SHIELD, Models.GENERATED));
@@ -137,9 +140,10 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator2.createPlant(BlockFactory.callBlock("maple_sapling"), BlockFactory.callBlock("potted_maple_sapling"), BlockModelGenerators.PlantType.NOT_TINTED);
 
         // # Added PHANTOM Natural + Planks + Lantern
-        generateGroupWoodFamilty("phantom", "", true); System.out.println("ModProvide: " + "Phantom");
+        generateGroupWoodFamilty("phantom", "", false); System.out.println("ModProvide: " + "Phantom");
         blockStateModelGenerator.createLantern(BlockFactory.callBlock("phantom_lantern"));
         blockStateModelGenerator.createNormalTorch(BlockFactory.callBlock("phantom_torch"), BlockFactory.callBlock("phantom_wall_torch"));
+        blockStateModelGenerator.createFlowerBed(BlockFactory.callBlock("orange_petals"));
 
         // # Added Fungal Natural + Planks (Regular + Colored)
         generateGroupFungalFamilty("fungal", "");
@@ -256,8 +260,32 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_magenta"), BlockFactory.callBlock("glowing_silk_wool_magenta_carpet"));
         blockStateModelGenerator.createFullAndCarpetBlocks(BlockFactory.callBlock("glowing_silk_wool_pink"), BlockFactory.callBlock("glowing_silk_wool_pink_carpet"));
 
-        //blockStateModelGenerator.createBed(BlockFactory.GSW_WHITE_BED, Blocks.WHITE_WOOL, DyeColor.WHITE);
+        blockStateModelGenerator.createHead(BlockFactory.DROWNED_HEAD, BlockFactory.DROWNED_WALL_HEAD, ModSkullStype.DROWNED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.BLAZE_HEAD, BlockFactory.BLAZE_WALL_HEAD, ModSkullStype.BLAZE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.BREEZE_HEAD, BlockFactory.BREEZE_WALL_HEAD, ModSkullStype.BREEZE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.HUSK_HEAD, BlockFactory.HUSK_WALL_HEAD, ModSkullStype.HUSK, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.STRAY_SKULL, BlockFactory.STRAY_WALL_SKULL, ModSkullStype.STRAY, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.BOGGED_SKULL, BlockFactory.BOGGED_WALL_SKULL, ModSkullStype.BOGGED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        
+        blockStateModelGenerator.createHead(BlockFactory.ZOMBIE_FUNGAL_HEAD, BlockFactory.ZOMBIE_FUNGAL_WALL_HEAD, ModSkullStype.ZOMBIE_FUNGAL, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.ZOMBIE_LOBBER_HEAD, BlockFactory.ZOMBIE_LOBBER_WALL_HEAD, ModSkullStype.ZOMBIE_LOBBER, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.ZOMBIE_SCORCHED_HEAD, BlockFactory.ZOMBIE_SCORCHED_WALL_HEAD, ModSkullStype.ZOMBIE_SCORCHED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.ZOMBIE_SLIMED_HEAD, BlockFactory.ZOMBIE_SLIMED_WALL_HEAD, ModSkullStype.ZOMBIE_SLIMED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.ZOMBIE_FROSTBITTEN_HEAD, BlockFactory.ZOMBIE_FROSTBITTEN_WALL_HEAD, ModSkullStype.ZOMBIE_FROSTBITTEN, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        
+        blockStateModelGenerator.createHead(BlockFactory.SPOREBONE_SKULL, BlockFactory.SPOREBONE_SKULL_HEAD, ModSkullStype.SPOREBONE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.SPOREPER_HEAD, BlockFactory.SPOREPER_WALL_HEAD, ModSkullStype.SPOREPER, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.SOUL_SKELETON_SKULL, BlockFactory.SOUL_SKELETON_WALL_SKULL, ModSkullStype.SOUL_SKELETON, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
 
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_BRAIN_SKULL, BlockFactory.CORAL_SKELETON_BRAIN_WALL_SKULL, ModSkullStype.CORAL_SKELETON_BRAIN, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_FIRE_SKULL, BlockFactory.CORAL_SKELETON_FIRE_WALL_SKULL, ModSkullStype.CORAL_SKELETON_FIRE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_HORN_SKULL, BlockFactory.CORAL_SKELETON_HORN_WALL_SKULL, ModSkullStype.CORAL_SKELETON_HORN, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_TUBE_SKULL, BlockFactory.CORAL_SKELETON_TUBE_WALL_SKULL, ModSkullStype.CORAL_SKELETON_TUBE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_BUBBLE_SKULL, BlockFactory.CORAL_SKELETON_BUBBLE_WALL_SKULL, ModSkullStype.CORAL_SKELETON_BUBBLE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.CORAL_SKELETON_UNUSED_SKULL, BlockFactory.CORAL_SKELETON_UNUSED_WALL_SKULL, ModSkullStype.CORAL_SKELETON_UNUSED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.METAL_SKELETON_DEFAULT_SKULL, BlockFactory.METAL_SKELETON_DEFAULT_WALL_SKULL, ModSkullStype.METAL_SKELETON_DEFAULT, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, ModSkullStype.METAL_SKELETON_RED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
+        blockStateModelGenerator.createHead(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, ModSkullStype.METAL_SKELETON_BLUE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
 
         
 

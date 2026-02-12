@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class AlligatorGarRenderer extends MobRenderer<AlligatorGarEntity, LivingEntityRenderState, AlligatorGarModel> {
-   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/alligator_gar.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/alligator_gar.png");
 
    public AlligatorGarRenderer(EntityRendererProvider.Context context) {
       super(context, new AlligatorGarModel(context.bakeLayer(ModEntityModelLayers.ALLIGATOR_GAR)), 0.3F);

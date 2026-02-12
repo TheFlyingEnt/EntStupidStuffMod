@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class PerchFishRenderer extends MobRenderer<PerchFishEntity, PerchFishRenderState, PerchFishModel>{
-    private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/perch/perch_dark.png");
-    private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/perch/perch_lighter.png");
+    private static final ResourceLocation TEXTURE_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/perch_dark.png");
+    private static final ResourceLocation TEXTURE_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/perch_lighter.png");
 
     public PerchFishRenderer(EntityRendererProvider.Context context) {
         super(context, new PerchFishModel(context.bakeLayer(ModEntityModelLayers.PERCH)), 0.3F);

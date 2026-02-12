@@ -19,6 +19,31 @@ public class WeaponUpdatedItem extends Item{
         super(settings);
     }
 
+    /*
+        public WeaponUpdatedItem(ToolMaterial material, float toolReach, float attackSweep, float attackKnockback, Properties settings) {
+        super(settings.attributes(
+            ItemAttributeModifiers.builder()
+            .add( //Attack Distance
+                Attributes.ENTITY_INTERACTION_RANGE,
+                new AttributeModifier(
+                    BASE_ATTACK_RANGE_MODIFIER_ID, toolReach, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+            )
+			.add( //Attack Sweep
+                Attributes.SWEEPING_DAMAGE_RATIO,
+                new AttributeModifier(BASE_ATTACK_SWEEP_MODIFIER_ID, attackSweep, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND
+            )
+			.add( //Attack Knockback
+                Attributes.ATTACK_KNOCKBACK, 
+				new AttributeModifier(BASE_ATTACK_KNOCKBACK_MODIFIER_ID, attackKnockback, AttributeModifier.Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND
+			).build()
+        ));
+    }
+    
+    */
+
     /***
      * @param toolMaterial - Material
      * @param baseAttackDamage - (toolDamage) + toolMaterial Damage

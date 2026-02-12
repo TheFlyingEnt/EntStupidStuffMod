@@ -40,9 +40,8 @@ public class FallingMushroomSporeParticle extends SimpleAnimatedParticle {
         }
     }
 
-    // ─────────────────────────────
-    // VARIANTS
-    // ─────────────────────────────
+
+    // # VARIANTS
 
     @Environment(EnvType.CLIENT)
 	public static class FallingMSporeBlossomFactory implements ParticleProvider<SimpleParticleType> {
@@ -111,9 +110,7 @@ public class FallingMushroomSporeParticle extends SimpleAnimatedParticle {
         }
     }
 
-    // ─────────────────────────────
-    // FACTORY CLASSES
-    // ─────────────────────────────
+    // # FACTORY CLASSES
 
     @Environment(EnvType.CLIENT)
     public static class FallingFactory implements ParticleProvider<SimpleParticleType> {

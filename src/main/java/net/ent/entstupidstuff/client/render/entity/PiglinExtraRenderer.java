@@ -14,10 +14,9 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 
 public class PiglinExtraRenderer extends HumanoidMobRenderer<AbstractPiglin, PiglinRenderState, PiglinModel> {
 
-	private static final ResourceLocation PIGLIN_W_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/piglin_warrior.png");
+	private static final ResourceLocation PIGLIN_WARRIOR_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/piglin/piglin_warrior.png");
 	public static final CustomHeadLayer.Transforms HEAD_TRANSFORMATION = new CustomHeadLayer.Transforms(0.0F, 0.0F, 1.0019531F);
 
-	@SuppressWarnings("rawtypes")
     public PiglinExtraRenderer(EntityRendererProvider.Context ctx, ModelLayerLocation mainLayer, ModelLayerLocation babyMainLayer, ArmorModelSet<ModelLayerLocation> equipmentModelData, ArmorModelSet<ModelLayerLocation> equipmentModelData2) {
 		super(ctx, new PiglinModel(ctx.bakeLayer(mainLayer)), new PiglinModel(ctx.bakeLayer(babyMainLayer)), 0.5F, HEAD_TRANSFORMATION);
 		this.addLayer(
@@ -36,7 +35,7 @@ public class PiglinExtraRenderer extends HumanoidMobRenderer<AbstractPiglin, Pig
 	}
 
 	public ResourceLocation getTextureLocation(PiglinRenderState piglinEntityRenderState) {
-		return PIGLIN_W_TEXTURE;
+		return PIGLIN_WARRIOR_TEXTURE;
 	}
 
 	protected boolean isShaking(PiglinRenderState piglinEntityRenderState) {

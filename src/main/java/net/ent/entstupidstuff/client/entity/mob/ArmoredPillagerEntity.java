@@ -101,6 +101,7 @@ public class ArmoredPillagerEntity extends Pillager{
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
 	}
 
+
     //Start of Code
 
     public ArmoredPillagerEntity(EntityType<? extends Pillager> entityType, Level world) {
@@ -165,10 +166,7 @@ public class ArmoredPillagerEntity extends Pillager{
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
         super.populateDefaultEquipmentSlots(random, localDifficulty);
-        if (EntStupidStuff.DEV_MODE)
-            System.out.println("AP - initEquipment");
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
-
         applyArmorStats();
     }
 

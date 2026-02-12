@@ -28,9 +28,9 @@ public class SunkenSkeletonEntityRenderer extends AbstractSkeletonRenderer<Gener
     @Override
     public ResourceLocation getTextureLocation(SunkenSkeletonRenderSlate state) {
         return switch (state.variant) {
-            case Variant1 -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/sunken_skeleton/sunken_skeleton_1.png");
-            case Variant2 -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/sunken_skeleton/sunken_skeleton_2.png");
-            default -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/sunken_skeleton/sunken_skeleton_3.png");
+            case Variant1 -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/sunken_skeleton_1.png");
+            case Variant2 -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/sunken_skeleton_2.png");
+            default -> ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/sunken_skeleton_3.png");
         };
     }
 

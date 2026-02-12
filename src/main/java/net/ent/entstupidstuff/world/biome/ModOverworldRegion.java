@@ -19,6 +19,7 @@ import terrablender.api.VanillaParameterOverlayBuilder;
 
 //https://minecraft.wiki/w/World_generation#Biomes
 //OverworldBiomeBuilder.class
+//OverworldBiomes
 
 public class ModOverworldRegion extends Region {
     public ModOverworldRegion(ResourceLocation name, int weight) {
@@ -155,40 +156,41 @@ public class ModOverworldRegion extends Region {
 
         .build().forEach(point -> builder.add(point, ModBiomes.ICY_CAVES));
 
-
-        //IceSpikes
-        /*new ParameterPointListBuilder()
-            .temperature(Temperature.span(Temperature.ICY, Temperature.ICY))
-            .humidity(Humidity.span(Humidity.ARID, Humidity.ARID))
-            .continentalness(Continentalness.INLAND)
-            .erosion(Erosion.EROSION_1, Erosion.EROSION_1)
-            .depth(Depth.UNDERGROUND, Depth.UNDERGROUND)
-            .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.MID_SLICE_NORMAL_ASCENDING)
-        .build().forEach(point -> builder.add(point, ModBiomes.ICY_CAVES));*/
-
-        /*
-         new ParameterPointListBuilder()
-            .temperature(Temperature.span(Temperature.FULL_RANGE, Temperature.FULL_RANGE))
-            .humidity(Humidity.span(Humidity.FULL_RANGE, Humidity.FULL_RANGE))
-            .continentalness(Continentalness.INLAND)
-            .erosion(Erosion.EROSION_1, Erosion.EROSION_1)
-            //.depth(Depth.UNDERGROUND, Depth.FLOOR)
-            .depth(MultiNoiseUtil.ParameterRange.of(0.5F, 0.9F))  
-            .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.MID_SLICE_NORMAL_ASCENDING)
-        .build().forEach(point -> builder.add(point, ModBiomes.UNDERGROUND_BLUE_MUSHROOM));
-         */
-
-
-
         /*new ParameterPointListBuilder()
             .temperature(Temperature.span(Temperature.COOL, Temperature.WARM)) // mild, seasonal
             .humidity(Humidity.span(Humidity.HUMID, Humidity.WET))             // humid climate
             .continentalness(Continentalness.span(Continentalness.COAST, Continentalness.MID_INLAND)) // coastal to inland valleys
             .erosion(Erosion.EROSION_2, Erosion.EROSION_4)                     // rolling hills / valleys
-            .depth(MultiNoiseUtil.ParameterRange.of(-1.0F, 0.2F))              // surface + airspace, not caves
+            .depth(Climate.Parameter.span(-1.0F, 0.2F))              // surface + airspace, not caves
             .weirdness(Weirdness.MID_SLICE_NORMAL_ASCENDING, Weirdness.HIGH_SLICE_NORMAL_DESCENDING) // normal → slightly hilly
-        .build().forEach(point -> builder.add(point, ModBiomes.MAPLE_FOREST));*/
+        .build().forEach(point -> builder.add(point, ModBiomes.MAPLE_FOREST));
+        */
 
+    new ParameterPointListBuilder()
+        // Temperature: COOL to NEUTRAL (indices 1-2)
+        // Cherry Grove: temp index 1-2, Meadow: temp index 1-2
+        .temperature(Temperature.span(Temperature.COOL, Temperature.NEUTRAL))
+        
+        // Humidity: ARID to NEUTRAL (indices 0-2) 
+        // Cherry Grove spans humidity 0-2, Meadow spans humidity 2-3
+        .humidity(Humidity.span(Humidity.ARID, Humidity.NEUTRAL))
+        
+        // Continentalness: MID_INLAND to FAR_INLAND (plateau regions)
+        .continentalness(Continentalness.span(Continentalness.MID_INLAND, Continentalness.FAR_INLAND))
+        
+        // Erosion: EROSION_2 (where plateaus spawn in addHighSlice/addPeaks)
+        .erosion(Erosion.EROSION_2)
+        
+        // Depth/PeaksAndValleys: HIGH_SLICE range (0.4 to 0.56666666)
+        // This is where plateau biomes are selected
+        //.depth(Climate.Parameter.span(0.4F, 0.56666666F))
+        .depth(Climate.Parameter.span(-1.0F, 0.2F))   
+    
+        // Weirdness: POSITIVE values (>= 0.0) trigger variants
+        // Cherry Grove/Meadow only spawn when weirdness.max() >= 0
+        .weirdness(Weirdness.span(Weirdness.MID_SLICE_VARIANT_ASCENDING, Weirdness.HIGH_SLICE_VARIANT_DESCENDING))
+    
+    .build().forEach(point -> builder.add(point, ModBiomes.MAPLE_FOREST));
 
 
 

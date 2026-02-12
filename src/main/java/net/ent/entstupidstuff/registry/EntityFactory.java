@@ -5,12 +5,15 @@ import java.util.function.Supplier;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
+import net.ent.entstupidstuff.client.entity.mob.ArmoredVindicatorEntity;
 import net.ent.entstupidstuff.client.entity.mob.FrostbittenZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.FungalSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.mob.FungalZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.HoveringInfernoEntity;
 import net.ent.entstupidstuff.client.entity.mob.LobberZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.MetalSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.MountaineerPillagerEntity;
+import net.ent.entstupidstuff.client.entity.mob.MountaineerVindicatorEntity;
 import net.ent.entstupidstuff.client.entity.mob.PhantomSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
 import net.ent.entstupidstuff.client.entity.mob.RedStoneGolemEntity;
@@ -22,6 +25,7 @@ import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
 import net.ent.entstupidstuff.client.entity.mob.SoulSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.mob.SporeperEntity;
 import net.ent.entstupidstuff.client.entity.mob.SunkenSkeletonEntity;
+import net.ent.entstupidstuff.client.entity.mob.skeleton.CoralSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
@@ -140,6 +144,39 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"armored_pillager")))
     );
 
+    public static final EntityType<ArmoredVindicatorEntity> ARMORED_VINDICATOR = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "armored_vindicator"),
+        EntityType.Builder.of(ArmoredVindicatorEntity::new, MobCategory.MONSTER)
+        .canSpawnFarFromPlayer()
+		.sized(0.6F, 1.95F)
+		.passengerAttachments(2.0F)
+		.ridingOffset(-0.6F)
+		.clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"armored_vindicator")))
+    );
+
+    public static final EntityType<MountaineerPillagerEntity> MOUNTAINEER_PILLAGER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mountaineer_pillager"),
+        EntityType.Builder.of(MountaineerPillagerEntity::new, MobCategory.MONSTER)
+        .canSpawnFarFromPlayer()
+		.sized(0.6F, 1.95F)
+		.passengerAttachments(2.0F)
+		.ridingOffset(-0.6F)
+		.clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"mountaineer_pillager")))
+    );
+
+    public static final EntityType<MountaineerVindicatorEntity> MOUNTAINEER_VINDICATOR = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mountaineer_vindicator"),
+        EntityType.Builder.of(MountaineerVindicatorEntity::new, MobCategory.MONSTER)
+        .canSpawnFarFromPlayer()
+		.sized(0.6F, 1.95F)
+		.passengerAttachments(2.0F)
+		.ridingOffset(-0.6F)
+		.clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"mountaineer_vindicator")))
+    );
+
     public static final EntityType<SoulSkeletonEntity> SOUL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "soul_skeleton"),
         EntityType.Builder.of(SoulSkeletonEntity::new, MobCategory.MONSTER)
@@ -150,14 +187,14 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"soul_skeleton")))
     );
 
-    public static final EntityType<FungalSkeletonEntity> FUNGAL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "fungal_skeleton"),
+    public static final EntityType<FungalSkeletonEntity> SPORE_BONE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sporebone"),
         EntityType.Builder.of(FungalSkeletonEntity::new, MobCategory.MONSTER)
         .sized(0.6F, 1.99F)
         .eyeHeight(1.74F)
         .ridingOffset(-0.7F)
         .clientTrackingRange(8)
-        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"fungal_skeleton")))
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"sporebone")))
     );
 
     public static final EntityType<SporeperEntity> SPOREPER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
@@ -200,7 +237,7 @@ public class EntityFactory {
     public static final EntityType<SilkmothEntity> SILKMOTH = Registry.register(BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "silkmoth"),
         EntityType.Builder.of(SilkmothEntity::new, MobCategory.AMBIENT)
-        .sized(0.5f, 0.5F)
+        .sized(0.7F, 0.6F)
         .eyeHeight(0.25F)
         .clientTrackingRange(8)
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"silkmoth")))
@@ -399,6 +436,16 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"phantom_skeleton")))
     );
 
+    public static final EntityType<CoralSkeletonEntity> CORAL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "coral_skeleton"),
+        EntityType.Builder.of(CoralSkeletonEntity::new, MobCategory.MONSTER)
+        .sized(0.6F, 1.99F)
+        .eyeHeight(1.74F)
+        .ridingOffset(-0.7F)
+        .clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"coral_skeleton")))
+    );
+
 
     private static EntityType.EntityFactory<CustomBoatEntity> getBigBoatFactory(Supplier<Item> itemSupplier) {
 		return (type, world) -> new CustomBoatEntity(type, world, itemSupplier);
@@ -417,12 +464,15 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ANCIENT_DROWNED, AncientDrownedEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_FUNGAL, FungalZombieEntity.createAttributes());
 
-        FabricDefaultAttributeRegistry.register(FUNGAL_SKELETON, FungalSkeletonEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SPORE_BONE, FungalSkeletonEntity.createAttributes());
 
 
-        FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes/*createPillagerAttributes*/());
-        FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes/*createPillagerAttributes*/());
-        FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes()/*createPillagerAttributes*/);
+        FabricDefaultAttributeRegistry.register(ARMORED_PILLAGER, ArmoredPillagerEntity.createArmoredPillagerAttributes());
+        FabricDefaultAttributeRegistry.register(MOUNTAINEER_PILLAGER, MountaineerPillagerEntity.createMountaineerPillagerAttributes());
+        FabricDefaultAttributeRegistry.register(ARMORED_VINDICATOR, ArmoredVindicatorEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(MOUNTAINEER_VINDICATOR, MountaineerVindicatorEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes());
+        FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes());
 
         //The Fire of the Hunt Update
         FabricDefaultAttributeRegistry.register(PIGLIN_WARRIOR, PiglinWarriorEntity.createAttributes());
@@ -457,6 +507,9 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(SPOREPER, SporeperEntity.createCreeperAttributes());
 
         FabricDefaultAttributeRegistry.register(SILKMOTH, SilkmothEntity.createAttributes());
+
+        FabricDefaultAttributeRegistry.register(CORAL_SKELETON, CoralSkeletonEntity.createAttributes());
+
         
 
        

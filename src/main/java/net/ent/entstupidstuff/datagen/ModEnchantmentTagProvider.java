@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.datagen;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentFactory;
 import net.ent.entstupidstuff.item.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -10,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.tags.EnchantmentTagsProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.enchantment.Enchantments;
 

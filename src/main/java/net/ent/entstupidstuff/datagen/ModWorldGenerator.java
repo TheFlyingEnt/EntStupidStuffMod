@@ -20,6 +20,7 @@ public class ModWorldGenerator extends FabricDynamicRegistryProvider {
         entries.addAll(registries.lookupOrThrow(Registries.CAT_VARIANT));
         entries.addAll(registries.lookupOrThrow(Registries.PAINTING_VARIANT));
         entries.addAll(registries.lookupOrThrow(Registries.COW_VARIANT));
+        entries.addAll(registries.lookupOrThrow(Registries.JUKEBOX_SONG));
     }
 
     @Override

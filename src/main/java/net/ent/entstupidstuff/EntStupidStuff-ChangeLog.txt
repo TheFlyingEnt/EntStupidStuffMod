@@ -7,3 +7,11 @@
 
 ## Features:
 Added Fungal Planks
+
+
+## New Biomes:
+Azure Mushroom Grove
+
+Maple Forest
+
+Icy Caves (Frost-Born Caves)

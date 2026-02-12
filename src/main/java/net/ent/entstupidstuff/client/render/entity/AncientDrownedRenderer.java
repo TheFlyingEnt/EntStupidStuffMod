@@ -20,8 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class AncientDrownedRenderer extends AbstractZombieRenderer<Drowned, ZombieRenderState, AncientDrownedModel>{
-   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned.png");
-   //private static final Identifier GLOW_TEXTURE = Identifier.of(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_e.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/ancient_drowned.png");
 
    public AncientDrownedRenderer(EntityRendererProvider.Context context) {
 		super(

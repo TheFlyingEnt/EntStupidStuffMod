@@ -36,19 +36,19 @@ public class FungalSkeletonEntity extends Skeleton {
 	// Sound Effect:
 
 	protected SoundEvent getAmbientSound() {
-		return SoundFactory.ENTITY_FUNGAL_SKELETON_AMBIENT;
+		return SoundFactory.ENTITY_SPORE_BONE_AMBIENT;
 	}
 
 	protected SoundEvent getHurtSound(DamageSource damageSource) {
-		return SoundFactory.ENTITY_FUNGAL_SKELETON_HURT;
+		return SoundFactory.ENTITY_SPORE_BONE_HURT;
 	}
 
 	protected SoundEvent getDeathSound() {
-		return SoundFactory.ENTITY_FUNGAL_SKELETON_DEATH;
+		return SoundFactory.ENTITY_SPORE_BONE_DEATH;
 	}
 
 	SoundEvent getStepSound() {
-		return SoundFactory.ENTITY_FUNGAL_SKELETON_STEP;
+		return SoundFactory.ENTITY_SPORE_BONE_STEP;
 	}
 
 }

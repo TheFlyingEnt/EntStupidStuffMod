@@ -23,80 +23,80 @@ import net.minecraft.util.Unit;
 
 @Environment(EnvType.CLIENT)
 public class AncientTridentRenderer extends EntityRenderer<AncientTridentEntity, ThrownTridentRenderState> {
-   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident.png");
-   public static final ResourceLocation GLOW_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident_e.png");
-   private final AncientTridentModel model;
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident.png");
+    public static final ResourceLocation GLOW_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_trident_glow.png");
+    private final AncientTridentModel model;
 
-   public AncientTridentRenderer(EntityRendererProvider.Context context) {
-      super(context);
-      this.model = new AncientTridentModel(context.bakeLayer(ModEntityModelLayers.ANCIENT_TRIDENT));
-   }
+    public AncientTridentRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        this.model = new AncientTridentModel(context.bakeLayer(ModEntityModelLayers.ANCIENT_TRIDENT));
+    }
 
-   @Override
-   public void submit(
-         ThrownTridentRenderState state,
-         PoseStack matrices,
-         SubmitNodeCollector renderQueue,
-         CameraRenderState camera
-   ) {
-      matrices.pushPose();
+    @Override
+    public void submit(
+            ThrownTridentRenderState state,
+            PoseStack matrices,
+            SubmitNodeCollector renderQueue,
+            CameraRenderState camera
+    ) {
+        matrices.pushPose();
 
-      // Apply rotation like before
-      matrices.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
-      matrices.mulPose(Axis.ZP.rotationDegrees(state.xRot + 90.0F));
+        // Apply rotation like before
+        matrices.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
+        matrices.mulPose(Axis.ZP.rotationDegrees(state.xRot + 90.0F));
 
-      // === Base texture (with optional glint) ===
-      List<RenderType> layers = ItemRenderer.getFoilRenderTypes(
-               this.model.renderType(TEXTURE),
-               false,
-               state.isFoil
-      );
+        // === Base texture (with optional glint) ===
+        List<RenderType> layers = ItemRenderer.getFoilRenderTypes(
+                this.model.renderType(TEXTURE),
+                false,
+                state.isFoil
+        );
 
-      for (int i = 0; i < layers.size(); i++) {
-         renderQueue.order(i).submitModel(
-                  this.model,
-                  Unit.INSTANCE,
-                  matrices,
-                  layers.get(i),
-                  state.lightCoords,
-                  OverlayTexture.NO_OVERLAY,
-                  -1,
-                  null,
-                  state.outlineColor,
-                  null
-         );
-      }
+        for (int i = 0; i < layers.size(); i++) {
+            renderQueue.order(i).submitModel(
+                    this.model,
+                    Unit.INSTANCE,
+                    matrices,
+                    layers.get(i),
+                    state.lightCoords,
+                    OverlayTexture.NO_OVERLAY,
+                    -1,
+                    null,
+                    state.outlineColor,
+                    null
+            );
+        }
 
-      // === Glow texture (like RenderLayer.getEyes(GLOW_TEXTURE)) ===
-      renderQueue.order(0).submitModel(
-               this.model,
-               Unit.INSTANCE,
-               matrices,
-               RenderType.eyes(GLOW_TEXTURE),
-               15728640, // Max light (same as before)
-               OverlayTexture.NO_OVERLAY,
-               -1,
-               null,
-               state.outlineColor,
-               null
-      );
+        // === Glow texture (like RenderLayer.getEyes(GLOW_TEXTURE)) ===
+        renderQueue.order(0).submitModel(
+                this.model,
+                Unit.INSTANCE,
+                matrices,
+                RenderType.eyes(GLOW_TEXTURE),
+                15728640, // Max light (same as before)
+                OverlayTexture.NO_OVERLAY,
+                -1,
+                null,
+                state.outlineColor,
+                null
+        );
 
-      matrices.popPose();
+        matrices.popPose();
 
-      super.submit(state, matrices, renderQueue, camera);
-   }
+        super.submit(state, matrices, renderQueue, camera);
+    }
 
-   @Override
-   public ThrownTridentRenderState createRenderState() {
-      return new ThrownTridentRenderState();
-   }
+    @Override
+    public ThrownTridentRenderState createRenderState() {
+        return new ThrownTridentRenderState();
+    }
 
-   @Override
-   public void extractRenderState(AncientTridentEntity entity, ThrownTridentRenderState state, float tickDelta) {
-      super.extractRenderState(entity, state, tickDelta);
-      state.yRot = entity.getYRot(tickDelta);
-      state.xRot = entity.getXRot(tickDelta);
-      state.isFoil = entity.isEnchanted();
-   }
+    @Override
+    public void extractRenderState(AncientTridentEntity entity, ThrownTridentRenderState state, float tickDelta) {
+        super.extractRenderState(entity, state, tickDelta);
+        state.yRot = entity.getYRot(tickDelta);
+        state.xRot = entity.getXRot(tickDelta);
+        state.isFoil = entity.isEnchanted();
+    }
    
 }

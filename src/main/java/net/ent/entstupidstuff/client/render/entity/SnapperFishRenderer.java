@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class SnapperFishRenderer extends MobRenderer<SnapperFishEntity, LivingEntityRenderState, SnapperFishModel>{
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/red_snapper.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/red_snapper.png");
 
     public SnapperFishRenderer(EntityRendererProvider.Context context) {
         super(context, new SnapperFishModel(context.bakeLayer(ModEntityModelLayers.SNAPPER)), 0.3F);

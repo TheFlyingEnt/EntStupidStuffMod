@@ -4,7 +4,6 @@ import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
 import net.ent.entstupidstuff.client.render.ModSpecialModelTypes;
-import net.ent.entstupidstuff.item.ModModelPredicateReg;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
@@ -25,8 +24,6 @@ public class EntStupidStuffClient implements ClientModInitializer {
 
         ModEntityModelLayers.onInitialize();
         ModRenderLayers.onInitializeClient();
-        ModModelPredicateReg.onInitialize();
-        //ModelPredicateFactory.onInitialize();
         ModSpecialModelTypes.onInit();
         ParticlesClient.initalize();
 
@@ -48,6 +45,8 @@ public class EntStupidStuffClient implements ClientModInitializer {
         
 
         MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
+
+
         
     }
 }

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
+@Deprecated
 public class ModBiomeFeatures  {
 
     public static void register() {

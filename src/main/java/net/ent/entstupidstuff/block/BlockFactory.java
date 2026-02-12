@@ -5,8 +5,21 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.block.base.BlueMushroomPlantBlock;
+import net.ent.entstupidstuff.block.base.GrateSlabBlock;
+import net.ent.entstupidstuff.block.base.GrateStairsBlock;
+import net.ent.entstupidstuff.block.base.MushroomAuraBlock;
+import net.ent.entstupidstuff.block.base.MushroomSporeBlossomBlock;
+import net.ent.entstupidstuff.block.base.MushroombedBlock;
+import net.ent.entstupidstuff.block.base.PointedIceBlock;
+import net.ent.entstupidstuff.block.base.ShroomiumBlock;
+import net.ent.entstupidstuff.block.base.SilkwormVineBlock;
+import net.ent.entstupidstuff.block.base.SilkwormVinePlantBlock;
+import net.ent.entstupidstuff.block.base.TransparentMushroomBlock;
+import net.ent.entstupidstuff.block.base.VariantSkullBlock;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.ModGroup;
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
 import net.ent.entstupidstuff.world.tree.SaplingGeneratorFactory;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -37,11 +50,13 @@ import net.minecraft.world.level.block.FlowerBedBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.WallSkullBlock;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.WaterloggedTransparentBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
@@ -122,16 +137,19 @@ public class BlockFactory {
         Block REDWOOD_PLANKS = register("redwood" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.CRIMSON_NYLIUM))));
         BlockGroupFactory.groupWoodFamilty("redwood", "", REDWOOD_PLANKS, true, MapColor.CRIMSON_NYLIUM, MapColor.CRIMSON_NYLIUM);
         BlockFactoryHelper.addSaplings("redwood", SaplingGeneratorFactory.FIR); //TODO: Change to Redwood when Ready
+        BlockFactoryHelper.LeavesFamily("redwood", "", true);
 
         // # Added FIR Natural + Planks
         Block FIR_PLANKS = register("fir" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.TERRACOTTA_GRAY))));
         BlockGroupFactory.groupWoodFamilty("fir", "", FIR_PLANKS, true, MapColor.TERRACOTTA_GRAY, MapColor.PODZOL);
         BlockFactoryHelper.addSaplings("fir", SaplingGeneratorFactory.FIR);
+        BlockFactoryHelper.LeavesFamily("fir", "", true);
 
         // # Added MAPLE Natural + Planks
         Block MAPLE_PLANKS = register("maple" + "_planks" + "", Block::new, (BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor((MapColor.PODZOL))));
         BlockGroupFactory.groupWoodFamilty("maple", "", MAPLE_PLANKS, true, MapColor.DIRT, MapColor.PODZOL);
         BlockFactoryHelper.addSaplings("maple", SaplingGeneratorFactory.MAPLE);
+        BlockFactoryHelper.LeavesFamily("maple", "", true, MapColor.COLOR_ORANGE, ParticleTypesFactory.MAPLE_LEAVES);
         register("orange_petals", FlowerBedBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().sound(SoundType.PINK_PETALS).pushReaction(PushReaction.DESTROY)
         );
@@ -636,6 +654,283 @@ public class BlockFactory {
 		//copyLootTable(PHANTOM_TORCH, true).noCollision().instabreak().lightLevel(state -> 14).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY)
 	);
 
+        // # Skull/Heads
+
+    public static final Block DROWNED_HEAD = registerWithoutItem(
+        "drown_head",
+        properties -> new SkullBlock(ModSkullStype.DROWNED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block DROWNED_WALL_HEAD = registerWithoutItem(
+        "drown_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.DROWNED, properties),
+        wallVariant(DROWNED_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BLAZE_HEAD = registerWithoutItem(
+        "blaze_head",
+        properties -> new SkullBlock(ModSkullStype.BLAZE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BLAZE_WALL_HEAD = registerWithoutItem(
+        "blaze_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.BLAZE, properties),
+        wallVariant(BLAZE_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BREEZE_HEAD = registerWithoutItem(
+        "breeze_head",
+        properties -> new SkullBlock(ModSkullStype.BREEZE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BREEZE_WALL_HEAD = registerWithoutItem(
+        "breeze_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.BREEZE, properties),
+        wallVariant(BREEZE_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block HUSK_HEAD = registerWithoutItem(
+        "husk_head",
+        properties -> new SkullBlock(ModSkullStype.HUSK, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block HUSK_WALL_HEAD = registerWithoutItem(
+        "husk_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.HUSK, properties),
+        wallVariant(HUSK_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block STRAY_SKULL = registerWithoutItem(
+        "stray_skull",
+        properties -> new SkullBlock(ModSkullStype.STRAY, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block STRAY_WALL_SKULL = registerWithoutItem(
+        "stray_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.STRAY, properties),
+        wallVariant(STRAY_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BOGGED_SKULL = registerWithoutItem(
+        "bogged_skull",
+        properties -> new SkullBlock(ModSkullStype.BOGGED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block BOGGED_WALL_SKULL = registerWithoutItem(
+        "bogged_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.BOGGED, properties),
+        wallVariant(BOGGED_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_LOBBER_HEAD = registerWithoutItem(
+        "zombie_lobber_head",
+        properties -> new SkullBlock(ModSkullStype.ZOMBIE_LOBBER, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_LOBBER_WALL_HEAD = registerWithoutItem(
+        "zombie_lobber_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.ZOMBIE_LOBBER, properties),
+        wallVariant(ZOMBIE_LOBBER_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_SCORCHED_HEAD = registerWithoutItem(
+        "zombie_scorched_head",
+        properties -> new SkullBlock(ModSkullStype.ZOMBIE_SCORCHED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_SCORCHED_WALL_HEAD = registerWithoutItem(
+        "zombie_scorched_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.ZOMBIE_SCORCHED, properties),
+        wallVariant(ZOMBIE_SCORCHED_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_SLIMED_HEAD = registerWithoutItem(
+        "zombie_slimed_head",
+        properties -> new SkullBlock(ModSkullStype.ZOMBIE_SLIMED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_SLIMED_WALL_HEAD = registerWithoutItem(
+        "zombie_slimed_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.ZOMBIE_SLIMED, properties),
+        wallVariant(ZOMBIE_SLIMED_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_FROSTBITTEN_HEAD = registerWithoutItem(
+        "zombie_frostbitten_head",
+        properties -> new SkullBlock(ModSkullStype.ZOMBIE_FROSTBITTEN, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_FROSTBITTEN_WALL_HEAD = registerWithoutItem(
+        "zombie_frostbitten_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.ZOMBIE_FROSTBITTEN, properties),
+        wallVariant(ZOMBIE_FROSTBITTEN_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_FUNGAL_HEAD = registerWithoutItem(
+        "zombie_fungal_head",
+        properties -> new SkullBlock(ModSkullStype.ZOMBIE_FUNGAL, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block ZOMBIE_FUNGAL_WALL_HEAD = registerWithoutItem(
+        "zombie_fungal_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.ZOMBIE_FUNGAL, properties),
+        wallVariant(ZOMBIE_FUNGAL_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SPOREBONE_SKULL = registerWithoutItem(
+        "sporebone_skull",
+        properties -> new SkullBlock(ModSkullStype.SPOREBONE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SPOREBONE_SKULL_HEAD = registerWithoutItem(
+        "sporebone_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.SPOREBONE, properties),
+        wallVariant(SPOREBONE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SPOREPER_HEAD = registerWithoutItem(
+        "sporeper_head",
+        properties -> new SkullBlock(ModSkullStype.SPOREPER, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SPOREPER_WALL_HEAD = registerWithoutItem(
+        "sporeper_wall_head",
+        properties -> new WallSkullBlock(ModSkullStype.SPOREPER, properties),
+        wallVariant(SPOREPER_HEAD, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SOUL_SKELETON_SKULL = registerWithoutItem(
+        "soul_skeleton_skull",
+        properties -> new SkullBlock(ModSkullStype.SOUL_SKELETON, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block SOUL_SKELETON_WALL_SKULL = registerWithoutItem(
+        "soul_skeleton_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.SOUL_SKELETON, properties),
+        wallVariant(SOUL_SKELETON_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_BRAIN_SKULL = registerWithoutItem(
+        "coral_skeleton_brain",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_BRAIN, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+    public static final Block CORAL_SKELETON_BRAIN_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_brain_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_BRAIN, properties),
+        wallVariant(CORAL_SKELETON_BRAIN_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_FIRE_SKULL = registerWithoutItem(
+        "coral_skeleton_fire",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_FIRE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_FIRE_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_fire_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_FIRE, properties),
+        wallVariant(CORAL_SKELETON_FIRE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_HORN_SKULL = registerWithoutItem(
+        "coral_skeleton_horn",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_HORN, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_HORN_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_horn_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_HORN, properties),
+        wallVariant(CORAL_SKELETON_HORN_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_TUBE_SKULL = registerWithoutItem(
+        "coral_skeleton_tube",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_TUBE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_TUBE_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_tube_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_TUBE, properties),
+        wallVariant(CORAL_SKELETON_TUBE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_BUBBLE_SKULL = registerWithoutItem(
+        "coral_skeleton_bubble",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_BUBBLE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_BUBBLE_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_bubble_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_BUBBLE, properties),
+        wallVariant(CORAL_SKELETON_BUBBLE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_UNUSED_SKULL = registerWithoutItem(
+        "coral_skeleton_unused",
+        properties -> new SkullBlock(ModSkullStype.CORAL_SKELETON_UNUSED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block CORAL_SKELETON_UNUSED_WALL_SKULL = registerWithoutItem(
+        "coral_skeleton_unused_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.CORAL_SKELETON_UNUSED, properties),
+        wallVariant(CORAL_SKELETON_UNUSED_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_DEFAULT_SKULL = registerWithoutItem(
+        "metal_skeleton_default",
+        properties -> new SkullBlock(ModSkullStype.METAL_SKELETON_DEFAULT, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_DEFAULT_WALL_SKULL = registerWithoutItem(
+        "metal_skeleton_default_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.METAL_SKELETON_DEFAULT, properties),
+        wallVariant(METAL_SKELETON_DEFAULT_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_RED_SKULL = registerWithoutItem(
+        "metal_skeleton_red",
+        properties -> new SkullBlock(ModSkullStype.METAL_SKELETON_RED, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_RED_WALL_SKULL = registerWithoutItem(
+        "metal_skeleton_red_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.METAL_SKELETON_RED, properties),
+        wallVariant(METAL_SKELETON_RED_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_BLUE_SKULL = registerWithoutItem(
+        "metal_skeleton_blue",
+        properties -> new SkullBlock(ModSkullStype.METAL_SKELETON_BLUE, properties),
+        BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.SKELETON).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
+    public static final Block METAL_SKELETON_BLUE_WALL_SKULL = registerWithoutItem(
+        "metal_skeleton_blue_wall_skull",
+        properties -> new WallSkullBlock(ModSkullStype.METAL_SKELETON_BLUE, properties),
+        wallVariant(METAL_SKELETON_BLUE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
+    );
+
     // # Adding POINTED_ICE
     public static final Block POINTED_ICE = register(
 		"pointed_ice",
@@ -802,7 +1097,6 @@ public class BlockFactory {
         BlockList.put(blockId, block);
 
         System.out.println("Adding Block without Item: " + blockId);
-
 		return Registry.register(BuiltInRegistries.BLOCK, key, block);
 	}
 

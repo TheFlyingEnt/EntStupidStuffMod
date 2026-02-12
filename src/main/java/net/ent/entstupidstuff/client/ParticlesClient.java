@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client;
 
-import net.ent.entstupidstuff.client.particle.FallingMushroomSporeParticle.FallingMSporeBlossomFactory;
 import net.ent.entstupidstuff.client.particle.HammerBoomParticleFactory;
+import net.ent.entstupidstuff.client.particle.ModFallingLeaveParticle.MapleProvider;
 import net.ent.entstupidstuff.client.particle.MushroomSuspendedParticle.BlueGlowFactory;
 import net.ent.entstupidstuff.client.particle.NewLeakParticle.FallingMushroomSporeBlossomFactory;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
@@ -14,7 +14,8 @@ public class ParticlesClient {
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.PHANTOM_FLAME, FlameParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.HAMMER_BOOM, HammerBoomParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE_BLOSSOM, FallingMushroomSporeBlossomFactory::new);//FallingMSporeBlossomFactory::new);
-        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, BlueGlowFactory::new);
+        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, BlueGlowFactory::new);//MapleProvider
+        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.MAPLE_LEAVES, MapleProvider::new);//MapleProvider
         
         
     }

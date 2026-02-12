@@ -22,6 +22,8 @@ public class ModRenderLayers {
         // Modded Wood
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_door"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_trapdoor"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("maple" + "_door"), ChunkSectionLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("maple" + "_trapdoor"), ChunkSectionLayer.CUTOUT);
 
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("redwood" + "_glass_door"), ChunkSectionLayer.CUTOUT);
@@ -93,7 +95,7 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("bamboo" + "_glass_door"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("warped" + "_glass_door"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crimson" + "_glass_door"), ChunkSectionLayer.CUTOUT);
-        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_door"), BlockRenderLayer.CUTOUT); //FUTURE UPDATE
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("pale_oak" + "_glass_door"), ChunkSectionLayer.CUTOUT);
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("oak" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("spruce" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
@@ -106,7 +108,7 @@ public class ModRenderLayers {
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("bamboo" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("warped" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("crimson" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
-        //BlockRenderLayerMap.putBlock(BlockFactoryUpt.callBlock("pale_oak" + "_glass_trapdoor"), BlockRenderLayer.CUTOUT); //FUTURE UPDATE
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("pale_oak" + "_glass_trapdoor"), ChunkSectionLayer.CUTOUT);
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("iron" + "_glass_door"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("copper" + "_glass_door"), ChunkSectionLayer.CUTOUT);
@@ -170,6 +172,8 @@ public class ModRenderLayers {
 
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines_plant"), ChunkSectionLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(BlockFactory.callBlock("silkworm_vines_plant"), ChunkSectionLayer.TRANSLUCENT);
+
+        BlockRenderLayerMap.putBlock(BlockFactory.callBlock("orange_petals"), ChunkSectionLayer.CUTOUT);
 
         //Change underground_mushroom to Azure_grove
 

@@ -3,26 +3,17 @@ package net.ent.entstupidstuff.item.base;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.mojang.blaze3d.platform.InputConstants;
 
-import net.ent.entstupidstuff.client.entity.mob.PiglinWarriorEntity;
-import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
-import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
-import net.fabricmc.fabric.api.item.v1.FabricItem.Settings;
-import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -34,10 +25,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -45,30 +36,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public class WeaponHammerItem extends WeaponUpdatedItem{
+public class WeaponHammerItem extends Item {
     private static final int COOLDOWN_TICKS = 60;
     private static final double BASE_ATTACK_DAMAGE = 6.5;
     private static double ATTACK_DAMAGE;
     //.component(DataComponents.WEAPON, new Weapon(2, h));
 
     public WeaponHammerItem(ToolMaterial toolMaterial, Properties settings) {
-        super(toolMaterial, settings.enchantable(15).attributes(
-            WeaponUpdatedItem.createAttributeModifiers(
-                toolMaterial, 
-                BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus(), 
-                -3.4f, 
-                1, 
-                0, 
-                1.25f //Handled in Code
-            )
-        ).component(DataComponents.TOOL, new Tool(
-					List.of(
-						Tool.Rule.minesAndDrops(BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE), -3.4f )
-					),
-					1.0F,
-					1,
-					true
-				)));
+
+        //float attackspeed = -3.4f;
+        //float shieldcooldown = 2.0F;
+        //float toolReach = 1.0F;
+        //float attackSweep = 0.0F;
+        //float attackKnockback = 1.25F;
+
+        super(ModProperties.hammer(settings, toolMaterial, BlockTags.MINEABLE_WITH_PICKAXE, 6.5F, -3.4f));
 
         ATTACK_DAMAGE = BASE_ATTACK_DAMAGE + toolMaterial.attackDamageBonus();
 
@@ -119,7 +101,7 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         // Shift Hint
         if (!shiftHeld) {
             textConsumer.accept(Component.literal("Hold SHIFT for more info").withStyle(ChatFormatting.DARK_GRAY));
-            textConsumer.accept(Component.empty());
+            //textConsumer.accept(Component.empty());
         }
 
         //item.entstupidstuff.double_hand.tooltip
@@ -139,11 +121,11 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
         if (!world.isClientSide() && player != null) {
 
             //Adding Cooldown & Durability Damage
-            if (player.getMainHandItem().getItem() instanceof WeaponHammerItem) {
+            if (player.getMainHandItem().getItem() instanceof WeaponHammerItem && !player.isCreative()) {
                 player.getCooldowns().addCooldown(player.getMainHandItem(), COOLDOWN_TICKS);
                 stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
             }
-            else if (player.getOffhandItem().getItem() instanceof WeaponHammerItem) {
+            else if (player.getOffhandItem().getItem() instanceof WeaponHammerItem && !player.isCreative()) {
                 player.getCooldowns().addCooldown(player.getOffhandItem(), COOLDOWN_TICKS);
                 stack.hurtAndBreak(2, player, EquipmentSlot.OFFHAND);
             }
@@ -170,7 +152,7 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             for (LivingEntity targetEntity : entities) {
 
                 targetEntity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 100, 1));
-                targetEntity.hurtServer((ServerLevel) world, player.damageSources().playerAttack(player), (float) ATTACK_DAMAGE * 0.5f);
+                targetEntity.hurtServer((ServerLevel) world, player.damageSources().playerAttack(player), (float) ATTACK_DAMAGE * DamangeMutiplyer);
 
                 Vec3 knockback = targetEntity.position().subtract(attackPos).normalize().scale(0.5);
                 targetEntity.push(knockback.x, 0.3, knockback.z);
@@ -179,6 +161,9 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
                 world.playSound(null, pos, SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 6.0f, 0.1f);
                  
             }
+
+            
+
         }
 
         //Effects
@@ -227,8 +212,8 @@ public class WeaponHammerItem extends WeaponUpdatedItem{
             }
         }
 
-
-		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
+        //stack.hurtAndBreak(1, attacker, stack.getHand().asEquipmentSlot());
+		stack.hurtAndBreak(1, target, EquipmentSlot.MAINHAND);
 	}
     
 }

@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public class FrostbittenZombieEntityRenderer extends AbstractZombieRenderer<FrostbittenZombieEntity, FrostbittenEntityRenderState, FrostbittenZombieModel> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite_chilled.png");
-    private static final ResourceLocation TEXTURE_B = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_frostbite.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_frostbitten_chilled.png");
+    private static final ResourceLocation TEXTURE_B = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_frostbitten.png");
 
     public FrostbittenZombieEntityRenderer(EntityRendererProvider.Context context) {
 		super(

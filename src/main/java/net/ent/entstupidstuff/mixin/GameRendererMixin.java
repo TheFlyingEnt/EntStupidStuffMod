@@ -55,7 +55,8 @@ public abstract class GameRendererMixin {
             if (livingEntity.hasEffect(ModEffects.RGB_SHIFT)) {
                 // Apply RGB shift post-processor
                 this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "rgb_shift"));
-            } else if (livingEntity.hasEffect(ModEffects.BLUR)) {
+            }
+            if (livingEntity.hasEffect(ModEffects.BLUR)) {
                 // Apply RGB shift post-processor
                 this.setPostEffect(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "blur"));
             } else if (livingEntity.hasEffect(ModEffects.CREEPER)) {

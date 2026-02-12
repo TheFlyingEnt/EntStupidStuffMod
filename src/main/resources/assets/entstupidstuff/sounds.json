@@ -1,5 +1,19 @@
 {
-  "entity.metal_skeleton.ambient": {
+  "music_disc.pirate_tavern": {
+    "sounds": [
+      "entstupidstuff:music_magiksolo_tavern"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "music_disc.fungaldelic": {
+    "sounds": [
+      "entstupidstuff:music_entity_fungaldelic"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+    "entity.metal_skeleton.ambient": {
     "sounds": [
       "entstupidstuff:metal_skeleton/say1",
       "entstupidstuff:metal_skeleton/say2",
@@ -45,44 +59,44 @@
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
-  "entity.fungal_skeleton.ambient": {
+  "entity.sporebone.ambient": {
     "sounds": [
       "minecraft:mob/skeleton/say1",
       "minecraft:mob/skeleton/say2",
       "minecraft:mob/skeleton/say3"
     ],
-    "subtitle": "subtitles.ent.entity.fungal_skeleton.ambient"
+    "subtitle": "subtitles.ent.entity.sporebone.ambient"
   },
-  "entity.fungal_skeleton.converted_to_stray": {
+  "entity.sporebone.converted_to_stray": {
     "sounds": [
       "mob/stray/convert1",
       "mob/stray/convert2",
       "mob/stray/convert3"
     ],
-    "subtitle": "subtitles.ent.entity.fungal_skeleton.converted_to_stray"
+    "subtitle": "subtitles.ent.entity.sporebone.converted_to_stray"
   },
-  "entity.fungal_skeleton.death": {
+  "entity.sporebone.death": {
     "sounds": [
       "minecraft:mob/skeleton/death"
     ],
-    "subtitle": "subtitles.ent.entity.fungal_skeleton.death"
+    "subtitle": "subtitles.ent.entity.sporebone.death"
   },
-  "entity.fungal_skeleton.hurt": {
+  "entity.sporebone.hurt": {
     "sounds": [
       "minecraft:mob/skeleton/hurt1",
       "minecraft:mob/skeleton/hurt2",
       "minecraft:mob/skeleton/hurt3",
       "minecraft:mob/skeleton/hurt4"
     ],
-    "subtitle": "subtitles.ent.entity.fungal_skeleton.hurt"
+    "subtitle": "subtitles.ent.entity.sporebone.hurt"
   },
-  "entity.fungal_skeleton.shoot": {
+  "entity.sporebone.shoot": {
     "sounds": [
       "minecraft:random/bow"
     ],
-    "subtitle": "subtitles.ent.entity.fungal_skeleton.shoot"
+    "subtitle": "subtitles.ent.entity.sporebone.shoot"
   },
-  "entity.fungal_skeleton.step": {
+  "entity.sporebone.step": {
     "sounds": [
       "minecraft:mob/skeleton/step1",
       "minecraft:mob/skeleton/step2",
@@ -180,6 +194,38 @@
       "minecraft:entity/fish/flop3"
     ],
     "subtitle": "subtitles.ent.entity.mackerel.flop"
+  },
+  "entity.furtrout.ambient": {
+    "sounds": [
+      "minecraft:entity/fish/ambient"
+    ],
+    "subtitle": "subtitles.ent.entity.furtrout.ambient"
+  },
+  "entity.furtrout.death": {
+    "sounds": [
+      "minecraft:entity/fish/death1",
+      "minecraft:entity/fish/death2",
+      "minecraft:entity/fish/death3",
+      "minecraft:entity/fish/death4"
+    ],
+    "subtitle": "subtitles.ent.entity.furtrout.death"
+  },
+  "entity.furtrout.hurt": {
+    "sounds": [
+      "minecraft:entity/fish/hurt1",
+      "minecraft:entity/fish/hurt2",
+      "minecraft:entity/fish/hurt3",
+      "minecraft:entity/fish/hurt4"
+    ],
+    "subtitle": "subtitles.ent.entity.furtrout.hurt"
+  },
+  "entity.furtrout.flop": {
+    "sounds": [
+      "minecraft:entity/fish/flop1",
+      "minecraft:entity/fish/flop2",
+      "minecraft:entity/fish/flop3"
+    ],
+    "subtitle": "subtitles.ent.entity.furtrout.flop"
   },
   "entity.zebra_fish.ambient": {
     "sounds": [
@@ -478,8 +524,8 @@
   },
   "entity.lobber.hurt": {
     "sounds": [
-      "minecraft:zombie/hurt1",
-      "minecraft:zombie/hurt2"
+      "minecraft:mob/zombie/hurt1",
+      "minecraft:mob/zombie/hurt2"
     ],
     "subtitle": "subtitles.ent.entity.lobber.hurt"
   },
@@ -498,47 +544,47 @@
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
-    "entity.scorched.ambient": {
+   "entity.scorched.ambient": {
     "sounds": [
-      "minecraft:mob/zombie/say1",
-      "minecraft:mob/zombie/say2",
-      "minecraft:mob/zombie/say3"
+      "minecraft:mob/husk/say1",
+      "minecraft:mob/husk/say2",
+      "minecraft:mob/husk/say3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.ambient"
   },
   "entity.scorched.attack_iron_door": {
     "sounds": [
-      "minecraft:mob/zombie/metal1",
-      "minecraft:mob/zombie/metal2",
-      "minecraft:mob/zombie/metal3"
+      "minecraft:mob/husk/metal1",
+      "minecraft:mob/husk/metal2",
+      "minecraft:mob/husk/metal3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.attack_iron_door"
   },
   "entity.scorched.attack_wooden_door": {
     "sounds": [
-      "minecraft:mob/zombie/wood1",
-      "minecraft:mob/zombie/wood2",
-      "minecraft:mob/zombie/wood3"
+      "minecraft:mob/husk/wood1",
+      "minecraft:mob/husk/wood2",
+      "minecraft:mob/husk/wood3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.attack_wooden_door"
   },
   "entity.scorched.break_wooden_door": {
     "sounds": [
-      "minecraft:mob/zombie/break_wooden_door"
+      "minecraft:mob/husk/break_wooden_door"
     ],
     "subtitle": "subtitles.ent.entity.scorched.break_wooden_door"
   },
   "entity.scorched.converted_to_drowned": {
     "sounds": [
-      "minecraft:mob/zombie/convert1",
-      "minecraft:mob/zombie/convert2",
-      "minecraft:mob/zombie/convert3"
+      "minecraft:mob/husk/convert1",
+      "minecraft:mob/husk/convert2",
+      "minecraft:mob/husk/convert3"
     ],
     "subtitle": "subtitles.ent.entity.scorched.converted_to_drowned"
   },
   "entity.scorched.death": {
     "sounds": [
-      "minecraft:mob/zombie/death"
+      "minecraft:mob/husk/death"
     ],
     "subtitle": "subtitles.ent.entity.scorched.death"
   },
@@ -553,23 +599,23 @@
   },
   "entity.scorched.hurt": {
     "sounds": [
-      "minecraft:zombie/hurt1",
-      "minecraft:zombie/hurt2"
+      "minecraft:mob/husk/hurt1",
+      "minecraft:mob/husk/hurt2"
     ],
     "subtitle": "subtitles.ent.entity.scorched.hurt"
   },
   "entity.scorched.infect": {
     "sounds": [
-      "minecraft:mob/zombie/infect"
+      "minecraft:mob/husk/infect"
     ],
     "subtitle": "subtitles.ent.entity.scorched.infect"
   },
   "entity.scorched.step": {
     "sounds": [
-      "minecraft:mob/zombie/step1",
-      "minecraft:mob/zombie/step2",
-      "minecraft:mob/zombie/step3",
-      "minecraft:mob/zombie/step4"
+      "minecraft:mob/husk/step1",
+      "minecraft:mob/husk/step2",
+      "minecraft:mob/husk/step3",
+      "minecraft:mob/husk/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
   },
@@ -628,8 +674,8 @@
   },
   "entity.slimed.hurt": {
     "sounds": [
-      "minecraft:zombie/hurt1",
-      "minecraft:zombie/hurt2"
+      "minecraft:mob/zombie/hurt1",
+      "minecraft:mob/zombie/hurt2"
     ],
     "subtitle": "subtitles.ent.entity.slimed.hurt"
   },
@@ -703,8 +749,8 @@
   },
   "entity.frostbitten.hurt": {
     "sounds": [
-      "minecraft:zombie/hurt1",
-      "minecraft:zombie/hurt2"
+      "minecraft:mob/zombie/hurt1",
+      "minecraft:mob/zombie/hurt2"
     ],
     "subtitle": "subtitles.ent.entity.frostbitten.hurt"
   },
@@ -778,8 +824,8 @@
   },
   "entity.zombie_fungal.hurt": {
     "sounds": [
-      "minecraft:zombie/hurt1",
-      "minecraft:zombie/hurt2"
+      "minecraft:mob/zombie/hurt1",
+      "minecraft:mob/zombie/hurt2"
     ],
     "subtitle": "subtitles.ent.entity.zombie_fungal.hurt"
   },

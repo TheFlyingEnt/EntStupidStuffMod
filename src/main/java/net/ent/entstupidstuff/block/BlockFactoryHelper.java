@@ -1,6 +1,10 @@
 package net.ent.entstupidstuff.block;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,7 +34,7 @@ import net.minecraft.world.level.material.PushReaction;
 @SuppressWarnings("unused")
 public class BlockFactoryHelper {
 
-    public static void NatureFamily(String blockName, String suffix, MapColor mapColor, MapColor mapColor2, Boolean flamable, Boolean withLeaves){ //1.21.10 Tracker - Completed
+    public static void NatureFamily(String blockName, String suffix, MapColor mapColor, MapColor mapColor2, Boolean flamable){ //1.21.10 Tracker - Completed
 
         Block LOG = BlockFactory.register(
             blockName + "_log" + suffix,
@@ -66,44 +70,9 @@ public class BlockFactoryHelper {
                 .ignitedByLava()
         );
 
-        if (withLeaves) {
+        StrippableBlockRegistry.register(LOG, STRIPPED_LOG);
+        StrippableBlockRegistry.register(WOOD, STRIPPED_WOOD);
 
-            boolean tint = false;
-            Block LEAVES;
-
-            if (tint) { //Updated
-                LEAVES = BlockFactory.register(
-                    blockName + "_leaves" + suffix, (settings) -> new TintedParticleLeavesBlock(0.01F, settings),
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)
-                );
-            }
-            else {
-                LEAVES = BlockFactory.register( //TODO: 1.21.10 Updating
-                    blockName + "_leaves" + suffix,
-                    (settings) -> new UntintedParticleLeavesBlock(
-                        0.1F,
-                        ParticleTypes.CHERRY_LEAVES,
-                        settings
-                    ),
-                    BlockBehaviour.Properties.of()
-                        .mapColor(MapColor.COLOR_PINK)
-                        .strength(0.2F)
-                        .randomTicks()
-                        .sound(SoundType.CHERRY_LEAVES)
-                        .noOcclusion()
-                        .isValidSpawn(Blocks::ocelotOrParrot)
-                        .isSuffocating(Blocks::never)
-                        .isViewBlocking(Blocks::never)
-                        .ignitedByLava()
-                        .pushReaction(PushReaction.DESTROY)
-                        .isRedstoneConductor(Blocks::never)
-                );
-
-            }
-
-            //ModGroup.addToNatural(blockName + "_leaves" + suffix);
-            //ModGroup.addToDeco(blockName + "_leaves" + suffix);
-        }
 
         //ModGroup.addToNatural(blockName + "_log" + suffix);
         //ModGroup.addToNatural("stripped_" + blockName + "_log" + suffix);
@@ -120,13 +89,48 @@ public class BlockFactoryHelper {
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_log" + suffix)), 5, 5);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_wood" + suffix)), 5, 5);
             FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock("stripped_" + blockName + "_wood" + suffix)), 5, 5);
-
-            if (withLeaves) {
-                FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
-            }
         }
         
         
+    }
+
+    public static void LeavesFamily(String blockName, String suffix, Boolean flamable) {
+        Block LEAVES = BlockFactory.register(
+            blockName + "_leaves" + suffix, (settings) -> new TintedParticleLeavesBlock(0.01F, settings),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)
+        );
+
+        if (flamable) {
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+        }
+    }
+
+    public static void LeavesFamily(String blockName, String suffix, Boolean flamable, MapColor leaveColor, ParticleOptions particle) {
+        Block LEAVES = BlockFactory.register(
+            blockName + "_leaves" + suffix,
+            (settings) -> new UntintedParticleLeavesBlock(
+                0.1F,
+                particle,
+                settings
+            ),
+            BlockBehaviour.Properties.of()
+                .mapColor(leaveColor)
+                .strength(0.2F)
+                .randomTicks()
+                .sound(SoundType.CHERRY_LEAVES)
+                .noOcclusion()
+                .isValidSpawn(Blocks::ocelotOrParrot)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+                .ignitedByLava()
+                .pushReaction(PushReaction.DESTROY)
+                .isRedstoneConductor(Blocks::never)
+        );
+
+        if (flamable) {
+            FlammableBlockRegistry.getDefaultInstance().add((BlockFactory.callBlock(blockName + "_leaves" + suffix)), 30, 60);
+        }
+
     }
 
     public static void BaseFamily(String blockName, String varient, Block baseBlock, Boolean flamable){

@@ -37,8 +37,10 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.AbstractIllager.IllagerArmPose;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.piglin.PiglinArmPose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -63,7 +65,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class GenericSkeletonCrossbow extends GenericSkeletonBow implements CrossbowAttackMob{
 
-    private static final EntityDataAccessor<Boolean> CHARGING = SynchedEntityData.defineId(GenericSkeletonCrossbow.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(GenericSkeletonCrossbow.class, EntityDataSerializers.BOOLEAN);
 	private final SimpleContainer inventory = new SimpleContainer(5);
 
     public GenericSkeletonCrossbow(EntityType<? extends GenericSkeletonCrossbow> entityType, Level world) {
@@ -91,19 +93,6 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
 	}
 
-    public static enum State {
-		CROSSED,
-		ATTACKING,
-		CROSSBOW_HOLD,
-		CROSSBOW_CHARGE,
-		NEUTRAL;
-	}
-
-    @Override
-    public void onCrossbowAttackPerformed() {
-        this.noActionTime = 0;
-    }
-
     public static AttributeSupplier.Builder createGenericSkeletonCrossbow() {
 		return Monster.createMonsterAttributes()
 			.add(Attributes.MOVEMENT_SPEED, 0.35F)
@@ -112,43 +101,18 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			.add(Attributes.FOLLOW_RANGE, 32.0);
 	}
 
-    @Override
-	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		super.defineSynchedData(builder);
-		builder.define(CHARGING, false);
-	}
 
 	@Override
 	public boolean canFireProjectileWeapon(ProjectileWeaponItem weapon) {
-
 		if (weapon == Items.CROSSBOW || weapon == ItemFactory.CANNON_ITEM)
 			return true;
 		return false;
-
 	}
 
-	public boolean isCharging() {
-		return this.entityData.get(CHARGING);
-	}
-
-	@Override
-	public void setChargingCrossbow(boolean charging) {
-		this.entityData.set(CHARGING, charging);
-	}
 
     @Override
 	public void addAdditionalSaveData(ValueOutput view) {
       super.addAdditionalSaveData(view);
-	}
-
-	public GenericSkeletonCrossbow.State getState() {
-		if (this.isCharging()) {
-			return GenericSkeletonCrossbow.State.CROSSBOW_CHARGE;
-		} else if (this.isHolding(Items.CROSSBOW) || this.isHolding(ItemFactory.CANNON_ITEM)) {
-			return GenericSkeletonCrossbow.State.CROSSBOW_HOLD;
-		} else {
-			return this.isAggressive() ? GenericSkeletonCrossbow.State.ATTACKING : GenericSkeletonCrossbow.State.NEUTRAL;
-		}
 	}
 
     @Override
@@ -192,9 +156,49 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		}
 	}
 
+    //Crossbow Code:
+    public boolean isChargingCrossbow() {
+		return this.entityData.get(IS_CHARGING_CROSSBOW);
+	}
+
+	@Override
+	public void setChargingCrossbow(boolean charging) {
+		this.entityData.set(IS_CHARGING_CROSSBOW, charging);
+	}
+
+    @Override
+	public void onCrossbowAttackPerformed() {
+		this.noActionTime = 0;
+	}
+
+
+	public GenericSkeletonCrossbowPose getArmPose() {
+
+        if (this.isChargingCrossbow()) {
+			return GenericSkeletonCrossbowPose.CROSSBOW_CHARGE; //|| this.isHolding(ItemFactory.CANNON_ITEM)
+		} else {
+			return this.isHolding(Items.CROSSBOW) && CrossbowItem.isCharged(this.getWeaponItem()) ? GenericSkeletonCrossbowPose.CROSSBOW_HOLD : GenericSkeletonCrossbowPose.DEFAULT;
+		}
+
+	}
+
+    @Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(IS_CHARGING_CROSSBOW, false);
+	}
+
+
+
+
+
+
+
+
+
     //Sound Events
     @Override
-	protected SoundEvent getAmbientSound() { //TODO: Replace with Sunken Skeleton Sound
+	protected SoundEvent getAmbientSound() {
 		return SoundEvents.SKELETON_AMBIENT;
 	}
 
@@ -214,12 +218,14 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		return i >= 0 && i < this.inventory.getContainerSize() ? SlotAccess.forContainer(this.inventory, i) : super.getSlot(mappedIndex);
 	}
 
+    //Arrow Shooting
+
 	@Override
 	public void performRangedAttack(LivingEntity target, float pullProgress) {
 		ItemStack mainHandStack = this.getMainHandItem();
 
 		if (mainHandStack.getItem() instanceof CrossbowItem) {
-			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.CROSSBOW));
+			/*ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.CROSSBOW));
 			ItemStack itemStack2 = this.getProjectile(itemStack);
 			AbstractArrow persistentProjectileEntity = this.getArrow(itemStack2, pullProgress, itemStack);
 			double d = target.getX() - this.getX();
@@ -228,7 +234,8 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			double g = Math.sqrt(d * d + f * f);
 			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.level().addFreshEntity(persistentProjectileEntity);
+			this.level().addFreshEntity(persistentProjectileEntity);*/
+            this.performCrossbowAttack(this, 1.6F);
 		}
 
 		else if (mainHandStack.getItem() instanceof CannonItem) {
@@ -258,8 +265,6 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 			this.level().addFreshEntity(persistentProjectileEntity);
 		}
-
-
 	}
 
 

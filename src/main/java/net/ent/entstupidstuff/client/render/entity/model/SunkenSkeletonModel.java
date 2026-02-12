@@ -114,7 +114,7 @@ public class SunkenSkeletonModel <S extends CrossbowSkeletonEntityRenderState> e
 		}
 
 		//next
-		GenericSkeletonCrossbow.State state = crossbowSkeletonEntityRenderState.illagerState;
+		/*GenericSkeletonCrossbow.IllagerArmPose state = crossbowSkeletonEntityRenderState.illagerState;
 		if (state == GenericSkeletonCrossbow.State.ATTACKING) {
 			if (crossbowSkeletonEntityRenderState.getMainHandItem().isEmpty()) {
 				AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, crossbowSkeletonEntityRenderState.attackTime, crossbowSkeletonEntityRenderState.ageInTicks);
@@ -127,7 +127,7 @@ public class SunkenSkeletonModel <S extends CrossbowSkeletonEntityRenderState> e
 			AnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, true);
 		} else if (state == GenericSkeletonCrossbow.State.CROSSBOW_CHARGE) {
 			AnimationUtils.animateCrossbowCharge(this.rightArm, this.leftArm, crossbowSkeletonEntityRenderState.crossbowPullTime, crossbowSkeletonEntityRenderState.ticksUsingItem, true);
-		}
+		}*/
 	}
 
 	public void setArmAngle(CrossbowSkeletonEntityRenderState illagerEntityRenderState, HumanoidArm arm, PoseStack matrixStack) {

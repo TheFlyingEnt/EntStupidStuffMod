@@ -8,6 +8,7 @@ import net.ent.entstupidstuff.datagen.ModEnchantmentTagProvider;
 import net.ent.entstupidstuff.datagen.ModLangProvider;
 import net.ent.entstupidstuff.datagen.ModEntityLootTableGenerator;
 import net.ent.entstupidstuff.datagen.ModEntityTagProvider;
+import net.ent.entstupidstuff.datagen.ModJukeboxSongs;
 import net.ent.entstupidstuff.datagen.ModLootTableProvider;
 import net.ent.entstupidstuff.datagen.ModPaintingVariant;
 import net.ent.entstupidstuff.datagen.ModPaintingVariantTagsProvider;
@@ -32,13 +33,7 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		pack.addProvider(ModRegistryDataGenerator::new);
-
 		pack.addProvider(ModEntityLootTableGenerator::new);
-		//pack.addProvider(ModFishingLootTableGenerator::new);
-
-        //TODO: Adding Fishs to FishingLootTableGenerator
-
-
 		pack.addProvider(ModelProvider::new);
 		pack.addProvider(ModLootTableProvider::new);
 		pack.addProvider(BlockTagProvider::new);
@@ -49,10 +44,6 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(ModWorldGenerator::new);
         pack.addProvider(ModEntityTagProvider::new);
         pack.addProvider(ModPaintingVariantTagsProvider::new);
-
-		//pack.addProvider(ModModelProvider::new);
-
-
 		
 	}
 
@@ -68,5 +59,6 @@ public class EntStupidStuffDataGenerator implements DataGeneratorEntrypoint {
         registryBuilder.add(Registries.CAT_VARIANT, ModCatVarient::bootstrap);
         registryBuilder.add(Registries.PAINTING_VARIANT, ModPaintingVariant::bootstrap); 
         registryBuilder.add(Registries.COW_VARIANT, ModCowVarient::bootstrap); 
+        registryBuilder.add(Registries.JUKEBOX_SONG, ModJukeboxSongs::bootstrap);
 	}
 }

@@ -13,10 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class ZebraFishRenderer extends MobRenderer<ZebraFishEntity, ZebraFishEntityRenderState, ZebraFishModel> {
-   private static final ResourceLocation TEXTURE_NAVY = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zebra_fish/zebra_fish_2.png");
-   private static final ResourceLocation TEXTURE_BLUE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zebra_fish/zebra_fish_3.png");
-   private static final ResourceLocation TEXTURE_NAVY_LEPORD = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zebra_fish/zebra_fish_2_leopard.png");
-   private static final ResourceLocation TEXTURE_BLUE_LEPORD  = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zebra_fish/zebra_fish_3_leopard.png");
+   private static final ResourceLocation TEXTURE_NAVY = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/zebra_fish_2.png");
+   private static final ResourceLocation TEXTURE_BLUE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/zebra_fish_3.png");
+   private static final ResourceLocation TEXTURE_NAVY_LEPORD = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/zebra_fish_2_leopard.png");
+   private static final ResourceLocation TEXTURE_BLUE_LEPORD  = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fish/zebra_fish_3_leopard.png");
 
    public ZebraFishRenderer(EntityRendererProvider.Context context) {
       super(context, new ZebraFishModel(context.bakeLayer(ModEntityModelLayers.ZEBRA_FISH)), 0.3F);

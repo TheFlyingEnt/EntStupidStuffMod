@@ -144,10 +144,10 @@ public class ModEntitySpawns  {
         SpawnPlacements.register(EntityFactory.PIGLIN_WARRIOR, SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, PiglinWarriorEntity::canSpawn);
 
-        //Fungal Skeleton
+        //Sporebone
         BiomeModifications.addSpawn(BiomeSelectors.includeByKey(ModBiomes.UNDERGROUND_BLUE_MUSHROOM),
-            MobCategory.MONSTER, EntityFactory.FUNGAL_SKELETON, 30, 1, 3);
-        SpawnPlacements.register(EntityFactory.FUNGAL_SKELETON, SpawnPlacementTypes.ON_GROUND,
+            MobCategory.MONSTER, EntityFactory.SPORE_BONE, 30, 1, 3);
+        SpawnPlacements.register(EntityFactory.SPORE_BONE, SpawnPlacementTypes.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING, FungalSkeletonEntity::checkMonsterSpawnRules);
 
         //Zombie Fungal

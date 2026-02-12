@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FungalSkeletonGlowRender extends EyesLayer<SkeletonRenderState, SkeletonModel<SkeletonRenderState>> {
 
-    private static final RenderType SKIN = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/fungal_skeleton_e.png"));
+    private static final RenderType SKIN = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/sporebone_glow.png"));
 
     public FungalSkeletonGlowRender(RenderLayerParent<SkeletonRenderState, SkeletonModel<SkeletonRenderState>> featureRendererContext) {
         super(featureRendererContext);

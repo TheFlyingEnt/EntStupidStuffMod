@@ -13,7 +13,7 @@ public class ModTags {
 
     // # Enchantment
 
-     public static final TagKey<Enchantment> HAMMER_ENCHANTMENTS = TagKey.create(
+    public static final TagKey<Enchantment> HAMMER_ENCHANTMENTS = TagKey.create(
         Registries.ENCHANTMENT,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "enchantable/hammer")
     );
@@ -31,6 +31,11 @@ public class ModTags {
     public static final TagKey<Item> MUSHROOM_CRAFTING = TagKey.create(
         Registries.ITEM, 
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mushroom_crafting")
+    );
+
+    public static final TagKey<Item> SPOREPER_DROP_MUSIC_DISCS = TagKey.create(
+        Registries.ITEM, 
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sporeper_drop_music_discs")
     );
     
 

@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SoulSkeletonGlowRender extends EyesLayer<SkeletonRenderState, SkeletonModel<SkeletonRenderState>> {
 
-    private static final RenderType SKIN = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/soul_skeleton_e.png"));
+    private static final RenderType SKIN = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/soul_skeleton_glow.png"));
 
     public SoulSkeletonGlowRender(RenderLayerParent<SkeletonRenderState, SkeletonModel<SkeletonRenderState>> featureRendererContext) {
         super(featureRendererContext);

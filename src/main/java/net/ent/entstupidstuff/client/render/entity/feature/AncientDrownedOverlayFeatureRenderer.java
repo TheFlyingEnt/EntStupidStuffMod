@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class AncientDrownedOverlayFeatureRenderer extends RenderLayer<ZombieRenderState, AncientDrownedModel> {
-   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ancient_drowned_outer_layer.png");
+   private static final ResourceLocation SKIN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/ancient_drowned_outer_layer.png");
    private final AncientDrownedModel model;
    private final AncientDrownedModel babyModel;
 

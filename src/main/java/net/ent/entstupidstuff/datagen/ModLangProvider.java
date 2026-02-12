@@ -38,10 +38,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("subtitles.ent." + "entity.sporeper.explode", "Sporeper Explodes");
         translationBuilder.add("subtitles.ent." + "entity.generic.underwater_explode", "Underwater Explosion");
 
-        translationBuilder.add("subtitles.ent." + "entity.lobber.ambient", "Zombie groans");
+        translationBuilder.add("subtitles.ent." + "entity.lobber.ambient", "Lobber groans");
         translationBuilder.add("subtitles.ent." + "entity.lobber.converted_to_zombie", "Lobber converts to Zombie ");
-        translationBuilder.add("subtitles.ent." + "entity.lobber.death", "Zombie dies");
-        translationBuilder.add("subtitles.ent." + "entity.lobber.hurt", "Zombie hurts");
+        translationBuilder.add("subtitles.ent." + "entity.lobber.death", "Lobber dies");
+        translationBuilder.add("subtitles.ent." + "entity.lobber.hurt", "Lobber hurts");
         translationBuilder.add("subtitles.ent." + "entity.lobber.step", "Footsteps");
 
         translationBuilder.add("subtitles.ent." + "entity.scorched.ambient", "Scorched groans");
@@ -62,12 +62,12 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("subtitles.ent." + "entity.frostbitten.hurt", "Frostbitten hurts");
         translationBuilder.add("subtitles.ent." + "entity.frostbitten.step", "Footsteps");
 
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.ambient", "Fungal Skeleton groans");
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.converted_to_stray", "Fungal Skeleton converts to Stray ");
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.death", "Fungal Skeleton dies");
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.hurt", "Fungal Skeleton hurts");
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.shoot", "Fungal Skeleton shoots ");
-        translationBuilder.add("subtitles.ent." + "entity.fungal_skeleton.step", "Footsteps");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.ambient", "Sporebone groans");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.converted_to_stray", "Sporebone converts to Stray ");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.death", "Sporebone dies");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.hurt", "Sporebone hurts");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.shoot", "Sporebone shoots ");
+        translationBuilder.add("subtitles.ent." + "entity.sporebone.step", "Footsteps");
 
         translationBuilder.add("subtitles.ent." + "entity.phantom_skeleton.ambient", "Phantom Skeleton groans");
         translationBuilder.add("subtitles.ent." + "entity.phantom_skeleton.converted_to_stray", "Phantom Skeleton converts to Stray ");
@@ -120,20 +120,20 @@ public class ModLangProvider extends FabricLanguageProvider  {
         // ## Blocks
 
         translationBuilder.add(BlockFactory.callBlock("redwood" + "_planks"), "Redwood Planks");
-        groupWoodFamilty(translationBuilder, "redwood", "", "Redwood", "");
+        groupWoodFamilty(translationBuilder, "redwood", "", "Redwood", "", true);
         addSaplings(translationBuilder, "redwood", "Redwood");
 
         translationBuilder.add(BlockFactory.callBlock("fir" + "_planks"), "Fir Planks");
-        groupWoodFamilty(translationBuilder, "fir", "", "Fir", "");
+        groupWoodFamilty(translationBuilder, "fir", "", "Fir", "", true);
         addSaplings(translationBuilder, "fir", "Fir");
 
         translationBuilder.add(BlockFactory.callBlock("maple" + "_planks"), "Maple Planks");
-        groupWoodFamilty(translationBuilder, "maple", "", "Maple", "");
+        groupWoodFamilty(translationBuilder, "maple", "", "Maple", "", true);
         addSaplings(translationBuilder, "maple", "Maple");
         translationBuilder.add(BlockFactory.callBlock("orange_petals"), "Orange Petals");
 
         translationBuilder.add(BlockFactory.callBlock("phantom" + "_planks"), "Phantom Planks");
-        groupWoodFamilty(translationBuilder, "phantom", "", "Phantom", "");
+        groupWoodFamilty(translationBuilder, "phantom", "", "Phantom", "", false);
         translationBuilder.add(BlockFactory.callBlock("phantom_lantern"), "Phantom Lantern");
 
         //groupFungalFamily(translationBuilder, "fungal", "Fungal");
@@ -424,6 +424,12 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.DOUBLE_BARREL_CROSSBOW, "Double Barrel Crossbow");
         translationBuilder.add(ItemFactory.DUMMY_CROSSBOW, "(DEVITEM) DUMMY CROSSBOW");
 
+        translationBuilder.add(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.pirate_tavern", "Artem Hramushkin - A Pirate's Tavern");
+
+        translationBuilder.add(ItemFactory.MUSIC_DISC_FUNGALDELIC, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.fungaldelic", "Flynn Entity - Fungaldelic");
+
         translationBuilder.add(ItemFactory.SUNKEN_SKELETON_SPAWN, "Sunken Skeleton Spawn Egg");
         translationBuilder.add(ItemFactory.SUNKEN_SKELETON2_SPAWN, "Sunken Skeleton (Crossbow) Spawn Egg");
         translationBuilder.add(ItemFactory.SKELETON_PIRATE_CAPTAIN_SPAWN, "Skeleton Pirate Spawn Egg");
@@ -537,10 +543,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
         
     }
 
-    public void groupWoodFamilty(TranslationBuilder translationBuilder, String Main, String Varient, String MainString, String VarientString) {
+    public void groupWoodFamilty(TranslationBuilder translationBuilder, String Main, String Varient, String MainString, String VarientString, Boolean withLeaves) {
         BaseFamily(translationBuilder, Main, Varient, MainString, VarientString);
         InteractionFamily(translationBuilder, Main, Varient, MainString, VarientString);
-        NatureFamily(translationBuilder, Main, Varient, MainString, VarientString, true);
+        NatureFamily(translationBuilder, Main, Varient, MainString, VarientString, withLeaves);
         MosicFamily(translationBuilder, Main, Varient, MainString, VarientString);
     }
 
@@ -562,9 +568,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
     public void NatureFamily(TranslationBuilder translationBuilder, String blockName, String varient, String MainString, String VarientString, Boolean withLeaves) {
         translationBuilder.add(BlockFactory.callBlock(blockName + "_log" + varient), VarientString + MainString + " Log");
-        translationBuilder.add(BlockFactory.callBlock("stripped_" + blockName + "_log" + varient), "Stripped" + VarientString + MainString + " Log");
+        translationBuilder.add(BlockFactory.callBlock("stripped_" + blockName + "_log" + varient), "Stripped " + VarientString + MainString + " Log");
         translationBuilder.add(BlockFactory.callBlock(blockName + "_wood" + varient), VarientString + MainString + " Wood");
-        translationBuilder.add(BlockFactory.callBlock("stripped_" + blockName + "_wood" + varient), "Stripped" + VarientString + MainString + " Wood");
+        translationBuilder.add(BlockFactory.callBlock("stripped_" + blockName + "_wood" + varient), "Stripped " + VarientString + MainString + " Wood");
     
         if (withLeaves) {
             translationBuilder.add(BlockFactory.callBlock(blockName + "_leaves" + varient), VarientString + MainString + " Leaves");

@@ -41,6 +41,7 @@ public class FurTroutModel extends EntityModel<LivingEntityRenderState> {
 
     @Override
     public void setupAnim(LivingEntityRenderState livingEntityRenderState) {
+        System.out.println("setupAnim2 - setupAnimFurTourt: ");
     	super.setupAnim(livingEntityRenderState);
     	float f = livingEntityRenderState.isInWater ? 1.0F : 1.5F;
     	this.tailFin.yRot = -f * 0.45F * Mth.sin(0.6F * livingEntityRenderState.ageInTicks);

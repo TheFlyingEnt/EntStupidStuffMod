@@ -10,4 +10,6 @@ public class ArmoredPillagerRenderState extends IllagerRenderState {
 
     public ArmoredPillagerEntity.Variant variant = ArmoredPillagerEntity.Variant.GOLD;
 
+    public boolean isCaptain;
+
 }

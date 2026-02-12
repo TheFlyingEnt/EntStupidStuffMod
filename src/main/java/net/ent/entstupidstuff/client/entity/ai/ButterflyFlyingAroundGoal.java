@@ -6,6 +6,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 import java.util.Random;
 
+@Deprecated
 public class ButterflyFlyingAroundGoal extends Goal {
     private final ButterflyEntity butterfly;
     private final double speed;
@@ -14,6 +15,7 @@ public class ButterflyFlyingAroundGoal extends Goal {
     private Vec3 target;
     private boolean hovering;
 
+    @Deprecated
     public ButterflyFlyingAroundGoal(ButterflyEntity butterfly, double speed, int interval) {
         this.butterfly = butterfly;
         this.speed = speed;

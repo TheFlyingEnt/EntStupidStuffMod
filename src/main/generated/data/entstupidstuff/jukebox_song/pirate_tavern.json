@@ -1,0 +1,8 @@
+{
+  "comparator_output": 9,
+  "description": {
+    "translate": "jukebox_song.entstupidstuff.pirate_tavern"
+  },
+  "length_in_seconds": 73.0,
+  "sound_event": "entstupidstuff:music_disc.pirate_tavern"
+}

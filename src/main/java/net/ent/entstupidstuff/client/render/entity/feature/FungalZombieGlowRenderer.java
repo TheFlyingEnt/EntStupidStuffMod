@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class FungalZombieGlowRenderer extends EyesLayer<ZombieRenderState, ZombieModel<ZombieRenderState>> {
 
     private static final RenderType SKIN = RenderType.eyes(
-        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_fungal_e.png")
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_fungal_glow.png")
     );
 
     public FungalZombieGlowRenderer(RenderLayerParent<ZombieRenderState, ZombieModel<ZombieRenderState>> featureRendererContext) {

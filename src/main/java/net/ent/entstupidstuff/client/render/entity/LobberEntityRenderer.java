@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
-public class LobberEntityRenderer extends AbstractZombieRenderer<LobberZombieEntity, ZombieRenderState, LobberModel> { //TODO 1.21.10: Please Check
-    
+public class LobberEntityRenderer extends AbstractZombieRenderer<LobberZombieEntity, ZombieRenderState, LobberModel> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie/zombie_lobber.png");
 
     protected LobberEntityRenderer(Context context, LobberModel mainModel, LobberModel babyMainModel, ArmorModelSet<LobberModel> equipmentModelData, ArmorModelSet<LobberModel> equipmentModelData2) {
         super(
@@ -38,7 +38,7 @@ public class LobberEntityRenderer extends AbstractZombieRenderer<LobberZombieEnt
 
     @Override
     public ResourceLocation getTextureLocation(ZombieRenderState zombieEntityRenderState) {
-        return ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/zombie_lobber.png");
+        return TEXTURE;
     }
 
     @Override

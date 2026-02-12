@@ -1,10 +1,8 @@
 package net.ent.entstupidstuff.item.base;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import net.ent.entstupidstuff.client.entity.passive.MahiMahiEntity;
-import net.ent.entstupidstuff.client.entity.passive.ZebraFishEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

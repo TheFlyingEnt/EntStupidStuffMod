@@ -36,7 +36,7 @@ public class BlockGroupFactory {
     public static void groupWoodFamilty(String MainName, String Varient, Block MainBlock, Boolean flamable, MapColor MainColor, MapColor SecondColor) {
         BlockFactoryHelper.BaseFamily(MainName, Varient, MainBlock, flamable);
         BlockFactoryHelper.InteractionFamily(MainName, Varient, MainBlock, MainColor, flamable, true);
-        BlockFactoryHelper.NatureFamily(MainName , Varient, MainColor, SecondColor, flamable, true);
+        BlockFactoryHelper.NatureFamily(MainName , Varient, MainColor, SecondColor, flamable);
         BlockFactoryHelper.MosicFamily(MainName , Varient, MainBlock, flamable);
 
         BlockFamilies.familyBuilder(MainBlock)

@@ -3,7 +3,6 @@ package net.ent.entstupidstuff.datagen;
 import java.util.concurrent.CompletableFuture;
 
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -226,7 +225,7 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
 
         if (withLeaves) {
             this.add(BlockFactory.callBlock(MainName + "_leaves" + Variant), block -> this.createLeavesDrops(block, BlockFactory.callBlock(MainName + "_sapling" + Variant), NORMAL_LEAVES_SAPLING_CHANCES));
-            //createLeavesDrops(BlockFactory.callBlock(MainName + "_leaves" + Variant), BlockFactory.callBlock(MainName + "_sapling" + Variant), NORMAL_LEAVES_SAPLING_CHANCES); //Leaves, Sapplings, NORMAL_LEAVES_SAPLING_CHANCES
+            createLeavesDrops(BlockFactory.callBlock(MainName + "_leaves" + Variant), BlockFactory.callBlock(MainName + "_sapling" + Variant), NORMAL_LEAVES_SAPLING_CHANCES); //Leaves, Sapplings, NORMAL_LEAVES_SAPLING_CHANCES
             dropSelf((BlockFactory.callBlock(MainName + "_sapling" + Variant)));
             dropSelf((BlockFactory.callBlock("potted_" + MainName + "_sapling" + Variant)));
         }
@@ -250,6 +249,8 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         
     }
 
+    // # Adding Loot Table Reg
+
     @Override
     public void dropSelf(Block block) {
         System.out.println("Adding Lootable " + block);
@@ -262,57 +263,5 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider  {
         super.add(block, builder);
     }
 
-
-
-    //Legacy
-
-    public void attachVanillaGlassDoor(){
-        for (String FamilyBase : ModBlocks.V_WOOD_VARIENTS) {
-            add((BlockFactory.callBlock(FamilyBase + "_glass_door")), createDoorTable(BlockFactory.callBlock(FamilyBase + "_glass_door")));
-            dropSelf((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
-        }
-
-        add((BlockFactory.callBlock("iron" + "_glass_door")), createDoorTable(BlockFactory.callBlock("iron" + "_glass_door")));
-
-        for (String FamilyBase : ModBlocks.COPPER_VARIENTS) {
-            add((BlockFactory.callBlock(FamilyBase + "_glass_door")), createDoorTable(BlockFactory.callBlock(FamilyBase + "_glass_door")));
-            dropSelf((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor")));
-        }
-    }
-
-    public void generateWoodType(String FamilyBase, String varient, boolean natural){
-        if (varient == null) {varient = "";}
-        else {varient = "_" + varient;}
-
-        if (natural) {
-            dropSelf((BlockFactory.callBlock(FamilyBase + "_log" + varient)));
-            dropSelf((BlockFactory.callBlock("stripped_" + FamilyBase + "_log" + varient)));
-            dropSelf((BlockFactory.callBlock(FamilyBase + "_wood" + varient)));
-            dropSelf((BlockFactory.callBlock("stripped_" + FamilyBase + "_wood" + varient)));
-        }
-
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_planks" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_trapdoor" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_fence" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_fence_gate" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_pressure_plate" + varient)));
-        add((BlockFactory.callBlock(FamilyBase + "_slab" + varient)), createSlabItemTable(BlockFactory.callBlock(FamilyBase + "_slab" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_stairs" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_button" + varient)));
-        add((BlockFactory.callBlock(FamilyBase + "_door" + varient)), createDoorTable(BlockFactory.callBlock(FamilyBase + "_door" + varient)));
-        add((BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)), createDoorTable(BlockFactory.callBlock(FamilyBase + "_glass_door" + varient)));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_glass_trapdoor" + varient)));
-
-    }
-
-    public void generateStone(String FamilyBase) {
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_wall")));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_slab")));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_stairs")));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "s")));
-        dropSelf((BlockFactory.callBlock("cracked_" + FamilyBase + "s")));
-        dropSelf((BlockFactory.callBlock(FamilyBase + "_chiseled")));
-
-    }
 
 }

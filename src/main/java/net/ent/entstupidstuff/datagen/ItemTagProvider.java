@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
@@ -111,10 +112,28 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         .add(ItemFactory.callItem("golden_hammer"));
 
         valueLookupBuilder(ModTags.MUSHROOM_CRAFTING).add(
-        Blocks.MUSHROOM_STEM.asItem(),
-        Blocks.RED_MUSHROOM_BLOCK.asItem(),
-        BlockFactory.callBlock("blue_mushroom_block").asItem(),
-        Blocks.BROWN_MUSHROOM_BLOCK.asItem());
+            Blocks.MUSHROOM_STEM.asItem(),
+            Blocks.RED_MUSHROOM_BLOCK.asItem(),
+            BlockFactory.callBlock("blue_mushroom_block").asItem(),
+            Blocks.BROWN_MUSHROOM_BLOCK.asItem()
+        );
+
+        valueLookupBuilder(ModTags.SPOREPER_DROP_MUSIC_DISCS)//.addTag(ItemTags.CREEPER_DROP_MUSIC_DISCS)
+        .add(
+            Items.MUSIC_DISC_13,
+				Items.MUSIC_DISC_CAT,
+				Items.MUSIC_DISC_BLOCKS,
+				Items.MUSIC_DISC_CHIRP,
+				Items.MUSIC_DISC_FAR,
+				Items.MUSIC_DISC_MALL,
+				Items.MUSIC_DISC_MELLOHI,
+				Items.MUSIC_DISC_STAL,
+				Items.MUSIC_DISC_STRAD,
+				Items.MUSIC_DISC_WARD,
+				Items.MUSIC_DISC_11,
+				Items.MUSIC_DISC_WAIT,
+            ItemFactory.MUSIC_DISC_FUNGALDELIC
+        );
 
 
 

@@ -17,9 +17,9 @@ import net.minecraft.resources.ResourceLocation;
 public class CannonballEntityRenderer extends EntityRenderer<CannonballEntity, ArrowRenderState> {
 	private final CannonballModel model;
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball.png");
-    private static final ResourceLocation TEXTURE_PHANTOM_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_soulflame.png");
-    private static final ResourceLocation TEXTURE_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/cannon_ball_flame.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/projectiles/cannon_ball.png");
+    private static final ResourceLocation TEXTURE_PHANTOM_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/projectiles/cannon_ball_soulflame.png");
+    private static final ResourceLocation TEXTURE_FIRE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/projectiles/cannon_ball_flame.png");
 
 	public CannonballEntityRenderer(EntityRendererProvider.Context context) {
 		super(context);

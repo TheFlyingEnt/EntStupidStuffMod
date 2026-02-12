@@ -38,7 +38,7 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
         this.valueLookupBuilder(EntityTypeTags.SKELETONS)
         .add(
             EntityFactory.SOUL_SKELETON,
-            EntityFactory.FUNGAL_SKELETON,
+            EntityFactory.SPORE_BONE,
             EntityFactory.SUNKEN_SKELETON_CROSSBOW,
             EntityFactory.METAL_SKELETON,
             EntityFactory.PHANTOM_SKELETON
@@ -128,7 +128,7 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
             EntityFactory.ZOMBIE_SCORCHED,
             EntityFactory.ZOMBIE_SCORCHED,
             EntityFactory.SOUL_SKELETON,
-            EntityFactory.FUNGAL_SKELETON,
+            EntityFactory.SPORE_BONE,
             EntityFactory.SUNKEN_SKELETON_CROSSBOW,
             EntityFactory.METAL_SKELETON,
             EntityFactory.PHANTOM_SKELETON

@@ -2,7 +2,6 @@ package net.ent.entstupidstuff.item.base;
 
 import java.util.function.Consumer;
 
-import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.minecraft.ChatFormatting;

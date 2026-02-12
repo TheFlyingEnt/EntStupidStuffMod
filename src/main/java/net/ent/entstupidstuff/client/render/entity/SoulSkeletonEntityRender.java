@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
 public class SoulSkeletonEntityRender extends AbstractSkeletonRenderer<SoulSkeletonEntity, SkeletonRenderState>  {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/soul_skeleton.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/skeleton/soul_skeleton.png");
 
 	public SoulSkeletonEntityRender(EntityRendererProvider.Context context) {
 		super(context, ModelLayers.SKELETON, ModelLayers.SKELETON_ARMOR);

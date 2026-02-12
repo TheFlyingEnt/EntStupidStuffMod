@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.world;
 
 import java.util.List;
+import java.util.OptionalInt;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
@@ -64,12 +65,14 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.configurations.VegetationPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.CherryFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RandomizedIntStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.CherryTrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraft.world.level.levelgen.placement.CaveSurface;
@@ -81,7 +84,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 public class ModConfiguredFeatures {
 
-	// # Places
+	// # Tree Features
 
 	public static final TrunkPlacerType<ThreexThreeTrunkPlacer> THREE_BY_THREE_TRUNK =
         Registry.register(BuiltInRegistries.TRUNK_PLACER_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "three_by_three_trunk"), new TrunkPlacerType<>(ThreexThreeTrunkPlacer.CODEC));
@@ -106,8 +109,11 @@ public class ModConfiguredFeatures {
 
     // # ConfiguredFeatures
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MAPLE_KEY = registerKey("maple");
-	public static final ResourceKey<ConfiguredFeature<?, ?>> FIR_KEY = registerKey("fir");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MAPLE_TREE_KEY = registerKey("maple");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MAPLE_FANCY_TREE_KEY = registerKey("maple_fancy");
+	public static final ResourceKey<ConfiguredFeature<?, ?>> FIR_TREE_KEY = registerKey("fir");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DATE_PALM_TREE_KEY = registerKey("date_palm");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DESERT_WILLOW_TREE_KEY = registerKey("desert_willow");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_LIMESTONE = registerKey("ore_limestone");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_LIMESTONE_LOWER = registerKey("ore_limestone_lower");
@@ -121,14 +127,6 @@ public class ModConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> LARGE_SPIKED_ICE = registerKey("larger_spiked_ice");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_SPIKED_ICE = registerKey("spiked_ice");
 
-	 public static final ResourceKey<ConfiguredFeature<?, ?>> DATE_PALM =
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "date_palm"));
-
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DESERT_WILLOW =
-            ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "desert_willow"));
-
-	//Blue Mushrom Biome
-
 	public static final ResourceKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY = registerKey("huge_blue_mushroom");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> SHROOMIUM_FLOOR_KEY = registerKey("shroomium_floor");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> MUD_LAYER_KEY = registerKey("mud_layer");
@@ -136,34 +134,42 @@ public class ModConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_SPORE_KEY  = registerKey("mushroom_spore");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_AURA_BLOSSOM_KEY  = registerKey("mushroom_aura_block_key");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SILKWORM_VINE_KEY  = registerKey("silkworm_vine_key");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_FOREST_VEGETATION_BONEMEAL  = registerKey("mushroom_vegetation_bonemeal");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_THALASSITE = registerKey("ore_thalassite");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> CRYSTAL_SPIKES  = registerKey("crystal_spikes");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_FOREST_VEGETATION_BONEMEAL  = registerKey("mushroom_vegetation_bonemeal");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MAPLE_FLOOR_VEGETATION_KEY  = registerKey("maple_floor_vegetation");
+    
 
     // # Features
 
-	public static final Feature<DripstoneClusterConfiguration> SPIKED_ICE_CLUSTER_FEATURE = Registry.register(
-			BuiltInRegistries.FEATURE,
-			ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice_cluster"),
-			new SpikedIceClusterFeature(DripstoneClusterConfiguration.CODEC));
+	public static final Feature<DripstoneClusterConfiguration> SPIKED_ICE_CLUSTER_FEATURE = 
+    Registry.register(
+		BuiltInRegistries.FEATURE,
+		ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice_cluster"),
+		new SpikedIceClusterFeature(DripstoneClusterConfiguration.CODEC)
+    );
 
-	public static final Feature<LargeDripstoneConfiguration> LARGER_SPIKED_ICE_FEATURE = Registry.register(
-			BuiltInRegistries.FEATURE,
-			ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "large_spiked_ice"),
-			new LargerSpikedIceFeature(LargeDripstoneConfiguration.CODEC));
+	public static final Feature<LargeDripstoneConfiguration> LARGER_SPIKED_ICE_FEATURE = 
+    Registry.register(
+		BuiltInRegistries.FEATURE,
+		ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "large_spiked_ice"),
+		new LargerSpikedIceFeature(LargeDripstoneConfiguration.CODEC)
+    );
 
-	public static final Feature<PointedDripstoneConfiguration> SMALL_SPIKED_ICE_FEATURE = Registry.register(
-			BuiltInRegistries.FEATURE,
-			ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice"),
-			new SmallSpikedIceFeature(PointedDripstoneConfiguration.CODEC));
+	public static final Feature<PointedDripstoneConfiguration> SMALL_SPIKED_ICE_FEATURE = 
+    Registry.register(
+		BuiltInRegistries.FEATURE,
+		ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "spiked_ice"),
+		new SmallSpikedIceFeature(PointedDripstoneConfiguration.CODEC)
+    );
 
 	public static final Feature<CrystalSpikeFeatureConfig> CRYSTAL_SPIKES_FEATURE =
-        Registry.register(
-            BuiltInRegistries.FEATURE,
-            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "crystal_spikes"),
-            new CrystalSpikeFeature(CrystalSpikeFeatureConfig.CODEC)
-        );
+    Registry.register(
+        BuiltInRegistries.FEATURE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "crystal_spikes"),
+        new CrystalSpikeFeature(CrystalSpikeFeatureConfig.CODEC)
+    );
 
     public static final Feature<NetherForestVegetationConfig> MUSHROOM_FOREST_VEGETATION = 
     Registry.register(
@@ -171,30 +177,6 @@ public class ModConfiguredFeatures {
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mushroom_forest_vegetation"),
 		new MushroomVegetationFeature(NetherForestVegetationConfig.CODEC)
 	);
-
-    
-
-    /*public static final Feature<SimpleBlockFeatureConfig> BLUE_MUSHROOM_VEGETATION_FEATURE =
-        Registry.register(
-            Registries.FEATURE,
-            Identifier.of(EntStupidStuff.MOD_ID, "spiked_ice"),
-            new SimpleBlockFeature(SimpleBlockFeatureConfig.CODEC)
-		);
-    
-
-		/*
-		 * ConfiguredFeatures.register(
-			context,
-			BLUE_MUSHROOM_VEGETATION,
-			Feature.SIMPLE_BLOCK,
-			new SimpleBlockFeatureConfig(
-				new WeightedBlockStateProvider(
-					Pool.<BlockState>builder()
-						.add(BlockFactory.callBlock("azure_flower_bed").getDefaultState(), 10)
-				)
-			)
-		);
-		 */
 
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
@@ -214,7 +196,6 @@ public class ModConfiguredFeatures {
 		FeatureUtils.register(context, ORE_PACKED_ICE_LOWER, Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(stoneReplacables, Blocks.PACKED_ICE.defaultBlockState())), 64));
 		FeatureUtils.register(context, ORE_SNOW, Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(stoneReplacables, Blocks.SNOW_BLOCK.defaultBlockState())), 64));
 		FeatureUtils.register(context, ORE_SNOW_UPPER, Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(stoneReplacables, Blocks.SNOW_BLOCK.defaultBlockState())), 64));
-
 		FeatureUtils.register(context, ORE_THALASSITE, Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(stoneReplacables, BlockFactory.callBlock("thalassite_ore").defaultBlockState())), 7));
 
 		BlockPredicate blockPredicate = BlockPredicate.matchesBlocks(
@@ -279,19 +260,6 @@ public class ModConfiguredFeatures {
 
 		// # Underground Mushroom Biome:
 
-		/*ConfiguredFeatures.register(
-			context,
-			HUGE_BLUE_MUSHROOM_KEY,
-			Feature.HUGE_RED_MUSHROOM,
-			new HugeMushroomFeatureConfig(
-				BlockStateProvider.of(BlockFactory.callBlock("blue_mushroom_block").getDefaultState().with(MushroomBlock.DOWN, Boolean.valueOf(false))),
-				BlockStateProvider.of(
-					Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, Boolean.valueOf(false)).with(MushroomBlock.DOWN, Boolean.valueOf(false))
-				),
-				2
-			)
-		);*/
-
 		FeatureUtils.register(
 			context,
 			HUGE_BLUE_MUSHROOM_KEY,
@@ -353,6 +321,7 @@ public class ModConfiguredFeatures {
 		);
 
 		Block AZURE_FLOWER_BED = BlockFactory.callBlock("azure_flower_bed");
+        Block ORANGE_FLOWER_BED = BlockFactory.callBlock("orange_petals");
 
 		FeatureUtils.register(
 			context,
@@ -360,6 +329,15 @@ public class ModConfiguredFeatures {
 			Feature.FLOWER,
 			new RandomPatchConfiguration(
 				96, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(segmentedBlock(AZURE_FLOWER_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))))
+			)
+		);
+
+        FeatureUtils.register(
+			context,
+			MAPLE_FLOOR_VEGETATION_KEY,
+			Feature.FLOWER,
+			new RandomPatchConfiguration(
+				96, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(segmentedBlock(ORANGE_FLOWER_BED, 1, 4, FlowerBedBlock.AMOUNT, FlowerBedBlock.FACING))))
 			)
 		);
 
@@ -497,7 +475,7 @@ public class ModConfiguredFeatures {
 
 		FeatureUtils.register(
 			context,
-			FIR_KEY,
+			FIR_TREE_KEY,
 			Feature.TREE,
 			new TreeConfiguration.TreeConfigurationBuilder(
 					BlockStateProvider.simple(BlockFactory.callBlock("fir_log")),
@@ -513,7 +491,7 @@ public class ModConfiguredFeatures {
 
         FeatureUtils.register(
 			context,
-			MAPLE_KEY,
+			MAPLE_TREE_KEY,
 			Feature.TREE,
 			new TreeConfiguration.TreeConfigurationBuilder(
 				BlockStateProvider.simple(BlockFactory.callBlock("maple_log")),
@@ -536,11 +514,26 @@ public class ModConfiguredFeatures {
 			.build()
 		);
 
+        FeatureUtils.register(
+			context,
+			MAPLE_FANCY_TREE_KEY,
+			Feature.TREE,
+			new TreeConfiguration.TreeConfigurationBuilder(
+				BlockStateProvider.simple(BlockFactory.callBlock("maple_log")),
+				new FancyTrunkPlacer(3, 11, 0),
+				BlockStateProvider.simple(BlockFactory.callBlock("maple_leaves")),
+				new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
+				new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4))
+			)
+            .ignoreVines()
+			.build()
+		);
+
 		// # Oasis
 
 		FeatureUtils.register(
 			context,
-			DATE_PALM,
+			DATE_PALM_TREE_KEY,
 			Feature.TREE,
 			new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.OAK_LOG),
@@ -558,7 +551,7 @@ public class ModConfiguredFeatures {
 
 		FeatureUtils.register(
 			context,
-			DESERT_WILLOW,
+			DESERT_WILLOW_TREE_KEY,
 			Feature.TREE,
 			new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.OAK_LOG),
