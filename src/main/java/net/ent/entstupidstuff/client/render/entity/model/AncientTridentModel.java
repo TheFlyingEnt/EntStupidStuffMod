@@ -23,7 +23,8 @@ public class AncientTridentModel extends Model<Unit>  {
 		super(root, RenderType::entitySolid);
 	}
 
-   public static LayerDefinition getTexturedModelData() {
+   @SuppressWarnings("unused")
+    public static LayerDefinition getTexturedModelData() {
       MeshDefinition modelData = new MeshDefinition();
 		PartDefinition modelPartData = modelData.getRoot();
 		PartDefinition pole = modelPartData.addOrReplaceChild("pole", CubeListBuilder.create().texOffs(0, 6).addBox(-0.5F, 2.0F, -0.5F, 1.0F, 25.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));

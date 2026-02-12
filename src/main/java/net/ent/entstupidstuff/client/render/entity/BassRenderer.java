@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
-import net.ent.entstupidstuff.client.render.entity.model.BassModel;
+import net.ent.entstupidstuff.client.render.entity.model.fish.BassModel;
 import net.ent.entstupidstuff.client.render.entity.state.BassRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

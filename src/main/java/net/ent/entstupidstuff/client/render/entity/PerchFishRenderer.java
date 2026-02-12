@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.PerchFishEntity;
-import net.ent.entstupidstuff.client.render.entity.model.PerchFishModel;
+import net.ent.entstupidstuff.client.render.entity.model.fish.PerchFishModel;
 import net.ent.entstupidstuff.client.render.entity.state.PerchFishRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

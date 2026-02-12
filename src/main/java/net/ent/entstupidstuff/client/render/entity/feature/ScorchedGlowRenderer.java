@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity.feature;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.ScorchedModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;

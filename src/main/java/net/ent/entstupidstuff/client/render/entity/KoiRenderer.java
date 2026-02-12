@@ -9,7 +9,7 @@ import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
 import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
-import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
+import net.ent.entstupidstuff.client.render.entity.model.fish.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

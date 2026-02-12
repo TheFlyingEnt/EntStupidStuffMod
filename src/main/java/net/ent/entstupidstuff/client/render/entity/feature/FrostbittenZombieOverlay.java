@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.render.entity.feature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
-import net.ent.entstupidstuff.client.render.entity.model.FrostbittenZombieModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.FrostbittenZombieModel;
 import net.ent.entstupidstuff.client.render.entity.state.FrostbittenEntityRenderState;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;

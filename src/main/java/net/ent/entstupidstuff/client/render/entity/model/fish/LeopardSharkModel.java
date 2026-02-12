@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.model;
+package net.ent.entstupidstuff.client.render.entity.model.fish;
 
 /*
  * TODO: Add Leopard Shark's

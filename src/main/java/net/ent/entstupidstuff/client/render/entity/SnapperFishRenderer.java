@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.passive.SnapperFishEntity;
-import net.ent.entstupidstuff.client.render.entity.model.SnapperFishModel;
+import net.ent.entstupidstuff.client.render.entity.model.fish.SnapperFishModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;

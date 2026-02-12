@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
 import net.ent.entstupidstuff.client.entity.passive.KoiPatternSecondary;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
-import net.ent.entstupidstuff.client.render.entity.model.KoiModel;
+import net.ent.entstupidstuff.client.render.entity.model.fish.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;

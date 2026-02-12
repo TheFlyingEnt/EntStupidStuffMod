@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.model;
+package net.ent.entstupidstuff.client.render.entity.model.zombie;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.ZombieModel;

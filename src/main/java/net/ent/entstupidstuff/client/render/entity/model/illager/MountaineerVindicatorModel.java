@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.model;
+package net.ent.entstupidstuff.client.render.entity.model.illager;
 
 import net.ent.entstupidstuff.client.entity.mob.MountaineerVindicatorEntity;
 import net.ent.entstupidstuff.client.render.entity.state.MountaineerVindicatorRenderState;

@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.render.entity.feature.AncientDrownedOverlayFeatureRenderer;
-import net.ent.entstupidstuff.client.render.entity.model.AncientDrownedModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.AncientDrownedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractZombieRenderer;

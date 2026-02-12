@@ -13,19 +13,18 @@ import net.minecraft.util.Mth;
 
 public class SilkmothModel extends EntityModel<SilkmothRenderstate>{
 
-    private final ModelPart head;
-	private final ModelPart body;
-	private final ModelPart left_wing;
+    private final ModelPart left_wing;
 	private final ModelPart right_wing;
 
     public SilkmothModel(ModelPart root) {
         super(root);
-		this.head = root.getChild("head");
-		this.body = root.getChild("body");
+		root.getChild("head");
+		root.getChild("body");
 		this.left_wing = root.getChild("left_wing");
 		this.right_wing = root.getChild("right_wing");
 	}
 
+    @SuppressWarnings("unused")
     public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();

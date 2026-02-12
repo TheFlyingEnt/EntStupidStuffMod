@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.client.render.entity.model;
+package net.ent.entstupidstuff.client.render.entity.model.zombie;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;

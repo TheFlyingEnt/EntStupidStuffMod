@@ -4,7 +4,7 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.ScorchedZombieEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.ScorchedGlowRenderer;
-import net.ent.entstupidstuff.client.render.entity.model.ScorchedModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.ScorchedModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractZombieRenderer;
 import net.minecraft.client.renderer.entity.ArmorModelSet;

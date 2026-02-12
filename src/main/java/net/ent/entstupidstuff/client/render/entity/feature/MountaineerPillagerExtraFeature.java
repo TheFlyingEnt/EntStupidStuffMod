@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.MountaineerPillagerEntity;
-import net.ent.entstupidstuff.client.render.entity.model.MountaineerPillagerModel;
+import net.ent.entstupidstuff.client.render.entity.model.illager.MountaineerPillagerModel;
 import net.ent.entstupidstuff.client.render.entity.state.MountaineerPillagerRenderState;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.EntityModelSet;

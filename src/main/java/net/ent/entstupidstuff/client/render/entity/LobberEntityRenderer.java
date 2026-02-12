@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.LobberZombieEntity;
-import net.ent.entstupidstuff.client.render.entity.model.LobberModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.LobberModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractZombieRenderer;
 import net.minecraft.client.renderer.entity.ArmorModelSet;

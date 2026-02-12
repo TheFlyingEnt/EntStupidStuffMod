@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.SlimedZombieEntity;
-import net.ent.entstupidstuff.client.render.entity.model.SlimedZombieModel;
+import net.ent.entstupidstuff.client.render.entity.model.zombie.SlimedZombieModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.AbstractZombieRenderer;

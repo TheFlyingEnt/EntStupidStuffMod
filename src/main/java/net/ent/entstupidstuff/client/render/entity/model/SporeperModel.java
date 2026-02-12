@@ -18,9 +18,8 @@ public class SporeperModel extends EntityModel<CreeperRenderState> {
 	private final ModelPart rightHindLeg;
 	private final ModelPart leftFrontLeg;
 	private final ModelPart rightFrontLeg;
-	private static final int HEAD_AND_BODY_Y_PIVOT = 6;
-
-    public SporeperModel(ModelPart modelPart) {
+    
+	public SporeperModel(ModelPart modelPart) {
 		super(modelPart);
 		this.head = modelPart.getChild(PartNames.HEAD);
 		this.rightHindLeg = modelPart.getChild(PartNames.RIGHT_HIND_LEG);

@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.MountaineerPillagerEntity;
-import net.ent.entstupidstuff.client.render.entity.model.MountaineerPillagerModel;
+import net.ent.entstupidstuff.client.render.entity.model.illager.MountaineerPillagerModel;
 import net.ent.entstupidstuff.client.render.entity.state.MountaineerPillagerRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllagerRenderer;

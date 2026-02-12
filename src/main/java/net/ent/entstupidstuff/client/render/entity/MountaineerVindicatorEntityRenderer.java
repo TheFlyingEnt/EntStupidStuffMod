@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.MountaineerVindicatorEntity;
-import net.ent.entstupidstuff.client.render.entity.model.MountaineerVindicatorModel;
+import net.ent.entstupidstuff.client.render.entity.model.illager.MountaineerVindicatorModel;
 import net.ent.entstupidstuff.client.render.entity.state.MountaineerVindicatorRenderState;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;

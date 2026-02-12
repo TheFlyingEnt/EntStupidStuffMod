@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
-import net.ent.entstupidstuff.client.render.entity.model.PillagerHelmetModel;
+import net.ent.entstupidstuff.client.render.entity.model.illager.PillagerHelmetModel;
 import net.ent.entstupidstuff.client.render.entity.state.ArmoredPillagerRenderState;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

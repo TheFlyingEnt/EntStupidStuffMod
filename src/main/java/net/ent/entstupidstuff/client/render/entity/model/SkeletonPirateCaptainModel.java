@@ -1,7 +1,5 @@
 package net.ent.entstupidstuff.client.render.entity.model;
 
-import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.entity.mob.SkeletonPirateCaptainEntity;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;
