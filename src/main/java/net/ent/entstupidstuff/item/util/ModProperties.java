@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.item.base;
+package net.ent.entstupidstuff.item.util;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.resources.ResourceLocation;

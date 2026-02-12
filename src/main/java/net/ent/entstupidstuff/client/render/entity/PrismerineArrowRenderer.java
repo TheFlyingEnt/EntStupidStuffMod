@@ -34,6 +34,7 @@ public class PrismerineArrowRenderer extends ArrowRenderer<UnderwaterArrowEntity
         matrices.popPose();
     }
 
+    @SuppressWarnings("unused")
     private void renderGlowLayer(TippableArrowRenderState state, PoseStack matrices, SubmitNodeCollector commandQueue) {
         commandQueue.submitCustomGeometry(matrices, RenderType.entityTranslucentEmissive(TEXTURE), (entry, vertexConsumer) -> {
             int light = 0xF000F0;

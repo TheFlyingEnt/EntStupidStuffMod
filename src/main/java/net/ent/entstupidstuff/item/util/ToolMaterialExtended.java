@@ -61,7 +61,8 @@ public record ToolMaterialExtended(
 			.build();
 	}
 
-	public Item.Properties applySwordProperties(Item.Properties properties, float f, float g) {
+	@SuppressWarnings("deprecation")
+    public Item.Properties applySwordProperties(Item.Properties properties, float f, float g) {
 		HolderGetter<Block> holderGetter = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
 		return this.applyCommonProperties(properties)
 			.component(

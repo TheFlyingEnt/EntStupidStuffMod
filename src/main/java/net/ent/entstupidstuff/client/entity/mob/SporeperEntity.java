@@ -1,7 +1,5 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.client.entity.ai.SporeperIgniteGoal;
@@ -56,10 +54,7 @@ public class SporeperEntity extends Monster {
 	private static final EntityDataAccessor<Integer> FUSE_SPEED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> CHARGED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> IGNITED = SynchedEntityData.defineId(SporeperEntity.class, EntityDataSerializers.BOOLEAN);
-	private static final boolean DEFAULT_CHARGED = false;
-	private static final boolean DEFAULT_IGNITED = false;
-	private static final short DEFAULT_FUSE = 30;
-	private static final byte DEFAULT_EXPLOSION_RADIUS = 3;
+
 	private int lastFuseTime;
 	private int currentFuseTime;
 	private int fuseTime = 30;

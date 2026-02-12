@@ -78,7 +78,8 @@ public class AncientDrownedEntity extends Drowned{
 		return Zombie.createAttributes().add(Attributes.STEP_HEIGHT, 1.0);
 	}
 
-	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
 	protected void addBehaviourGoals() {
 		this.goalSelector.addGoal(1, new AncientDrownedEntity.WanderAroundOnSurfaceGoal(this, 1.0));
 		this.goalSelector.addGoal(2, new AncientDrownedEntity.TridentAttackGoal(this, 1.0, 40, 10.0F));

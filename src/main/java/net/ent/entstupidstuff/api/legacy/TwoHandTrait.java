@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.api.legacy;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.item.base.WeaponItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;

@@ -1,24 +1,6 @@
-package net.ent.entstupidstuff.item.base;
+package net.ent.entstupidstuff.item.base.combat;
 
-import java.util.List;
-
-import net.ent.entstupidstuff.event.callback.ServerDelayedTasks;
-import net.ent.entstupidstuff.item.itemType.DaggerItem;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 public class WeaponDaggerNew extends Item{
 

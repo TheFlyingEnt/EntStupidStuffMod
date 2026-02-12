@@ -3,8 +3,6 @@ package net.ent.entstupidstuff.client.entity.generic;
 import java.util.EnumSet;
 
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Overwrite;
-
 import net.ent.entstupidstuff.client.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.client.entity.ai.UnderwaterBowAttackGoal;
 import net.ent.entstupidstuff.client.entity.projectile.CannonballEntity;
@@ -168,8 +166,7 @@ public class GenericSkeletonBow extends Skeleton{
 		this.reassessWeaponGoal();
 	}
 
-	@SuppressWarnings("resource")
-    @Override
+	@Override
 	public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
 		super.setItemSlot(slot, stack);
 		if (!this.level().isClientSide()) {

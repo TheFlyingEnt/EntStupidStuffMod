@@ -36,9 +36,7 @@ public class PerchBucketItem extends MobBucketItem{
     }*/
 
         @Override
-        public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
-            PerchFishEntity.Variant variant2 = stack.getOrDefault(ModDataComponentTypes.PERCH_FISH_VARIANT, PerchFishEntity.Variant.DEFAULT);
-            
+        public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {            
             PerchFishEntity.Variant variant = stack.get(ModDataComponentTypes.PERCH_FISH_VARIANT);
             
             if (variant != null) {

@@ -1,6 +1,4 @@
-package net.ent.entstupidstuff.item.base;
-
-import java.util.List;
+package net.ent.entstupidstuff.item.base.combat;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.resources.ResourceLocation;

@@ -1,6 +1,4 @@
-package net.ent.entstupidstuff.client.item; // TODO 1.21.10 Tracker - This is now done though Texturepacks. PLEASE UPDATE
-
-import net.ent.entstupidstuff.item.ItemFactory;
+package net.ent.entstupidstuff.client.item;
 
 @Deprecated
 public class ModelPredicateFactory {

@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.client.entity.mob;
 import java.util.List;
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.base.WeaponHammerItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponHammerItem;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.BlockPos;

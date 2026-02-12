@@ -1,11 +1,11 @@
-package net.ent.entstupidstuff.item.itemType;
+package net.ent.entstupidstuff.item.base.itemType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import net.ent.entstupidstuff.api.IntTrait.ITrait;
-import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

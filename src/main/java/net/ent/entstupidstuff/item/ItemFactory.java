@@ -22,13 +22,15 @@ import net.ent.entstupidstuff.item.base.KoiBucketItem;
 import net.ent.entstupidstuff.item.base.MahiMahiBucketItem;
 import net.ent.entstupidstuff.item.base.PerchBucketItem;
 import net.ent.entstupidstuff.item.base.PrismerineArrowItem;
-import net.ent.entstupidstuff.item.base.WeaponBattleAxeItem;
-import net.ent.entstupidstuff.item.base.WeaponClaymoreItem;
-import net.ent.entstupidstuff.item.base.WeaponDaggerNew;
-import net.ent.entstupidstuff.item.base.WeaponGlaiveItem;
-import net.ent.entstupidstuff.item.base.WeaponHammerItem;
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
 import net.ent.entstupidstuff.item.base.ZebraFishBucketItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponBattleAxeItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponClaymoreItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponDaggerNew;
+import net.ent.entstupidstuff.item.base.combat.WeaponGlaiveItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponHammerItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.itemType.DaggerItem;
+import net.ent.entstupidstuff.item.base.itemType.LongSwordItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponGlaiveItem22;
 import net.ent.entstupidstuff.item.base.weapons.WeaponGreatSwordItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponHalberdItem;
@@ -36,8 +38,6 @@ import net.ent.entstupidstuff.item.base.weapons.WeaponRapierItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponScytheItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponTwinDaggerItem;
 import net.ent.entstupidstuff.item.base.weapons.WeaponWarhammerItem;
-import net.ent.entstupidstuff.item.itemType.DaggerItem;
-import net.ent.entstupidstuff.item.itemType.LongSwordItem;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Direction;
@@ -689,6 +689,7 @@ public class ItemFactory {
 
     // NEW //////////////////////////////////////////
 
+    @SuppressWarnings("unused")
     private static Item registerItemTest(String name, Function<Item.Properties, Item> function) {
         return register(keyOf(name), function, new Item.Properties(), name);
     }

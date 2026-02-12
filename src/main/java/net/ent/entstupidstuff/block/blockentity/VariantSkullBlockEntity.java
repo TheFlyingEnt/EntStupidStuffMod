@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.block.entity;
+package net.ent.entstupidstuff.block.blockentity;
 
 import com.mojang.serialization.Codec;
 

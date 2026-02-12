@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.ent.entstupidstuff.item.ItemFactory;
-import net.ent.entstupidstuff.item.ModTags;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -141,10 +140,6 @@ public class SilkmothEntity extends Animal implements FlyingAnimal{
 			int i = 8;
 			Vec3 vec33 = HoverRandomPos.getPos(SilkmothEntity.this, 8, 7, vec32.x, vec32.z, (float) (Math.PI / 2), 3, 1);
 			return vec33 != null ? vec33 : AirAndWaterRandomPos.getPos(SilkmothEntity.this, 8, 4, -2, vec32.x, vec32.z, (float) (Math.PI / 2));
-		}
-
-		private int getWanderThreshold() {
-			return 48;
 		}
 	}
     

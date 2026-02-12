@@ -54,23 +54,6 @@ public class PointedIceBlock extends Block implements Fallable, SimpleWaterlogge
 	public static final EnumProperty<Direction> VERTICAL_DIRECTION = BlockStateProperties.VERTICAL_DIRECTION;
 	public static final EnumProperty<DripstoneThickness> THICKNESS = BlockStateProperties.DRIPSTONE_THICKNESS;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final int field_31205 = 11;
-	private static final int field_31207 = 2;
-	private static final float field_31208 = 0.02F;
-	private static final float field_31209 = 0.12F;
-	private static final int field_31210 = 11;
-	private static final float WATER_DRIP_CHANCE = 0.17578125F;
-	private static final float LAVA_DRIP_CHANCE = 0;
-	private static final double field_31213 = 0.6;
-	private static final float field_31214 = 1.0F;
-	private static final int field_31215 = 40;
-	private static final int field_31200 = 6;
-	private static final float field_31201 = 2.5F;
-	private static final int field_31202 = 2;
-	private static final float field_33566 = 5.0F;
-	private static final float field_33567 = 0.011377778F;
-	private static final int MAX_STALACTITE_GROWTH = 7;
-	private static final int STALACTITE_FLOOR_SEARCH_RANGE = 10;
 	private static final VoxelShape TIP_MERGE_SHAPE = Block.column(6.0, 0.0, 16.0);
 	private static final VoxelShape UP_TIP_SHAPE = Block.column(6.0, 0.0, 11.0);
 	private static final VoxelShape DOWN_TIP_SHAPE = Block.column(6.0, 5.0, 16.0);
@@ -402,11 +385,9 @@ public class PointedIceBlock extends Block implements Fallable, SimpleWaterlogge
 
 	private static void createParticle(Level world, BlockPos pos, BlockState state, Fluid fluid) {
 		Vec3 vec3d = state.getOffset(pos);
-		double d = 0.0625;
 		double e = pos.getX() + 0.5 + vec3d.x;
 		double f = pos.getY() + DOWN_TIP_Y - 0.0625;
 		double g = pos.getZ() + 0.5 + vec3d.z;
-		Fluid fluid2 = getDripFluid(world, fluid);
 		ParticleOptions particleEffect = ParticleTypes.DRIPPING_DRIPSTONE_WATER;
 		world.addParticle(particleEffect, e, f, g, 0.0, 0.0, 0.0);
 	}
@@ -556,14 +537,6 @@ public class PointedIceBlock extends Block implements Fallable, SimpleWaterlogge
 
 	private static boolean canGrow(BlockState dripstoneBlockState, BlockState waterState) {
 		return dripstoneBlockState.is(Blocks.DRIPSTONE_BLOCK) && waterState.is(Blocks.WATER) && waterState.getFluidState().isSource();
-	}
-
-	private static Fluid getDripFluid(Level world, Fluid fluid) {
-		if (fluid.isSame(Fluids.EMPTY)) {
-			return Fluids.WATER;
-		} else {
-			return fluid;
-		}
 	}
 
 	private static Optional<BlockPos> searchInDirection(

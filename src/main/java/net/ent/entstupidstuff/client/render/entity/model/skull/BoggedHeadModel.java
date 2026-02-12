@@ -1,6 +1,5 @@
 package net.ent.entstupidstuff.client.render.entity.model.skull;
 
-import net.minecraft.client.model.SkullModel;
 import net.minecraft.client.model.SkullModelBase;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

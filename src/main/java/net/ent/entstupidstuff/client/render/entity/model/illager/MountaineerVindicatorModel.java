@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
+@SuppressWarnings("unused")
 public class MountaineerVindicatorModel<S extends MountaineerVindicatorRenderState> extends IllagerModel<S>{
 
     private final ModelPart head;

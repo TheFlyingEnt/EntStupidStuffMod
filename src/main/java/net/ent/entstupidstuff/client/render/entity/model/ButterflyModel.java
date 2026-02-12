@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
+@SuppressWarnings("unused")
 public class ButterflyModel extends EntityModel<ButterflyRenderState> {
 	private final ModelPart butterfly;
 	private final ModelPart rightWing;
@@ -26,7 +27,6 @@ public class ButterflyModel extends EntityModel<ButterflyRenderState> {
 		this.leftWing = butterfly.getChild("leftWing");
 	}
 
-	@SuppressWarnings("unused")
 	public static LayerDefinition getTexturedModelData() {
 
 		MeshDefinition modelData = new MeshDefinition();

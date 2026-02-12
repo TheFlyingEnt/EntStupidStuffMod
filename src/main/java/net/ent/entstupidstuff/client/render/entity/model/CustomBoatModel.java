@@ -13,6 +13,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 @Environment(EnvType.CLIENT)
+@SuppressWarnings("unused")
 public class CustomBoatModel extends AbstractBoatModel{
 
 		private static final String LEFT_PADDLE = "left_paddle";
@@ -57,13 +58,15 @@ public class CustomBoatModel extends AbstractBoatModel{
     	this.parts = this.getParts(root).build();
 	}
 
-   protected ImmutableList.Builder<ModelPart> getParts(ModelPart root) {
+    
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected ImmutableList.Builder<ModelPart> getParts(ModelPart root) {
     	ImmutableList.Builder<ModelPart> builder = new ImmutableList.Builder();
     	builder.add(new ModelPart[]{root.getChild("bottom"), root.getChild("back"), root.getChild("front"), root.getChild("right"), root.getChild("left"), this.leftPaddle, this.rightPaddle});
     	return builder;
    }
 
-	public static void addParts(PartDefinition modelPartData) {
+    public static void addParts(PartDefinition modelPartData) {
 		/*modelPartData.addChild(
 			"bottom",
 			ModelPartBuilder.create().uv(0, 0).cuboid(-14.0F, -9.0F, -3.0F, 28.0F, 16.0F, 3.0F),

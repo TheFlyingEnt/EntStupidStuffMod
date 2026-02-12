@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.block.base;
 
-import net.ent.entstupidstuff.block.entity.VariantSkullBlockEntity;
+import net.ent.entstupidstuff.block.blockentity.VariantSkullBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.WallSkullBlock;

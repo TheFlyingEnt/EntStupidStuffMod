@@ -1,9 +1,7 @@
 package net.ent.entstupidstuff.client.render.entity.model.zombie;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.client.render.entity.state.CrossbowSkeletonEntityRenderState;
-import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;

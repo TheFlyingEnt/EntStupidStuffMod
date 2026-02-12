@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.item.base.weapons;
 
 
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

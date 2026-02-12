@@ -4,10 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.ent.entstupidstuff.EntStupidStuff;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -277,7 +273,6 @@ public class DarkEnchantingTableScreen extends AbstractContainerScreen<DarkEncha
 
 		this.nextPageTurningSpeed = Mth.clamp(this.nextPageTurningSpeed, 0.0F, 1.0F);
 		float f = (this.approximatePageAngle - this.nextPageAngle) * 0.4F;
-		float g = 0.2F;
 		f = Mth.clamp(f, -0.2F, 0.2F);
 		this.pageRotationSpeed = this.pageRotationSpeed + (f - this.pageRotationSpeed) * 0.9F;
 		this.nextPageAngle = this.nextPageAngle + this.pageRotationSpeed;

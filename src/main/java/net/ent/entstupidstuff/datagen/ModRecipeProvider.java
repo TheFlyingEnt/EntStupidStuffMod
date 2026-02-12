@@ -225,8 +225,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 // # Added PHANTOM Natural + Planks + Lantern + Torch
                 groupWoodFamilty("phantom", "", true);
-                // TODO: ADD PHANTOM LANTERN
-                // TODO: ADD PHANTOM TORCH
+                // TODO: Add Phantom Torch and Lantern Recipe
 
                 // # Added Fungal Natural + Planks (Regular + Colored)
                 groupWoodFamilty("fungal", "", false);

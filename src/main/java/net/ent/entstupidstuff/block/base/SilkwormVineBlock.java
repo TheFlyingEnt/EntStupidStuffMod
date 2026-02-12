@@ -6,8 +6,6 @@ import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;

@@ -1,8 +1,8 @@
 package net.ent.entstupidstuff.block.base;
 
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.entity.BlockEntityFactory;
-import net.ent.entstupidstuff.block.entity.MushroomAuraBlockEntity;
+import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
+import net.ent.entstupidstuff.block.blockentity.MushroomAuraBlockEntity;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -31,8 +31,6 @@ public class MushroomAuraBlock extends Block implements EntityBlock {
 	protected void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
 		if (randomSource.nextInt(25) == 0) {
 			int i = 5;
-			int j = 4;
-
 			for (BlockPos blockPos2 : BlockPos.betweenClosed(blockPos.offset(-4, -1, -4), blockPos.offset(4, 1, 4))) {
 				if (serverLevel.getBlockState(blockPos2).is(this)) {
 					if (--i <= 0) {
@@ -100,10 +98,7 @@ public class MushroomAuraBlock extends Block implements EntityBlock {
 		int i = pos.getX();
 		int j = pos.getY();
 		int k = pos.getZ();
-		double d = i + random.nextDouble();
-		double e = j + 0.7;
-		double f = k + random.nextDouble();
-		//world.addParticle(ParticleTypesFactory.FALLING_MUSHROOM_SPORE_BLOSSOM, d, e, f, 0.0, 0.0, 0.0);
+
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
 		for (int l = 0; l < 14; l++) {

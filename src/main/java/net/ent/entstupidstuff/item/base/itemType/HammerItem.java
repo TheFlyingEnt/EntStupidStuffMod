@@ -1,11 +1,6 @@
-package net.ent.entstupidstuff.item.itemType;
+package net.ent.entstupidstuff.item.base.itemType;
 
-import java.util.List;
-
-import net.ent.entstupidstuff.api.IntTrait.IBluntTrait;
-import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
-import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ToolMaterial;
 
@@ -50,6 +45,7 @@ public class HammerItem extends WeaponUpdatedItem{
         this.knockbackStrength = 20;
     }
 
+    @SuppressWarnings("unused")
     private void applyKnockback(LivingEntity target, LivingEntity attacker, double strength) {
         double xRatio = attacker.getX() - target.getX();
         double zRatio = attacker.getZ() - target.getZ();

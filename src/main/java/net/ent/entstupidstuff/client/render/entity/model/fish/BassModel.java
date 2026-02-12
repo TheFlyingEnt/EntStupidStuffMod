@@ -46,6 +46,7 @@ public class BassModel extends EntityModel<LivingEntityRenderState> {
 		return TexturedModelData.of(modelData, 32, 32);
 	}*/
 
+    @SuppressWarnings("unused")
     public static LayerDefinition getTexturedModelData() {
 		MeshDefinition modelData = new MeshDefinition();
 		PartDefinition modelPartData = modelData.getRoot();

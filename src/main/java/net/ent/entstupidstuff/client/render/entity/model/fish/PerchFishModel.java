@@ -19,6 +19,7 @@ public class PerchFishModel extends EntityModel<LivingEntityRenderState>{
       this.tailFin = root.getChild("tail_fin");
     }
 
+    @SuppressWarnings("unused")
     public static LayerDefinition getTexturedModelData() {
 		MeshDefinition modelData = new MeshDefinition();
 		PartDefinition modelPartData = modelData.getRoot();

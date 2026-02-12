@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.item.base.weapons;
 
 
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;

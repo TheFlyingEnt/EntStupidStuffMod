@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.MapCodec;
 
-import net.ent.entstupidstuff.block.entity.DarkEnchantingTableBlockEntity;
+import net.ent.entstupidstuff.block.blockentity.DarkEnchantingTableBlockEntity;
 import net.ent.entstupidstuff.screen.DarkEnchantmentScreenHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

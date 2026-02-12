@@ -2,7 +2,7 @@ package net.ent.entstupidstuff.item.base.weapons;
 
 import java.util.List;
 
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;

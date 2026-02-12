@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
+@SuppressWarnings("unused")
 public class RedPandaModel extends EntityModel<LivingEntityRenderState>{
     
     public final ModelPart head;

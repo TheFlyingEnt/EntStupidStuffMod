@@ -20,7 +20,6 @@ public class AncientDrownedOverlayFeatureRenderer extends RenderLayer<ZombieRend
       super(context);
       this.model = new AncientDrownedModel(loader.bakeLayer(ModEntityModelLayers.ANCIENT_DROWNED_OUTER));
       this.babyModel = new AncientDrownedModel(loader.bakeLayer(ModEntityModelLayers.ANCIENT_DROWNED_OUTER_BABY));
-      //this.babyModel = new DrownedEntityModel(loader.getModelPart(EntityModelLayers.DROWNED_BABY_OUTER)); // TODO: 1.21.10 Addition
    }
 
    public void submit(

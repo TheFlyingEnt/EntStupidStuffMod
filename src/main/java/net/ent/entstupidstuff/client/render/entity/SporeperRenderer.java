@@ -6,7 +6,6 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.SporeperEntity;
 import net.ent.entstupidstuff.client.render.entity.feature.SporeperChargeFeatureRenderer;
-import net.ent.entstupidstuff.client.render.entity.feature.SporeperGlowRender;
 import net.ent.entstupidstuff.client.render.entity.model.SporeperModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

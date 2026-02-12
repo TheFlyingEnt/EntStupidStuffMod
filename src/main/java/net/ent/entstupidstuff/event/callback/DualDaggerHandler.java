@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.event.callback;
 
-import net.ent.entstupidstuff.item.base.WeaponDaggerNew;
-import net.ent.entstupidstuff.item.itemType.DaggerItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponDaggerNew;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;

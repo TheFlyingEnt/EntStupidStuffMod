@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

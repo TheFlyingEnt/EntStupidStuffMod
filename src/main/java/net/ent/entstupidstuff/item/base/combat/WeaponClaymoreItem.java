@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.item.base;
+package net.ent.entstupidstuff.item.base.combat;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

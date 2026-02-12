@@ -16,7 +16,6 @@ import net.ent.entstupidstuff.block.base.ShroomiumBlock;
 import net.ent.entstupidstuff.block.base.SilkwormVineBlock;
 import net.ent.entstupidstuff.block.base.SilkwormVinePlantBlock;
 import net.ent.entstupidstuff.block.base.TransparentMushroomBlock;
-import net.ent.entstupidstuff.block.base.VariantSkullBlock;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;

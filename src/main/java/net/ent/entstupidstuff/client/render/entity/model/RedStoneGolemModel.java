@@ -16,17 +16,14 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 
 @Environment(EnvType.CLIENT)
+@SuppressWarnings("unused")
 public class RedStoneGolemModel extends EntityModel<LivingEntityRenderState>{
     
     private final ModelPart upperbody;
 	private final ModelPart head;
-	@SuppressWarnings("unused")
 	private final ModelPart leftarm;
-	@SuppressWarnings("unused")
 	private final ModelPart lefthand;
-	@SuppressWarnings("unused")
 	private final ModelPart rightarm;
-	@SuppressWarnings("unused")
 	private final ModelPart righthand;
 	private final ModelPart leftleg;
 	private final ModelPart rightleg;
@@ -46,8 +43,6 @@ public class RedStoneGolemModel extends EntityModel<LivingEntityRenderState>{
 		this.rightleg = root.getChild("rightleg");
 	}
 
-
-	@SuppressWarnings("unused")
     public static LayerDefinition getTexturedModelData() {
 		MeshDefinition modelData = new MeshDefinition();
 		PartDefinition modelPartData = modelData.getRoot();

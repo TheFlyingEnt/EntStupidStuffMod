@@ -1,8 +1,6 @@
-package net.ent.entstupidstuff.item.itemType;
+package net.ent.entstupidstuff.item.base.itemType;
 
-import java.util.List;
-
-import net.ent.entstupidstuff.item.base.WeaponItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponItem;
 import net.minecraft.world.item.ToolMaterial;
 
 public class BattleAxeItem extends WeaponItem{

@@ -43,7 +43,6 @@ public class SkullBlockRendererLayerMixin {
                 if (direction == null) {
                     poseStack.translate(0.5F, 0.0F, 0.5F);
                 } else {
-                    float h = 0.25F;
                     poseStack.translate(0.5F - direction.getStepX() * 0.25F, 0.25F, 0.5F - direction.getStepZ() * 0.25F);
                 }
 

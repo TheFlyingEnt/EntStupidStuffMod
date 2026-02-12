@@ -19,7 +19,7 @@ public class SlimedZombieOverlayFeatureRenderer extends RenderLayer<ZombieRender
    public SlimedZombieOverlayFeatureRenderer( RenderLayerParent<ZombieRenderState, SlimedZombieModel> context, EntityModelSet loader) {
       super(context);
       this.model = new SlimedZombieModel(loader.bakeLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER));
-      this.babyModel = new SlimedZombieModel(loader.bakeLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER)); //TODO: 1.21.10 Please Fix
+      this.babyModel = new SlimedZombieModel(loader.bakeLayer(ModEntityModelLayers.ZOMBIE_SLIMED_OUTER));
    }
 
    @Override

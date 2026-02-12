@@ -3,12 +3,10 @@ package net.ent.entstupidstuff.block.base;
 import com.mojang.serialization.MapCodec;
 
 import net.ent.entstupidstuff.world.ModConfiguredFeatures;
-import net.ent.entstupidstuff.world.ModPlacedFeatures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.features.NetherFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -61,12 +59,9 @@ public class ShroomiumBlock extends Block implements BonemealableBlock {
 
     @Override
     public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
-        //Nothing yet: TBA
-        BlockState blockState2 = serverLevel.getBlockState(blockPos);
 		BlockPos blockPos2 = blockPos.above();
 		ChunkGenerator chunkGenerator = serverLevel.getChunkSource().getGenerator();
 		Registry<ConfiguredFeature<?, ?>> registry = serverLevel.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-
         this.place(registry, ModConfiguredFeatures.MUSHROOM_FOREST_VEGETATION_BONEMEAL, serverLevel, chunkGenerator, randomSource, blockPos2);
     }
 

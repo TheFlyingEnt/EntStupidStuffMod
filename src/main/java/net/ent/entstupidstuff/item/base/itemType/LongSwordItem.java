@@ -1,13 +1,6 @@
-package net.ent.entstupidstuff.item.itemType;
+package net.ent.entstupidstuff.item.base.itemType;
 
-import java.util.List;
-
-import net.ent.entstupidstuff.api.IntTrait.ICircleSlashTrait;
-import net.ent.entstupidstuff.api.IntTrait.ITrait;
-import net.ent.entstupidstuff.api.IntTrait.ITwoHandTrait;
-import net.ent.entstupidstuff.api.weaponTrait.CircleSlashTrait;
-import net.ent.entstupidstuff.item.base.WeaponItem;
-import net.ent.entstupidstuff.item.base.WeaponUpdatedItem;
+import net.ent.entstupidstuff.item.base.combat.WeaponUpdatedItem;
 import net.minecraft.world.item.ToolMaterial;
 
 

@@ -31,7 +31,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.EnchantingTableBlock;
-import com.mojang.datafixers.util.Pair;
 
 /*
  * EnchantmentScreen

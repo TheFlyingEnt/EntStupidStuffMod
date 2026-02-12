@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.block.entity;
+package net.ent.entstupidstuff.block.blockentity;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
@@ -8,7 +8,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 /*
  * Vanilla Reference: BlockEntityType.java

@@ -25,7 +25,7 @@ public class MountaineerPillagerExtraFeature extends RenderLayer<MountaineerPill
 
     public MountaineerPillagerExtraFeature(RenderLayerParent<MountaineerPillagerRenderState, IllagerModel<MountaineerPillagerRenderState>> renderLayerParent, EntityModelSet entityModelSet) {
         super(renderLayerParent);
-        this.model = new MountaineerPillagerModel(entityModelSet.bakeLayer(ModEntityModelLayers.MOUNTAINEER_PILLAGER));
+        this.model = new MountaineerPillagerModel<>(entityModelSet.bakeLayer(ModEntityModelLayers.MOUNTAINEER_PILLAGER));
     }
 
 

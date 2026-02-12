@@ -1,8 +1,9 @@
-package net.ent.entstupidstuff.item.base;
+package net.ent.entstupidstuff.item.base.combat;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

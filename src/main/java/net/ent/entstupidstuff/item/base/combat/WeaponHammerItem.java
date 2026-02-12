@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.item.base;
+package net.ent.entstupidstuff.item.base.combat;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.ent.entstupidstuff.item.util.ModProperties;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.ChatFormatting;
