@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "entstupidstuff:item/coral_skeleton_null_spawn_egg"
-  }
-}

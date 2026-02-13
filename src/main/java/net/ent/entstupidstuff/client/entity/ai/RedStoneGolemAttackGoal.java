@@ -7,7 +7,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 
-public class RedStoneGolemAttackGoal  extends MeleeAttackGoal  {
+/*public class RedStoneGolemAttackGoal  extends MeleeAttackGoal  {
 
     private final RedStoneGolemEntity entity;
     private int attackDelay = 20;
@@ -83,7 +83,7 @@ public class RedStoneGolemAttackGoal  extends MeleeAttackGoal  {
         super.stop();
     }
 
-}
+}*/
 
 
 

@@ -376,7 +376,7 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.SOUL_SKELETON_SPAWN, "Soul Skeleton Spawn Egg");
 
         translationBuilder.add(ItemFactory.ZEBRA_FISH, "Zebra Fish");
-        translationBuilder.add(ItemFactory.ZEBRA_FISH_BUCKET, "Zebra Fish bucket");
+        translationBuilder.add(ItemFactory.ZEBRA_FISH_BUCKET, "Zebra Fish Bucket");
         translationBuilder.add(ItemFactory.ZEBRA_FISH_SPAWN_EGG, "Zebra Fish Spawn Egg");
         
         translationBuilder.add(ItemFactory.ALLIGATOR_GAR_BUCKET, "Alligator Gar Bucket");
@@ -384,13 +384,13 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.COOKED_ALLIGATOR_GAR, "Cooked Alligator Gar");
         translationBuilder.add(ItemFactory.ALLIGATOR_GAR_SPAWN_EGG, "Alligator Gar Spawn Egg");
 
-        translationBuilder.add(ItemFactory.MACKEREL_BUCKET, "Mackerel bucket");
-        translationBuilder.add(ItemFactory.MACKEREL, "Mackerel");
+        translationBuilder.add(ItemFactory.MACKEREL_BUCKET, "Mackerel Bucket");
+        translationBuilder.add(ItemFactory.MACKEREL, "Raw Mackerel");
         translationBuilder.add(ItemFactory.COOKED_MACKEREL, "Cooked Mackerel");
         translationBuilder.add(ItemFactory.MACKEREL_SPAWN_EGG, "Mackerel Spawn Egg");
         
-        translationBuilder.add(ItemFactory.BASS_BUCKET, "Bass bucket");
-        translationBuilder.add(ItemFactory.BASS, "Bass");
+        translationBuilder.add(ItemFactory.BASS_BUCKET, "Bass Bucket");
+        translationBuilder.add(ItemFactory.BASS, "Raw Bass");
         translationBuilder.add(ItemFactory.COOKED_BASS, "Cooked Bass");
         translationBuilder.add(ItemFactory.BASS_SPAWN_EGG, "Bass Spawn Egg");
         
@@ -402,17 +402,17 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.KOI_SPAWN_EGG, "Koi Spawn Egg");
         
         translationBuilder.add(ItemFactory.PERCH_BUCKET, "Perch Bucket");
-        translationBuilder.add(ItemFactory.PERCH, "Perch");
+        translationBuilder.add(ItemFactory.PERCH, "Raw Perch");
         translationBuilder.add(ItemFactory.COOKED_PERCH, "Cooked Perch");
         translationBuilder.add(ItemFactory.PERCH_SPAWN_EGG, "Perch Spawn Egg");
         
         translationBuilder.add(ItemFactory.MAHIMAHI_BUCKET, "Mahi-Mahi Bucket");
-        translationBuilder.add(ItemFactory.MAHIMAHI, "Mahi-Mahi");
+        translationBuilder.add(ItemFactory.MAHIMAHI, "Raw Mahi-Mahi");
         translationBuilder.add(ItemFactory.COOKED_MAHIMAHI, "Cooked Mahi-Mahi");
         translationBuilder.add(ItemFactory.MAHIMAHI_SPAWN_EGG, "Mahi-Mahi Spawn Egg");
 
-        translationBuilder.add(ItemFactory.SNAPPER_BUCKET, "Snapper bucket");
-        translationBuilder.add(ItemFactory.SNAPPER, "Snapper");
+        translationBuilder.add(ItemFactory.SNAPPER_BUCKET, "Snapper Bucket");
+        translationBuilder.add(ItemFactory.SNAPPER, "Raw Snapper");
         translationBuilder.add(ItemFactory.COOKED_SNAPPER, "Cooked Snapper");
         translationBuilder.add(ItemFactory.SNAPPER_SPAWN_EGG, "Snapper Spawn Egg");
         
@@ -424,12 +424,6 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.DOUBLE_BARREL_CROSSBOW, "Double Barrel Crossbow");
         translationBuilder.add(ItemFactory.DUMMY_CROSSBOW, "(DEVITEM) DUMMY CROSSBOW");
 
-        translationBuilder.add(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, "Music Disc");
-        translationBuilder.add("jukebox_song.entstupidstuff.pirate_tavern", "Artem Hramushkin - A Pirate's Tavern");
-
-        translationBuilder.add(ItemFactory.MUSIC_DISC_FUNGALDELIC, "Music Disc");
-        translationBuilder.add("jukebox_song.entstupidstuff.fungaldelic", "Flynn Entity - Fungaldelic");
-
         translationBuilder.add(ItemFactory.SUNKEN_SKELETON_SPAWN, "Sunken Skeleton Spawn Egg");
         translationBuilder.add(ItemFactory.SUNKEN_SKELETON2_SPAWN, "Sunken Skeleton (Crossbow) Spawn Egg");
         translationBuilder.add(ItemFactory.SKELETON_PIRATE_CAPTAIN_SPAWN, "Skeleton Pirate Spawn Egg");
@@ -439,6 +433,12 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.ANCIENT_TRIDENT, "Ancient Trident Spawn Egg");
 
         translationBuilder.add(ItemFactory.PHANTOM_SKELETON_SPAWN, "Phantom Skeleton Spawn Egg");
+
+        translationBuilder.add(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.pirate_tavern", "Artem Hramushkin - A Pirate's Tavern");
+
+        translationBuilder.add(ItemFactory.MUSIC_DISC_FUNGALDELIC, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.fungaldelic", "Flynn Entity - Fungaldelic");
 
         translationBuilder.add(ItemFactory.WOODEN_HAMMER, "Wooden Hammer");
         translationBuilder.add(ItemFactory.STONE_HAMMER, "Stone Hammer");
@@ -450,12 +450,35 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         translationBuilder.add(ItemFactory.GLOWING_SILK, "Glowing Silk");
 
+        translationBuilder.add(ItemFactory.DROWNED_HEAD, "Drowned Head");
+        translationBuilder.add(ItemFactory.BLAZE_HEAD, "Blaze Head");
+        translationBuilder.add(ItemFactory.BREEZE_HEAD, "Breeze Head");
+        translationBuilder.add(ItemFactory.HUSK_HEAD, "Husk Head");
+        translationBuilder.add(ItemFactory.STRAY_SKULL, "Stray Skull");
+        translationBuilder.add(ItemFactory.BOGGED_SKULL, "Bogged Head");
+        translationBuilder.add(ItemFactory.ZOMBIE_LOBBER_HEAD, "Lobber Head");
+        translationBuilder.add(ItemFactory.ZOMBIE_SCORCHED_HEAD, "Scorched Head");
+        translationBuilder.add(ItemFactory.ZOMBIE_SLIMED_HEAD, "Slimed Head");
+        translationBuilder.add(ItemFactory.ZOMBIE_FROSTBITTEN_HEAD, "Frostbittern Head");
+        translationBuilder.add(ItemFactory.ZOMBIE_FUNGAL_HEAD, "Zombie Fungal Head");
+        translationBuilder.add(ItemFactory.SPOREBONE_SKULL, "Sporebone Skull");
+        translationBuilder.add(ItemFactory.SPOREPER_HEAD, "Sporeper Head");
+        translationBuilder.add(ItemFactory.SOUL_SKELETON_SKULL, "Soul Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_BRAIN_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_FIRE_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_HORN_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_TUBE_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_BUBBLE_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.CORAL_SKELETON_UNUSED_SKULL, "Coral Skeleton Skull");
+        translationBuilder.add(ItemFactory.METAL_SKELETON_DEFAULT_SKULL, "Metallic Skeleton Skull");
+        translationBuilder.add(ItemFactory.METAL_SKELETON_RED_SKULL, "Metallic Skeleton Skull");
+        translationBuilder.add(ItemFactory.METAL_SKELETON_BLUE_SKULL, "Metallic Skeleton Skull");
+
         // # Potion Effects
+
         translationBuilder.add("effect.entstupidstuff.hallucinating", "Hallucinating");
         translationBuilder.add("effect.entstupidstuff.rgb_shift", "RGB Shift");
         translationBuilder.add("effect.entstupidstuff.creeper", "Creeper");
-
-
 
 
 
@@ -487,10 +510,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         // Shields
 
-        addShield("wooden_oak", "Wooden Oak ", translationBuilder);
-        addShield("wooden_spruce", "Wooden Spruce ", translationBuilder);
-        addShield("wooden_birch", "Wooden Birch ", translationBuilder);
-        addShield("wooden_jungle", "Wooden Jungle ", translationBuilder);
+        addShield("wooden_oak", "Wooden Oak", translationBuilder);
+        addShield("wooden_spruce", "Wooden Spruce", translationBuilder);
+        addShield("wooden_birch", "Wooden Birch", translationBuilder);
+        addShield("wooden_jungle", "Wooden Jungle", translationBuilder);
         addShield("wooden_acacia", "Wooden Acacia", translationBuilder);
         addShield("wooden_dark_oak", "Wooden Dark Oak", translationBuilder);
         addShield("wooden_mangrove", "Wooden Mangrove", translationBuilder);
@@ -531,9 +554,6 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("painting.entstupidstuff.soviets.title", "The Symbol of the Soviets");
         translationBuilder.add("painting.entstupidstuff.amanandfox.title", "A Man and his Fox");
         
-
-
-
         translationBuilder.add("painting.entstupidstuff.friendmine.author", "N.M - Ent");
         translationBuilder.add("painting.entstupidstuff.cookiesteal.author", "N.M - Ent");
         translationBuilder.add("painting.entstupidstuff.trking.author", "N.M - Ent");

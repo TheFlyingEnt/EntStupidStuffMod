@@ -15,67 +15,36 @@ public final class KoiVariantRegistry {
 
     private static final List<KoiVariant> VARIANTS = new ArrayList<>();
 
-    /* ------------------------------------------------------------
-     *  VARIANT GENERATION
-     * ------------------------------------------------------------ */
+    //Value 85 is Basic Red Koi
 
     static {
         for (KoiBaseColor base : KoiBaseColor.values()) {
-
-            // Base only
-            register(
-                base.name().toLowerCase(),
-                base,
-                null,
-                null
-            );
+            //Register a Base Color
+            VARIANTS.add(new KoiVariant(base, null, null));
 
             for (KoiPatternSecondary secondary : KoiPatternSecondary.values()) {
+                //Generate for [Secondary] + Blank
+                VARIANTS.add(new KoiVariant(base, secondary, null));
 
-                // Base + secondary
-                register(
-                    base.name().toLowerCase() + "_" + secondary.name().toLowerCase(),
-                    base,
-                    secondary,
-                    null
-                );
-
-                // White-only main patterns
-                if (base == KoiBaseColor.WHITE) {
+                if (base.equals(KoiBaseColor.WHITE)) {
+                    //Generate for [Secondary] + [Main]
                     for (KoiPatternMain main : KoiPatternMain.values()) {
-                        register(
-                            base.name().toLowerCase() + "_" +
-                            secondary.name().toLowerCase() + "_" +
-                            main.name().toLowerCase(),
-                            base,
-                            secondary,
-                            main
-                        );
+                        VARIANTS.add(new KoiVariant(base, secondary, main));
                     }
+
                 }
+                
             }
         }
     }
 
-    private static void register(
-        String id,
-        KoiBaseColor base,
-        KoiPatternSecondary secondary,
-        KoiPatternMain main
-    ) {
-        VARIANTS.add(new KoiVariant(id, base, secondary, main));
-    }
 
-    /* ------------------------------------------------------------
-     *  INDEXING
-     * ------------------------------------------------------------ */
-
-   public static final IntFunction<KoiVariant> INDEX_MAPPER = index -> {
-    if (VARIANTS.isEmpty()) {
-        throw new IllegalStateException("KoiVariantRegistry is empty");
-    }
-    return VARIANTS.get(Math.floorMod(index, VARIANTS.size()));
-};
+    public static final IntFunction<KoiVariant> INDEX_MAPPER = index -> {
+        if (VARIANTS.isEmpty()) {
+            throw new IllegalStateException("KoiVariantRegistry is empty");
+        }
+        return VARIANTS.get(Math.floorMod(index, VARIANTS.size()));
+    };
 
     public static int getIndex(KoiVariant variant) {
         return VARIANTS.indexOf(variant);
@@ -85,27 +54,18 @@ public final class KoiVariantRegistry {
         return VARIANTS.get(Math.floorMod(index, VARIANTS.size()));
     }
 
-    /* ------------------------------------------------------------
-     *  CODECS
-     * ------------------------------------------------------------ */
 
     /** Used for entity data / NBT */
-    public static final Codec<KoiVariant> INDEX_CODEC =
-        Codec.INT.xmap(
-            KoiVariantRegistry::getByIndex,
-            KoiVariantRegistry::getIndex
-        );
+    public static final Codec<KoiVariant> INDEX_CODEC = Codec.INT.xmap(
+        KoiVariantRegistry::getByIndex,
+        KoiVariantRegistry::getIndex
+    );
 
     /** Used for network sync */
-    public static final StreamCodec<ByteBuf, KoiVariant> PACKET_CODEC =
-        ByteBufCodecs.idMapper(
-            INDEX_MAPPER,
-            KoiVariantRegistry::getIndex
-        );
-
-    /* ------------------------------------------------------------
-     *  UTIL
-     * ------------------------------------------------------------ */
+    public static final StreamCodec<ByteBuf, KoiVariant> PACKET_CODEC = ByteBufCodecs.idMapper(
+        INDEX_MAPPER,
+        KoiVariantRegistry::getIndex
+    );
 
     public static KoiVariant getRandom(RandomSource random) {
         return Util.getRandom(VARIANTS, random);

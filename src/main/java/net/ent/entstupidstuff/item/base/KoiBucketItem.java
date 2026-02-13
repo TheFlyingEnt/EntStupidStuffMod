@@ -26,23 +26,141 @@ public class KoiBucketItem extends MobBucketItem {
         super(type, fluid, emptyingSound, settings);
     }
 
-    // Koi Fish can be Kohaku, Showa or Sanke
+    //Koi Fish can be Kohaku, Showa or Sanke
 
-    // Bekko Koi: White, Red, or Yellow Koi with Black Markings
-    // Shiro Bekko - White
-    // Aka Bekko - Red or Hi Ut
-    // Ki Bekko - Yellow
+    //Bekko Koi: White, Red, or Yellow Koi with Black Markings
+    //Shiro Bekko - White
+    //Aka Bekko - Red or Hi Ut
+    //Ki Bekko - Yellow
 
-    // Sanke = Small
-    // Showa == Big
+    //Sanke = Small
+    //Showa == Big
+
 
     // Ki Bekko
     // Yellow, Black
 
-    @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer, TooltipFlag type) {
 
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
+        super.appendHoverText(stack, context, displayComponent, textConsumer, type);
+        KoiVariant variant = stack.get(ModDataComponentTypes.KOI_FISH_VARIANT);
+        System.out.println("KoiBucketItem:");
+        System.out.println("variant:" + variant);
+
+        if (variant != null) {
+
+        KoiBaseColor koiBase = variant.getBaseColor();
+        KoiPatternMain koiMainPattern = variant.getPatternKohaku();
+        KoiPatternSecondary koiSecondaryPattern = variant.getSecondaryPattern();
+
+        System.out.println("koiBase:" + koiBase);
+        System.out.println("koiMainPattern:" + koiMainPattern);
+        System.out.println("koiSecondaryPattern:" + koiSecondaryPattern);
+
+        String nameLine = "";
+        String colorLine = "";
+        String styleLine = "";
+
+        if (koiBase == KoiBaseColor.RED) {
+            colorLine += "Red";
+
+            if (koiSecondaryPattern != null) {
+                String typeStr = koiSecondaryPattern.getType();
+                if ("sanka".equals(typeStr)) {
+                    nameLine += "Aka Bekko";
+                    colorLine += ", Black";
+                } else if ("showa".equals(typeStr)) {
+                    nameLine += "Hi Utsuri";
+                    colorLine += ", Black";
+                }
+            }
+            else {
+                nameLine += "Benigoi";
+            }
+        }
+
+        if (koiBase == KoiBaseColor.YELLOW) {
+                colorLine += "Yellow";
+
+            if (koiSecondaryPattern != null) {
+                String typeStr = koiSecondaryPattern.getType();
+                if ("sanka".equals(typeStr)) {
+                    nameLine += " Ki Bekko";
+                    colorLine += ", Black";
+                } else if ("showa".equals(typeStr)) {
+                    nameLine += " Ki Utsuri";
+                    colorLine += ", Black";
+                }
+            }
+            else {
+                nameLine += "Kigoi";
+            }
+        }
+
+        if (koiBase == KoiBaseColor.WHITE) {
+            nameLine += "Shiro";
+            colorLine += "White";
+
+            if (koiMainPattern != null) { // Kahaku, Sanka, or Showa
+
+                if (koiMainPattern.getName() == "Inazuma_2" || koiMainPattern.getName() == "Inazuma_3") {
+                    nameLine += " " + "Inazuma";
+                } else if (koiMainPattern.getName() == "Menkaburi_2") {
+                        nameLine += " " + "Menkaburi";
+                } else {
+                    nameLine += " " + koiMainPattern.getName();
+                }
+
+                colorLine += ", Red";
+
+                if (koiSecondaryPattern == null) { 
+                    // This is a Kohaku
+                    nameLine += " Kohaku";
+                } else {
+                    String typeStr = koiSecondaryPattern.getType();
+                    if ("sanka".equals(typeStr)) { // Sanke
+                        nameLine += " Sanke";
+                        colorLine += ", Black";
+                    } else if ("showa".equals(typeStr)) { // Showa
+                        nameLine += " " + koiSecondaryPattern.getName() + " Showa";
+                        colorLine += ", Black";
+                    }
+                }
+            } else if (koiSecondaryPattern != null) {
+                String typeStr = koiSecondaryPattern.getType();
+                if ("sanka".equals(typeStr)) {
+                    nameLine += " Bekko";
+                    colorLine += ", Black";
+                } else if ("showa".equals(typeStr)) {
+                    nameLine += " Utsuri";
+                    colorLine += ", Black";
+                }
+            }
+        }
+
+        if (!nameLine.isEmpty()) {
+            textConsumer.accept(Component.literal(nameLine + " Koi").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
+
+        if (!colorLine.isEmpty()) {
+            textConsumer.accept(Component.literal(colorLine).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
+
+        if (!styleLine.isEmpty()) {
+            textConsumer.accept(Component.literal(styleLine).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
+
+        }
+
+
+    }
+
+
+    /*@Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
+
+        
         KoiVariant variant = stack.get(ModDataComponentTypes.KOI_FISH_VARIANT);
 
         if (variant == null) {
@@ -141,7 +259,7 @@ public class KoiBucketItem extends MobBucketItem {
             textConsumer.accept(Component.literal(styleLine).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
 
-    }
+    }*/
 
     /*
      * @Override

@@ -1,225 +1,366 @@
 package net.ent.entstupidstuff.client.entity.mob;
 
-import java.util.EnumSet;
-import java.util.function.Predicate;
+import java.util.List;
 
-import net.ent.entstupidstuff.client.entity.ai.RedStoneGolemAttackGoal;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.Difficulty;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.BreakDoorGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.AbstractIllager;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.providers.EnchantmentProvider;
-import net.minecraft.world.item.enchantment.providers.VanillaEnchantmentProviders;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
-public class RedStoneGolemEntity extends AbstractIllager{
+public class RedStoneGolemEntity extends Raider {
+    
+    private static final EntityDataAccessor<Integer> ATTACK_TYPE = 
+        SynchedEntityData.defineId(RedStoneGolemEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ATTACK_TICK = 
+        SynchedEntityData.defineId(RedStoneGolemEntity.class, EntityDataSerializers.INT);
+    
+    // Attack types
+    public static final int NO_ATTACK = 0;
+    public static final int SWEEP_ATTACK = 1;
+    public static final int NORMAL_ATTACK = 2;
+    
+    // Attack timings (in ticks)
+    private static final int SWEEP_ATTACK_DURATION = 15; // 0.75 seconds
+    private static final int NORMAL_ATTACK_DURATION = 30; // 1.5 seconds
+    
+    private int attackCooldown = 0;
+    
+    // Animation states - these are used by the renderer
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkAnimationState = new AnimationState();
+    public final AnimationState sweepAttackAnimationState = new AnimationState();
+    public final AnimationState normalAttackAnimationState = new AnimationState();
 
-	static final Predicate<Difficulty> DIFFICULTY_ALLOWS_DOOR_BREAKING_PREDICATE = difficulty -> difficulty == Difficulty.NORMAL || difficulty == Difficulty.HARD;
-
-
-
-	//Animation
-
-	private static final EntityDataAccessor<Boolean> ATTACKING =
-	SynchedEntityData.defineId(RedStoneGolemEntity.class, EntityDataSerializers.BOOLEAN);
-
-	//private static final TrackedData<Boolean> IDLE =
-	//DataTracker.registerData(RSGEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-
-	public final  AnimationState attackAnimationState = new AnimationState();
-	public int attackAnimationTimeout = 0;
-
-	public final  AnimationState idleAnimationState = new AnimationState();
-	private int idleAnimationTimeout = 0;
-
-	
-	//Default Code
-	public RedStoneGolemEntity(EntityType<? extends AbstractIllager> entityType, Level world) {
+    public RedStoneGolemEntity(EntityType<? extends Raider> entityType, Level world) {
         super(entityType, world);
     }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void registerGoals() {
-		super.registerGoals();
-		this.goalSelector.addGoal(0, new FloatGoal(this));
-		this.goalSelector.addGoal(1, new RedStoneGolemEntity.BreakDoorGoal(this));
-		this.goalSelector.addGoal(2, new AbstractIllager.RaiderOpenDoorGoal(this));
-		this.goalSelector.addGoal(3, new Raider.HoldGroundAttackGoal(this, 10.0F));
-		//this.goalSelector.add(4, new RSGAttackGoal(this, 1.0, false, 40)); //- Fix then Add
-		//this.goalSelector.add(4, new RSGAttackGoal(this, 1.0, false, 40)); //- Fix then Add
-
-		this.goalSelector.addGoal(4, new RedStoneGolemAttackGoal(this, 1D, false));
-
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class).setAlertOthers());
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, AbstractVillager.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
-		this.targetSelector.addGoal(4, new RedStoneGolemEntity.TargetGoal(this));
-		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
-		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-
-	}
-
-	///////////////
-
-	public static AttributeSupplier.Builder createVindicatorAttributes() {
-		return Monster.createMonsterAttributes()
-			.add(Attributes.MOVEMENT_SPEED, 0.25F) //was 0.35
-			.add(Attributes.FOLLOW_RANGE, 12.0)
-			.add(Attributes.MAX_HEALTH, 24.0)
-			.add(Attributes.ATTACK_DAMAGE, 5.0);
-	}
-
     @Override
-	public void applyRaidBuffs(ServerLevel world, int wave, boolean unused) {
-		ItemStack itemStack = new ItemStack(Items.IRON_AXE);
-		Raid raid = this.getCurrentRaid();
-		boolean bl = this.random.nextFloat() <= raid.getEnchantOdds();
-		if (bl) {
-			ResourceKey<EnchantmentProvider> registryKey = wave > raid.getNumGroups(Difficulty.NORMAL)
-				? VanillaEnchantmentProviders.RAID_VINDICATOR_POST_WAVE_5
-				: VanillaEnchantmentProviders.RAID_VINDICATOR;
-			EnchantmentHelper.enchantItemFromProvider(itemStack, world.registryAccess(), registryKey, world.getCurrentDifficultyAt(this.blockPosition()), this.random);
-		}
-
-		this.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
-	}
-
-    @Override
-	public SoundEvent getCelebrateSound() {
-		return SoundEvents.VINDICATOR_CELEBRATE;
-	}
-
-    static class BreakDoorGoal extends net.minecraft.world.entity.ai.goal.BreakDoorGoal {
-		public BreakDoorGoal(Mob mobEntity) {
-			super(mobEntity, 6, RedStoneGolemEntity.DIFFICULTY_ALLOWS_DOOR_BREAKING_PREDICATE);
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			RedStoneGolemEntity rsgEntity = (RedStoneGolemEntity)this.mob;
-			return rsgEntity.hasActiveRaid() && super.canContinueToUse();
-		}
-
-		@Override
-		public boolean canUse() {
-			RedStoneGolemEntity rsgEntity = (RedStoneGolemEntity)this.mob;
-			return rsgEntity.hasActiveRaid() && rsgEntity.random.nextInt(reducedTickDelay(10)) == 0 && super.canUse();
-		}
-
-		@Override
-		public void start() {
-			super.start();
-			this.mob.setNoActionTime(0);
-		}
-	}
-
-	static class TargetGoal extends NearestAttackableTargetGoal<LivingEntity> {
-		public TargetGoal(RedStoneGolemEntity vindicator) {
-			super(vindicator, LivingEntity.class, 0, true, true, (target, world) -> target.attackable());
-		}
-
-		@Override
-		public void start() {
-			super.start();
-			this.mob.setNoActionTime(0);
-		}
-	}
-
-	///////////////////////
-
-	//Animation
-	private void setupAnimationStates() {
-        if (this.idleAnimationTimeout <= 0) {
-            this.idleAnimationTimeout = this.random.nextInt(40) + 80;
-			System.out.println("Idle");
-            this.idleAnimationState.start(this.tickCount);
-        } else {
-            --this.idleAnimationTimeout;
-        }
-
-        if(this.isAggressive() && attackAnimationTimeout <= 0) {
-            attackAnimationTimeout = 20;//40;
-			System.out.println("Attacking");
-            attackAnimationState.start(this.tickCount);
-        } else {
-            --this.attackAnimationTimeout;
-        }
-
-        if(!this.isAggressive()) {
-			System.out.println("stop");
-            attackAnimationState.stop();
-        }
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ATTACK_TYPE, NO_ATTACK);
+        builder.define(ATTACK_TICK, 0);
     }
 
-	@Override
-    protected void updateWalkAnimation(float posDelta) {
-        float f = this.getPose() == Pose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
-        this.walkAnimation.update(f, 0.2f, 1);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Raider.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 100.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.25)
+            .add(Attributes.ATTACK_DAMAGE, 15.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.9)
+            .add(Attributes.ARMOR, 8.0)
+            .add(Attributes.FOLLOW_RANGE, 32.0);
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new RedStoneGolemAttackGoal(this, 1.0, false));
+        this.goalSelector.addGoal(2, new BreakDoorGoal(this, (difficulty) -> difficulty.getId() >= 1));
+        this.goalSelector.addGoal(3, new MoveTowardsTargetGoal(this, 0.9, 32.0F));
+        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Raider.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
 
     @Override
     public void tick() {
         super.tick();
-        if(this.level().isClientSide()) {
-            setupAnimationStates();
+        
+        if (this.attackCooldown > 0) {
+            this.attackCooldown--;
+        }
+        
+        int attackTick = this.getAttackTick();
+        if (attackTick > 0) {
+            this.setAttackTick(attackTick - 1);
+            
+            // Execute attack at specific tick
+            if (this.getAttackType() == SWEEP_ATTACK && attackTick == 7) {
+                this.performSweepAttack();
+            } else if (this.getAttackType() == NORMAL_ATTACK && attackTick == 16) {
+                this.performNormalAttack();
+            }
+            
+            // Reset attack type when animation finishes
+            if (attackTick == 1) {
+                this.setAttackType(NO_ATTACK);
+            }
+        }
+        
+        // Handle idle animation - start it when not moving and not attacking
+        this.idleAnimationState.startIfStopped(this.tickCount);
+    }
+
+    public void startSweepAttack() {
+        if (this.attackCooldown == 0 && this.getAttackType() == NO_ATTACK) {
+            this.setAttackType(SWEEP_ATTACK);
+            this.setAttackTick(SWEEP_ATTACK_DURATION);
+            this.attackCooldown = 40; // 2 second cooldown
+            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         }
     }
 
-	public void setAggressive(boolean attacking) {
-        this.entityData.set(ATTACKING, attacking);
+    public void startNormalAttack() {
+        if (this.attackCooldown == 0 && this.getAttackType() == NO_ATTACK) {
+            this.setAttackType(NORMAL_ATTACK);
+            this.setAttackTick(NORMAL_ATTACK_DURATION);
+            this.attackCooldown = 60; // 3 second cooldown
+            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 0.8F);
+        }
+    }
+
+    private void performSweepAttack() {
+        float range = 4.0F;
+        float damage = 12.0F;
+        float knockback = 2.5F;
+        
+        AABB attackBox = this.getBoundingBox().inflate(range, 2.0, range);
+        List<LivingEntity> targets = this.level().getEntitiesOfClass(
+            LivingEntity.class, 
+            attackBox, 
+            entity -> entity != this && this.canAttack(entity)
+        );
+        
+        for (LivingEntity target : targets) {
+            if (this.distanceTo(target) <= range) {
+                target.hurt(this.damageSources().mobAttack(this), damage);
+                
+                // Apply knockback
+                Vec3 direction = target.position().subtract(this.position()).normalize();
+                target.push(direction.x * knockback, 0.4, direction.z * knockback);
+                target.hurtMarked = true;
+            }
+        }
+        
+        this.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 1.0F);
+    }
+
+    private void performNormalAttack() {
+        float range = 3.5F;
+        float damage = 15.0F;
+        
+        AABB attackBox = this.getBoundingBox().inflate(range, 2.0, range);
+        List<LivingEntity> targets = this.level().getEntitiesOfClass(
+            LivingEntity.class, 
+            attackBox, 
+            entity -> entity != this && this.canAttack(entity)
+        );
+        
+        for (LivingEntity target : targets) {
+            if (this.distanceTo(target) <= range) {
+                target.hurt(this.damageSources().mobAttack(this), damage);
+            }
+        }
+        
+        this.playSound(SoundEvents.IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
     }
 
     @Override
-    public boolean isAggressive() {
-        return this.entityData.get(ATTACKING);
+    public boolean hurtServer(ServerLevel world, DamageSource source, float amount) {
+		if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+			return false;
+		}
+		else {
+			return super.hurtServer(world, source, amount);
+		}
+    }
+
+
+    @Override
+    public boolean canBeLeashed() {
+        return false;
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-		//this.dataTracker.set(ATTACKING, false, false);
-
-		builder.define(ATTACKING, false);
-
-		// DataTracker.startTracking(TrackedData<T>, T)
-		//this.attackAnimationState.start()
-        //this.dataTracker.startTracking(ATTACKING, false);
-		//dataTracker.set(ATTACKING, false);
-		//this.dataTracker.set(ATTACKING, false);
+    protected boolean canRide(Entity entity) {
+        return false;
     }
 
+    // Allow Evokers to ride this entity
+    @Override
+    public boolean canAddPassenger(Entity passenger) {
+        return passenger instanceof Evoker && super.canAddPassenger(passenger);
+    }
 
+    // Data accessors
+    public int getAttackType() {
+        return this.entityData.get(ATTACK_TYPE);
+    }
 
+    public void setAttackType(int type) {
+        this.entityData.set(ATTACK_TYPE, type);
+    }
+    
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+        if (ATTACK_TYPE.equals(entityDataAccessor)) {
+            int attackType = this.getAttackType();
+            // Stop all attack animations
+            this.sweepAttackAnimationState.stop();
+            this.normalAttackAnimationState.stop();
+            
+            // Start the appropriate animation
+            if (attackType == SWEEP_ATTACK) {
+                this.sweepAttackAnimationState.startIfStopped(this.tickCount);
+            } else if (attackType == NORMAL_ATTACK) {
+                this.normalAttackAnimationState.startIfStopped(this.tickCount);
+            }
+        }
+        
+        super.onSyncedDataUpdated(entityDataAccessor);
+    }
+
+    public int getAttackTick() {
+        return this.entityData.get(ATTACK_TICK);
+    }
+
+    public void setAttackTick(int tick) {
+        this.entityData.set(ATTACK_TICK, tick);
+    }
+
+    public boolean isAttacking() {
+        return this.getAttackType() != NO_ATTACK;
+    }
+
+    @Override
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
+        view.putInt("AttackType", this.getAttackType());
+        view.putInt("AttackTick", this.getAttackTick());
+        view.putInt("AttackCooldown", this.attackCooldown);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
+        this.setAttackType(view.getIntOr("AttackType", 1));
+        this.setAttackTick(view.getIntOr("AttackTick", 1));
+        this.attackCooldown = view.getIntOr("AttackCooldown", 1);
+    }
+
+    @Override
+    public void applyRaidBuffs(ServerLevel serverLevel, int wave, boolean bl) {
+        // Apply raid buffs based on wave
+        Raid raid = this.getCurrentRaid();
+        if (raid != null) {
+            // Give additional health and damage on higher waves
+            this.setHealth(this.getMaxHealth());
+        }
+    }
+
+    @Override
+    public SoundEvent getCelebrateSound() {
+        return SoundEvents.PILLAGER_CELEBRATE;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.IRON_GOLEM_STEP;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.IRON_GOLEM_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.IRON_GOLEM_DEATH;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        this.playSound(SoundEvents.IRON_GOLEM_STEP, 1.0F, 1.0F);
+    }
+
+    // Custom attack goal
+    static class RedStoneGolemAttackGoal extends MeleeAttackGoal {
+        private final RedStoneGolemEntity golem;
+        private int ticksSinceLastAttack = 0;
+
+        public RedStoneGolemAttackGoal(RedStoneGolemEntity golem, double speed, boolean pauseWhenMobIdle) {
+            super(golem, speed, pauseWhenMobIdle);
+            this.golem = golem;
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.ticksSinceLastAttack++;
+        }
+
+        @Override
+        protected void checkAndPerformAttack(LivingEntity target) {
+            if (this.canPerformAttack(target)) {
+                this.resetAttackCooldown();
+                
+                // Randomly choose attack type
+                if (this.golem.getRandom().nextFloat() < 0.4F) {
+                    this.golem.startSweepAttack();
+                } else {
+                    this.golem.startNormalAttack();
+                }
+                
+                this.ticksSinceLastAttack = 0;
+            }
+        }
+
+        @Override
+        protected boolean canPerformAttack(LivingEntity target) {
+            double attackReach = this.golem.getBbWidth() * 2.0F * this.golem.getBbWidth() * 2.0F + target.getBbWidth();
+            return this.isTimeToAttack() 
+                && this.golem.distanceToSqr(target) <= attackReach
+                && !this.golem.isAttacking();
+        }
+
+        @Override
+        public boolean canUse() {
+            return super.canUse() && !this.golem.isAttacking();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return super.canContinueToUse() && !this.golem.isAttacking();
+        }
+    }
 }

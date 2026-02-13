@@ -1,13 +1,18 @@
 package net.ent.entstupidstuff.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.ent.entstupidstuff.client.entity.passive.KoiBaseColor;
+import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.client.entity.passive.KoiPatternSecondary;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.fish.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -22,86 +27,83 @@ public class KoiPatternFeatureRenderer
         super(ctx);
     }
 
+
     @Override
     public void submit(
-            PoseStack matrices,
-            SubmitNodeCollector queue,
-            int light,
-            KoiEntityRenderState state,
-            float limbAngle,
-            float limbDistance
+            PoseStack poseStack,
+            SubmitNodeCollector submitNodeCollector,
+            int packedLight,
+            KoiEntityRenderState renderState,
+            float f,//limbAngle,
+            float g //limbDistance
     ) {
-        if (state.invisible) return;
+        if (renderState.invisible) return;
 
-        KoiVariant variant = state.variant;
+        KoiVariant variant = renderState.variant;
         if (variant == null) return;
 
-        /* ------------------------------------------------------------
-         *  MAIN (Kohaku) PATTERN — White only
-         * ------------------------------------------------------------ */
-
-        if (variant.getBaseColor() == KoiBaseColor.WHITE
-                && variant.getMainPattern() != null) {
-
-            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath(
-                    "entstupidstuff",
-                    "textures/entity/koi/pattern_kohaku_"
-                            + variant.getMainPattern().getName().toLowerCase()
-                            + ".png"
-            );
-
-            queue.order(1).submitModel(
+        // Kohaku (only if base is white)
+        if (variant.getBaseColor() == KoiBaseColor.WHITE && variant.getPatternKohaku() != null) {
+            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
+                    "textures/entity/koi/pattern_kohaku_" + variant.getPatternKohaku().getName().toLowerCase() + ".png");
+            
+            submitNodeCollector.order(0)
+                .submitModel(
                     this.getParentModel(),
-                    state,
-                    matrices,
+                    renderState,
+                    poseStack,
                     RenderType.entityTranslucent(tex),
-                    light,
-                    OverlayTexture.NO_OVERLAY,
+                    packedLight,
+                    LivingEntityRenderer.getOverlayCoords(renderState, 0.0F),
                     -1,
                     null,
-                    state.outlineColor,
+                    renderState.outlineColor,
                     null
-            );
+                );
         }
 
-        /* ------------------------------------------------------------
-         *  SECONDARY PATTERN (Sanke / Showa)
-         * ------------------------------------------------------------ */
-
+        // Secondary patterns (sanke / showa)
         if (variant.getSecondaryPattern() != null) {
             KoiPatternSecondary sec = variant.getSecondaryPattern();
 
-            ResourceLocation tex = switch (sec.getType()) {
-                case "sanke" -> ResourceLocation.fromNamespaceAndPath(
-                        "entstupidstuff",
-                        "textures/entity/koi/pattern_sanke_"
-                                + sec.getName().toLowerCase()
-                                + ".png"
-                );
-                case "showa" -> ResourceLocation.fromNamespaceAndPath(
-                        "entstupidstuff",
-                        "textures/entity/koi/pattern_showa_"
-                                + sec.getName().toLowerCase()
-                                + ".png"
-                );
-                default -> null;
-            };
-
-            if (tex != null) {
-                queue.order(1).submitModel(
+            String type = sec.getType();
+            if ("sanka".equals(type)) {
+                ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", 
+                        "textures/entity/koi/pattern_sanke_" + sec.getName().toLowerCase() + ".png");
+                
+                submitNodeCollector.order(0)
+                    .submitModel(
                         this.getParentModel(),
-                        state,
-                        matrices,
+                        renderState,
+                        poseStack,
                         RenderType.entityTranslucent(tex),
-                        light,
-                        OverlayTexture.NO_OVERLAY,
+                        packedLight,
+                        LivingEntityRenderer.getOverlayCoords(renderState, 0.0F),
                         -1,
                         null,
-                        state.outlineColor,
+                        renderState.outlineColor,
                         null
-                );
+                    );
+            } else if ("showa".equals(type)) {
+                ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", 
+                        "textures/entity/koi/pattern_showa_" + sec.getName().toLowerCase() + ".png");
+                
+                submitNodeCollector.order(0)
+                    .submitModel(
+                        this.getParentModel(),
+                        renderState,
+                        poseStack,
+                        RenderType.entityTranslucent(tex),
+                        packedLight,
+                        LivingEntityRenderer.getOverlayCoords(renderState, 0.0F),
+                        -1,
+                        null,
+                        renderState.outlineColor,
+                        null
+                    );
             }
         }
+
     }
 }
 
@@ -119,7 +121,7 @@ public class KoiPatternFeatureRenderer
 
         KoiVariant variant = state.variant;
         if (variant.getBaseColor() == KoiBaseColor.WHITE && variant.getPatternKohaku() != null) {
-            Identifier tex = Identifier.of("entstupidstuff",
+            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
                     "textures/entity/koi/pattern_kohaku_" + variant.getPatternKohaku().getName().toLowerCase() + ".png");
             queue.getBatchingQueue(1)
                  .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEntityTranslucent(tex), light, 0, -1, null, state.outlineColor, null);
@@ -130,11 +132,11 @@ public class KoiPatternFeatureRenderer
             String type = sec.getType();
             String name = sec.getName().toLowerCase();
 
-            Identifier tex = null;
+            ResourceLocation tex = null;
             if ("sanke".equals(type)) {
-                tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_sanke_" + name + ".png");
+                tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/koi/pattern_sanke_" + name + ".png");
             } else if ("showa".equals(type)) {
-                tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_showa_" + name + ".png");
+                tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/koi/pattern_showa_" + name + ".png");
             }
 
             if (tex != null) {
@@ -161,7 +163,7 @@ public class KoiPatternFeatureRenderer
 
         // Kohaku (only if base is white)
         if (variant.getBaseColor() == KoiBaseColor.WHITE && variant.getPatternKohaku() != null) {
-            Identifier tex = Identifier.of("entstupidstuff",
+            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
                     "textures/entity/koi/pattern_kohaku_" + variant.getPatternKohaku().getName() + ".png");
             VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
             this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
@@ -173,11 +175,11 @@ public class KoiPatternFeatureRenderer
 
             String type = sec.getType();
             if ("sanka".equals(type)) {
-                Identifier tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_sanke_" + sec.getName().toLowerCase() + ".png");
+                ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/koi/pattern_sanke_" + sec.getName().toLowerCase() + ".png");
                 VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
                 this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
             } else if ("showa".equals(type)) {
-                Identifier tex = Identifier.of("entstupidstuff", "textures/entity/koi/pattern_showa_" + sec.getName().toLowerCase() + ".png");
+                ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/koi/pattern_showa_" + sec.getName().toLowerCase() + ".png");
                 VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
                 this.getContextModel().render(matrices, vc, light, LivingEntityRenderer.getOverlay(koi, 0.0F));
             }
@@ -188,7 +190,7 @@ public class KoiPatternFeatureRenderer
 
         // --- Pattern 1 ---
         if (variant.getPattern() == LegacyKoiPattern.PATTERN_1) {
-            Identifier tex = Identifier.of("entstupidstuff",
+            ResourceLocation tex = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
                     "textures/entity/koi/pattern_" + variant.getPatternColor1().get().getName() + ".png");
 
             VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex));
@@ -197,9 +199,9 @@ public class KoiPatternFeatureRenderer
 
         // --- Pattern 2 ---
         if (variant.getPattern() == LegacyKoiPattern.PATTERN_2) {
-            Identifier tex1 = Identifier.of("entstupidstuff",
+            ResourceLocation tex1 = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
                     "textures/entity/koi/pattern_main_" + variant.getPatternColor1().get().getName() + ".png");
-            Identifier tex2 = Identifier.of("entstupidstuff",
+            ResourceLocation tex2 = ResourceLocation.fromNamespaceAndPath("entstupidstuff",
                     "textures/entity/koi/pattern_secondary_" + variant.getPatternColor2().get().getName() + ".png");
 
             VertexConsumer vc1 = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(tex1));

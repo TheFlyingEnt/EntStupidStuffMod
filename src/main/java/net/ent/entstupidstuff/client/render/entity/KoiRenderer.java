@@ -11,6 +11,7 @@ import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
 import net.ent.entstupidstuff.client.render.entity.model.fish.KoiModel;
 import net.ent.entstupidstuff.client.render.entity.state.KoiEntityRenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -57,6 +58,11 @@ public class KoiRenderer extends MobRenderer<KoiEntity, KoiEntityRenderState, Ko
     @Override
     public KoiEntityRenderState createRenderState() {
         return new KoiEntityRenderState();
+    }
+
+    @Override
+    protected RenderType getRenderType(KoiEntityRenderState entity, boolean showBody, boolean translucent, boolean showOutline) {
+        return RenderType.entityTranslucent(this.getTextureLocation(entity));
     }
 
 

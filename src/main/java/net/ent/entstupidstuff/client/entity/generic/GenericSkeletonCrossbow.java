@@ -223,7 +223,7 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 		ItemStack mainHandStack = this.getMainHandItem();
 
 		if (mainHandStack.getItem() instanceof CrossbowItem) {
-			/*ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.CROSSBOW));
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, Items.CROSSBOW));
 			ItemStack itemStack2 = this.getProjectile(itemStack);
 			AbstractArrow persistentProjectileEntity = this.getArrow(itemStack2, pullProgress, itemStack);
 			double d = target.getX() - this.getX();
@@ -232,8 +232,8 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			double g = Math.sqrt(d * d + f * f);
 			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-			this.level().addFreshEntity(persistentProjectileEntity);*/
-            this.performCrossbowAttack(this, 1.6F);
+			this.level().addFreshEntity(persistentProjectileEntity);
+            //this.performCrossbowAttack(this, 1.6F);
 		}
 
 		else if (mainHandStack.getItem() instanceof CannonItem) {

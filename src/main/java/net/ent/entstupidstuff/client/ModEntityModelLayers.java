@@ -45,7 +45,8 @@ import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
-import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModel;
+import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModelNew;
+import net.ent.entstupidstuff.client.render.entity.model.LegacyRedStoneGolemModel;
 import net.ent.entstupidstuff.client.render.entity.model.SilkmothModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SporeperModel;
@@ -120,7 +121,7 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation MOUNTAINEER_VINDICATOR =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "mountaineer_vindicator"), "main");
 
-    public static final ModelLayerLocation RSGolem =
+    public static final ModelLayerLocation REDSTONE_GOLEM =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "redstone_golem"), "main");
 
     public static final ModelLayerLocation ZOMBIE_SLIMED =
@@ -417,11 +418,15 @@ public class ModEntityModelLayers {
         EntityRenderers.register(EntityFactory.MOUNTAINEER_VINDICATOR, (EntityRendererProvider.Context context) -> new MountaineerVindicatorEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MOUNTAINEER_VINDICATOR, () -> MountaineerVindicatorModel.createBodyLayer().apply(MeshTransformer.scaling(0.9375F)));
 
+        //REDSTONE_GOLEM
+        EntityRenderers.register(EntityFactory.REDSTONE_GOLEM, (EntityRendererProvider.Context context) -> new RedStoneGolemRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.REDSTONE_GOLEM, () -> RedStoneGolemModelNew.createBodyLayer());
 
 
 
-        EntityRenderers.register(EntityFactory.RSGolem, (EntityRendererProvider.Context context) -> new RedStoneGolemRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.RSGolem, RedStoneGolemModel::getTexturedModelData);
+
+        //EntityRenderers.register(EntityFactory.RSGolem, (EntityRendererProvider.Context context) -> new RedStoneGolemRenderer(context));
+        //EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.RSGolem, LegacyRedStoneGolemModel::getTexturedModelData);
 
         EntityRenderers.register(EntityFactory.RED_PANDA, (EntityRendererProvider.Context context) -> new RedPandaRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.RED_PANDA, RedPandaModel::getTexturedModelData);

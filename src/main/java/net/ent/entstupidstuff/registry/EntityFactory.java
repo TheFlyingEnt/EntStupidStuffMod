@@ -206,7 +206,7 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"sporeper")))
 	);
 
-    public static final EntityType<RedStoneGolemEntity> RSGolem = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+    public static final EntityType<RedStoneGolemEntity> REDSTONE_GOLEM = Registry.register(BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "redstone_golem"),
         EntityType.Builder.of(RedStoneGolemEntity::new, MobCategory.MONSTER)
         .sized(2.0f, 3.5F)
@@ -472,7 +472,7 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(ARMORED_VINDICATOR, ArmoredVindicatorEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(MOUNTAINEER_VINDICATOR, MountaineerVindicatorEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(SOUL_SKELETON, SoulSkeletonEntity.createSoulSkeletonAttributes());
-        FabricDefaultAttributeRegistry.register(RSGolem, RedStoneGolemEntity.createVindicatorAttributes());
+        FabricDefaultAttributeRegistry.register(REDSTONE_GOLEM, RedStoneGolemEntity.createAttributes());
 
         //The Fire of the Hunt Update
         FabricDefaultAttributeRegistry.register(PIGLIN_WARRIOR, PiglinWarriorEntity.createAttributes());

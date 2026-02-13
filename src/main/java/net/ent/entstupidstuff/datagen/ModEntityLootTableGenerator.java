@@ -56,7 +56,6 @@ public class ModEntityLootTableGenerator extends FabricEntityLootTableProvider /
     public static final ResourceKey<LootTable> SPOREPER = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/sporeper"));
     public static final ResourceKey<LootTable> SILKMOTH = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/silkmoth"));
 
-
 	public static final ResourceKey<LootTable> ALLIGATOR_GAR = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/alligator_gar"));
 	public static final ResourceKey<LootTable> ZEBRA_FISH = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/zebra_fish"));
 	public static final ResourceKey<LootTable> MACKEREL = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/mackerel"));
@@ -72,6 +71,7 @@ public class ModEntityLootTableGenerator extends FabricEntityLootTableProvider /
 	public static final ResourceKey<LootTable> SUNKEN_SKELETON = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/sunken_skeleton"));
 	public static final ResourceKey<LootTable> METAL_SKELETON = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/metal_skeleton"));
 	public static final ResourceKey<LootTable> PHANTOM_SKELETON = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/phantom_skeleton"));
+    public static final ResourceKey<LootTable> CORAL_SKELETON = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "entities/coral_skeleton"));
 
     
 	@Override
@@ -506,6 +506,28 @@ public class ModEntityLootTableGenerator extends FabricEntityLootTableProvider /
 							.apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registryLookup.join(), UniformGenerator.between(0.0F, 1.0F)))
 					)
+			)
+		);
+
+        this.add(EntityFactory.CORAL_SKELETON, LootTable.lootTable()
+			.withPool(
+					LootPool.lootPool()
+					.setRolls(ConstantValue.exactly(1.0F))
+					.add(
+							LootItem.lootTableItem(Items.BONE)
+							.apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registryLookup.join(), UniformGenerator.between(0.0F, 1.0F)))
+					)
+			)
+			.withPool(
+				LootPool.lootPool()
+					.setRolls(ConstantValue.exactly(1.0F))
+					.add(
+                        LootItem.lootTableItem(Items.SEAGRASS)
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registryLookup.join(), UniformGenerator.between(0.0F, 1.0F)))
+                        )
+					.when(LootItemKilledByPlayerCondition.killedByPlayer())
 			)
 		);
 		

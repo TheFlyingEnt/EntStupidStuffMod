@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 @Environment(EnvType.CLIENT)
 @SuppressWarnings("unused")
-public class RedStoneGolemModel extends EntityModel<LivingEntityRenderState>{
+public class LegacyRedStoneGolemModel extends EntityModel<LivingEntityRenderState>{
     
     private final ModelPart upperbody;
 	private final ModelPart head;
@@ -30,7 +30,7 @@ public class RedStoneGolemModel extends EntityModel<LivingEntityRenderState>{
 	private final ModelPart root;
 
 
-	public RedStoneGolemModel(ModelPart root) {
+	public LegacyRedStoneGolemModel(ModelPart root) {
 		super(root);
 		this.root = root;
 		this.upperbody = root.getChild("upperbody");

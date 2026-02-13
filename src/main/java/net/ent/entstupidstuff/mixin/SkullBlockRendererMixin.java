@@ -104,6 +104,10 @@ public class SkullBlockRendererMixin {
             break;
 
         case ModSkullStype.BREEZE:
+            cir.setReturnValue(new SkullModel(entityModelSet.bakeLayer(ModEntityModelLayers.BREEZE_HEAD)));
+            break;
+
+        case ModSkullStype.HUSK:
             cir.setReturnValue(new SkullModel(entityModelSet.bakeLayer(ModEntityModelLayers.HUSK_HEAD)));
             break;
 
