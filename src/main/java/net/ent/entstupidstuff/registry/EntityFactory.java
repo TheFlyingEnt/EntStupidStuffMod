@@ -210,9 +210,11 @@ public class EntityFactory {
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "redstone_golem"),
         EntityType.Builder.of(RedStoneGolemEntity::new, MobCategory.MONSTER)
         .sized(2.0f, 3.5F)
-        .eyeHeight(2.60F)
+        .eyeHeight(3.00F)
+        //.eyeHeight(2.60F)
         .ridingOffset(-0.7F)
-        .clientTrackingRange(8)
+        .clientTrackingRange(10)
+        .notInPeaceful()
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"redstone_golem")))
     );
 

@@ -30,8 +30,6 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
@@ -65,8 +63,13 @@ public class RedStoneGolemEntity extends Raider {
     public final AnimationState sweepAttackAnimationState = new AnimationState();
     public final AnimationState normalAttackAnimationState = new AnimationState();
 
+    private final RedStoneGolemPartEntity[] parts;
+    public final RedStoneGolemPartEntity backPart;
+
     public RedStoneGolemEntity(EntityType<? extends Raider> entityType, Level world) {
         super(entityType, world);
+        this.backPart = new RedStoneGolemPartEntity(this, 16F, 16F);
+        this.parts = new RedStoneGolemPartEntity[]{this.backPart};
     }
 
     @Override
@@ -129,7 +132,36 @@ public class RedStoneGolemEntity extends Raider {
         
         // Handle idle animation - start it when not moving and not attacking
         this.idleAnimationState.startIfStopped(this.tickCount);
+
+        // Update part positions
+        this.updatePartPositions();
     }
+
+    /**
+     * Updates the positions of all part entities (like the back hitbox)
+     */
+    private void updatePartPositions() {
+        if (this.parts != null) {
+            // Position the back part behind the golem
+            // Calculate position based on the golem's rotation
+            float yaw = this.yBodyRot * ((float) Math.PI / 180F);
+            
+            // Offset backwards from center (negative because we want behind)
+            double offsetX = -Math.sin(yaw) * -5.0; // 1.0 blocks behind
+            double offsetZ = Math.cos(yaw) * -1.0;
+            
+            // Set back part position (behind and slightly lower)
+            this.backPart.setPos(
+                this.getX() + offsetX,
+                this.getY() + 0.5, // Slightly lower than main body
+                this.getZ() + offsetZ
+            );
+
+        }
+
+    }
+
+
 
     public void startSweepAttack() {
         if (this.attackCooldown == 0 && this.getAttackType() == NO_ATTACK) {

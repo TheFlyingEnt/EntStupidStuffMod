@@ -70,7 +70,7 @@ public class RedStoneGolemModelNew extends EntityModel<RedStoneGolemRenderState>
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(120, 36).addBox(-11.0F, -8.0F, -7.0F, 22.0F, 8.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.0F, 11.0F));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(120, 36).addBox(-11.0F, -8.0F, -7.0F, 22.0F, 8.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.0F, 0.0F));
 
 		PartDefinition upper_body = body.addOrReplaceChild("upper_body", CubeListBuilder.create().texOffs(49, 90).addBox(-8.0F, -20.0F, -1.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-20.0F, -32.0F, -10.0F, 40.0F, 32.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -8.0F, 0.0F));
@@ -97,9 +97,9 @@ public class RedStoneGolemModelNew extends EntityModel<RedStoneGolemRenderState>
 
 		PartDefinition left_botton_finger = left_wrist.addOrReplaceChild("left_botton_finger", CubeListBuilder.create().texOffs(81, 57).addBox(-2.0F, 0.0F, -2.0F, 3.0F, 8.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(3.0F, 22.0F, 2.0F));
 
-		PartDefinition right_leg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(113, 58).addBox(-6.0F, 0.0F, -6.0F, 12.0F, 20.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offset(-11.0F, 4.0F, 10.0F));
+		PartDefinition right_leg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(113, 58).addBox(-6.0F, 0.0F, -6.0F, 12.0F, 20.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offset(-11.0F, 4.0F, 0.0F));
 
-		PartDefinition left_leg = partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(113, 58).mirror().addBox(-6.0F, 0.0F, -6.0F, 12.0F, 20.0F, 12.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(11.0F, 4.0F, 10.0F));
+		PartDefinition left_leg = partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(113, 58).mirror().addBox(-6.0F, 0.0F, -6.0F, 12.0F, 20.0F, 12.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(11.0F, 4.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}

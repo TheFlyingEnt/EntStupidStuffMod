@@ -3,6 +3,8 @@ package net.ent.entstupidstuff.client.render.entity;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.entity.mob.RedStoneGolemEntity;
+import net.ent.entstupidstuff.client.render.entity.feature.RedStoneGolemGlowEyeRenderer;
+import net.ent.entstupidstuff.client.render.entity.feature.RedstoneGolemGlowRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModelNew;
 import net.ent.entstupidstuff.client.render.entity.state.RedStoneGolemRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
@@ -13,6 +15,8 @@ public class RedStoneGolemRenderer extends MobRenderer<RedStoneGolemEntity, RedS
 
     public RedStoneGolemRenderer(Context context) {
         super(context, new RedStoneGolemModelNew(context.bakeLayer(ModEntityModelLayers.REDSTONE_GOLEM)), 1.1F);
+        this.addLayer(new RedStoneGolemGlowEyeRenderer(this));
+        this.addLayer(new RedstoneGolemGlowRenderer(this));
     }
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"textures/entity/redstone_golem.png");
@@ -41,8 +45,5 @@ public class RedStoneGolemRenderer extends MobRenderer<RedStoneGolemEntity, RedS
         state.sweepAttackAnimationState.copyFrom(entity.sweepAttackAnimationState);
         state.normalAttackAnimationState.copyFrom(entity.normalAttackAnimationState);
     }
-
-
-
 
 }
