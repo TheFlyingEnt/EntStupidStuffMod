@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.util.OminousBannerHelper;
+import net.ent.entstupidstuff.item.util.OminousBannerHelper;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;

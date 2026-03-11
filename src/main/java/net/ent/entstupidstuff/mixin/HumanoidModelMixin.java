@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.ent.entstupidstuff.api.util.HorizontalBannerRenderState;
+import net.ent.entstupidstuff.client.render.entity.state.HeldHorizontalBannerRenderState;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -17,7 +17,7 @@ public class HumanoidModelMixin<T extends HumanoidRenderState> {
 
     @Inject(method = "setupAnim", at = @At("TAIL"))
     private void onSetupAnim(T state, CallbackInfo ci) {
-        if (!(state instanceof HorizontalBannerRenderState bannerState)) return;
+        if (!(state instanceof HeldHorizontalBannerRenderState bannerState)) return;
 
         boolean mainArm = state.mainArm == HumanoidArm.RIGHT;
 

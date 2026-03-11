@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.registry;
 import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.client.entity.CustomBoatEntity;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredVindicatorEntity;
@@ -29,7 +30,6 @@ import net.ent.entstupidstuff.client.entity.mob.skeleton.CoralSkeletonEntity;
 import net.ent.entstupidstuff.client.entity.passive.AlligatorGarEntity;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
-import net.ent.entstupidstuff.client.entity.passive.CustomBoatEntity;
 import net.ent.entstupidstuff.client.entity.passive.FurTroutEntity;
 import net.ent.entstupidstuff.client.entity.passive.KoiEntity;
 import net.ent.entstupidstuff.client.entity.passive.MackerelEntity;

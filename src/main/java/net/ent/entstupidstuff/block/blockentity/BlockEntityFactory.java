@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.base.HorizontalBannerBlock;
-import net.ent.entstupidstuff.block.base.HorizontalWallBannerBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;

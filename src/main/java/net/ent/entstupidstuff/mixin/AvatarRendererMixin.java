@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.mixin;
 
-import net.ent.entstupidstuff.api.util.HorizontalBannerRenderState;
 import net.ent.entstupidstuff.block.base.HorizontalBannerBlock;
+import net.ent.entstupidstuff.client.render.entity.state.HeldHorizontalBannerRenderState;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.item.base.DoubleBarrelCrossbowItem;
 import net.ent.entstupidstuff.item.base.FlintlockPistolItem;
@@ -65,7 +65,7 @@ public abstract class AvatarRendererMixin {
     //        at = @At("TAIL"))
     @Inject(method = "extractRenderState", at = @At("TAIL"))
     private void onExtractRenderState(Avatar player, AvatarRenderState state, float partialTick, CallbackInfo ci) {
-        HorizontalBannerRenderState bannerState = (HorizontalBannerRenderState) state;
+        HeldHorizontalBannerRenderState bannerState = (HeldHorizontalBannerRenderState) state;
 
         ItemStack main = player.getItemInHand(InteractionHand.MAIN_HAND);
         ItemStack off  = player.getItemInHand(InteractionHand.OFF_HAND);

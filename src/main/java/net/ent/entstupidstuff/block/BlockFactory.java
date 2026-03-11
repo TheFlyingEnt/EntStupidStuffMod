@@ -1078,11 +1078,9 @@ public class BlockFactory {
 
 
 
-    // ## Ult
+    // ## Utility
 
-    @SuppressWarnings("unused")
     private static BlockBehaviour.Properties wallVariant(Block block, boolean bl) {
-		BlockBehaviour.Properties properties = block.properties();
 		BlockBehaviour.Properties properties2 = BlockBehaviour.Properties.of().overrideLootTable(block.getLootTable());
 		if (bl) {
 			properties2 = properties2.overrideDescription(block.getDescriptionId());
@@ -1096,7 +1094,6 @@ public class BlockFactory {
             ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
             return BlockList.get(identifier);
         } catch (Exception e) {
-            System.out.println("An Error occurred in callBlock()... Tried to call: " + id);
             EntStupidStuff.LOGGER.error("An Error occurred in callBlock()... Tried to call: " + id, e);
             return null;
         }

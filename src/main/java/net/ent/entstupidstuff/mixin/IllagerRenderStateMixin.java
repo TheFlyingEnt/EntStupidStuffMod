@@ -3,11 +3,11 @@ package net.ent.entstupidstuff.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.ent.entstupidstuff.api.util.HorizontalBannerRenderState;
+import net.ent.entstupidstuff.client.render.entity.state.HeldHorizontalBannerRenderState;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 
 @Mixin(IllagerRenderState.class)
-public class IllagerRenderStateMixin implements HorizontalBannerRenderState {
+public class IllagerRenderStateMixin implements HeldHorizontalBannerRenderState {
 
     @Unique private boolean holdingBannerMainHand = false;
     @Unique private boolean holdingBannerOffHand = false;
