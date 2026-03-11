@@ -16,6 +16,7 @@ public class OminousBannerHelper {
     private static final Component OMINOUS_BANNER_PATTERN_NAME_H = 
         Component.translatable("block.minecraft.ominous_banner");
 
+    @SuppressWarnings("deprecation")
     public static ItemStack getOminousHorizontalBannerInstance(HolderGetter<BannerPattern> holderGetter) {
         ItemStack itemStack = new ItemStack(ItemFactory.callItem("white_horizontal_banner"));
         BannerPatternLayers bannerPatternLayers = new BannerPatternLayers.Builder()
