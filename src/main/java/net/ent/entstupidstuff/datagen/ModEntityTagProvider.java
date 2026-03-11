@@ -32,7 +32,11 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
 
         this.valueLookupBuilder(EntityTypeTags.RAIDERS)
         .add(
-            EntityFactory.ARMORED_PILLAGER
+            EntityFactory.ARMORED_PILLAGER,
+            EntityFactory.ARMORED_VINDICATOR,
+            EntityFactory.REDSTONE_GOLEM,
+            EntityFactory.MOUNTAINEER_PILLAGER,
+            EntityFactory.MOUNTAINEER_VINDICATOR
         );
 
         this.valueLookupBuilder(EntityTypeTags.SKELETONS)
@@ -41,12 +45,16 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
             EntityFactory.SPORE_BONE,
             EntityFactory.SUNKEN_SKELETON_CROSSBOW,
             EntityFactory.METAL_SKELETON,
-            EntityFactory.PHANTOM_SKELETON
+            EntityFactory.PHANTOM_SKELETON,
+            EntityFactory.CORAL_SKELETON
         );
 
         this.valueLookupBuilder(EntityTypeTags.ILLAGER)
         .add(
-            EntityFactory.ARMORED_PILLAGER
+            EntityFactory.ARMORED_PILLAGER,
+            EntityFactory.ARMORED_VINDICATOR,
+            EntityFactory.MOUNTAINEER_PILLAGER,
+            EntityFactory.MOUNTAINEER_VINDICATOR
         );
 
         this.valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE)
@@ -80,7 +88,8 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
 
         this.valueLookupBuilder(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES)
         .add(
-            EntityFactory.PHANTOM_SKELETON
+            EntityFactory.PHANTOM_SKELETON,
+            EntityFactory.CORAL_SKELETON
         );
 
         this.valueLookupBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER) //Already adds Undead
@@ -131,7 +140,8 @@ public class ModEntityTagProvider extends FabricTagProvider.EntityTypeTagProvide
             EntityFactory.SPORE_BONE,
             EntityFactory.SUNKEN_SKELETON_CROSSBOW,
             EntityFactory.METAL_SKELETON,
-            EntityFactory.PHANTOM_SKELETON
+            EntityFactory.PHANTOM_SKELETON,
+            EntityFactory.CORAL_SKELETON
         );
 
         this.valueLookupBuilder(EntityTypeTags.FOLLOWABLE_FRIENDLY_MOBS)

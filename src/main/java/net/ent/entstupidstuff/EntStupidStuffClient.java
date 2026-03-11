@@ -1,8 +1,10 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.block.ModRenderLayers;
+import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.ent.entstupidstuff.client.ParticlesClient;
+import net.ent.entstupidstuff.client.render.HorizontalBannerRenderer;
 import net.ent.entstupidstuff.client.render.ModSpecialModelTypes;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
@@ -11,6 +13,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -45,6 +48,11 @@ public class EntStupidStuffClient implements ClientModInitializer {
         
 
         MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
+
+        BlockEntityRenderers.register(
+            BlockEntityFactory.HORIZONTAL_BANNER,
+            HorizontalBannerRenderer::new
+        );
 
 
         

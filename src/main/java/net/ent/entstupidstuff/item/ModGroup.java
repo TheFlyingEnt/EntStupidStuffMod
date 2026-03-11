@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.util.OminousBannerHelper;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -13,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -297,6 +299,12 @@ public class ModGroup {
         for (String color: BlockFactory.COLORS) {
             ModGroup.addToServer("glowing_silk_wool_" + color + "_carpet");
         }
+
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(
+            entries -> entries.accept(OminousBannerHelper.getOminousHorizontalBannerInstance(
+                entries.getContext().holders().lookupOrThrow(Registries.BANNER_PATTERN)
+            ))
+        );
 
 
         

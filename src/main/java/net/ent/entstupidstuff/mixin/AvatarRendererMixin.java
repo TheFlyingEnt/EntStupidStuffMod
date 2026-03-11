@@ -1,25 +1,30 @@
 package net.ent.entstupidstuff.mixin;
 
+import net.ent.entstupidstuff.api.util.HorizontalBannerRenderState;
+import net.ent.entstupidstuff.block.base.HorizontalBannerBlock;
 import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.item.base.DoubleBarrelCrossbowItem;
 import net.ent.entstupidstuff.item.base.FlintlockPistolItem;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin {
+
     @Inject(method = "getArmPose(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/client/model/HumanoidModel$ArmPose;", 
     at = @At("HEAD"), 
     cancellable = true)
-    
     private static void getDoubleBarrelCrossbowPose(Avatar avatar, ItemStack itemStack, InteractionHand interactionHand, CallbackInfoReturnable<HumanoidModel.ArmPose> cir) {
         if (itemStack.getItem() instanceof DoubleBarrelCrossbowItem) {
             if (!avatar.swinging && DoubleBarrelCrossbowItem.isCharged(itemStack)) {
@@ -54,5 +59,22 @@ public abstract class AvatarRendererMixin {
             }
         }
 
+    }
+
+    //@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V",
+    //        at = @At("TAIL"))
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void onExtractRenderState(Avatar player, AvatarRenderState state, float partialTick, CallbackInfo ci) {
+        HorizontalBannerRenderState bannerState = (HorizontalBannerRenderState) state;
+
+        ItemStack main = player.getItemInHand(InteractionHand.MAIN_HAND);
+        ItemStack off  = player.getItemInHand(InteractionHand.OFF_HAND);
+
+        bannerState.entstupidstuff$setHoldingBannerMainHand(
+            main.getItem() instanceof BannerItem bi && bi.getBlock() instanceof HorizontalBannerBlock
+        );
+        bannerState.entstupidstuff$setHoldingBannerOffHand(
+            off.getItem() instanceof BannerItem bi && bi.getBlock() instanceof HorizontalBannerBlock
+        ); 
     }
 }

@@ -9,7 +9,12 @@
         "RaidMixin",
         "PatrolMixin",
         "SkullBlockRendererMixin",
-        "SkullBlockRendererLayerMixin"
+        "SkullBlockRendererLayerMixin",
+        "HumanoidModelMixin",
+        "HumanoidRenderStateMixin",
+        "IllagerModelMixin",
+        "IllagerRendererMixin",
+        "IllagerRenderStateMixin"
 
 	],
 	"injectors": {

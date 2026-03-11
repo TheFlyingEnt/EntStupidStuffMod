@@ -1,7 +1,9 @@
 package net.ent.entstupidstuff.datagen;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
+import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -12,12 +14,17 @@ import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.special.BannerSpecialRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -287,11 +294,22 @@ public class ModelProvider extends FabricModelProvider{
         blockStateModelGenerator.createHead(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, ModSkullStype.METAL_SKELETON_RED, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
         blockStateModelGenerator.createHead(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, ModSkullStype.METAL_SKELETON_BLUE, ResourceLocation.withDefaultNamespace("item/" + "template_skull"));
 
+        for (DyeColor color : DyeColor.values()) {
+            registerHorizontalBanner(BlockFactory.callBlock(color + "_horizontal_banner"), BlockFactory.callBlock(color + "_wall_horizontal_banner"), color);
+
+        }
         
 
-        
 
+	}
 
+    public final void registerHorizontalBanner(Block block, Block block2, DyeColor dyeColor) {
+		MultiVariant multiVariant = BlockModelGenerators.plainVariant(ModelLocationUtils.decorateBlockModelLocation("banner"));
+		ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/" + "template_war_banner");//ModelLocationUtils.decorateItemModelLocation("template_banner");
+		blockStateModelGenerator.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, multiVariant));
+		blockStateModelGenerator.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block2, multiVariant));
+		Item item = block.asItem();
+		blockStateModelGenerator.itemModelOutput.accept(item, ItemModelUtils.specialModel(resourceLocation, new HorizontalBannerSpecialRenderer.Unbaked(dyeColor)));
 	}
  
     public final void registerMudBottomCustomTop(Block block) {

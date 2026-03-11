@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.world.item.DyeColor;
 
 public class ModLangProvider extends FabricLanguageProvider  {
 
@@ -474,6 +475,12 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.METAL_SKELETON_RED_SKULL, "Metallic Skeleton Skull");
         translationBuilder.add(ItemFactory.METAL_SKELETON_BLUE_SKULL, "Metallic Skeleton Skull");
 
+        for (DyeColor color : DyeColor.values()) {
+            String colorRaw = color.getSerializedName();
+            String colorCap = colorRaw.substring(0, 1).toUpperCase() + colorRaw.substring(1);
+            translationBuilder.add(ItemFactory.callItem(color + "_horizontal_banner"), colorCap + " Horizontal Banner");
+        }
+
         // # Potion Effects
 
         translationBuilder.add("effect.entstupidstuff.hallucinating", "Hallucinating");
@@ -554,11 +561,11 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("painting.entstupidstuff.soviets.title", "The Symbol of the Soviets");
         translationBuilder.add("painting.entstupidstuff.amanandfox.title", "A Man and his Fox");
         
-        translationBuilder.add("painting.entstupidstuff.friendmine.author", "N.M - Ent");
-        translationBuilder.add("painting.entstupidstuff.cookiesteal.author", "N.M - Ent");
-        translationBuilder.add("painting.entstupidstuff.trking.author", "N.M - Ent");
-        translationBuilder.add("painting.entstupidstuff.ttofthrees.author", "N.M - Ent");
-        translationBuilder.add("painting.entstupidstuff.amanandfox.author", "N.M - Ent");
+        translationBuilder.add("painting.entstupidstuff.friendmine.author", "Flynn Entity");
+        translationBuilder.add("painting.entstupidstuff.cookiesteal.author", "Flynn Entity");
+        translationBuilder.add("painting.entstupidstuff.trking.author", "Flynn Entity");
+        translationBuilder.add("painting.entstupidstuff.ttofthrees.author", "Flynn Entity");
+        translationBuilder.add("painting.entstupidstuff.amanandfox.author", "Flynn Entity");
 
         
     }

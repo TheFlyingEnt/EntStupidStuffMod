@@ -5,6 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.util.OminousBannerHelper;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -32,6 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -120,12 +124,7 @@ public class ArmoredPillagerEntity extends Pillager{
         //this.equipDefaultEquipment();
     }
 
-    @SuppressWarnings("unused")
-    private void equipDefaultEquipment() {
-        if (EntStupidStuff.DEV_MODE)
-            System.out.println("AP - equipDefaultEquipment");
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
-    }
+
 
     private void applyArmorStats() {
         if (this.variant == Variant.DIAMOND) {
@@ -168,6 +167,15 @@ public class ArmoredPillagerEntity extends Pillager{
         super.populateDefaultEquipmentSlots(random, localDifficulty);
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
         applyArmorStats();
+
+        /*RandomSource varientR = RandomSource.create();
+        float varientRC = varientR.nextInt(3) + 1;
+
+		if (varientRC == 1) {
+        	HolderGetter<BannerPattern> holderGetter = this.level().registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
+            this.setItemSlot(EquipmentSlot.OFFHAND, OminousBannerHelper.getOminousHorizontalBannerInstance(holderGetter));
+        }*/
+
     }
 
     //Varientation Code:

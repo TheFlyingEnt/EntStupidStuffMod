@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "entstupidstuff:item/template_war_banner",
+    "model": {
+      "type": "entstupidstuff:horizontal_banner",
+      "color": "white"
+    }
+  }
+}

@@ -43,6 +43,8 @@ import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
 import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
+import net.ent.entstupidstuff.client.render.entity.model.WarBannerFlagModel;
+import net.ent.entstupidstuff.client.render.entity.model.WarBannerModel;
 import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModelNew;
@@ -85,6 +87,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.MeshTransformer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.resources.ResourceLocation;
@@ -311,7 +314,10 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation SPOREPER_HEAD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sporeper_head"), "main");
     public static final ModelLayerLocation SOUL_SKELETON_SKULL = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "soul_skeleton_skull"), "main");
 
-
+    public static final ModelLayerLocation WAR_WALL_BANNER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_wall_banner"), "main");
+    public static final ModelLayerLocation WAR_STANDING_BANNER_FLAG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_standing_banner_flag"), "flag");
+    public static final ModelLayerLocation WAR_WALL_BANNER_FLAG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_wall_banner_flag"), "flag");
+    public static final ModelLayerLocation WAR_STANDING_BANNER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_standing_banner"), "main");
 
 
     /*
@@ -421,6 +427,8 @@ public class ModEntityModelLayers {
         //REDSTONE_GOLEM
         EntityRenderers.register(EntityFactory.REDSTONE_GOLEM, (EntityRendererProvider.Context context) -> new RedStoneGolemRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.REDSTONE_GOLEM, () -> RedStoneGolemModelNew.createBodyLayer());
+
+        
 
 
 
@@ -572,6 +580,27 @@ public class ModEntityModelLayers {
         EntityModelLayerRegistry.registerModelLayer(SPOREBONE_SKULL_OUTER, SkullModel::createMobHeadLayer);
         EntityModelLayerRegistry.registerModelLayer(SPOREPER_HEAD, SkullModel::createHumanoidHeadLayer);//SporeperHeadModel
         EntityModelLayerRegistry.registerModelLayer(SOUL_SKELETON_SKULL, SkullModel::createMobHeadLayer);
+
+
+        //EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SPOREPER, () ->  SporeperModel.getTexturedModelData(new CubeDeformation(0.5F)));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.WAR_STANDING_BANNER, () -> WarBannerModel.createBodyLayer(true).apply(MeshTransformer.scaling(2F)).apply(meshDefinition -> meshDefinition.transformed(
+            partPose -> partPose.translated(0F, 24.016F, 0F)
+        )));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.WAR_WALL_BANNER, () -> WarBannerModel.createBodyLayer(false).apply(MeshTransformer.scaling(2F)).apply(meshDefinition -> meshDefinition.transformed(
+            partPose -> partPose.translated(0F, 24.016F, -10.016F)
+        )));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.WAR_STANDING_BANNER_FLAG, () -> WarBannerFlagModel.createFlagLayer(true).apply(MeshTransformer.scaling(2F)).apply(meshDefinition -> meshDefinition.transformed(
+            partPose -> partPose.translated(0F, 24.016F, 0F)
+        )));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.WAR_WALL_BANNER_FLAG, () -> WarBannerFlagModel.createFlagLayer(false).apply(MeshTransformer.scaling(2F)).apply(meshDefinition -> meshDefinition.transformed(
+            partPose -> partPose.translated(0F, 24.016F, -10.016F)
+        )));
+
+
+
+
+
+        
 
 ;
         

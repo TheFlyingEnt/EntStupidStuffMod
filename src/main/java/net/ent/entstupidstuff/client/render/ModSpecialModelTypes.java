@@ -11,6 +11,7 @@ import com.mojang.serialization.MapCodec;
 import net.ent.entstupidstuff.client.item.model.special.AncientTridentSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.CopperShieldSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.DiamondShieldSpecialRenderer;
+import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.IronShieldSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.NetheriteShieldSpecialRenderer;
 import net.ent.entstupidstuff.client.item.model.special.StoneShieldSpecialRenderer;
@@ -64,6 +65,11 @@ public class ModSpecialModelTypes {
         SpecialModelRenderers.ID_MAPPER.put(
             ResourceLocation.fromNamespaceAndPath("entstupidstuff", "ancient_trident"),
             AncientTridentSpecialRenderer.Unbaked.CODEC
+        );
+
+        SpecialModelRenderers.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "horizontal_banner"),
+            HorizontalBannerSpecialRenderer.Unbaked.MAP_CODEC
         );
     }
 

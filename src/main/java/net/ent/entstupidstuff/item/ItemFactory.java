@@ -52,9 +52,11 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MobBucketItem;
@@ -422,6 +424,13 @@ public class ItemFactory {
     //public static final Item REDWOOD_HANGING_SIGN = new HangingSignItem(BlockFactoryUpt.callBlock("redwood_hanging_sign"), BlockFactoryUpt.callBlock("redwood_wall_hanging_sign"), settings.maxCount(16));
 
     public static void onInitialize() {
+
+        for (DyeColor color : DyeColor.values()) {
+            registerItem(
+                color +"_horizontal_banner", settings -> new BannerItem(BlockFactory.callBlock(color + "_horizontal_banner"), BlockFactory.callBlock(color + "_wall_horizontal_banner"), 
+                settings.stacksTo(16).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY))
+            );
+        }
 
         //Development - Work in Progress
         /*

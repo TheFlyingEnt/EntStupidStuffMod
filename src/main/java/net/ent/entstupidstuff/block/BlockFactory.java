@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.block;
 
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -8,6 +9,8 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.block.base.BlueMushroomPlantBlock;
 import net.ent.entstupidstuff.block.base.GrateSlabBlock;
 import net.ent.entstupidstuff.block.base.GrateStairsBlock;
+import net.ent.entstupidstuff.block.base.HorizontalBannerBlock;
+import net.ent.entstupidstuff.block.base.HorizontalWallBannerBlock;
 import net.ent.entstupidstuff.block.base.MushroomAuraBlock;
 import net.ent.entstupidstuff.block.base.MushroomSporeBlossomBlock;
 import net.ent.entstupidstuff.block.base.MushroombedBlock;
@@ -35,6 +38,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
@@ -83,6 +87,9 @@ public class BlockFactory {
     public static final Map<ResourceLocation, Block> BlockList = new LinkedHashMap<>();
     public static final Map<ResourceLocation, Block> BlockItem = new LinkedHashMap<>(); 
     public static final Map<ResourceLocation, Item> ItemList = new LinkedHashMap<>();
+
+    public static final Map<DyeColor, HorizontalBannerBlock> HORIZONTAL_BANNERS = new EnumMap<>(DyeColor.class);
+    public static final Map<DyeColor, HorizontalWallBannerBlock> HORIZONTAL_WALL_BANNERS = new EnumMap<>(DyeColor.class);
 
     public final static String[] RECIPES_COLORS = {"black", "blue", "brown", "cyan", "gray", "green", "light_blue", "light_gray", "lime", "magenta", "orange", "pink", "purple", "red", "yellow", "white"};
 
@@ -416,6 +423,8 @@ public class BlockFactory {
         FlammableBlockRegistry.getDefaultInstance().add(GSW_MAGENTA_WOOL_CARPET, 30, 60);
         FlammableBlockRegistry.getDefaultInstance().add(GSW_PINK_WOOL_CARPET, 30, 60);
 
+        HorizontalBannersFamily();
+
         //TODO: Add Glowing Bed, Glowing Banners
 
 
@@ -625,6 +634,45 @@ public class BlockFactory {
         OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_1, WAXED_EXPOSED_COPPER_1);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_1, WAXED_OXIDIZED_COPPER_1);
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_1, WAXED_WEATHERED_COPPER_1);
+    }
+
+    public static void HorizontalBannersFamily() {
+        for (DyeColor color : DyeColor.values()) {
+            Block block = registerWithoutItem(
+                color.getName() + "_horizontal_banner",
+                properties -> new HorizontalBannerBlock(color, properties),
+                BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .forceSolidOn()
+                    .instrument(NoteBlockInstrument.BASS)
+                    .noCollision()
+                    .strength(1.0F)
+                    .sound(SoundType.WOOD)
+                    .ignitedByLava()
+            );
+
+            Block block_wall = registerWithoutItem(
+                color.getName() + "_wall_horizontal_banner",
+                properties -> new HorizontalWallBannerBlock(color, properties),
+                wallVariant(block, true)
+                    .mapColor(MapColor.WOOD)
+                    .forceSolidOn()
+                    .instrument(NoteBlockInstrument.BASS)
+                    .noCollision()
+                    .strength(1.0F)
+                    .sound(SoundType.WOOD)
+                    .ignitedByLava()
+            );
+
+            HORIZONTAL_BANNERS.put(color, (HorizontalBannerBlock) block);
+            HORIZONTAL_WALL_BANNERS.put(color, (HorizontalWallBannerBlock) block_wall);
+
+            ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, color.getName() + "_horizontal_banner");
+            ResourceLocation blockId2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, color.getName() + "_wall_horizontal_banner");
+            BlockList.put(blockId, block);
+            BlockList.put(blockId2, block_wall);
+
+        }
     }
 
 
@@ -930,6 +978,9 @@ public class BlockFactory {
         wallVariant(METAL_SKELETON_BLUE_SKULL, true).strength(1.0F).pushReaction(PushReaction.DESTROY)
     );
 
+
+
+
     // # Adding POINTED_ICE
     public static final Block POINTED_ICE = register(
 		"pointed_ice",
@@ -1026,9 +1077,6 @@ public class BlockFactory {
 
 
 
-    
-
-
 
     // ## Ult
 
@@ -1049,6 +1097,7 @@ public class BlockFactory {
             return BlockList.get(identifier);
         } catch (Exception e) {
             System.out.println("An Error occurred in callBlock()... Tried to call: " + id);
+            EntStupidStuff.LOGGER.error("An Error occurred in callBlock()... Tried to call: " + id, e);
             return null;
         }
     }
@@ -1102,6 +1151,20 @@ public class BlockFactory {
 
     // ## Registation V4 (Custom)
 
+    public static Block register_customBanner(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
+        ResourceKey<Block> key = keyOf(id);
+		Block block = (Block)factory.apply(settings.setId(key));
+
+        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, id);
+        BlockList.put(blockId, block);
+
+        System.out.println("Adding Block without Item: (Horizontal Banner): " + blockId);
+
+        registerBlockItem_Mushroom(id, block);
+
+		return Registry.register(BuiltInRegistries.BLOCK, key, block);
+	}
+    
     public static Block register_custom_mushroom(String id, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties settings) {
         ResourceKey<Block> key = keyOf(id);
 		Block block = (Block)factory.apply(settings.setId(key));
