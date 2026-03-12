@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff;
 
+import net.ent.entstupidstuff.api.mold.ArmorMoldProperty;
+import net.ent.entstupidstuff.api.mold.ToolMoldProperty;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
@@ -14,6 +16,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -52,6 +56,15 @@ public class EntStupidStuffClient implements ClientModInitializer {
         BlockEntityRenderers.register(
             BlockEntityFactory.HORIZONTAL_BANNER,
             HorizontalBannerRenderer::new
+        );
+
+        SelectItemModelProperties.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "tool_mold"),
+            ToolMoldProperty.TYPE
+        );
+        SelectItemModelProperties.ID_MAPPER.put(
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "armor_mold"),
+            ArmorMoldProperty.TYPE
         );
 
 

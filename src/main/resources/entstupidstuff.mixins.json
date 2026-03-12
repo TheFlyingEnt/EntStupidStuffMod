@@ -14,7 +14,10 @@
         "HumanoidRenderStateMixin",
         "IllagerModelMixin",
         "IllagerRendererMixin",
-        "IllagerRenderStateMixin"
+        "IllagerRenderStateMixin",
+        "AnvilMenuMixin",
+        "HumanoidArmorLayerMixin",
+        "ItemCombinerMenuAccessor"
 
 	],
 	"injectors": {

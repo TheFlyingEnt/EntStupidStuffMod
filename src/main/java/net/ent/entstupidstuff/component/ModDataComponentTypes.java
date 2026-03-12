@@ -65,6 +65,9 @@ public class ModDataComponentTypes {
             .networkSynchronized(ByteBufCodecs.INT)
             .build();
 
+    public static DataComponentType<ResourceLocation> TOOL_MOLD;
+    public static DataComponentType<ResourceLocation> ARMOR_MOLD;
+
 
     private static <T> DataComponentType<T> register(String name, java.util.function.UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return Registry.register(
@@ -92,6 +95,24 @@ public class ModDataComponentTypes {
             ResourceLocation.fromNamespaceAndPath("entstupidstuff", "loaded_arrows"),
             LOADED_ARROWS
         );
+
+        TOOL_MOLD = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "tool_mold"),
+            DataComponentType.<ResourceLocation>builder()
+                .persistent(ResourceLocation.CODEC)
+                .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                .build()
+        );
+        ARMOR_MOLD = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "armor_mold"),
+            DataComponentType.<ResourceLocation>builder()
+                .persistent(ResourceLocation.CODEC)
+                .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                .build()
+        );
+
     }
     
 }

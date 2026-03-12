@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.mold.ArmorMoldItem;
+import net.ent.entstupidstuff.api.mold.ToolMoldItem;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.datagen.ModJukeboxSongs;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
@@ -384,6 +386,8 @@ public class ItemFactory {
     public static final Item METAL_SKELETON_RED_SKULL = registerItem( "metal_skeleton_red_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
     public static final Item METAL_SKELETON_BLUE_SKULL = registerItem( "metal_skeleton_blue_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
 
+    public static final Item KNIGHT_ITEM_MOLD = registerItem("knight_item_mold", setting -> new ToolMoldItem("knight", setting));
+    public static final Item KNIGHT_ARMOR_MOLD = registerItem("knight_armor_mold", setting -> new ArmorMoldItem("knight", setting));
 
     //public static final Item PHANTOM_TORCH = registerItem("phantom_torch", setting -> new StandingAndWallBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, Direction.DOWN, setting));
 

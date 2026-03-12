@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.datagen;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.mold.ToolMoldProperty;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.BlockModelGenerators.BlockFamilyProvider;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
@@ -24,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -110,24 +113,39 @@ public class ModelProvider extends FabricModelProvider{
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_FUNGALDELIC, ModelTemplates.FLAT_ITEM);
 
-        //itemModelGenerator2.register(ItemFactory.DIAMOND_SHIELD, Models.);
-
-        //ItemModel.Unbaked unbakedShield = ItemModels.basic(itemModelGenerator2.upload(ItemFactory.DIAMOND_SHIELD, Models.GENERATED));
-        //ItemModel.Unbaked unbakedBlocking = ItemModels.basic(itemModelGenerator2.registerSubModel(ItemFactory.DIAMOND_SHIELD, "blocking", Models.GENERATED)); //ToFix
-        /*itemModelGenerator.output.accept(
-        ItemFactory.DIAMOND_SHIELD,
-        new ItemAsset(
-            new ConditionItemModel.Unbaked(
-                new HasComponentProperty(DataComponentTypes.BLOCKS_ATTACKS, true),
-                unbakedBlocking,
-                unbakedShield
-            ),
-            new ItemAsset.Properties(false, false)
-        ).model()
-    );*/
-
+        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
+        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
+        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
 
     }
+
+    private void registerMoldableToolItem(ItemModelOutput output, Item item, String baseName) {
+        output.accept(item, ItemModelUtils.select(
+            new ToolMoldProperty(),
+            ItemModelUtils.plainModel(ResourceLocation.withDefaultNamespace("item/" + baseName)), // fallback
+            ItemModelUtils.when(
+                ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "knight"),
+                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_knight"))
+            ),
+            ItemModelUtils.when(
+                ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "runic"),
+                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_runic"))
+            )
+        ));
+    }
+
+    private void registerToolMoldModels(BlockModelGenerators blockModels, String baseName, String moldName) {
+        ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_" + moldName);
+        ResourceLocation textureId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_" + moldName);
+
+        ModelTemplates.FLAT_HANDHELD_ITEM
+            .create(
+                modelId,
+                TextureMapping.layer0(textureId),
+                blockModels.modelOutput
+            );
+    }
+
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator2) {
@@ -295,8 +313,9 @@ public class ModelProvider extends FabricModelProvider{
 
         for (DyeColor color : DyeColor.values()) {
             registerHorizontalBanner(BlockFactory.callBlock(color + "_horizontal_banner"), BlockFactory.callBlock(color + "_wall_horizontal_banner"), color);
-
         }
+
+        registerToolMoldModels(blockStateModelGenerator2, "diamond_sword", "knight");
         
 
 
