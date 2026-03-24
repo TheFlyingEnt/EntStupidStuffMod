@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.casting.ArmorCastingComponent;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -49,15 +50,17 @@ public class HumanoidArmorLayerMixin<S extends HumanoidRenderState> {
     )
     private Object redirectAssetKey(Optional<?> optional) {
         ResourceKey<EquipmentAsset> originalKey = (ResourceKey<EquipmentAsset>) optional.orElseThrow();
-        ResourceLocation moldId = entstupidstuff$currentItemStack.get(ModDataComponentTypes.ARMOR_MOLD);
-        if (moldId != null) {
+        //ResourceLocation castId = entstupidstuff$currentItemStack.get(ModDataComponentTypes.ARMOR_CAST);
+        ArmorCastingComponent castId = entstupidstuff$currentItemStack.get(ModDataComponentTypes.ARMOR_CAST);
+        if (castId != null) {
             String originalPath = originalKey.location().getPath();
-            String moldName = moldId.getPath();
+            String castName = castId.castId().getPath();
+            //String castName = castId.getPath();
             return ResourceKey.create(
                 EquipmentAssets.ROOT_ID,
                 ResourceLocation.fromNamespaceAndPath(
                     EntStupidStuff.MOD_ID,
-                    originalPath + "_" + moldName
+                    originalPath + "_" + castName
                 )
             );
         }

@@ -38,7 +38,7 @@ public class RedstoneGolemGlowRenderer extends RenderLayer<RedStoneGolemRenderSt
 
 		submitNodeCollector.order(1)
 			.submitModel(
-				this.getParentModel(), entityRenderState, poseStack, RenderType.eyes(GLOW_TEXTURE), i, OverlayTexture.NO_OVERLAY, color, null, entityRenderState.outlineColor, null
+				this.getParentModel(), entityRenderState, poseStack, RenderType.eyes(GLOW_TEXTURE), entityRenderState.lightCoords, OverlayTexture.NO_OVERLAY, color, null, entityRenderState.outlineColor, null
 			);
 	}
 }

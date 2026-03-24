@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.datagen;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.mold.ToolMoldProperty;
+import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -21,15 +21,15 @@ public class ModItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
         // etc. for every moldable tool
     }
 
-    private void registerMoldableToolItem(ItemModelOutput output, Item item, String baseName) {
+    private void registerCastableToolItem(ItemModelOutput output, Item item, String baseName) {
         output.accept(item, ItemModelUtils.select(
-            new ToolMoldProperty(),
+            new ToolCastingProperty(),
             ItemModelUtils.plainModel(ResourceLocation.withDefaultNamespace("item/" + baseName)), // fallback
             ItemModelUtils.when(
                 ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "knight"),

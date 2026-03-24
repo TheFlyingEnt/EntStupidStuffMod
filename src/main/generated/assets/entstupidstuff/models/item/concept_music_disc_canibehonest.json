@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "entstupidstuff:item/concept_music_disc_canibehonest"
+  }
+}

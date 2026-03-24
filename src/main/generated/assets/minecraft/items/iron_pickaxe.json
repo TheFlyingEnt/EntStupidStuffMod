@@ -5,14 +5,14 @@
       {
         "model": {
           "type": "minecraft:model",
-          "model": "entstupidstuff:item/molds/iron_pickaxe_knight"
+          "model": "entstupidstuff:item/casts/iron_pickaxe_knight"
         },
         "when": "entstupidstuff:knight"
       },
       {
         "model": {
           "type": "minecraft:model",
-          "model": "entstupidstuff:item/molds/iron_pickaxe_runic"
+          "model": "entstupidstuff:item/casts/iron_pickaxe_runic"
         },
         "when": "entstupidstuff:runic"
       }
@@ -21,6 +21,6 @@
       "type": "minecraft:model",
       "model": "minecraft:item/iron_pickaxe"
     },
-    "property": "entstupidstuff:tool_mold"
+    "property": "entstupidstuff:tool_cast"
   }
 }

@@ -1,6 +1,8 @@
 package net.ent.entstupidstuff.client;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.DMCModel;
+import net.ent.entstupidstuff.api.car.CarEntityRenderer;
 import net.ent.entstupidstuff.client.render.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
@@ -76,6 +78,7 @@ import net.ent.entstupidstuff.client.render.entity.renderer.SunkenSkeletonEntity
 import net.ent.entstupidstuff.client.render.entity.renderer.ZebraFishRenderer;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.DrownedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
@@ -316,6 +319,8 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation WAR_STANDING_BANNER_FLAG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_standing_banner_flag"), "flag");
     public static final ModelLayerLocation WAR_WALL_BANNER_FLAG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_wall_banner_flag"), "flag");
     public static final ModelLayerLocation WAR_STANDING_BANNER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_standing_banner"), "main");
+
+    public static final ModelLayerLocation CAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "car"), "main");
 
 
     /*
@@ -593,6 +598,9 @@ public class ModEntityModelLayers {
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.WAR_WALL_BANNER_FLAG, () -> WarBannerFlagModel.createFlagLayer(false).apply(MeshTransformer.scaling(2F)).apply(meshDefinition -> meshDefinition.transformed(
             partPose -> partPose.translated(0F, 24.016F, -10.016F)
         )));
+
+        EntityRenderers.register(EntityFactory.CAR, (EntityRendererProvider.Context context) -> new CarEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CAR, DMCModel::createBodyLayer);
 
 
 

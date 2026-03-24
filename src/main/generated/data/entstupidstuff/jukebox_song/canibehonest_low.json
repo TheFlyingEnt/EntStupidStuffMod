@@ -1,0 +1,8 @@
+{
+  "comparator_output": 6,
+  "description": {
+    "translate": "jukebox_song.entstupidstuff.canibehonest_low"
+  },
+  "length_in_seconds": 216.0,
+  "sound_event": "entstupidstuff:music_disc.canibehonest_high"
+}

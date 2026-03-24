@@ -1,5 +1,12 @@
 package net.ent.entstupidstuff;
 
+import net.ent.entstupidstuff.api.emote.EmoteCommand;
+import net.ent.entstupidstuff.api.emote.EmoteRegistry;
+import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
+import net.ent.entstupidstuff.api.hat.HatCommand;
+import net.ent.entstupidstuff.api.hat.HatRegistry;
+import net.ent.entstupidstuff.api.hat.HatSyncPayload;
+import net.ent.entstupidstuff.api.hat.ModAttachments;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
@@ -15,8 +22,13 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
@@ -154,6 +166,34 @@ public class EntStupidStuff implements ModInitializer {
         ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_RED_WALL_SKULL);
         ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_BLUE_SKULL);
         ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL);
+
+        // Hats and Emotes
+
+        ModAttachments.init();
+        HatRegistry.init();
+        EmoteRegistry.init();
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            HatCommand.register(dispatcher);
+            EmoteCommand.register(dispatcher);
+        });
+
+        PayloadTypeRegistry.playS2C().register(HatSyncPayload.TYPE, HatSyncPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(EmoteSyncPayload.TYPE, EmoteSyncPayload.CODEC);
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerPlayer joining = handler.getPlayer();
+            server.execute(() -> {
+                String hat = joining.getAttachedOrElse(ModAttachments.HAT, "");
+                if (!hat.isEmpty()) {
+                    HatSyncPayload payload = new HatSyncPayload(joining.getUUID(), hat);
+                    // Send to the joining player so their client is updated too
+                    ServerPlayNetworking.send(joining, payload);
+                    // Observers will receive the sync when they enter tracking range via
+                    // the PlayerTrackingEvents registered below
+                }
+            });
+        });
 
 
 

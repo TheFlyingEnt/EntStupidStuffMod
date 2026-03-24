@@ -16,6 +16,9 @@ public class ModJukeboxSongs {
 
     public static final ResourceKey<JukeboxSong> PIRATE_TAVERN = create("pirate_tavern");
     public static final ResourceKey<JukeboxSong> FUNGALDELIC = create("fungaldelic");
+    public static final ResourceKey<JukeboxSong> CANIBEHONEST = create("canibehonest");
+    public static final ResourceKey<JukeboxSong> CANIBEHONEST_LOW = create("canibehonest_high");
+    public static final ResourceKey<JukeboxSong> CANIBEHONEST_HIGH = create("canibehonest_low");
     //public static final ResourceKey<JukeboxSong> BRAIN_SPLOSHED = create("brain_spolished");
     //public static final ResourceKey<brain> SEAVOLUTION = create("seavolution");
     //public static final ResourceKey<JukeboxSong> SEAVOLUTION = create("seavolution");
@@ -37,6 +40,10 @@ public class ModJukeboxSongs {
 	public static void bootstrap(BootstrapContext<JukeboxSong> bootstrapContext) {
 		register(bootstrapContext, PIRATE_TAVERN, SoundFactory.MUSIC_DISC_PIRATE_TAVERN, 73, 9);
         register(bootstrapContext, FUNGALDELIC, SoundFactory.MUSIC_DISC_FUNGALDELIC, 182, 5);
+        
+        register(bootstrapContext, CANIBEHONEST, SoundFactory.MUSIC_DISC_CANIBEHONEST, 148, 5);
+        register(bootstrapContext, CANIBEHONEST_LOW, SoundFactory.MUSIC_DISC_CANIBEHONEST_LOW, 217, 4);
+        register(bootstrapContext, CANIBEHONEST_HIGH, SoundFactory.MUSIC_DISC_CANIBEHONEST_HIGH, 216, 6);
 
 	}
     

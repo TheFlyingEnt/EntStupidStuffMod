@@ -1,0 +1,14 @@
+{
+    "layers": {
+        "humanoid": [
+            {
+                "texture": "entstupidstuff:netherite_knight"
+            }
+        ],
+        "humanoid_leggings": [
+            {
+                "texture": "entstupidstuff:netherite_knight"
+            }
+        ]
+    }
+}

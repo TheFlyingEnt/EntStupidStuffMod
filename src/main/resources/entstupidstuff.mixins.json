@@ -15,9 +15,13 @@
         "IllagerModelMixin",
         "IllagerRendererMixin",
         "IllagerRenderStateMixin",
-        "AnvilMenuMixin",
         "HumanoidArmorLayerMixin",
-        "ItemCombinerMenuAccessor"
+        "ItemCombinerMenuAccessor",
+        "SmithingMenuMixin",
+        "SmithingScreenMixin",
+        "SmithingScreenAccessor",
+        "SmithingScreenFontAccessor",
+        "PlayerModelMixin"
 
 	],
 	"injectors": {

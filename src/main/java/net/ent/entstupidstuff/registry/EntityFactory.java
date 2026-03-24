@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.registry;
 import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.CarEntity;
 import net.ent.entstupidstuff.client.entity.CustomBoatEntity;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
@@ -453,6 +454,16 @@ public class EntityFactory {
 		return (type, world) -> new CustomBoatEntity(type, world, itemSupplier);
 	}
 
+    public static final EntityType<CarEntity> CAR = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "car"),
+        EntityType.Builder.<CarEntity>of(CarEntity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"car")))
+    );
+
 
 
 
@@ -511,6 +522,8 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(SILKMOTH, SilkmothEntity.createAttributes());
 
         FabricDefaultAttributeRegistry.register(CORAL_SKELETON, CoralSkeletonEntity.createAttributes());
+
+        //FabricDefaultAttributeRegistry.register(CAR, CarEntity.createAttributes());
 
         
 

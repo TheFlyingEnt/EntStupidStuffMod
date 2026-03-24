@@ -1,0 +1,77 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"0": "entstupidstuff:item/hat/menacing",
+		"particle": "entstupidstuff:item/hat/menacing"
+	},
+	"elements": [
+		{
+			"from": [0.9, 5.4, 0.4],
+			"to": [4.1, 8.6, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0.9, 2.2, 0.4],
+			"to": [4.1, 5.4, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [0.9, -1, 0.4],
+			"to": [4.1, 2.2, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [11.9, 8.4, 0.4],
+			"to": [15.1, 11.6, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [11.9, 5.2, 0.4],
+			"to": [15.1, 8.4, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [11.9, 2, 0.4],
+			"to": [15.1, 5.2, 0.6],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [6.4, 0, 6.4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"gui": {
+			"rotation": [26, -180, 15],
+			"translation": [0.5, 2, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"head": {
+			"translation": [0, 2.5, 3],
+			"scale": [1.7, 1.7, 1.7]
+		}
+	},
+	"groups": [
+		{
+			"name": "menacing",
+			"origin": [6.4, 0, 6.4],
+			"color": 0,
+			"children": [0, 1, 2, 3, 4, 5]
+		}
+	]
+}

@@ -3,6 +3,8 @@ package net.ent.entstupidstuff.component;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.casting.ArmorCastingComponent;
+import net.ent.entstupidstuff.api.casting.ToolCastingComponent;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
 import net.ent.entstupidstuff.client.entity.passive.ButterflyEntity;
 import net.ent.entstupidstuff.client.entity.passive.KoiVariant;
@@ -65,8 +67,11 @@ public class ModDataComponentTypes {
             .networkSynchronized(ByteBufCodecs.INT)
             .build();
 
-    public static DataComponentType<ResourceLocation> TOOL_MOLD;
-    public static DataComponentType<ResourceLocation> ARMOR_MOLD;
+    //public static DataComponentType<ResourceLocation> TOOL_MOLD;
+    //public static DataComponentType<ResourceLocation> ARMOR_MOLD;
+
+    public static DataComponentType<ToolCastingComponent> TOOL_CAST;
+    public static DataComponentType<ArmorCastingComponent> ARMOR_CAST;
 
 
     private static <T> DataComponentType<T> register(String name, java.util.function.UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
@@ -96,7 +101,7 @@ public class ModDataComponentTypes {
             LOADED_ARROWS
         );
 
-        TOOL_MOLD = Registry.register(
+        /*TOOL_MOLD = Registry.register(
             BuiltInRegistries.DATA_COMPONENT_TYPE,
             ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "tool_mold"),
             DataComponentType.<ResourceLocation>builder()
@@ -110,6 +115,23 @@ public class ModDataComponentTypes {
             DataComponentType.<ResourceLocation>builder()
                 .persistent(ResourceLocation.CODEC)
                 .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                .build()
+        );*/
+
+        TOOL_CAST = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "tool_cast"),
+            DataComponentType.<ToolCastingComponent>builder()
+                .persistent(ToolCastingComponent.CODEC)
+                .networkSynchronized(ToolCastingComponent.STREAM_CODEC)
+                .build()
+        );
+        ARMOR_CAST = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "armor_cast"),
+            DataComponentType.<ArmorCastingComponent>builder()
+                .persistent(ArmorCastingComponent.CODEC)
+                .networkSynchronized(ArmorCastingComponent.STREAM_CODEC)
                 .build()
         );
 

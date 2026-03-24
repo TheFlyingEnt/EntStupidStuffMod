@@ -7,8 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.mold.ArmorMoldItem;
-import net.ent.entstupidstuff.api.mold.ToolMoldItem;
+import net.ent.entstupidstuff.api.casting.CastingTemplateItem;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.datagen.ModJukeboxSongs;
 import net.ent.entstupidstuff.item.base.AncientTridentItem;
@@ -221,6 +220,18 @@ public class ItemFactory {
 	    "music_disc_fungaldelic", settings -> new Item((settings).stacksTo(1).rarity(Rarity.UNCOMMON).jukeboxPlayable(ModJukeboxSongs.FUNGALDELIC))
     );
 
+    public static final Item MUSIC_DISC_CANIBEHONEST = registerItem(
+	    "concept_music_disc_canibehonest", settings -> new Item((settings).stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ModJukeboxSongs.CANIBEHONEST))
+    );
+
+    public static final Item MUSIC_DISC_CANIBEHONEST_HIGH = registerItem(
+	    "concept_music_disc_canibehonest_high", settings -> new Item((settings).stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ModJukeboxSongs.CANIBEHONEST_HIGH))
+    );
+
+    public static final Item MUSIC_DISC_CANIBEHONEST_LOW = registerItem(
+	    "concept_music_disc_canibehonest_low", settings -> new Item((settings).stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ModJukeboxSongs.CANIBEHONEST_LOW))
+    );
+
     //public static final Item WHITE_BED = registerItem("glowing_white_bed", settings -> new BedItem(BlockFactory.GSW_WHITE_BED, settings.stacksTo(1)));
 
 
@@ -386,8 +397,24 @@ public class ItemFactory {
     public static final Item METAL_SKELETON_RED_SKULL = registerItem( "metal_skeleton_red_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
     public static final Item METAL_SKELETON_BLUE_SKULL = registerItem( "metal_skeleton_blue_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
 
-    public static final Item KNIGHT_ITEM_MOLD = registerItem("knight_item_mold", setting -> new ToolMoldItem("knight", setting));
-    public static final Item KNIGHT_ARMOR_MOLD = registerItem("knight_armor_mold", setting -> new ArmorMoldItem("knight", setting));
+    
+
+    public static final Item KNIGHT_CASTING_TEMPLATE = registerItem("knight_casting_template", setting -> new CastingTemplateItem("knight", setting,
+        // Iron Armor
+        Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS,
+        // Golden Armor
+        Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS,
+        // Golden Armor
+        Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+        // Diamond Armor
+        Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS,
+        // Netherite Armor
+        Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS
+    ));
+    
+
+    //public static final Item KNIGHT_ITEM_MOLD = registerItem("knight_item_mold", setting -> new ToolMoldItem("knight", setting));
+    //public static final Item KNIGHT_ARMOR_MOLD = registerItem("knight_armor_mold", setting -> new ArmorMoldItem("knight", setting));
 
     //public static final Item PHANTOM_TORCH = registerItem("phantom_torch", setting -> new StandingAndWallBlockItem(BlockFactory.PHANTOM_TORCH, BlockFactory.PHANTOM_WALL_TORCH, Direction.DOWN, setting));
 

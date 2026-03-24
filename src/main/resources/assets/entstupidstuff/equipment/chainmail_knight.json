@@ -1,0 +1,14 @@
+{
+    "layers": {
+        "humanoid": [
+            {
+                "texture": "entstupidstuff:diamond_knight"
+            }
+        ],
+        "humanoid_leggings": [
+            {
+                "texture": "entstupidstuff:diamond_knight"
+            }
+        ]
+    }
+}

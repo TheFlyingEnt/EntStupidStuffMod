@@ -1,6 +1,8 @@
 package net.ent.entstupidstuff.datagen;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.ItemFactory;
@@ -441,6 +443,15 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.MUSIC_DISC_FUNGALDELIC, "Music Disc");
         translationBuilder.add("jukebox_song.entstupidstuff.fungaldelic", "Flynn Entity - Fungaldelic");
 
+        translationBuilder.add(ItemFactory.MUSIC_DISC_CANIBEHONEST, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.canibehonest", "Flynn Entity & Suno - Can I be Honest");
+
+        translationBuilder.add(ItemFactory.MUSIC_DISC_CANIBEHONEST_HIGH, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.canibehonest_high", "Flynn Entity & Suno - Can I be Honest (High)");
+
+        translationBuilder.add(ItemFactory.MUSIC_DISC_CANIBEHONEST_LOW, "Music Disc");
+        translationBuilder.add("jukebox_song.entstupidstuff.canibehonest_low", "Flynn Entity & Suno - Can I be Honest (Low)");
+
         translationBuilder.add(ItemFactory.WOODEN_HAMMER, "Wooden Hammer");
         translationBuilder.add(ItemFactory.STONE_HAMMER, "Stone Hammer");
         translationBuilder.add(ItemFactory.GOLDEN_HAMMER, "Golden Hammer");
@@ -474,11 +485,18 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.METAL_SKELETON_DEFAULT_SKULL, "Metallic Skeleton Skull");
         translationBuilder.add(ItemFactory.METAL_SKELETON_RED_SKULL, "Metallic Skeleton Skull");
         translationBuilder.add(ItemFactory.METAL_SKELETON_BLUE_SKULL, "Metallic Skeleton Skull");
+        
+        translationBuilder.add(ItemFactory.PHANTOM_TORCH, "Metallic Skeleton Skull");
+        translationBuilder.add(ItemFactory.KNIGHT_CASTING_TEMPLATE, "Knight Cast");
+        
+        
 
         for (DyeColor color : DyeColor.values()) {
             String colorRaw = color.getSerializedName();
-            String colorCap = colorRaw.substring(0, 1).toUpperCase() + colorRaw.substring(1);
-            translationBuilder.add(ItemFactory.callItem(color + "_horizontal_banner"), colorCap + " Horizontal Banner");
+            String colorFormatted = Arrays.stream(colorRaw.split("_"))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+            translationBuilder.add(ItemFactory.callItem(color + "_horizontal_banner"), colorFormatted + " Horizontal Banner");
         }
 
         // # Potion Effects
@@ -566,6 +584,22 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("painting.entstupidstuff.trking.author", "Flynn Entity");
         translationBuilder.add("painting.entstupidstuff.ttofthrees.author", "Flynn Entity");
         translationBuilder.add("painting.entstupidstuff.amanandfox.author", "Flynn Entity");
+
+        //Casting Template
+        translationBuilder.add("item.entstupidstuff.casting_template.title", "Casting Template");
+        translationBuilder.add("item.entstupidstuff.casting_template.applies_to", "Applies to:");
+        translationBuilder.add("item.entstupidstuff.casting_template.ingredients", "Ingredients:");
+        translationBuilder.add("item.entstupidstuff.casting_template.base_slot_description", "Add a compatible Weapon, Tool, or Armor piece");
+        translationBuilder.add("item.entstupidstuff.casting_template.addition_slot_description", "Add a Bucket of Lava");
+
+        translationBuilder.add("item.entstupidstuff.modifiers.armor", "Any Armor");
+        translationBuilder.add("item.entstupidstuff.modifiers.tool", "Any Tool");
+
+        translationBuilder.add("cast.entstupidstuff.knight", "Knight Cast");
+        translationBuilder.add("cast.entstupidstuff.chief", "Chief Cast");
+        translationBuilder.add("cast.entstupidstuff.slayer", "Slayer Cast");
+
+        
 
         
     }

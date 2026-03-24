@@ -12,6 +12,9 @@ public class SoundFactory {
     //public static final SoundEvent MUSIC_DISC_PIRATE_TAVERN = registerSoundEvent("music_disc.pirate_tavern");
     public static final Holder.Reference<SoundEvent> MUSIC_DISC_PIRATE_TAVERN = registerReference("music_disc.pirate_tavern");
     public static final Holder.Reference<SoundEvent> MUSIC_DISC_FUNGALDELIC = registerReference("music_disc.fungaldelic");
+    public static final Holder.Reference<SoundEvent> MUSIC_DISC_CANIBEHONEST = registerReference("music_disc.canibehonest");
+    public static final Holder.Reference<SoundEvent> MUSIC_DISC_CANIBEHONEST_HIGH = registerReference("music_disc.canibehonest_high");
+    public static final Holder.Reference<SoundEvent> MUSIC_DISC_CANIBEHONEST_LOW = registerReference("music_disc.canibehonest_low");
 
     public static final SoundEvent ENTITY_METAL_SKELETON_AMBIENT = registerSoundEvent("entity.metal_skeleton.ambient");
 	public static final SoundEvent ENTITY_METAL_SKELETON_CONVERTED_TO_STRAY = registerSoundEvent("entity.metal_skeleton.converted_to_stray");
@@ -147,6 +150,17 @@ public class SoundFactory {
     public static final SoundEvent ENTITY_FUR_TROUT_DEATH = registerSoundEvent("entity.fur_trout.death");
     public static final SoundEvent ENTITY_FUR_TROUT_HURT = registerSoundEvent("entity.fur_trout.hurt");
     public static final SoundEvent ENTITY_FUR_TROUT_FLOP = registerSoundEvent("entity.fur_trout.flop");
+    
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_BREAK = registerSoundEvent("entity.vehicle.dodgevipergts_break");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_4 = registerSoundEvent("entity.vehicle.dodgevipergts_gear_four");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1 = registerSoundEvent("entity.vehicle.dodgevipergts_gear_one");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_START = registerSoundEvent("entity.vehicle.dodgevipergts_gear_start");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_3 = registerSoundEvent("entity.vehicle.dodgevipergts_gear_three");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP = registerSoundEvent("entity.vehicle.dodgevipergts_gear_top");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_2 = registerSoundEvent("entity.vehicle.dodgevipergts_gear_two");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_IDLE = registerSoundEvent("entity.vehicle.dodgevipergts_idle");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_START = registerSoundEvent("entity.vehicle.dodgevipergts_start");
+    public static final SoundEvent ENTITY_VEHICLE_TIRES_SQUAL_LOOP = registerSoundEvent("entity.vehicle.tires_squal_loop");
 
     private static SoundEvent registerSoundEvent(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);

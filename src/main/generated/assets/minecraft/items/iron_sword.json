@@ -5,14 +5,14 @@
       {
         "model": {
           "type": "minecraft:model",
-          "model": "entstupidstuff:item/molds/iron_sword_knight"
+          "model": "entstupidstuff:item/casts/iron_sword_knight"
         },
         "when": "entstupidstuff:knight"
       },
       {
         "model": {
           "type": "minecraft:model",
-          "model": "entstupidstuff:item/molds/iron_sword_runic"
+          "model": "entstupidstuff:item/casts/iron_sword_runic"
         },
         "when": "entstupidstuff:runic"
       }
@@ -21,6 +21,6 @@
       "type": "minecraft:model",
       "model": "minecraft:item/iron_sword"
     },
-    "property": "entstupidstuff:tool_mold"
+    "property": "entstupidstuff:tool_cast"
   }
 }

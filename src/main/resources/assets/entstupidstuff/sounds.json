@@ -843,5 +843,96 @@
       "minecraft:mob/zombie/step4"
     ],
     "subtitle": "subtitles.block.generic.footsteps"
+  },
+  "music_disc.canibehonest_low": {
+    "sounds": [
+      "entstupidstuff:concept_music_flynnsuno_canibehonest_low"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "music_disc.canibehonest": {
+    "sounds": [
+      "entstupidstuff:concept_music_flynnsuno_canibehonest"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "music_disc.canibehonest_high": {
+    "sounds": [
+      "entstupidstuff:concept_music_flynnsuno_canibehonest_high"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_break": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_break"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_four": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_four"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_one": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_one"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_start": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_start"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_three": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_three"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_top": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_top"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_two": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_two"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_idle": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_idle"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_start": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_start"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.tires_squal_loop": {
+    "sounds": [
+      "entstupidstuff:vehicle/tires_squal_loop"
+    ],
+    "steam": true,
+    "volume": 2.0
   }
 }

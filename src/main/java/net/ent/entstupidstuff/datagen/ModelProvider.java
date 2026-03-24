@@ -1,7 +1,7 @@
 package net.ent.entstupidstuff.datagen;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.mold.ToolMoldProperty;
+import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
@@ -113,30 +113,38 @@ public class ModelProvider extends FabricModelProvider{
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_PIRATE_TAVERN, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_FUNGALDELIC, ModelTemplates.FLAT_ITEM);
 
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
-        registerMoldableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
+        itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_CANIBEHONEST, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_CANIBEHONEST_HIGH, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_CANIBEHONEST_LOW, ModelTemplates.FLAT_ITEM);
+
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
+        registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
+
+        //Cast Template
+        itemModelGenerator.generateFlatItem(ItemFactory.KNIGHT_CASTING_TEMPLATE, ModelTemplates.FLAT_ITEM);
+
 
     }
 
-    private void registerMoldableToolItem(ItemModelOutput output, Item item, String baseName) {
+    private void registerCastableToolItem(ItemModelOutput output, Item item, String baseName) {
         output.accept(item, ItemModelUtils.select(
-            new ToolMoldProperty(),
+            new ToolCastingProperty(),
             ItemModelUtils.plainModel(ResourceLocation.withDefaultNamespace("item/" + baseName)), // fallback
             ItemModelUtils.when(
                 ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "knight"),
-                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_knight"))
+                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/casts/" + baseName + "_knight"))
             ),
             ItemModelUtils.when(
                 ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "runic"),
-                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_runic"))
+                ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/casts/" + baseName + "_runic"))
             )
         ));
     }
 
-    private void registerToolMoldModels(BlockModelGenerators blockModels, String baseName, String moldName) {
-        ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_" + moldName);
-        ResourceLocation textureId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/molds/" + baseName + "_" + moldName);
+    private void registerToolCastModels(BlockModelGenerators blockModels, String baseName, String castName) {
+        ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/casts/" + baseName + "_" + castName);
+        ResourceLocation textureId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/casts/" + baseName + "_" + castName);
 
         ModelTemplates.FLAT_HANDHELD_ITEM
             .create(
@@ -315,7 +323,7 @@ public class ModelProvider extends FabricModelProvider{
             registerHorizontalBanner(BlockFactory.callBlock(color + "_horizontal_banner"), BlockFactory.callBlock(color + "_wall_horizontal_banner"), color);
         }
 
-        registerToolMoldModels(blockStateModelGenerator2, "diamond_sword", "knight");
+        registerToolCastModels(blockStateModelGenerator2, "diamond_sword", "knight");
         
 
 
