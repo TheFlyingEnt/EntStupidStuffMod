@@ -93,6 +93,7 @@ public class CarEngineSoundInstance extends AbstractTickableSoundInstance implem
  
     @Override
     public void tick() {
+        car.setRPM(simRpm);
         if (car.isRemoved()) {
             stop();
             return;

@@ -75,6 +75,9 @@ public class CarEntity extends VehicleEntity {
     // Synced to client for the gear shifter animation.
     private static final EntityDataAccessor<Float> DATA_FORWARD_SPEED = SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
 
+    private static final EntityDataAccessor<Float> DATA_RPM =
+    SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
+
     private boolean wasDrifting = false;
     private float   wheelSpin   = 0f;
  
@@ -94,6 +97,7 @@ public class CarEntity extends VehicleEntity {
         builder.define(DATA_WHEEL_SPIN,    0f);
         builder.define(DATA_STEER_INPUT,   0f);
         builder.define(DATA_FORWARD_SPEED, 0f);
+        builder.define(DATA_RPM, 0f);
     }
  
     @Override
@@ -122,6 +126,11 @@ public class CarEntity extends VehicleEntity {
             left     = player.xxa  >  0f;
             right    = player.xxa  <  0f;
             drift    = player.isJumping();
+
+            if (this.tickCount % 2 == 0) { // smoother updates
+                displaySpeed(player);
+                dataCollection();
+            }
         }
  
         tickPhysics(forward, backward, left, right, drift);
@@ -436,6 +445,51 @@ public class CarEntity extends VehicleEntity {
  
     @Override
     protected void addAdditionalSaveData(ValueOutput output) { }
+
+    private void displaySpeed(Player player) {
+        float speed = Math.abs(this.getForwardSpeed());
+        float kmh = speed * 72f;
+
+        float rpm = this.getRPM();
+        int displayRPM = (int)(rpm * 8000); // scale to real RPM (0–8000)
+
+        String text = String.format(
+            "§aSpeed: §f%.0f km/h §7| §cRPM: §f%d",
+            kmh,
+            displayRPM
+        );
+
+        player.displayClientMessage(
+            net.minecraft.network.chat.Component.literal(text),
+            true
+        );
+
+    }
+
+    private void dataCollection() {
+        float speed = Math.abs(this.getForwardSpeed());
+        float kmh = speed * 72f;
+
+        float rpm = this.getRPM();
+        int displayRPM = (int)(rpm * 8000); // scale to real RPM (0–8000)
+
+        String text = String.format(
+            "§aSpeed: §f%.0f km/h §7| §cRPM: §f%d",
+            kmh,
+            displayRPM
+        );
+
+        System.out.println(text);
+
+    }
+
+    public float getRPM() {
+        return this.entityData.get(DATA_RPM);
+    }
+
+    public void setRPM(float rpm) {
+        this.entityData.set(DATA_RPM, rpm);
+    }
 
     
 }
