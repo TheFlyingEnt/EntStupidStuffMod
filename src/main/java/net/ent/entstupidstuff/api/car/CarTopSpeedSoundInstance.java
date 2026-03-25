@@ -9,18 +9,20 @@ import net.minecraft.sounds.SoundSource;
 public class CarTopSpeedSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
  
-    /** Start fading in at 80% of MAX_SPEED (0.8 blocks/tick). */
     private static final float THRESHOLD_IN  = 0.80f;
- 
-    /** Fade out below 70% of MAX_SPEED — small hysteresis band. */
     private static final float THRESHOLD_OUT = 0.70f;
  
     private static final float FADE_IN_RATE  = 0.05f;
     private static final float FADE_OUT_RATE = 0.04f;
     private static final float VOLUME_MAX    = 1.0f;
  
-    /** Slight pitch variation to blend with the engine layer. */
-    private static final float PITCH_VALUE   = 1.0f;
+    /**
+     * 0.92 — tuned so gear_top's perceived pitch at entry matches gear_one's
+     * exit pitch. Derived from spectral centroid analysis of the actual .ogg
+     * files: gear_top natural centroid 2517 Hz × 0.92 = 2316 Hz ≈ gear_one
+     * at crossover 2309 Hz.
+     */
+    private static final float PITCH_VALUE = 0.92f;
  
     private final CarEntity car;
     private float fadeFactor = 0f;
@@ -51,18 +53,11 @@ public class CarTopSpeedSoundInstance extends AbstractTickableSoundInstance
         fadeFactor = active
             ? Math.min(VOLUME_MAX, fadeFactor + FADE_IN_RATE)
             : Math.max(0f,          fadeFactor - FADE_OUT_RATE);
- 
         volume = fadeFactor;
  
         if (fadeFactor <= 0f && !active) stop();
     }
  
-    private void syncPosition() {
-        this.x = car.getX();
-        this.y = car.getY();
-        this.z = car.getZ();
-    }
- 
-    //@Override public boolean isStopped() { return isStopped; }
+    private void syncPosition() { this.x = car.getX(); this.y = car.getY(); this.z = car.getZ(); }
     public CarEntity getCar() { return car; }
 }

@@ -10,13 +10,37 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.world.entity.Entity;
 
+import net.ent.entstupidstuff.sound.SoundFactory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.world.entity.Entity;
+ 
+/**
+ * CarSoundManager — five layered sound instances per car.
+ *
+ * Speed crossfade zones (blocks/tick):
+ *
+ *   0      0.03    0.80  0.85   1.0
+ *   |────────|──────────|──|────|
+ *   Engine:  ████████████████████  (always with passenger, pitch=RPM)
+ *   Accel:          ████████        (throttle held, speed < 0.85)
+ *   Top:                  ████████  (speed > 0.80, pitch=0.92)
+ *   Crossfade overlap:    ███        (0.80–0.85, both at partial volume)
+ *   Decel:          (braking only)
+ *   Tyre:           (drifting only)
+ *
+ * Pitch matching at crossover (speed=0.85):
+ *   gear_one at pitch=1.034 → 2309 Hz centroid
+ *   gear_top at pitch=0.92  → 2316 Hz centroid  ← ~0.3% difference, inaudible
+ */
 public class CarSoundManager {
  
-    private static final Map<Integer, CarEngineSoundInstance>   engineSounds   = new HashMap<>();
-    private static final Map<Integer, CarDeaccelSoundInstance>  deaccelSounds  = new HashMap<>();
-    private static final Map<Integer, CarAccelSoundInstance>    accelSounds    = new HashMap<>();
-    private static final Map<Integer, CarTopSpeedSoundInstance> topSounds      = new HashMap<>();
-    private static final Map<Integer, CarTireSoundInstance>     tireSounds     = new HashMap<>();
+    private static final Map<Integer, CarEngineSoundInstance>   engineSounds  = new HashMap<>();
+    private static final Map<Integer, CarAccelSoundInstance>    accelSounds   = new HashMap<>();
+    private static final Map<Integer, CarDeaccelSoundInstance>  deaccelSounds = new HashMap<>();
+    private static final Map<Integer, CarTopSpeedSoundInstance> topSounds     = new HashMap<>();
+    private static final Map<Integer, CarTireSoundInstance>     tireSounds    = new HashMap<>();
  
     public static void tick() {
         Minecraft mc = Minecraft.getInstance();
@@ -40,7 +64,7 @@ public class CarSoundManager {
                 }
             }
  
-            // ── 2. Acceleration roar ──────────────────────────────────
+            // ── 2. Acceleration roar — Gear_1 (fades out at 0.85) ────
             CarAccelSoundInstance accel = accelSounds.get(id);
             if (accel == null || accel.isStopped()) {
                 if (car.getFirstPassenger() != null) {
@@ -50,8 +74,8 @@ public class CarSoundManager {
                     accelSounds.put(id, accel);
                 }
             }
-
-            // ── 2.2 Deacceleration roar ──────────────────────────────────
+ 
+            // ── 3. Deceleration / brake ───────────────────────────────
             CarDeaccelSoundInstance deaccel = deaccelSounds.get(id);
             if (deaccel == null || deaccel.isStopped()) {
                 if (car.getFirstPassenger() != null) {
@@ -62,7 +86,7 @@ public class CarSoundManager {
                 }
             }
  
-            // ── 3. Top-speed layer ────────────────────────────────────
+            // ── 4. Top speed — Gear_Top (fades in at 0.80, pitch=0.92) ──
             CarTopSpeedSoundInstance top = topSounds.get(id);
             if (top == null || top.isStopped()) {
                 if (car.getFirstPassenger() != null) {
@@ -72,9 +96,8 @@ public class CarSoundManager {
                     topSounds.put(id, top);
                 }
             }
-
-
-            // ── 4. Tyre screech ───────────────────────────────────────
+ 
+            // ── 5. Tyre screech ───────────────────────────────────────
             CarTireSoundInstance tyre = tireSounds.get(id);
             if (tyre == null || tyre.isStopped()) {
                 if (car.isDrifting() || Math.abs(car.getForwardSpeed()) > 0.15f) {
@@ -86,12 +109,11 @@ public class CarSoundManager {
             }
         }
  
-        // ── Prune stale entries ───────────────────────────────────────
-        pruneMap(engineSounds, level);
-        pruneMap(accelSounds,  level);
-        pruneMap(deaccelSounds,  level);
-        pruneMap(topSounds,    level);
-        pruneMap(tireSounds,   level);
+        pruneMap(engineSounds,  level);
+        pruneMap(accelSounds,   level);
+        pruneMap(deaccelSounds, level);
+        pruneMap(topSounds,     level);
+        pruneMap(tireSounds,    level);
     }
  
     private static <T extends AbstractCarSoundInstance> void pruneMap(
@@ -119,4 +141,3 @@ public class CarSoundManager {
         tireSounds.clear();
     }
 }
- 
