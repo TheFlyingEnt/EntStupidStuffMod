@@ -1,0 +1,697 @@
+package net.ent.entstupidstuff.api.car;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.ent.entstupidstuff.sound.SoundFactory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
+
+public class CarEntity extends VehicleEntity {
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SEAT
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final double SEAT_HEIGHT  =  0.4;
+    private static final double SEAT_SIDE    =  0.5;
+    private static final double SEAT_FORWARD = -0.5;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  ENGINE  (Dodge Viper GTS 8.0L V10)
+    // ═══════════════════════════════════════════════════════════
+ 
+    static final float IDLE_RPM    =  800f;
+    static final float REDLINE_RPM = 7400f;
+    /** RPM below which auto-box downshifts. */
+    private static final float DOWNSHIFT_RPM = 2000f;
+    /** Ticks of clutch slip (no drive torque) per gear change. */
+    private static final int   CLUTCH_TICKS  = 4;
+ 
+    // Viper GTS V10 torque curve — normalised, peak at ~3700 RPM.
+    private static final float[] TC_RPM = {  800, 1500, 2000, 2500, 3000, 3700, 4500, 5200, 6000, 6500, 7000, 7400 };
+    private static final float[] TC_TRQ = { .30f, .60f, .78f, .91f, .96f, 1.0f, .98f, .94f, .82f, .72f, .58f, .44f };
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  DRIVETRAIN  (Tremec T56 6-speed + 3.07 final drive)
+    //
+    //  Real forward chain:
+    //    throttle → torque → driveForce → localFwd (speed)
+    //    speed → wheelRPS → engineRPM
+    //    engineRPM > REDLINE → upshift
+    //    engineRPM < DOWNSHIFT_RPM → downshift
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final int     MAX_GEAR     = 6;
+    private static final float[] GEAR_RATIOS  = { 0f, 2.66f, 1.78f, 1.30f, 1.00f, 0.74f, 0.50f };
+    private static final float   FINAL_DRIVE  = 3.07f;
+ 
+    /**
+     * Tyre circumference in blocks (≈ 1.95 m ÷ 1 m/block).
+     * wheelRPS = localFwd (blocks/tick) / TYRE_CIRC * 20 (ticks/s)
+     */
+    private static final float TYRE_CIRC = 1.95f;
+ 
+    /**
+     * Peak wheel-force in 1st gear at max torque (blocks/tick²).
+     * Higher gears multiply by GEAR_RATIOS[n] / GEAR_RATIOS[1] — so
+     * 6th gear produces only ~19 % of the force of 1st.
+     */
+    private static final float PEAK_DRIVE_FORCE = 0.062f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  VEHICLE GEOMETRY
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float FRONT_BIAS = 0.49f;   // 49 % weight on front axle
+    private static final float REAR_BIAS  = 0.51f;
+    private static final float FRONT_DIST = 1.20f;   // CoM → front axle (blocks)
+    private static final float REAR_DIST  = 1.24f;   // CoM → rear  axle (blocks)
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  TYRE GRIP
+    // ═══════════════════════════════════════════════════════════
+ 
+    /** Max lateral force each axle can generate at full normal load. */
+    private static final float FRONT_GRIP_MAX = 0.130f;
+    private static final float REAR_GRIP_MAX  = 0.130f;
+ 
+    /**
+     * How aggressively grip corrects EXCESS lateral velocity each tick.
+     * Only applies to slip beyond what normal cornering requires.
+     */
+    private static final float GRIP_STIFFNESS = 0.55f;
+ 
+    /** Lateral slip (blocks/tick) at which grip begins to fall off. */
+    private static final float SLIP_THRESHOLD = 0.10f;
+    /** Grip fraction remaining at 2× SLIP_THRESHOLD. */
+    private static final float SLIP_FALLOFF   = 0.60f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  WEIGHT TRANSFER
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float LONG_TRANSFER = 0.30f;
+    private static final float LAT_TRANSFER  = 0.15f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  STEERING
+    //
+    //  Normal cornering uses DIRECT yaw (setYRot) — no slip required.
+    //  The force-moment system only adds EXTRA yaw when grip is exceeded.
+    //  This means A/D at speed turns the car cleanly with no unwanted drift.
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float  MAX_STEER_DEG       = 4.2f;
+    private static final double PEAK_STEER_SPEED     = 0.35;
+    private static final double HIGH_STEER_FRACTION  = 0.55;
+    private static final float  DRIFT_STEER_BOOST    = 1.7f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  OVERSTEER / DRIFT DYNAMICS
+    //
+    //  Excess lateral slip (beyond what grip can neutralise) is tracked
+    //  in frontExcess / rearExcess.  The yaw MOMENT comes from the
+    //  difference between these — firing only when traction is broken,
+    //  not during normal cornering.
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float YAW_MOMENT_SCALE = 280f;  // tunes oversteer sharpness
+    private static final float YAW_DAMPING      = 0.80f;
+    private static final float YAW_MAX          = 5.5f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HANDBRAKE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float HANDBRAKE_REAR_GRIP = 0.04f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  THROTTLE RAMP
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float THROTTLE_RAMP_ON  = 0.10f;
+    private static final float THROTTLE_RAMP_OFF = 0.20f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  DRAG / GRAVITY
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final double ROLLING_DRAG    = 0.978;
+    private static final double AERO_DRAG_START = 0.60;
+    private static final double AERO_DRAG_K     = 0.012;
+    private static final double GRAVITY         = 0.08;
+    private static final double MAX_FALL_SPEED  = 3.92;
+    private static final double GROUND_STICK    = -0.08;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  DRIFT DETECTION
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final float DRIFT_THRESHOLD = 0.05f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SYNCED DATA
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final EntityDataAccessor<Boolean> DATA_DRIFTING =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> DATA_WHEEL_SPIN =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_STEER_INPUT =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_FORWARD_SPEED =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_ENGINE_RPM =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_GEAR =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_THROTTLE =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_BRAKING =
+        SynchedEntityData.defineId(CarEntity.class, EntityDataSerializers.BOOLEAN);
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SERVER-SIDE STATE
+    // ═══════════════════════════════════════════════════════════
+ 
+    // Drivetrain
+    private float engineRPM      = IDLE_RPM;
+    private int   currentGear    = 1;
+    private int   clutchTimer    = 0;
+    private float throttleSmooth = 0f;
+ 
+    // Excess lateral velocities (blocks/tick) — only non-zero when
+    // traction is exceeded. Zero during normal cornering.
+    private float frontExcess = 0f;
+    private float rearExcess  = 0f;
+ 
+    // Oversteer yaw rate (degrees/tick) — only from traction loss.
+    // Steering yaw is applied separately via setYRot.
+    private float overYawRate = 0f;
+ 
+    // Cosmetic
+    private float wheelSpin   = 0f;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  CONSTRUCTOR
+    // ═══════════════════════════════════════════════════════════
+ 
+    public CarEntity(EntityType<?> type, Level level) {
+        super(type, level);
+    }
+ 
+    @Override public float maxUpStep() { return 1.0f; }
+ 
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_DRIFTING,      false);
+        builder.define(DATA_WHEEL_SPIN,    0f);
+        builder.define(DATA_STEER_INPUT,   0f);
+        builder.define(DATA_FORWARD_SPEED, 0f);
+        builder.define(DATA_ENGINE_RPM,    IDLE_RPM);
+        builder.define(DATA_GEAR,          1);
+        builder.define(DATA_THROTTLE,      false);
+        builder.define(DATA_BRAKING,       false);
+    }
+ 
+    @Override protected Item getDropItem() { return null; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  TICK
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public void tick() {
+        super.tick();
+ 
+        if (!this.isLocalInstanceAuthoritative()) {
+            this.setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+ 
+        boolean forward = false, backward = false,
+                left    = false, right    = false, handbrake = false;
+ 
+        if (this.getFirstPassenger() instanceof Player player) {
+            forward   = player.zza  >  0f;
+            backward  = player.zza  <  0f;
+            left      = player.xxa  >  0f;
+            right     = player.xxa  <  0f;
+            handbrake = player.isJumping();
+ 
+            if (this.tickCount % 2 == 0) displaySpeed(player);
+        } else {
+            frontExcess   *= 0.75f;
+            rearExcess    *= 0.75f;
+            overYawRate   *= 0.75f;
+            throttleSmooth = 0f;
+        }
+ 
+        tickPhysics(forward, backward, left, right, handbrake);
+ 
+        this.move(MoverType.SELF, this.getDeltaMovement());
+ 
+        if (this.onGround() && this.getDeltaMovement().y < 0)
+            this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
+ 
+        this.applyEffectsFromBlocks();
+ 
+        if (this.level().isClientSide()) {
+            spawnWheelParticles();
+            spawnExhaust();
+        }
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PHYSICS ENGINE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void tickPhysics(boolean forward, boolean backward,
+                              boolean left,    boolean right, boolean handbrake) {
+ 
+        // ── 1. Local velocity ─────────────────────────────────────────────
+        double yRad  = Math.toRadians(this.getYRot());
+        double sinY  = Math.sin(yRad), cosY = Math.cos(yRad);
+        Vec3   vel   = this.getDeltaMovement();
+ 
+        // localFwd: speed along car's forward axis (+ve = forward)
+        // localLat: speed along car's right axis  (+ve = sliding right)
+        double localFwd = -vel.x * sinY + vel.z * cosY;
+        double localLat =  vel.x * cosY + vel.z * sinY;
+        double localY   =  vel.y;
+        float  speed    = (float) Math.abs(localFwd);
+        boolean goingFwd = localFwd > 0.01;
+        boolean goingRev = localFwd < -0.01;
+ 
+        // ── 2. Input flags ────────────────────────────────────────────────
+        boolean throttleActive = forward && !goingRev;
+        boolean brakingActive  = (backward && goingFwd) || (forward && goingRev);
+        this.entityData.set(DATA_THROTTLE, throttleActive);
+        this.entityData.set(DATA_BRAKING,  brakingActive);
+ 
+        float steerInput = left ? -1f : right ? 1f : 0f;
+        this.entityData.set(DATA_STEER_INPUT, steerInput);
+ 
+        // ── 3. Smooth throttle ────────────────────────────────────────────
+        float throttleTarget = throttleActive ? 1.0f : 0.0f;
+        float ramp = throttleTarget > throttleSmooth ? THROTTLE_RAMP_ON : THROTTLE_RAMP_OFF;
+        throttleSmooth = Mth.clamp(
+            throttleSmooth + (throttleTarget - throttleSmooth) * ramp, 0f, 1f);
+ 
+        // ── 4. Real forward drivetrain chain ──────────────────────────────
+        //
+        //  wheelRPS  = speed (blocks/tick) / TYRE_CIRC * 20  [rotations/sec]
+        //  engineRPM = wheelRPS * GEAR_RATIOS[gear] * FINAL_DRIVE * 60  [RPM]
+        //
+        //  This means RPM is genuinely DERIVED from speed, not faked from
+        //  position in a gear band. The gear-shift drop happens automatically:
+        //  after upshift GEAR_RATIOS drops → engineRPM drops → pitch drops.
+        //
+        //  driveForce = torque(engineRPM) * throttle * PEAK * gearMult
+        //  localFwd  += driveForce
+        //
+        //  Auto-box: shift when RPM crosses REDLINE or DOWNSHIFT_RPM.
+ 
+        if (speed < 0.005f) {
+            // Standing still: reset to 1st, engine idling
+            currentGear = 1;
+            clutchTimer = 0;
+            engineRPM   = IDLE_RPM + throttleSmooth * 600f;
+        } else {
+            // Compute RPM from current wheel speed
+            float wheelRPS = speed / TYRE_CIRC * 20f;
+            float rawRPM   = wheelRPS * GEAR_RATIOS[currentGear] * FINAL_DRIVE * 60f;
+ 
+            // Auto-transmission
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                // During shift, RPM blips toward previous value (clutch slip)
+                engineRPM = Mth.lerp(clutchTimer / (float) CLUTCH_TICKS,
+                                     rawRPM, engineRPM * 0.70f);
+            } else if (goingFwd) {
+                if (rawRPM > REDLINE_RPM && currentGear < MAX_GEAR) {
+                    currentGear++;
+                    clutchTimer = CLUTCH_TICKS;
+                    // Recompute RPM in new gear immediately for the blip
+                    rawRPM = wheelRPS * GEAR_RATIOS[currentGear] * FINAL_DRIVE * 60f;
+                } else if (rawRPM < DOWNSHIFT_RPM && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = CLUTCH_TICKS;
+                    rawRPM = wheelRPS * GEAR_RATIOS[currentGear] * FINAL_DRIVE * 60f;
+                }
+                engineRPM = rawRPM;
+            }
+ 
+            // Throttle blip keeps engine above idle
+            engineRPM = Math.max(engineRPM, IDLE_RPM + throttleSmooth * 500f);
+            engineRPM = Mth.clamp(engineRPM, IDLE_RPM, REDLINE_RPM);
+        }
+ 
+        this.entityData.set(DATA_ENGINE_RPM, engineRPM);
+        this.entityData.set(DATA_GEAR, currentGear);
+ 
+        // ── 5. Drive force ────────────────────────────────────────────────
+        float torqueNorm = lookupTorque(engineRPM);
+        float gearMult   = GEAR_RATIOS[currentGear] / GEAR_RATIOS[1]; // 1.0 in 1st → 0.19 in 6th
+        float driveForce = torqueNorm * throttleSmooth * PEAK_DRIVE_FORCE * gearMult;
+        if (clutchTimer > 0 || !goingFwd && speed > 0.01f) driveForce = 0f;
+ 
+        // ── 6. Longitudinal weight transfer ───────────────────────────────
+        // Acceleration → weight shifts rearward → more rear grip, less front.
+        // Braking     → weight shifts forward  → more front grip, less rear.
+        // (This naturally promotes power-on oversteer in lower gears.)
+        float wt         = (float)(driveForce - (brakingActive ? 0.05f : 0f));
+        float rearWeight  = Mth.clamp(REAR_BIAS  + wt * LONG_TRANSFER, 0.30f, 0.70f);
+        float frontWeight = Mth.clamp(FRONT_BIAS - wt * LONG_TRANSFER, 0.30f, 0.70f);
+ 
+        // ── 7. Traction circle (RWD) ──────────────────────────────────────
+        // The rear axle's total grip is split between drive and cornering.
+        // sqrt(total² - drive²) = lateral capacity remaining.
+        // At high throttle in low gear → driveUsed ≈ rearGripTotal
+        // → rearGripLateral ≈ 0 → rear can't resist cornering forces → OVERSTEER.
+        float rearGripTotal = rearWeight * REAR_GRIP_MAX;
+        float driveUsed     = Math.min(Math.abs(driveForce), rearGripTotal);
+        float rearGripLat;
+        if (handbrake) {
+            rearGripLat = HANDBRAKE_REAR_GRIP * REAR_GRIP_MAX;
+        } else {
+            rearGripLat = (float) Math.sqrt(Math.max(0.0,
+                (double) rearGripTotal * rearGripTotal - (double) driveUsed * driveUsed));
+        }
+        float frontGripLat = frontWeight * FRONT_GRIP_MAX;
+ 
+        // Lateral weight transfer reduces effective grip slightly in hard cornering
+        float latAbs       = (float) Math.abs(localLat);
+        float latReduction = Mth.clamp(latAbs * LAT_TRANSFER, 0f, 0.20f);
+        frontGripLat *= (1f - latReduction);
+        rearGripLat  *= (1f - latReduction);
+ 
+        // ── 8. Longitudinal motion ────────────────────────────────────────
+        if (throttleActive && !brakingActive)
+            localFwd = Math.min(localFwd + driveForce, 80f); // no hardcoded top speed
+ 
+        if (brakingActive) {
+            if (goingFwd)      localFwd = Math.max(0.0, localFwd - 0.10);
+            else if (goingRev) localFwd = Math.min(0.0, localFwd + 0.10);
+        }
+ 
+        if (!forward && !backward && !handbrake) {
+            // Engine braking: proportional to gear ratio (lower gear = more drag)
+            double engineBrake = 0.003 * (GEAR_RATIOS[currentGear] / GEAR_RATIOS[MAX_GEAR]);
+            if (goingFwd)      localFwd -= engineBrake;
+            else if (goingRev) localFwd += engineBrake;
+        }
+ 
+        if (backward && !goingFwd)
+            localFwd = Math.max(localFwd - 0.028, -0.35);
+ 
+        if (handbrake && !forward) {
+            localFwd *= 0.88;
+            if (Math.abs(localFwd) < 0.01) localFwd = 0.0;
+        }
+ 
+        // Rolling drag
+        localFwd *= ROLLING_DRAG;
+        if (Math.abs(localFwd) > AERO_DRAG_START) {
+            double excess = Math.abs(localFwd) - AERO_DRAG_START;
+            localFwd -= Math.signum(localFwd) * excess * AERO_DRAG_K * 20;
+        }
+        if (Math.abs(localFwd) < 0.001) localFwd = 0.0;
+ 
+        // ── 9. STEERING — direct yaw (normal cornering, no slip needed) ───
+        //
+        //  This is the key fix for "can't steer without drifting":
+        //  steering DIRECTLY rotates the car via setYRot, exactly like the
+        //  original simple model. No traction required for this rotation.
+        //
+        //  The traction/slip system below only adds EXTRA yaw on top of this
+        //  when grip is actually exceeded (oversteer / drift). During normal
+        //  cornering at sane speeds, the slip system contributes nothing.
+        if (speed > 0.01f && steerInput != 0f) {
+            boolean drifting = Math.abs(rearExcess) > DRIFT_THRESHOLD;
+            float steerDeg   = computeSteerAngle(speed, drifting);
+            float revSign    = goingRev ? -1f : 1f;
+            this.setYRot(this.getYRot() + steerInput * steerDeg * revSign);
+        }
+ 
+        // ── 10. LATERAL GRIP — only acts on EXCESS lateral velocity ───────
+        //
+        //  Normal cornering creates lateral centripetal velocity naturally
+        //  (the car is changing direction). We do NOT try to zero this out.
+        //  We only act on slip BEYOND what the grip budget can support.
+        //
+        //  The lateral velocity already in localLat (from the world velocity
+        //  projection) is the car's actual sideways motion. We apply grip
+        //  as a corrective force capped by the grip budget.
+        //
+        //  Front axle — tries to zero excess lateral (front has grip, no drive).
+        //  Rear  axle — tries to zero excess lateral (budget reduced by drive).
+        //
+        //  When rear budget is ~0 (high throttle in low gear), the rear
+        //  excess accumulates → frontExcess ≠ rearExcess → force moment → drift.
+ 
+        // Separate world lateral into front/rear contributions for the excess model
+        // Assume world localLat splits roughly evenly (simplified, axle split)
+        frontExcess = (float) localLat; // full lateral used as "excess" to correct
+        rearExcess  = (float) localLat;
+ 
+        // Compute corrective grip forces per axle
+        float frontCorrect = computeGripForce(frontExcess, frontGripLat, Math.abs(frontExcess));
+        float rearCorrect  = handbrake
+            ? rearExcess * HANDBRAKE_REAR_GRIP   // almost no correction when handbrake locked
+            : computeGripForce(rearExcess, rearGripLat, Math.abs(rearExcess));
+ 
+        // After correction, remaining excess is what grip couldn't neutralise
+        frontExcess -= frontCorrect;
+        rearExcess  -= rearCorrect;
+ 
+        // Clamp tiny residuals
+        if (Math.abs(frontExcess) < 0.001f) frontExcess = 0f;
+        if (Math.abs(rearExcess)  < 0.001f) rearExcess  = 0f;
+ 
+        // Apply net lateral correction to the car's velocity
+        // (positive correction = pushing car back toward zero lateral)
+        double correctedLat = localLat - (frontCorrect * FRONT_BIAS + rearCorrect * REAR_BIAS);
+ 
+        // ── 11. Oversteer yaw moment (EXTRA yaw beyond direct steering) ───
+        //
+        //  Only fires when frontExcess and rearExcess differ significantly.
+        //  During normal cornering both approach zero → no extra yaw.
+        //  During a drift, rearExcess >> frontExcess → positive moment → rotation.
+        //
+        //  This is additive to the direct steering yaw from step 9.
+        //  Counter-steer (opposite steer input) reduces moment naturally
+        //  because it changes the direction the front corrects.
+        float excessDiff   = rearExcess - frontExcess;
+        float yawMoment    = excessDiff * YAW_MOMENT_SCALE;
+        overYawRate       += yawMoment;
+        overYawRate       *= YAW_DAMPING;
+        overYawRate        = Mth.clamp(overYawRate, -YAW_MAX, YAW_MAX);
+        this.setYRot(this.getYRot() + overYawRate);
+ 
+        // ── 12. Drift detection ───────────────────────────────────────────
+        boolean drifting = Math.abs(rearExcess) > DRIFT_THRESHOLD
+                        || Math.abs(overYawRate) > 1.5f;
+        this.entityData.set(DATA_DRIFTING, drifting);
+ 
+        // ── 13. Gravity ───────────────────────────────────────────────────
+        localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
+ 
+        // ── 14. Reproject to world ────────────────────────────────────────
+        double nYRad = Math.toRadians(this.getYRot());
+        double nSin  = Math.sin(nYRad), nCos = Math.cos(nYRad);
+        this.setDeltaMovement(
+            localFwd * (-nSin) + correctedLat * nCos,
+            localY,
+            localFwd *   nCos  + correctedLat * nSin
+        );
+ 
+        // ── 15. Cosmetic data ─────────────────────────────────────────────
+        wheelSpin = (wheelSpin + speed * 180f) % 360f;
+        this.entityData.set(DATA_WHEEL_SPIN,    wheelSpin);
+        this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HELPERS
+    // ═══════════════════════════════════════════════════════════
+ 
+    /**
+     * Lateral grip force applied to correct excess lateral slip.
+     * Falls off past SLIP_THRESHOLD to simulate the peak-slip-angle curve —
+     * past peak, the tyre generates LESS corrective force, so the slide
+     * continues rather than snapping back (self-sustaining drift).
+     */
+    private float computeGripForce(float excess, float gripMax, float currentSlip) {
+        float raw = Mth.clamp(excess, -gripMax, gripMax);
+        if (currentSlip > SLIP_THRESHOLD) {
+            float falloff = SLIP_FALLOFF + (1f - SLIP_FALLOFF) * (SLIP_THRESHOLD / currentSlip);
+            raw *= falloff;
+        }
+        return raw;
+    }
+ 
+    /** Interpolate the Viper torque curve. Returns 0–1. */
+    private float lookupTorque(float rpm) {
+        if (rpm <= TC_RPM[0]) return TC_TRQ[0];
+        for (int i = 1; i < TC_RPM.length; i++) {
+            if (rpm <= TC_RPM[i]) {
+                float t = (rpm - TC_RPM[i-1]) / (TC_RPM[i] - TC_RPM[i-1]);
+                return TC_TRQ[i-1] + t * (TC_TRQ[i] - TC_TRQ[i-1]);
+            }
+        }
+        return TC_TRQ[TC_TRQ.length - 1];
+    }
+ 
+    /** Speed-sensitive steering angle in degrees, boost during drift for counter-steer. */
+    private float computeSteerAngle(float speed, boolean drifting) {
+        float steer;
+        if (speed <= PEAK_STEER_SPEED) {
+            steer = MAX_STEER_DEG * (float)(speed / PEAK_STEER_SPEED);
+        } else {
+            double t = Mth.clamp(
+                (speed - PEAK_STEER_SPEED) / (1.0 - PEAK_STEER_SPEED), 0.0, 1.0);
+            steer = MAX_STEER_DEG * (float)(1.0 - t * (1.0 - HIGH_STEER_FRACTION));
+        }
+        return drifting ? steer * DRIFT_STEER_BOOST : steer;
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PARTICLES
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void spawnWheelParticles() {
+        if (!this.onGround()) return;
+        double speed = Math.abs(this.getForwardSpeed());
+        if (speed < 0.05) return;
+        boolean drifting = this.isDrifting();
+        double yRad = Math.toRadians(this.getYRot());
+        double sin = Math.sin(yRad), cos = Math.cos(yRad);
+        spawnWheelAt( 0.6*cos + 0.8*sin, 0.05,  0.6*sin - 0.8*cos, drifting);
+        spawnWheelAt(-0.6*cos + 0.8*sin, 0.05, -0.6*sin - 0.8*cos, drifting);
+    }
+ 
+    private void spawnWheelAt(double ox, double oy, double oz, boolean drifting) {
+        Vec3 pos = this.position();
+        double px = pos.x+ox, py = pos.y+oy, pz = pos.z+oz;
+        Vec3 vel = this.getDeltaMovement();
+        double vx = -vel.x*0.5 + (random.nextDouble()-0.5)*0.1;
+        double vz = -vel.z*0.5 + (random.nextDouble()-0.5)*0.1;
+        if (drifting) { vx *= 1.5; vz *= 1.5; }
+        BlockState bs = this.level().getBlockState(BlockPos.containing(px, py-0.2, pz));
+        if (drifting)
+            this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, px, py, pz, vx, 0.1, vz);
+        this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, bs),
+            px, py, pz, vx, 0.1, vz);
+    }
+ 
+    private void spawnExhaust() {
+        double speed = Math.abs(this.getForwardSpeed());
+        if (speed < 0.02) return;
+        double yRad = Math.toRadians(this.getYRot());
+        double px = this.getX() - Math.cos(yRad)*1.2;
+        double pz = this.getZ() - Math.sin(yRad)*1.2;
+        Vec3 vel = this.getDeltaMovement();
+        this.level().addParticle(ParticleTypes.SMOKE, px, this.getY()+0.3, pz,
+            -vel.x*0.2+(random.nextDouble()-0.5)*0.02, 0.02,
+            -vel.z*0.2+(random.nextDouble()-0.5)*0.02);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PASSENGER
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected Vec3 getPassengerAttachmentPoint(Entity p, EntityDimensions d, float t) {
+        int i = this.getPassengers().indexOf(p);
+        double lx = (i == 0) ? SEAT_SIDE : -SEAT_SIDE;
+        double yRad = Math.toRadians(this.getYRot());
+        double sin = Math.sin(yRad), cos = Math.cos(yRad);
+        return new Vec3(lx*cos + SEAT_FORWARD*(-sin), SEAT_HEIGHT,
+                        lx*sin + SEAT_FORWARD*   cos);
+    }
+ 
+    @Override protected boolean canAddPassenger(Entity p) { return this.getPassengers().size() < 2; }
+ 
+    @Override @Nullable
+    public LivingEntity getControllingPassenger() {
+        return this.getFirstPassenger() instanceof LivingEntity le ? le : null;
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  INTERACTION
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if (player.isSecondaryUseActive()) return InteractionResult.PASS;
+        if (!this.level().isClientSide()) player.startRiding(this);
+        return InteractionResult.SUCCESS;
+    }
+ 
+    @Override public boolean isPickable() { return !this.isRemoved(); }
+    @Override public boolean isPushable()  { return false; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  DATA ACCESSORS
+    // ═══════════════════════════════════════════════════════════
+ 
+    public boolean isDrifting()      { return this.entityData.get(DATA_DRIFTING); }
+    public float   getWheelSpin()    { return this.entityData.get(DATA_WHEEL_SPIN); }
+    public float   getSteerInput()   { return this.entityData.get(DATA_STEER_INPUT); }
+    public float   getForwardSpeed() { return this.entityData.get(DATA_FORWARD_SPEED); }
+    public int     getCurrentGear()  { return this.entityData.get(DATA_GEAR); }
+    public boolean isThrottleOn()    { return this.entityData.get(DATA_THROTTLE); }
+    public boolean isBraking()       { return this.entityData.get(DATA_BRAKING); }
+    public float   getEngineRPM()    { return this.entityData.get(DATA_ENGINE_RPM); }
+ 
+    /** Normalised RPM 0–1 for sound pitch calculations. */
+    public float getRPM() {
+        return Mth.clamp((getEngineRPM() - IDLE_RPM) / (REDLINE_RPM - IDLE_RPM), 0f, 1f);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HUD
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void displaySpeed(Player player) {
+        float kmh  = Math.abs(this.getForwardSpeed()) * 72f;
+        float rpm  = this.getEngineRPM();
+        int   gear = this.getCurrentGear();
+        player.displayClientMessage(
+            net.minecraft.network.chat.Component.literal(String.format(
+                "§aSpeed: §f%.0f km/h  §7|  §cRPM: §f%.0f  §7|  §eGear: §f%d",
+                kmh, rpm, gear)),
+            true);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  NBT
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override protected void readAdditionalSaveData(ValueInput i) {}
+    @Override protected void addAdditionalSaveData(ValueOutput o) {}
+}

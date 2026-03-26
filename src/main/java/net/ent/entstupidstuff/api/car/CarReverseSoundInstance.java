@@ -5,21 +5,26 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
- 
-public class CarTireSoundInstance extends AbstractTickableSoundInstance
+public class CarReverseSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
  
-    private static final float FADE_IN_RATE  = 0.12f;
+    /** Pitch at the start of reverse motion. */
+    private static final float PITCH_BASE = 0.72f;
+    /** Pitch at maximum reverse speed (0.35 bl/tick). */
+    private static final float PITCH_MAX  = 1.10f;
+    /** Maximum reverse speed used for pitch normalisation. */
+    private static final float MAX_REV_SPEED = 0.35f;
+ 
+    private static final float MIN_SPEED     = 0.02f;
+    private static final float FADE_IN_RATE  = 0.10f;
     private static final float FADE_OUT_RATE = 0.08f;
-    private static final float VOLUME_MAX    = 0.9f;
-    private static final float PITCH_BASE    = 0.95f;
-    private static final float PITCH_RANGE   = 0.2f;
+    private static final float VOLUME_MAX    = 0.85f;
  
     private final CarEntity car;
     private float fadeFactor = 0f;
  
-    public CarTireSoundInstance(CarEntity car, SoundEvent sound) {
-        super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
+    public CarReverseSoundInstance(CarEntity car, SoundEvent idleLoop) {
+        super(idleLoop, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.car         = car;
         this.looping     = true;
         this.delay       = 0;
@@ -38,18 +43,22 @@ public class CarTireSoundInstance extends AbstractTickableSoundInstance
  
         syncPosition();
  
-        boolean drifting = car.isDrifting();
-        boolean burning  = car.isBurningOut();
-        float   speed    = Math.abs(car.getForwardSpeed());
-        // Burnout bypasses the speed threshold — tyres screech at standstill
-        boolean active   = (drifting && speed > 0.15f) || burning;
+        float signedSpeed = car.getForwardSpeed(); // negative when reversing
+ 
+        // Active only while actually moving backward under throttle
+        boolean active = car.isThrottleOn()
+                      && signedSpeed < -MIN_SPEED;
  
         fadeFactor = active
             ? Math.min(VOLUME_MAX, fadeFactor + FADE_IN_RATE)
             : Math.max(0f,          fadeFactor - FADE_OUT_RATE);
         volume = fadeFactor;
  
-        if (active) pitch = PITCH_BASE + (speed / 1.0f) * PITCH_RANGE;
+        if (active) {
+            // Pitch climbs as reverse speed builds
+            float revFraction = Math.min(1f, Math.abs(signedSpeed) / MAX_REV_SPEED);
+            pitch = PITCH_BASE + revFraction * (PITCH_MAX - PITCH_BASE);
+        }
  
         if (fadeFactor <= 0f && !active) stop();
     }

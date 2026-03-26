@@ -18,6 +18,7 @@ public class CarDeaccelSoundInstance extends AbstractTickableSoundInstance
  
     private final CarEntity car;
     private float fadeFactor = 0f;
+    private float prevSpeed  = 0f;
  
     public CarDeaccelSoundInstance(CarEntity car, SoundEvent sound) {
         super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
@@ -40,11 +41,17 @@ public class CarDeaccelSoundInstance extends AbstractTickableSoundInstance
         syncPosition();
  
         float speed  = Math.abs(car.getForwardSpeed());
-        boolean active = car.isBraking() && speed > MIN_SPEED;
- 
-        if (!active) 
-            System.out.println("Breaking");
+        float delta  = speed - prevSpeed;
+        prevSpeed    = speed;
 
+        // Active on hard braking (S key) OR engine-braking at high speed.
+        // The engine-braking check gives the "lift-off roar" in 6th gear
+        // that the top-speed sound fades out too slowly to cover on its own.
+        boolean braking      = car.isBraking() && speed > MIN_SPEED;
+        boolean engineBrake  = !car.isThrottleOn() && speed > 0.50f && delta < -0.004f;
+        boolean active       = (braking || engineBrake) && speed > MIN_SPEED;
+ 
+ 
         fadeFactor = active
             ? Math.min(VOLUME_MAX, fadeFactor + FADE_IN_RATE)
             : Math.max(0f,          fadeFactor - FADE_OUT_RATE);

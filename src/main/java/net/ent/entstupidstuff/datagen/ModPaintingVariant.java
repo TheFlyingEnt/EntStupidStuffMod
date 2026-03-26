@@ -23,6 +23,8 @@ public class ModPaintingVariant {
     public static final ResourceKey<PaintingVariant> EON = create("eon");
     public static final ResourceKey<PaintingVariant> SOVIETS = create("soviets");
     public static final ResourceKey<PaintingVariant> AMANANDFOX = create("amanandfox");
+    public static final ResourceKey<PaintingVariant> AZUREGROVE = create("azure_grove");
+    public static final ResourceKey<PaintingVariant> CAR = create("car");
     
 
     public static void bootstrap(BootstrapContext<PaintingVariant> bootstrapContext) {
@@ -36,7 +38,9 @@ public class ModPaintingVariant {
         register(bootstrapContext, COCOBEANS, 1, 1, false);
         register(bootstrapContext, EON, 1, 1, false);
         register(bootstrapContext, SOVIETS, 1, 1, false);
-        register(bootstrapContext, AMANANDFOX, 4, 2);
+        register(bootstrapContext, AMANANDFOX, 4, 2);  
+        register(bootstrapContext, AZUREGROVE, 4, 4, false);
+        register(bootstrapContext, CAR, 4, 2, false);
     }
 
     private static void register(BootstrapContext<PaintingVariant> bootstrapContext, ResourceKey<PaintingVariant> resourceKey, int i, int j) {

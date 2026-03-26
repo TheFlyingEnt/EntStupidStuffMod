@@ -10,11 +10,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.world.entity.Entity;
 
-import net.ent.entstupidstuff.sound.SoundFactory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.world.entity.Entity;
  
 /**
  * CarSoundManager — five layered sound instances per car.
@@ -37,7 +32,9 @@ import net.minecraft.world.entity.Entity;
 public class CarSoundManager {
  
     private static final Map<Integer, CarEngineSoundInstance>   engineSounds  = new HashMap<>();
+    private static final Map<Integer, CarEchoSoundInstance>      echoSounds    = new HashMap<>();
     private static final Map<Integer, CarAccelSoundInstance>    accelSounds   = new HashMap<>();
+    private static final Map<Integer, CarReverseSoundInstance>  reverseSounds = new HashMap<>();
     private static final Map<Integer, CarDeaccelSoundInstance>  deaccelSounds = new HashMap<>();
     private static final Map<Integer, CarTopSpeedSoundInstance> topSounds     = new HashMap<>();
     private static final Map<Integer, CarTireSoundInstance>     tireSounds    = new HashMap<>();
@@ -64,7 +61,18 @@ public class CarSoundManager {
                 }
             }
  
-            // ── 2. Acceleration roar — Gear_1 (fades out at 0.85) ────
+            // ── 1b. Echo — tunnel reverb using idle loop ─────────────
+            CarEchoSoundInstance echo = echoSounds.get(id);
+            if (echo == null || echo.isStopped()) {
+                if (car.isTunneled() || car.getFirstPassenger() != null) {
+                    echo = new CarEchoSoundInstance(
+                        car, SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE);
+                    sm.play(echo);
+                    echoSounds.put(id, echo);
+                }
+            }
+
+            // ── 2. Acceleration roar — Gear_1 (fades out at 0.85, forward only) ──
             CarAccelSoundInstance accel = accelSounds.get(id);
             if (accel == null || accel.isStopped()) {
                 if (car.getFirstPassenger() != null) {
@@ -72,6 +80,17 @@ public class CarSoundManager {
                         car, SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1);
                     sm.play(accel);
                     accelSounds.put(id, accel);
+                }
+            }
+
+            // ── 2b. Reverse — idle loop pitched up ────────────────────
+            CarReverseSoundInstance reverse = reverseSounds.get(id);
+            if (reverse == null || reverse.isStopped()) {
+                if (car.getFirstPassenger() != null) {
+                    reverse = new CarReverseSoundInstance(
+                        car, SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE);
+                    sm.play(reverse);
+                    reverseSounds.put(id, reverse);
                 }
             }
  
@@ -100,7 +119,9 @@ public class CarSoundManager {
             // ── 5. Tyre screech ───────────────────────────────────────
             CarTireSoundInstance tyre = tireSounds.get(id);
             if (tyre == null || tyre.isStopped()) {
-                if (car.isDrifting() || Math.abs(car.getForwardSpeed()) > 0.15f) {
+                if (car.isDrifting() || car.isBurningOut()
+                        || car.isBraking()
+                        || Math.abs(car.getForwardSpeed()) > 0.15f) {
                     tyre = new CarTireSoundInstance(
                         car, SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP);
                     sm.play(tyre);
@@ -110,7 +131,9 @@ public class CarSoundManager {
         }
  
         pruneMap(engineSounds,  level);
+        pruneMap(echoSounds,    level);
         pruneMap(accelSounds,   level);
+        pruneMap(reverseSounds, level);
         pruneMap(deaccelSounds, level);
         pruneMap(topSounds,     level);
         pruneMap(tireSounds,    level);
@@ -130,12 +153,16 @@ public class CarSoundManager {
         Minecraft mc = Minecraft.getInstance();
         SoundManager sm = mc.getSoundManager();
         engineSounds.values().forEach(sm::stop);
+        echoSounds.values().forEach(sm::stop);
         accelSounds.values().forEach(sm::stop);
+        reverseSounds.values().forEach(sm::stop);
         deaccelSounds.values().forEach(sm::stop);
         topSounds.values().forEach(sm::stop);
         tireSounds.values().forEach(sm::stop);
         engineSounds.clear();
+        echoSounds.clear();
         accelSounds.clear();
+        reverseSounds.clear();
         deaccelSounds.clear();
         topSounds.clear();
         tireSounds.clear();

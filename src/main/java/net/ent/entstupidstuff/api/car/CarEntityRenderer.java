@@ -29,6 +29,14 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
     protected final List<RenderLayer<CarRenderState, DMCModel>> layers = Lists.<RenderLayer<CarRenderState, DMCModel>>newArrayList();
  
     private static final float MODEL_SCALE = 1.0f;
+ 
+    // ── Animation tuning (mirrors DMCModel constants for the lerp calcs) ──
+    private static final float STEERING_WHEEL_MULTIPLIER = (float)(Math.PI * 3.5f);
+    private static final float SHIFTER_MAX_TILT          = 0.35f;
+    private static final float BODY_ROLL_MAX             = 0.15f;
+    private static final float BODY_ROLL_LERP            = 0.15f;
+    private static final float STEER_WHEEL_LERP          = 0.20f;
+    private static final float SHIFTER_LERP              = 0.10f;
     private final DMCModel model;
  
     public CarEntityRenderer(EntityRendererProvider.Context context) {
@@ -47,20 +55,52 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
         return new CarRenderState();
     }
  
-    @Override
+        @Override
     public void extractRenderState(CarEntity entity, CarRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
  
         state.isDrifting    = entity.isDrifting();
+        state.isBurningOut  = entity.isBurningOut();
         state.wheelSpin     = entity.getWheelSpin();
-        state.steerInput    = entity.getSteerInput();
-        state.forwardSpeed  = entity.getForwardSpeed();
-        state.yRot          = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
+        state.rearWheelSpin = entity.getRearWheelSpin();
+        state.steerInput   = entity.getSteerInput();
+        state.forwardSpeed = entity.getForwardSpeed();
+        state.yRot         = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
  
         Vec3 vel = entity.getDeltaMovement();
         double yRad = Math.toRadians(entity.getYRot());
         state.lateralVelocity = (float)(vel.x * Math.cos(yRad) + vel.z * Math.sin(yRad));
-
+ 
+        // ── Per-entity lerp — runs once per entity per frame ───────────────
+        //
+        // This is the key fix: lerp happens here in extractRenderState() where
+        // we have access to the PREVIOUS state values (state.steerWheelRot etc.
+        // carried over from the last frame). DMCModel.setupAnim() then just
+        // reads the already-interpolated values — no persistent model state.
+ 
+        // Steering wheel
+        float targetSteerWheel = state.steerInput * STEERING_WHEEL_MULTIPLIER;
+        state.steerWheelRot = Mth.lerp(STEER_WHEEL_LERP,
+                                        state.steerWheelRot, targetSteerWheel);
+ 
+        // Gear shifter
+        float targetShifter;
+        if (state.forwardSpeed > 0.01f) {
+            targetShifter = -SHIFTER_MAX_TILT * Mth.clamp(state.forwardSpeed / 0.3f, 0f, 1f);
+        } else if (state.forwardSpeed < -0.01f) {
+            targetShifter = SHIFTER_MAX_TILT;
+        } else {
+            targetShifter = 0f;
+        }
+        state.shifterRot = Mth.lerp(SHIFTER_LERP, state.shifterRot, targetShifter);
+ 
+        // Body roll
+        float targetRoll = Mth.clamp(state.lateralVelocity * -0.8f,
+                                     -BODY_ROLL_MAX, BODY_ROLL_MAX);
+        state.bodyRoll = Mth.lerp(BODY_ROLL_LERP, state.bodyRoll, targetRoll);
+        if (state.isDrifting) {
+            state.bodyRoll += Mth.sin(state.ageInTicks * 0.3f) * 0.025f;
+        }
     }
  
     @Override
