@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.api.car;
+package net.ent.entstupidstuff.api.car.soundengine;
 
 import net.ent.entstupidstuff.api.car.CarEntity;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -6,20 +6,21 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
-public class CarAccelSoundInstance extends AbstractTickableSoundInstance
+public class CarDeaccelSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
  
-    private static final float PITCH_LOW  = 0.75f;
-    private static final float PITCH_HIGH = 1.40f;
-    private static final float FADE_IN_RATE  = 0.08f;
-    private static final float FADE_OUT_RATE = 0.06f;
+    private static final float MIN_SPEED     = 0.05f;
+    private static final float FADE_IN_RATE  = 0.10f;
+    private static final float FADE_OUT_RATE = 0.07f;
     private static final float VOLUME_MAX    = 1.0f;
-    private static final float MIN_SPEED     = 0.03f;
-    private static final float ACCEL_FADE_START  = 0.85f;
+    private static final float PITCH_LOW     = 0.85f;
+    private static final float PITCH_HIGH    = 1.20f;
+ 
     private final CarEntity car;
     private float fadeFactor = 0f;
+    private float prevSpeed  = 0f;
  
-    public CarAccelSoundInstance(CarEntity car, SoundEvent sound) {
+    public CarDeaccelSoundInstance(CarEntity car, SoundEvent sound) {
         super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.car         = car;
         this.looping     = true;
@@ -39,27 +40,26 @@ public class CarAccelSoundInstance extends AbstractTickableSoundInstance
  
         syncPosition();
  
-        // Forward only — reverse handled by CarReverseSoundInstance.
-        float signedSpeed = car.getForwardSpeed();
-        float speed       = Math.abs(signedSpeed);
-        float rpm         = car.getRPM();
+        float speed  = Math.abs(car.getForwardSpeed());
+        float delta  = speed - prevSpeed;
+        prevSpeed    = speed;
 
-        // Active when moving forward under throttle, OR during burnout.
-        // Without the burnout check, signedSpeed ≈ 0 → sound is silent
-        // the whole time even though the engine is screaming.
-        boolean burningOut = car.isBurningOut();
-        boolean active = burningOut
-                      || (car.isThrottleOn() && signedSpeed > MIN_SPEED && speed < ACCEL_FADE_START);
-
+        // Active on hard braking (S key) OR engine-braking at high speed.
+        // The engine-braking check gives the "lift-off roar" in 6th gear
+        // that the top-speed sound fades out too slowly to cover on its own.
+        boolean braking      = car.isBraking() && speed > MIN_SPEED;
+        boolean engineBrake  = !car.isThrottleOn() && speed > 0.50f && delta < -0.004f;
+        boolean active       = (braking || engineBrake) && speed > MIN_SPEED;
+ 
+ 
         fadeFactor = active
             ? Math.min(VOLUME_MAX, fadeFactor + FADE_IN_RATE)
             : Math.max(0f,          fadeFactor - FADE_OUT_RATE);
         volume = fadeFactor;
-
-        // Pitch always follows engineRPM — during burnout getRPM() returns
-        // the climbing burnoutRPM so the pitch rises correctly through the rev.
-        pitch = PITCH_LOW + rpm * (PITCH_HIGH - PITCH_LOW);
-
+ 
+        float speedFraction = Math.min(1f, speed);
+        pitch = PITCH_LOW + speedFraction * (PITCH_HIGH - PITCH_LOW);
+ 
         if (fadeFactor <= 0f && !active) stop();
     }
  

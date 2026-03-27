@@ -1,8 +1,8 @@
 package net.ent.entstupidstuff.client;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.DMCModel;
 import net.ent.entstupidstuff.api.car.CarEntityRenderer;
+import net.ent.entstupidstuff.api.car.models.DMCModel;
 import net.ent.entstupidstuff.client.render.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;

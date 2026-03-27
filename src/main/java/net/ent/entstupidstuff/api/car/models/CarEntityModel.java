@@ -1,6 +1,7 @@
-package net.ent.entstupidstuff.api.car;
+package net.ent.entstupidstuff.api.car.models;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.CarRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;

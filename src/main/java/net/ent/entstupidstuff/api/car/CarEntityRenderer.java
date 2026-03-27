@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.models.DMCModel;
 import net.ent.entstupidstuff.client.render.entity.feature.ScorchedGlowRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
@@ -23,9 +24,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState> {
  
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13.png");
-    private static final ResourceLocation GLOW = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow.png");
-    private static final ResourceLocation GLOW_BACKUP = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow_backup.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13.png"); //dmc_13
+    private static final ResourceLocation GLOW = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow.png"); //dmc_13_glow
+    private static final ResourceLocation GLOW_BACKUP = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow_backup.png"); //dmc_13_glow_backup
     protected final List<RenderLayer<CarRenderState, DMCModel>> layers = Lists.<RenderLayer<CarRenderState, DMCModel>>newArrayList();
  
     private static final float MODEL_SCALE = 1.0f;
