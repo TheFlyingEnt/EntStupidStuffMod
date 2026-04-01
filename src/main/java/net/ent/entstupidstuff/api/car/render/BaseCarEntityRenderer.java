@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.api.car;
+package net.ent.entstupidstuff.api.car.render;
 
 import java.util.List;
 
@@ -6,9 +6,8 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.models.DMCModel;
-import net.ent.entstupidstuff.client.render.entity.feature.ScorchedGlowRenderer;
+import net.ent.entstupidstuff.api.car.BaseCarEntity;
+import net.ent.entstupidstuff.api.car.models.BaseCarEntityModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -21,33 +20,35 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-
-public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState> {
+public abstract class BaseCarEntityRenderer extends EntityRenderer<BaseCarEntity, CarRenderState> {
  
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13.png"); //dmc_13
-    private static final ResourceLocation GLOW = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow.png"); //dmc_13_glow
-    private static final ResourceLocation GLOW_BACKUP = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/dmc_13_glow_backup.png"); //dmc_13_glow_backup
-    protected final List<RenderLayer<CarRenderState, DMCModel>> layers = Lists.<RenderLayer<CarRenderState, DMCModel>>newArrayList();
+    /** Main texture for this car's model. Supplied by subclass. */
+    protected abstract ResourceLocation texture();
+    /** Glow texture shown when driving forward (headlights on). */
+    protected abstract ResourceLocation glowTexture();
+    /** Glow texture shown when in reverse (reverse lights). */
+    protected abstract ResourceLocation glowBackupTexture();
+ 
+    protected final List<RenderLayer<CarRenderState, BaseCarEntityModel>> layers = Lists.<RenderLayer<CarRenderState, BaseCarEntityModel>>newArrayList();
  
     private static final float MODEL_SCALE = 1.0f;
  
-    // ── Animation tuning (mirrors DMCModel constants for the lerp calcs) ──
+    // ── Animation tuning (mirrors BaseCarEntityModel constants for the lerp calcs) ──
     private static final float STEERING_WHEEL_MULTIPLIER = (float)(Math.PI * 3.5f);
     private static final float SHIFTER_MAX_TILT          = 0.35f;
     private static final float BODY_ROLL_MAX             = 0.15f;
     private static final float BODY_ROLL_LERP            = 0.15f;
     private static final float STEER_WHEEL_LERP          = 0.20f;
     private static final float SHIFTER_LERP              = 0.10f;
-    private final DMCModel model;
+    private final BaseCarEntityModel model;
  
-    public CarEntityRenderer(EntityRendererProvider.Context context) {
+    public BaseCarEntityRenderer(EntityRendererProvider.Context context, BaseCarEntityModel model) {
         super(context);
-        this.model = new DMCModel(context.bakeLayer(DMCModel.LAYER_LOCATION));
+        this.model = model;
         this.shadowRadius = 1.6f;
-        //this.addLayer(new CarGlowRenderer(this));
     }
-
-    protected final boolean addLayer(RenderLayer<CarRenderState, DMCModel> renderLayer) {
+ 
+    protected final boolean addLayer(RenderLayer<CarRenderState, BaseCarEntityModel> renderLayer) {
 		return this.layers.add(renderLayer);
 	}
  
@@ -57,7 +58,7 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
     }
  
         @Override
-    public void extractRenderState(CarEntity entity, CarRenderState state, float partialTick) {
+    public void extractRenderState(BaseCarEntity entity, CarRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
  
         state.isDrifting    = entity.isDrifting();
@@ -76,7 +77,7 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
         //
         // This is the key fix: lerp happens here in extractRenderState() where
         // we have access to the PREVIOUS state values (state.steerWheelRot etc.
-        // carried over from the last frame). DMCModel.setupAnim() then just
+        // carried over from the last frame). BaseCarEntityModel.setupAnim() then just
         // reads the already-interpolated values — no persistent model state.
  
         // Steering wheel
@@ -96,7 +97,15 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
         state.shifterRot = Mth.lerp(SHIFTER_LERP, state.shifterRot, targetShifter);
  
         // Body roll
-        float targetRoll = Mth.clamp(state.lateralVelocity * -0.8f,
+        /*float targetRoll = Mth.clamp(state.lateralVelocity * -0.8f,
+                                     -BODY_ROLL_MAX, BODY_ROLL_MAX);
+        state.bodyRoll = Mth.lerp(BODY_ROLL_LERP, state.bodyRoll, targetRoll);
+        if (state.isDrifting) {
+            state.bodyRoll += Mth.sin(state.ageInTicks * 0.3f) * 0.025f;
+        }*/
+
+        float rollScale = state.isDrifting ? 1.8f : 1.0f;
+        float targetRoll = Mth.clamp(state.lateralVelocity * -0.8f * rollScale,
                                      -BODY_ROLL_MAX, BODY_ROLL_MAX);
         state.bodyRoll = Mth.lerp(BODY_ROLL_LERP, state.bodyRoll, targetRoll);
         if (state.isDrifting) {
@@ -110,53 +119,54 @@ public class CarEntityRenderer extends EntityRenderer<CarEntity, CarRenderState>
  
         poseStack.mulPose(Axis.YP.rotationDegrees(180f - state.yRot));
         poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
-
+ 
         poseStack.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
         poseStack.translate(0, -1.35F, 0);
         
-
+ 
         model.setupAnim(state);
         
         collector.submitModel(
 			this.model(), state, poseStack, this.renderType(), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null
 		);
-
-        for (RenderLayer<CarRenderState, DMCModel> renderLayer : this.layers) {
+ 
+        for (RenderLayer<CarRenderState, BaseCarEntityModel> renderLayer : this.layers) {
 			renderLayer.submit(
 				poseStack, collector, state.lightCoords, state, state.yRot, state.xRot
 			);
 		}
-
+ 
         int alphaByte = Math.round(1 * 255.0f);
         int color = (alphaByte << 24) | 0x00FFFFFF;
-
+ 
         if (state.forwardSpeed < 0) {
             collector.order(1)
 			.submitModel(
-				this.model(), state, poseStack, RenderType.eyes(GLOW_BACKUP), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null
+				this.model(), state, poseStack, RenderType.eyes(glowBackupTexture()), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null
 			);
-
+ 
         } else {
             collector.order(1)
 			.submitModel(
-				this.model(), state, poseStack, RenderType.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null
+				this.model(), state, poseStack, RenderType.eyes(glowTexture()), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null
 			);
-
+ 
         }
-
+ 
         
-
+ 
         poseStack.popPose();
  
         super.submit(state, poseStack, collector, cameraState);
     }
-
+ 
 	protected RenderType renderType() {
-		return this.model.renderType(TEXTURE);
+		return this.model.renderType(texture());
 	}
-
+ 
     protected EntityModel<CarRenderState> model() {
         return this.model;
     }
-
+ 
 }
+ 

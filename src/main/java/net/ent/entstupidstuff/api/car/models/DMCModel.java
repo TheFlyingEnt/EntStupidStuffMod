@@ -1,8 +1,6 @@
 package net.ent.entstupidstuff.api.car.models;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.CarRenderState;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -13,12 +11,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class DMCModel extends EntityModel<CarRenderState> {
+public class DMCModel extends BaseCarEntityModel {
 
     private static final float MAX_WHEEL_STEER_RAD = 0.4f;
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "car"), "main"
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "dmc13"), "main"
     );
 
 	private final ModelPart body;
@@ -387,53 +385,17 @@ public class DMCModel extends EntityModel<CarRenderState> {
 
 		return LayerDefinition.create(meshdefinition, 512, 512);
 	}
+    
+	// ═══════════════════════════════════════════════════════════
+	//  MODEL PART ACCESSORS  (required by BaseCarModel)
+	// ═══════════════════════════════════════════════════════════
+ 
+	@Override protected ModelPart body()             { return this.body; }
+	@Override protected ModelPart frontLeftWheel()   { return this.Front_Left_Wheel; }
+	@Override protected ModelPart frontRightWheel()  { return this.Front_Right_Wheel; }
+	@Override protected ModelPart backLeftWheel()    { return this.Back_Left_Wheel; }
+	@Override protected ModelPart backRightWheel()   { return this.Back_Right_Wheel; }
+	@Override protected ModelPart steeringWheel()    { return this.steering_wheel; }
+	@Override protected ModelPart shifter()          { return this.shifter; }
 
-    	@Override
-    public void setupAnim(CarRenderState state) {
- 
-        //1. WHEEL SPIN
- 
-        // Front wheels: track actual forward speed direction
-        float frontSpinRad = (float) Math.toRadians(
-            state.forwardSpeed > 0.01 ? state.wheelSpin : -state.wheelSpin);
-        this.Front_Left_Wheel.xRot  = frontSpinRad;
-        this.Front_Right_Wheel.xRot = frontSpinRad;
- 
-        // Rear wheels: same sign logic as front wheels.
-        // Forward → +rearWheelSpin, Reversing → -rearWheelSpin.
-        // rearWheelSpin is kept in range via % 360 before converting,
-        // so Minecraft never wraps xRot through ±180° which makes the
-        // asymmetric rim texture appear to flip or jump.
-        float rearSpinNorm = state.rearWheelSpin % 360f;
-        float rearSpinRad = (float) Math.toRadians(
-            state.forwardSpeed > 0.01f
-                ?  rearSpinNorm   // forward / burnout: same as front ✓
-                : -rearSpinNorm); // reversing ✓
-        this.Back_Left_Wheel.xRot  = rearSpinRad;
-        this.Back_Right_Wheel.xRot = rearSpinRad;
- 
-        // 2. FRONT WHEEL STEERING
- 
-        //float wheelSteer = -state.steerInput * MAX_WHEEL_STEER_RAD;
-        float wheelSteer = state.steerInput * MAX_WHEEL_STEER_RAD;
-        this.Front_Left_Wheel.yRot  = wheelSteer;
-        this.Front_Right_Wheel.yRot = wheelSteer;
- 
-        // 3. STEERING WHEEL
- 
-        // Pre-lerped per-entity in CarEntityRenderer.extractRenderState() → state.steerWheelRot
-        this.steering_wheel.zRot = state.steerWheelRot;
- 
-        // 4. GEAR SHIFTER
- 
-        // Pre-lerped per-entity in CarEntityRenderer.extractRenderState() → state.shifterRot
-        this.shifter.xRot = state.shifterRot;
- 
-        // 5. BODY ROLL
- 
-        // Pre-lerped per-entity (+ drift oscillation) in CarEntityRenderer.extractRenderState() → state.bodyRoll
-        this.body.yRot = state.bodyRoll;
- 
- 
-    }
 }

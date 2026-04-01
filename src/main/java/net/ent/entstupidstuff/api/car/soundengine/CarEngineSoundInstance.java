@@ -4,7 +4,7 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.ent.entstupidstuff.api.car.CarEntity;
+import net.ent.entstupidstuff.api.car.BaseCarEntity;
 
 public class CarEngineSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
@@ -18,10 +18,10 @@ public class CarEngineSoundInstance extends AbstractTickableSoundInstance
     private static final float FADE_RATE   = 0.05f;
     private static final float MIN_SPEED   = 0.05f;
  
-    private final CarEntity car;
+    private final BaseCarEntity car;
     private float fadeFactor = 0f;
  
-    public CarEngineSoundInstance(CarEntity car, SoundEvent idleLoop) {
+    public CarEngineSoundInstance(BaseCarEntity car, SoundEvent idleLoop) {
         super(idleLoop, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.car         = car;
         this.looping     = true;
@@ -57,5 +57,5 @@ public class CarEngineSoundInstance extends AbstractTickableSoundInstance
     }
  
     private void syncPosition() { this.x = car.getX(); this.y = car.getY(); this.z = car.getZ(); }
-    public CarEntity getCar() { return car; }
+    public BaseCarEntity getCar() { return car; }
 }

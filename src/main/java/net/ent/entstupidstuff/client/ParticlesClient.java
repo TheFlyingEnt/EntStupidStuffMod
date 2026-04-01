@@ -17,7 +17,7 @@ public class ParticlesClient {
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE_BLOSSOM, FallingMushroomSporeBlossomFactory::new);//FallingMSporeBlossomFactory::new);
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.FALLING_MUSHROOM_SPORE, BlueGlowFactory::new);//MapleProvider
         ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.MAPLE_LEAVES, MapleProvider::new);//MapleProvider
-        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.TYRESMOKE, TyreSmokeParticle.Provider::new);//TyreSmoke
+        ParticleFactoryRegistry.getInstance().register(ParticleTypesFactory.TYRE_SMOKE, TyreSmokeParticle.Provider::new);//TyreSmoke
         
         
     }

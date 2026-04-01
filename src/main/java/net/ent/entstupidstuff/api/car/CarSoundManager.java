@@ -54,7 +54,7 @@ public class CarSoundManager {
         SoundManager sm = mc.getSoundManager();
  
         for (Entity entity : level.entitiesForRendering()) {
-            if (!(entity instanceof CarEntity car)) continue;
+            if (!(entity instanceof BaseCarEntity car)) continue;
  
             int id = car.getId();
  

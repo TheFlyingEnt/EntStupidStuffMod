@@ -1,4 +1,4 @@
-package net.ent.entstupidstuff.api.car;
+package net.ent.entstupidstuff.api.car.render;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 

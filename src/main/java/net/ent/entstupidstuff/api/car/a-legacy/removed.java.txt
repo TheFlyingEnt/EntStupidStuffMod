@@ -1,0 +1,884 @@
+package net.ent.entstupidstuff.api.car;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.ent.entstupidstuff.sound.SoundFactory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
+
+public abstract class BaseCarEntity extends VehicleEntity {
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SEAT  (override in subclass if model differs)
+    // ═══════════════════════════════════════════════════════════
+ 
+    protected double seatHeight()  { return 0.4; }
+    protected double seatSide()    { return 0.5; }
+    protected double seatForward() { return -0.5; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  ABSTRACT SPEC — implement these in each car subclass
+    // ═══════════════════════════════════════════════════════════
+ 
+    // Engine
+    protected abstract float   idleRpm();
+    protected abstract float   redlineRpm();
+    protected abstract float   maxReverseRpm();
+    protected abstract float   maxReverseSpeed();
+    protected abstract float   downshiftRpm();
+    protected abstract int     clutchTicks();
+    protected abstract int     maxGear();
+ 
+    /** RPM breakpoints for the torque curve. Must match torqueCurve() length. */
+    protected abstract float[] torqueRpmPoints();
+    /** Normalised torque values (0.0–1.0) at each RPM breakpoint. */
+    protected abstract float[] torqueCurve();
+ 
+    // Drivetrain
+    /** Index 0 unused. Indices 1–maxGear() are the gear ratios. */
+    protected abstract float[] gearRatios();
+    protected abstract float   finalDrive();
+    /** Game-calibrated tyre circumference. Derive as:
+     *  targetSpeed_bl × gearRatios()[maxGear()] × finalDrive() × 60 × 20 / redlineRpm() */
+    protected abstract float   tyreCirc();
+    protected abstract float   peakDriveForce();
+ 
+    // Geometry
+    protected abstract float frontBias();
+    protected abstract float rearBias();
+    /** Distance from entity centre to front axle in blocks. */
+    protected abstract float frontDist();
+    /** Distance from entity centre to rear axle in blocks. */
+    protected abstract float rearDist();
+    /** Half track width (centre to wheel) in blocks. Used for particle positions. */
+    protected abstract double trackHalf();
+ 
+    // Grip
+    protected abstract float frontGripMax();
+    protected abstract float rearGripMax();
+    protected abstract float gripStiffness();
+    protected abstract float slipThreshold();
+    protected abstract float slipFalloff();
+ 
+    // Lateral axle decay
+    protected abstract float latDecay();
+ 
+    // Weight transfer
+    protected abstract float longTransfer();
+    protected abstract float latTransfer();
+ 
+    // Steering
+    protected abstract float  maxSteerDeg();
+    protected abstract double peakSteerSpeed();
+    protected abstract double highSteerFraction();
+    protected abstract float  driftSteerBoost();
+ 
+    // Handbrake
+    protected abstract float handbrakeRearGrip();
+ 
+    // Yaw
+    protected abstract float yawMomentScale();
+    protected abstract float yawDamping();
+    protected abstract float yawMax();
+ 
+    // Drift
+    protected abstract float driftThreshold();
+ 
+    // Throttle ramp
+    protected abstract float throttleRampOn();
+    protected abstract float throttleRampOff();
+ 
+    // Drag
+    protected abstract double rollingDrag();
+    protected abstract double aeroDragStart();
+    protected abstract double aeroDragK();
+ 
+    // Drive type default — subclass can still be overridden at runtime via isRWD
+    protected abstract boolean defaultIsRWD();
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  FIXED PHYSICS CONSTANTS (same for all cars)
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final int    TUNNEL_SCAN_HEIGHT = 8;
+    private static final double GRAVITY            = 0.08;
+    private static final double MAX_FALL_SPEED     = 3.92;
+    private static final double GROUND_STICK       = -0.08;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SYNCED DATA  (keyed to BaseCarEntity so all subclasses share the same IDs)
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final EntityDataAccessor<Boolean> DATA_DRIFTING =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float>   DATA_WHEEL_SPIN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_REAR_WHEEL_SPIN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_STEER_INPUT =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_FORWARD_SPEED =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_ENGINE_RPM =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_GEAR =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_THROTTLE =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_BRAKING =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_BURNOUT =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_TUNNELED =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SERVER-SIDE STATE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private float   engineRPM      = 0f; // set to idleRpm() after construction
+    private int     currentGear    = 1;
+    private int     clutchTimer    = 0;
+    private float   throttleSmooth = 0f;
+    private float   frontLat       = 0f;
+    private float   rearLat        = 0f;
+    private float   overYawRate    = 0f;
+    private float   wheelSpin      = 0f;
+    private float   rearWheelSpin  = 0f;
+    private float   burnoutRPM     = 0f; // set to idleRpm() after construction
+    private boolean wasBurningOut   = false;
+    private float   prevThrottleSmooth = 0f; // detects lift-off moment
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  TOGGLES
+    // ═══════════════════════════════════════════════════════════
+ 
+    /** Toggle debug HUD — prints full physics readout each tick. */
+    public boolean debugMode = false;
+ 
+    /**
+     * Scenario test — one-line action bar showing which state is active.
+     * Toggle with car.scenarioTest = true to verify RWD drift, FWD slide,
+     * and burnout all fire correctly without the full debug wall of text.
+     */
+    public boolean scenarioTest = true;
+ 
+    /** When false, all surface/rain grip multipliers are bypassed (returns 1.0). */
+    public boolean surfaceFrictionEnabled = true;
+ 
+    /**
+     * true  = RWD (oversteer, drive load on rear).
+     * false = FWD (understeer, drive load on front).
+     * Defaults to defaultIsRWD() but can be changed at runtime.
+     */
+    public boolean isRWD;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  CONSTRUCTOR
+    // ═══════════════════════════════════════════════════════════
+ 
+    public BaseCarEntity(EntityType<?> type, Level level) {
+        super(type, level);
+        this.isRWD = defaultIsRWD();
+    }
+ 
+    @Override public float maxUpStep() { return 1.0f; }
+ 
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_DRIFTING,       false);
+        builder.define(DATA_WHEEL_SPIN,     0f);
+        builder.define(DATA_REAR_WHEEL_SPIN,0f);
+        builder.define(DATA_STEER_INPUT,    0f);
+        builder.define(DATA_FORWARD_SPEED,  0f);
+        builder.define(DATA_ENGINE_RPM,     0f);
+        builder.define(DATA_GEAR,           1);
+        builder.define(DATA_THROTTLE,       false);
+        builder.define(DATA_BRAKING,        false);
+        builder.define(DATA_BURNOUT,        false);
+        builder.define(DATA_TUNNELED,       false);
+        // Lazy-init RPM fields once spec is available
+        this.engineRPM  = idleRpm();
+        this.burnoutRPM = idleRpm();
+    }
+ 
+    @Override protected Item getDropItem() { return null; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  TICK
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public void tick() {
+        super.tick();
+ 
+        if (!this.isLocalInstanceAuthoritative()) {
+            this.setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+ 
+        boolean forward = false, backward = false,
+                left    = false, right    = false, handbrake = false;
+ 
+        if (this.getFirstPassenger() instanceof Player player) {
+            forward   = player.zza  >  0f;
+            backward  = player.zza  <  0f;
+            left      = player.xxa  >  0f;
+            right     = player.xxa  <  0f;
+            handbrake = player.isJumping();
+            if (this.tickCount % 2 == 0) displaySpeed(player);
+        } else {
+            frontLat      *= 0.70f;
+            rearLat       *= 0.70f;
+            overYawRate   *= 0.70f;
+            throttleSmooth = 0f;
+            burnoutRPM     = idleRpm();
+        }
+ 
+        tickPhysics(forward, backward, left, right, handbrake);
+ 
+        Vec3 preMove = this.getDeltaMovement();
+        this.move(MoverType.SELF, preMove);
+ 
+        Vec3 postMove = this.getDeltaMovement();
+        boolean steppingUp = postMove.y > 0.01;
+        if (!steppingUp && this.onGround()) {
+            double bounceX = Math.abs(preMove.x) > 0.01 && Math.abs(postMove.x) < Math.abs(preMove.x) * 0.5
+                ? -preMove.x * 0.35 : postMove.x;
+            double bounceZ = Math.abs(preMove.z) > 0.01 && Math.abs(postMove.z) < Math.abs(preMove.z) * 0.5
+                ? -preMove.z * 0.35 : postMove.z;
+            if (bounceX != postMove.x || bounceZ != postMove.z)
+                this.setDeltaMovement(bounceX, postMove.y, bounceZ);
+        }
+ 
+        if (this.onGround() && this.getDeltaMovement().y < 0)
+            this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
+ 
+        this.applyEffectsFromBlocks();
+ 
+        if (!this.level().isClientSide() && this.tickCount % 5 == 0)
+            this.entityData.set(DATA_TUNNELED, detectTunnel());
+ 
+        if (this.level().isClientSide()) {
+            spawnWheelParticles();
+            spawnExhaust();
+        }
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PHYSICS ENGINE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void tickPhysics(boolean forward, boolean backward,
+                              boolean left,    boolean right, boolean handbrake) {
+ 
+        // ── 1. Local velocity ─────────────────────────────────────────────
+        double yRad  = Math.toRadians(this.getYRot());
+        double sinY  = Math.sin(yRad), cosY = Math.cos(yRad);
+        Vec3   vel   = this.getDeltaMovement();
+ 
+        double localFwd  = -vel.x * sinY + vel.z * cosY;
+        double localY    =  vel.y;
+        float  speed     = (float) Math.abs(localFwd);
+        boolean goingFwd = localFwd >  0.01;
+        boolean goingRev = localFwd < -0.01;
+        boolean stopped  = !goingFwd && !goingRev;
+ 
+        // ── 2. Input flags ────────────────────────────────────────────────
+        boolean throttleActive = (forward  && !goingRev) || (backward && !goingFwd);
+        boolean brakingActive  = (backward && goingFwd)  || (forward  && goingRev);
+        boolean burnout        = forward && (backward || handbrake) && speed < 0.30f;
+ 
+        float steerInput = left ? -1f : right ? 1f : 0f;
+ 
+        this.entityData.set(DATA_THROTTLE,    throttleActive || burnout);
+        this.entityData.set(DATA_BRAKING,     brakingActive);
+        this.entityData.set(DATA_BURNOUT,     burnout);
+        this.entityData.set(DATA_STEER_INPUT, steerInput);
+ 
+        // ── 3. Smooth throttle ────────────────────────────────────────────
+        float throttleTarget = throttleActive ? 1.0f : 0.0f;
+        float ramp = throttleTarget > throttleSmooth ? throttleRampOn() : throttleRampOff();
+        throttleSmooth = Mth.clamp(
+            throttleSmooth + (throttleTarget - throttleSmooth) * ramp, 0f, 1f);
+ 
+        // ── 4. Drivetrain chain ───────────────────────────────────────────
+        final float[] GR = gearRatios();
+ 
+        if (burnout) {
+            final float BURN_RPM_RISE = 140f;
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                engineRPM = burnoutRPM;
+            } else {
+                burnoutRPM = Math.min(redlineRpm(), burnoutRPM + BURN_RPM_RISE);
+                if (burnoutRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    burnoutRPM *= (GR[currentGear] / GR[currentGear - 1]);
+                } else if (burnoutRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                }
+                engineRPM = burnoutRPM;
+            }
+            engineRPM = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+            burnoutRPM = engineRPM;
+            wasBurningOut = true;
+ 
+        } else if (speed < 0.005f) {
+            if (!wasBurningOut) currentGear = 1;
+            clutchTimer = 0;
+            engineRPM   = idleRpm() + throttleSmooth * 600f;
+        } else {
+            wasBurningOut = false;
+            float wheelRPS = speed / tyreCirc() * 20f;
+            float rawRPM   = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+ 
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                float blend = clutchTimer / (float) clutchTicks();
+                engineRPM = Mth.lerp(blend, rawRPM, engineRPM * 0.72f);
+            } else if (goingFwd) {
+                if (rawRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                } else if (rawRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                }
+                engineRPM = rawRPM;
+            } else if (goingRev) {
+                float revFraction = Math.min(1f, speed / maxReverseSpeed());
+                engineRPM = idleRpm() + revFraction * (maxReverseRpm() - idleRpm());
+            }
+            engineRPM = Math.max(engineRPM, idleRpm() + throttleSmooth * 500f);
+            engineRPM = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+        }
+ 
+        this.entityData.set(DATA_ENGINE_RPM, engineRPM);
+        this.entityData.set(DATA_GEAR,       currentGear);
+ 
+        // ── 5. Drive force ────────────────────────────────────────────────
+        float torqueNorm = lookupTorque(engineRPM);
+        float gearMult   = GR[currentGear] / GR[1];
+        float driveForce = torqueNorm * throttleSmooth * peakDriveForce() * gearMult;
+        if (clutchTimer > 0) driveForce = 0f;
+ 
+        // ── 5b. Surface friction ──────────────────────────────────────────
+        float surfaceFriction      = surfaceFrictionEnabled ? computeSurfaceFriction() : 1.0f;
+        float adjustedRearGripMax  = rearGripMax()  * surfaceFriction;
+        float adjustedFrontGripMax = frontGripMax() * surfaceFriction;
+        double surfaceRollingDrag  = rollingDrag() - (1.0 - surfaceFriction) * 0.04;
+ 
+        // ── 6. Weight transfer ────────────────────────────────────────────
+        float wt         = driveForce - (brakingActive ? 0.04f : 0f);
+        float rearWeight  = Mth.clamp(rearBias()  + wt * longTransfer(), 0.30f, 0.70f);
+        float frontWeight = Mth.clamp(frontBias() - wt * longTransfer(), 0.30f, 0.70f);
+ 
+        // ── 7. Traction circle ────────────────────────────────────────────
+        float rearGripTotal  = rearWeight  * adjustedRearGripMax;
+        float frontGripTotal = frontWeight * adjustedFrontGripMax;
+ 
+        float driveUsedRear  = isRWD  ? Math.min(Math.abs(driveForce), rearGripTotal)  : 0f;
+        float driveUsedFront = !isRWD ? Math.min(Math.abs(driveForce), frontGripTotal) : 0f;
+ 
+        float rearGripLat;
+        if (handbrake) {
+            rearGripLat = handbrakeRearGrip() * adjustedRearGripMax;
+        } else if (isRWD) {
+            rearGripLat = (float) Math.sqrt(Math.max(0.0,
+                (double) rearGripTotal * rearGripTotal - (double) driveUsedRear * driveUsedRear));
+            rearGripLat = Math.max(rearGripLat, rearGripTotal * 0.40f);
+        } else {
+            rearGripLat = rearGripTotal;
+        }
+ 
+        float frontGripLat;
+        if (!isRWD) {
+            frontGripLat = (float) Math.sqrt(Math.max(0.0,
+                (double) frontGripTotal * frontGripTotal - (double) driveUsedFront * driveUsedFront));
+            frontGripLat = Math.max(frontGripLat, frontGripTotal * 0.40f);
+        } else {
+            frontGripLat = frontGripTotal;
+        }
+ 
+        float latAbs       = Math.max(Math.abs(frontLat), Math.abs(rearLat));
+        float latReduction = Mth.clamp(latAbs * latTransfer(), 0f, 0.18f);
+        frontGripLat *= (1f - latReduction);
+        rearGripLat  *= (1f - latReduction);
+ 
+        // ── 8. Longitudinal motion ────────────────────────────────────────
+        if (burnout) {
+            localFwd *= 0.60;
+            if (Math.abs(localFwd) < 0.005) localFwd = 0.0;
+        } else if (throttleActive) {
+            if (forward) {
+                double cap = goingRev ? 0.10 : (isRWD ? rearGripTotal : frontGripTotal);
+                localFwd = Math.min(localFwd + Math.min(driveForce, cap), 75.0);
+            } else {
+                localFwd = Math.max(localFwd - 0.028, -0.35);
+            }
+        }
+ 
+        if (!burnout && brakingActive) {
+            if (goingFwd)      localFwd = Math.max(0.0, localFwd - 0.035);
+            else if (goingRev) localFwd = Math.min(0.0, localFwd + 0.035);
+        }
+ 
+        if (!forward && !backward && !handbrake) {
+            double eb = 0.004 * (GR[currentGear] / GR[maxGear()]);
+            if (goingFwd)      localFwd -= eb;
+            else if (goingRev) localFwd += eb;
+        }
+ 
+        if (handbrake) {
+            if (goingFwd)      localFwd = Math.max(0.0, localFwd - 0.06);
+            else if (goingRev) localFwd = Math.min(0.0, localFwd + 0.06);
+        }
+ 
+        localFwd *= surfaceRollingDrag;
+        if (Math.abs(localFwd) > aeroDragStart()) {
+            double excess = Math.abs(localFwd) - aeroDragStart();
+            localFwd -= Math.signum(localFwd) * excess * aeroDragK() * 20;
+        }
+        if (Math.abs(localFwd) < 0.001) localFwd = 0.0;
+ 
+        // ── 9. Steering ───────────────────────────────────────────────────
+        boolean drifting = Math.abs(rearLat) > driftThreshold();
+        if (speed > 0.01f && steerInput != 0f) {
+            float steerDeg = computeSteerAngle(speed, drifting);
+            // FWD understeer: front traction consumed by drive → steering response
+            // degrades under hard throttle in a corner. Scale linearly with how
+            // saturated the front grip is (driveUsedFront / frontGripTotal).
+            if (!isRWD && frontGripTotal > 0f) {
+                float saturation = Mth.clamp(driveUsedFront / frontGripTotal, 0f, 1f);
+                // At full saturation: steering reduced to 55% effectiveness
+                // 20% max reduction — noticeable but not crippling.
+                // Ease off throttle and full steering authority returns.
+                steerDeg *= (1f - saturation * 0.20f);
+            }
+            float revSign = goingRev ? -1f : 1f;
+            this.setYRot(this.getYRot() + steerInput * steerDeg * revSign);
+        }
+ 
+        // ── 10. Centripetal lateral + persistent axle model ───────────────
+        if (goingFwd && steerInput != 0f) {
+            float steerRad       = (float) Math.toRadians(computeSteerAngle(speed, drifting));
+            float centripetalLat = (float)(Math.sin(steerRad) * Math.abs(localFwd)) * steerInput;
+            frontLat += centripetalLat * (rearDist()  / (frontDist() + rearDist()));
+            rearLat  += centripetalLat * (frontDist() / (frontDist() + rearDist()));
+        }
+ 
+        // ── Lift-off oversteer injection ──────────────────────────────
+        // When the driver releases the throttle at speed in a corner,
+        // the rear loses engine braking load suddenly — weight transfers
+        // forward and the rear gets light. Modelled as a one-tick rearLat
+        // pulse proportional to: how fast the throttle was dropped ×
+        // how much the car is cornering × current speed.
+        // Only fires when: going fast, cornering, throttle just released.
+        float throttleDrop = prevThrottleSmooth - throttleSmooth; // positive = just released
+        if (throttleDrop > 0.05f                // throttle dropped sharply this tick
+                && speed > 0.40f                // going fast enough for weight transfer
+                && Math.abs(steerInput) > 0f    // actually in a corner
+                && goingFwd                     // must be going forward
+                && !burnout) {                  // not during burnout
+            // Pulse magnitude: bigger at higher speed and sharper throttle drop
+            float liftOffPulse = throttleDrop * speed * 0.35f * steerInput;
+            rearLat += liftOffPulse;
+        }
+        prevThrottleSmooth = throttleSmooth;
+ 
+        float frontCorrect = computeGripForce(frontLat, frontGripLat);
+        frontLat -= frontCorrect;
+ 
+        float rearCorrect;
+        if (handbrake) {
+            rearCorrect = rearLat * handbrakeRearGrip() * gripStiffness();
+        } else {
+            rearCorrect = computeGripForce(rearLat, rearGripLat);
+        }
+        rearLat -= rearCorrect;
+ 
+        frontLat *= latDecay();
+        rearLat  *= latDecay();
+        if (Math.abs(frontLat) < 0.0005f) frontLat = 0f;
+        if (Math.abs(rearLat)  < 0.0005f) rearLat  = 0f;
+ 
+        float overallLat = frontLat * frontBias() + rearLat * rearBias();
+ 
+        // ── 11. Yaw moment — drive-type aware ────────────────────────────
+        //
+        //  RWD: rear slides more than front → positive yaw → oversteer rotation.
+        //
+        //  FWD: two distinct states:
+        //    a) Understeer — front slides more than rear under throttle.
+        //       The front is pushing wide so the car resists turning.
+        //       Modelled as a COUNTER-yaw: negative excessDiff damps rotation.
+        //    b) Handbrake slide — rear drops to near-zero grip (rearLat builds).
+        //       Exactly like RWD handbrake: rear snaps out, yaw fires normally.
+        //       But with no drive load on rear, it self-corrects faster.
+ 
+        // Yaw moment: fires when rear slides (RWD oversteer or handbrake either type).
+        // FWD understeer is communicated through steering saturation in step 9 only —
+        // counter-yaw caused the rear to flip direction on handbrake release.
+        drifting = Math.abs(rearLat) > driftThreshold();
+        if (drifting) {
+            float excessDiff = rearLat - frontLat;
+            overYawRate += excessDiff * yawMomentScale();
+        } else {
+            overYawRate *= 0.55f;
+        }
+        overYawRate *= yawDamping();
+        overYawRate  = Mth.clamp(overYawRate, -yawMax(), yawMax());
+        this.setYRot(this.getYRot() + overYawRate);
+ 
+        this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
+ 
+        // ── 12. Gravity ───────────────────────────────────────────────────
+        localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
+ 
+        // ── 13. Reproject to world ────────────────────────────────────────
+        double nYRad = Math.toRadians(this.getYRot());
+        double nSin  = Math.sin(nYRad), nCos = Math.cos(nYRad);
+        this.setDeltaMovement(
+            localFwd * (-nSin) + overallLat * nCos,
+            localY,
+            localFwd *   nCos  + overallLat * nSin);
+ 
+        // ── 14. Wheel spin cosmetics ──────────────────────────────────────
+        wheelSpin += speed * 180f;
+        if (wheelSpin > 360000f) wheelSpin -= 360000f;
+        this.entityData.set(DATA_WHEEL_SPIN, wheelSpin);
+ 
+        if (burnout) {
+            float burnoutDeg = (engineRPM / redlineRpm()) * 90f;
+            rearWheelSpin += burnoutDeg;
+        } else if (speed > 0.005f) {
+            rearWheelSpin += speed * 180f;
+        }
+        if (rearWheelSpin > 360000f) rearWheelSpin -= 360000f;
+        this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
+        this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HELPERS
+    // ═══════════════════════════════════════════════════════════
+ 
+    private boolean detectTunnel() {
+        if (!this.onGround()) return false;
+        BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
+        for (int i = 1; i <= TUNNEL_SCAN_HEIGHT; i++) {
+            if (this.level().getBlockState(base.above(i)).isSolid()) return true;
+        }
+        return false;
+    }
+ 
+    public float getTunnelStrength() {
+        if (!this.isTunneled()) return 0f;
+        BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
+        for (int i = 1; i <= TUNNEL_SCAN_HEIGHT; i++) {
+            if (this.level().getBlockState(base.above(i)).isSolid())
+                return 1.0f - (i - 1f) / TUNNEL_SCAN_HEIGHT;
+        }
+        return 0f;
+    }
+ 
+    private float computeSurfaceFriction() {
+        BlockPos underPos = BlockPos.containing(this.getX(), this.getY() - 0.2, this.getZ());
+        BlockState under  = this.level().getBlockState(underPos);
+        net.minecraft.world.level.block.Block block = under.getBlock();
+ 
+        float friction;
+        if      (block == Blocks.BLUE_ICE)                                          friction = 0.10f;
+        else if (block == Blocks.ICE || block == Blocks.PACKED_ICE
+              || block == Blocks.FROSTED_ICE)                                       friction = 0.25f;
+        else if (block == Blocks.SOUL_SAND || block == Blocks.SOUL_SOIL)            friction = 0.45f;
+        else if (block == Blocks.SAND || block == Blocks.RED_SAND
+              || block == Blocks.SUSPICIOUS_SAND)                                   friction = 0.55f;
+        else if (block == Blocks.GRAVEL || block == Blocks.COARSE_DIRT
+              || block == Blocks.DIRT_PATH)                                         friction = 0.72f;
+        else if (under.is(BlockTags.DIRT)
+              || block == Blocks.GRASS_BLOCK || block == Blocks.PODZOL
+              || block == Blocks.FARMLAND   || block == Blocks.MYCELIUM
+              || block == Blocks.MUD        || block == Blocks.MUDDY_MANGROVE_ROOTS) friction = 0.65f;
+        else                                                                         friction = 1.00f;
+ 
+        if (this.level().isRaining() && this.level().canSeeSky(underPos.above()))
+            friction *= 0.80f;
+        return friction;
+    }
+ 
+    private float computeGripForce(float slip, float gripMax) {
+        float raw = Mth.clamp(slip, -gripMax, gripMax);
+        if (Math.abs(slip) > slipThreshold()) {
+            float falloff = slipFalloff() + (1f - slipFalloff()) * (slipThreshold() / Math.abs(slip));
+            raw *= falloff;
+        }
+        return raw * gripStiffness();
+    }
+ 
+    private float lookupTorque(float rpm) {
+        float[] rpmPts = torqueRpmPoints();
+        float[] trqPts = torqueCurve();
+        if (rpm <= rpmPts[0]) return trqPts[0];
+        for (int i = 1; i < rpmPts.length; i++) {
+            if (rpm <= rpmPts[i]) {
+                float t = (rpm - rpmPts[i-1]) / (rpmPts[i] - rpmPts[i-1]);
+                return trqPts[i-1] + t * (trqPts[i] - trqPts[i-1]);
+            }
+        }
+        return trqPts[trqPts.length - 1];
+    }
+ 
+    private float computeSteerAngle(float speed, boolean drifting) {
+        float steer;
+        if (speed <= peakSteerSpeed()) {
+            steer = maxSteerDeg() * (float)(speed / peakSteerSpeed());
+        } else {
+            double t = Mth.clamp(
+                (speed - peakSteerSpeed()) / (1.0 - peakSteerSpeed()), 0.0, 1.0);
+            steer = maxSteerDeg() * (float)(1.0 - t * (1.0 - highSteerFraction()));
+        }
+        return drifting ? steer * driftSteerBoost() : steer;
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PARTICLES
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void spawnWheelParticles() {
+        if (!this.onGround()) return;
+        boolean burnoutActive = this.isBurningOut();
+        double speed = Math.abs(this.getForwardSpeed());
+        if (speed < 0.05 && !burnoutActive) return;
+        boolean drifting = this.isDrifting();
+ 
+        double yRad = Math.toRadians(this.getYRot());
+        double sinY = Math.sin(yRad), cosY = Math.cos(yRad);
+        double fwdX = -sinY, fwdZ = cosY;
+        double rgtX =  cosY, rgtZ = sinY;
+ 
+        double fax = fwdX * frontDist(), faz = fwdZ * frontDist();
+        double rax = -fwdX * rearDist(), raz = -fwdZ * rearDist();
+        double lox = rgtX * trackHalf(), loz = rgtZ * trackHalf();
+ 
+        if (!burnoutActive) {
+            spawnWheelAt(fax + lox, 0.05, faz + loz, drifting);
+            spawnWheelAt(fax - lox, 0.05, faz - loz, drifting);
+        }
+        spawnWheelAt(rax + lox, 0.05, raz + loz, drifting || burnoutActive);
+        spawnWheelAt(rax - lox, 0.05, raz - loz, drifting || burnoutActive);
+    }
+ 
+    private void spawnWheelAt(double ox, double oy, double oz, boolean drifting) {
+        Vec3 pos = this.position();
+        double px = pos.x + ox, py = pos.y + oy, pz = pos.z + oz;
+ 
+        BlockState bs = this.level().getBlockState(BlockPos.containing(px, py - 0.2, pz));
+        Vec3 vel = this.getDeltaMovement();
+        double dustVx = -vel.x * 0.15 + (random.nextDouble() - 0.5) * 0.04;
+        double dustVz = -vel.z * 0.15 + (random.nextDouble() - 0.5) * 0.04;
+        this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, bs),
+            px, py, pz, dustVx, 0.01, dustVz);
+ 
+        if (!drifting) return;
+        int count = 4;
+        for (int i = 0; i < count; i++) {
+            double spreadX = (random.nextDouble() - 0.5) * 0.25;
+            double spreadZ = (random.nextDouble() - 0.5) * 0.25;
+            double spreadY = random.nextDouble() * 0.10;
+            this.level().addParticle(ParticleTypesFactory.TYRE_SMOKE,
+                px + spreadX, py + spreadY, pz + spreadZ,
+                (random.nextDouble() - 0.5) * 0.002, 0.0,
+                (random.nextDouble() - 0.5) * 0.002);
+        }
+    }
+ 
+    /** Override in subclass to add exhaust particles at the correct position. */
+    protected void spawnExhaust() {}
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PASSENGERS
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public Vec3 getDismountLocationForPassenger(LivingEntity p) {
+        return this.position().add(1.5 * (p == this.getFirstPassenger() ? 1 : -1), 0, 0);
+    }
+ 
+    @Override
+    protected Vec3 getPassengerAttachmentPoint(Entity p, EntityDimensions dims, float scale) {
+        int i = this.getPassengers().indexOf(p);
+        double lx = (i == 0) ? seatSide() : -seatSide();
+        double yRad = Math.toRadians(this.getYRot());
+        double sin = Math.sin(yRad), cos = Math.cos(yRad);
+        return new Vec3(lx*cos + seatForward()*(-sin), seatHeight(),
+                        lx*sin + seatForward()*   cos);
+    }
+ 
+    @Override protected boolean canAddPassenger(Entity p) { return this.getPassengers().size() < 2; }
+ 
+    @Override @Nullable
+    public LivingEntity getControllingPassenger() {
+        return this.getFirstPassenger() instanceof LivingEntity le ? le : null;
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  INTERACTION
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if (player.isSecondaryUseActive()) return InteractionResult.PASS;
+        if (!this.level().isClientSide()) player.startRiding(this);
+        return InteractionResult.SUCCESS;
+    }
+ 
+    @Override public boolean isPickable() { return !this.isRemoved(); }
+    @Override public boolean isPushable()  { return false; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  DATA ACCESSORS
+    // ═══════════════════════════════════════════════════════════
+ 
+    public boolean isDrifting()       { return this.entityData.get(DATA_DRIFTING); }
+    public float   getWheelSpin()     { return this.entityData.get(DATA_WHEEL_SPIN); }
+    public float   getRearWheelSpin() { return this.entityData.get(DATA_REAR_WHEEL_SPIN); }
+    public float   getSteerInput()    { return this.entityData.get(DATA_STEER_INPUT); }
+    public float   getForwardSpeed()  { return this.entityData.get(DATA_FORWARD_SPEED); }
+    public int     getCurrentGear()   { return this.entityData.get(DATA_GEAR); }
+    public boolean isThrottleOn()     { return this.entityData.get(DATA_THROTTLE); }
+    public boolean isBurningOut()     { return this.entityData.get(DATA_BURNOUT); }
+    public boolean isTunneled()       { return this.entityData.get(DATA_TUNNELED); }
+    public boolean isBraking()        { return this.entityData.get(DATA_BRAKING); }
+    public float   getEngineRPM()     { return this.entityData.get(DATA_ENGINE_RPM); }
+ 
+    /** Normalised RPM 0–1 for sound pitch calculations. */
+    public float getRPM() {
+        return Mth.clamp((getEngineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HUD
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void displaySpeed(Player player) {
+        float speed = this.getForwardSpeed();
+        float kmh   = Math.abs(speed) * 72f;
+        float rpm   = this.getEngineRPM();
+        int   gear  = this.getCurrentGear();
+        boolean moving = Math.abs(speed) > 0.04f;
+ 
+        String shiftLabel;
+        if (speed < -0.04f)  shiftLabel = "§cR";
+        else if (moving)     shiftLabel = "§aD";
+        else                 shiftLabel = "§7P";
+ 
+        if (debugMode) {
+            float[] GR    = gearRatios();
+            float   FD    = finalDrive();
+            float   TC    = tyreCirc();
+            float   RGMAX = rearGripMax();
+            float   RBIAS = rearBias();
+            float   PK    = peakDriveForce();
+            float[] TRPM  = torqueRpmPoints();
+            float[] TTRQ  = torqueCurve();
+ 
+            float v        = Math.abs(speed);
+            float rearGrip = RBIAS * RGMAX;
+            float gMult    = gear > 0 ? GR[gear]/GR[1] : 0f;
+ 
+            float torq = TTRQ[TTRQ.length-1];
+            for (int i = 1; i < TRPM.length; i++) {
+                if (rpm <= TRPM[i]) {
+                    float t = (rpm-TRPM[i-1])/(TRPM[i]-TRPM[i-1]);
+                    torq = TTRQ[i-1] + t*(TTRQ[i]-TTRQ[i-1]);
+                    break;
+                }
+            }
+            float rawDrive = torq * PK * gMult;
+            float effDrive = Math.min(rawDrive, rearGrip);
+            float drag = (1f-(float)rollingDrag())*v;
+            if (v > aeroDragStart()) drag += (float)((v-aeroDragStart())*aeroDragK()*20);
+            float net = effDrive - drag;
+            float vRedline   = (redlineRpm()   / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f;
+            float vDownshift = (downshiftRpm() / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f;
+ 
+            player.displayClientMessage(Component.literal(String.format(
+                "§e[DBG] §aSpd:§f%.1f km/h  §cRPM:§f%.0f  §e%s[%d]  §bNet:§f%+.5f",
+                kmh, rpm, shiftLabel, gear, net)), true);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §eDrivetrain§7 ── torque=%.3f rawDrive=%.5f effDrive=%.5f drag=%.5f",
+                torq, rawDrive, effDrive, drag)), false);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §bTraction§7 ── rearGripMax=%.4f (cap=%s)  gearMult=%.3f",
+                rearGrip, rawDrive > rearGrip ? "§cYES" : "§aNO", gMult)), false);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §aGear %d band§7: %.1f–%.1f km/h  drift=%s burn=%s",
+                gear, vDownshift, vRedline,
+                this.isDrifting() ? "§cY§7" : "N",
+                this.isBurningOut() ? "§cY§7" : "N")), false);
+        } else if (scenarioTest) {
+            // ── Scenario test: one action-bar line, shows exactly which state fired ──
+            String driveType = isRWD ? "§bRWD" : "§eFWD";
+            String state;
+            if (this.isBurningOut()) {
+                state = "§6BURNOUT §8gear=" + gear + " rpm=" + String.format("%.0f", rpm);
+            } else if (this.isDrifting() && !isRWD) {
+                state = "§dFWD SLIDE";
+            } else if (this.isDrifting()) {
+                state = "§cRWD DRIFT";
+            } else if (this.isBraking() && Math.abs(speed) > 0.1f) {
+                state = "§9BRAKING";
+            } else if (moving) {
+                state = "§aDRIVING " + shiftLabel + " [" + gear + "]";
+            } else {
+                state = "§7PARKED";
+            }
+            player.displayClientMessage(Component.literal(
+                driveType + "  §f" + String.format("%.0f km/h", kmh) + "  " + state), true);
+        } else {
+            player.displayClientMessage(Component.literal(String.format(
+                "§aSpeed: §f%.0f km/h  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]",
+                kmh, rpm, shiftLabel, gear)), true);
+        }
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  NBT
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override protected void readAdditionalSaveData(ValueInput i) {}
+    @Override protected void addAdditionalSaveData(ValueOutput o) {}
+}

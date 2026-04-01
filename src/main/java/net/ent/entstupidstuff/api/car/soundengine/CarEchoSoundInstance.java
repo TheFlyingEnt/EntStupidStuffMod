@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.api.car.soundengine;
 
-import net.ent.entstupidstuff.api.car.CarEntity;
+import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -32,10 +32,10 @@ public class CarEchoSoundInstance extends AbstractTickableSoundInstance
     private static final float FADE_OUT_RATE = 0.03f; // slow fade out when leaving tunnel
     private static final float MIN_SPEED     = 0.02f;
 
-    private final CarEntity car;
+    private final BaseCarEntity car;
     private float fadeFactor = 0f;
 
-    public CarEchoSoundInstance(CarEntity car, SoundEvent idleLoop) {
+    public CarEchoSoundInstance(BaseCarEntity car, SoundEvent idleLoop) {
         super(idleLoop, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.car         = car;
         this.looping     = true;
@@ -77,5 +77,5 @@ public class CarEchoSoundInstance extends AbstractTickableSoundInstance
     }
 
     private void syncPosition() { this.x = car.getX(); this.y = car.getY(); this.z = car.getZ(); }
-    public CarEntity getCar() { return car; }
+    public BaseCarEntity getCar() { return car; }
 }

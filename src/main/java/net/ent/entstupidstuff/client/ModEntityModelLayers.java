@@ -1,8 +1,12 @@
 package net.ent.entstupidstuff.client;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.CarEntityRenderer;
+import net.ent.entstupidstuff.api.car.models.CyberCarModel;
 import net.ent.entstupidstuff.api.car.models.DMCModel;
+import net.ent.entstupidstuff.api.car.models.NissanZEntityModel;
+import net.ent.entstupidstuff.api.car.render.CyberCarEntityRenderer;
+import net.ent.entstupidstuff.api.car.render.DMC12EntityRenderer;
+import net.ent.entstupidstuff.api.car.render.NissanZEntityRenderer;
 import net.ent.entstupidstuff.client.render.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
@@ -78,7 +82,6 @@ import net.ent.entstupidstuff.client.render.entity.renderer.SunkenSkeletonEntity
 import net.ent.entstupidstuff.client.render.entity.renderer.ZebraFishRenderer;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.DrownedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
@@ -320,7 +323,15 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation WAR_WALL_BANNER_FLAG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_wall_banner_flag"), "flag");
     public static final ModelLayerLocation WAR_STANDING_BANNER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "war_standing_banner"), "main");
 
-    public static final ModelLayerLocation CAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "car"), "main");
+    public static final ModelLayerLocation CYBERCAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "cybercar"), "main");
+    public static final ModelLayerLocation DMC13 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "dmc13"), "main");
+
+    public static final ModelLayerLocation GT3 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gt3"), "main");
+    public static final ModelLayerLocation SHELBYMUSTANG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shelbymustang"), "main");
+    public static final ModelLayerLocation GR86 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gr86"), "main");
+    public static final ModelLayerLocation HONDACIVICR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"), "main");
+    public static final ModelLayerLocation NISSANZ = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"), "main");
+
 
 
     /*
@@ -599,16 +610,27 @@ public class ModEntityModelLayers {
             partPose -> partPose.translated(0F, 24.016F, -10.016F)
         )));
 
-        EntityRenderers.register(EntityFactory.CAR, (EntityRendererProvider.Context context) -> new CarEntityRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CAR, DMCModel::createBodyLayer);
+        EntityRenderers.register(EntityFactory.DMC13, (EntityRendererProvider.Context context) -> new DMC12EntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.DMC13, DMCModel::createBodyLayer);
 
+        EntityRenderers.register(EntityFactory.CYBERCAR, (EntityRendererProvider.Context context) -> new CyberCarEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CYBERCAR, CyberCarModel::createBodyLayer);
 
+        EntityRenderers.register(EntityFactory.GR86, (EntityRendererProvider.Context context) -> new DMC12EntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.GR86, CyberCarModel::createBodyLayer);
 
+        EntityRenderers.register(EntityFactory.P911GT3, (EntityRendererProvider.Context context) -> new DMC12EntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.GT3, CyberCarModel::createBodyLayer);
 
+        EntityRenderers.register(EntityFactory.SHELBYGT500, (EntityRendererProvider.Context context) -> new DMC12EntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHELBYMUSTANG, CyberCarModel::createBodyLayer);
 
-        
+        EntityRenderers.register(EntityFactory.HONDACIVICR, (EntityRendererProvider.Context context) -> new DMC12EntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.HONDACIVICR, DMCModel::createBodyLayer);
 
-;
+        EntityRenderers.register(EntityFactory.NISSANZ, (EntityRendererProvider.Context context) -> new NissanZEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.NISSANZ, NissanZEntityModel::createBodyLayer);
+
         
 
 

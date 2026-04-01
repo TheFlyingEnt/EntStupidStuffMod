@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.api.car;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.models.DMCModel;
+import net.ent.entstupidstuff.api.car.render.CarRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;

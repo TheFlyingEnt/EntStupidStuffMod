@@ -1,6 +1,6 @@
 package net.ent.entstupidstuff.api.car.soundengine;
 
-import net.ent.entstupidstuff.api.car.CarEntity;
+import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -16,11 +16,11 @@ public class CarDeaccelSoundInstance extends AbstractTickableSoundInstance
     private static final float PITCH_LOW     = 0.85f;
     private static final float PITCH_HIGH    = 1.20f;
  
-    private final CarEntity car;
+    private final BaseCarEntity car;
     private float fadeFactor = 0f;
     private float prevSpeed  = 0f;
  
-    public CarDeaccelSoundInstance(CarEntity car, SoundEvent sound) {
+    public CarDeaccelSoundInstance(BaseCarEntity car, SoundEvent sound) {
         super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.car         = car;
         this.looping     = true;
@@ -64,5 +64,5 @@ public class CarDeaccelSoundInstance extends AbstractTickableSoundInstance
     }
  
     private void syncPosition() { this.x = car.getX(); this.y = car.getY(); this.z = car.getZ(); }
-    public CarEntity getCar() { return car; }
+    public BaseCarEntity getCar() { return car; }
 }

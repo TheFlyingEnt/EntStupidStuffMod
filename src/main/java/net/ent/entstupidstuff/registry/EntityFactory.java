@@ -3,7 +3,13 @@ package net.ent.entstupidstuff.registry;
 import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.CarEntity;
+import net.ent.entstupidstuff.api.car.DMC13Entity;
+import net.ent.entstupidstuff.api.car.GR86Entity;
+import net.ent.entstupidstuff.api.car.HondaCivicEntity;
+import net.ent.entstupidstuff.api.car.HondaCivicTypeREntity;
+import net.ent.entstupidstuff.api.car.NissanZEntity;
+import net.ent.entstupidstuff.api.car.PorsheGT3Entity;
+import net.ent.entstupidstuff.api.car.ShelbyGT500Entity;
 import net.ent.entstupidstuff.client.entity.CustomBoatEntity;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
@@ -454,15 +460,76 @@ public class EntityFactory {
 		return (type, world) -> new CustomBoatEntity(type, world, itemSupplier);
 	}
 
-    public static final EntityType<CarEntity> CAR = Registry.register(
+    public static final EntityType<HondaCivicTypeREntity> CYBERCAR = Registry.register(
         BuiltInRegistries.ENTITY_TYPE,
-        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "car"),
-        EntityType.Builder.<CarEntity>of(CarEntity::new, MobCategory.MISC)
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "cybercar"),
+        EntityType.Builder.<HondaCivicTypeREntity>of(HondaCivicTypeREntity::new, MobCategory.MISC)
             .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
-            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"car")))
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"cybercar")))
     );
+
+    public static final EntityType<DMC13Entity> DMC13 = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "dmc13"),
+        EntityType.Builder.<DMC13Entity>of(DMC13Entity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"dmc13")))
+    );
+
+    public static final EntityType<GR86Entity> GR86 = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gr86"),
+        EntityType.Builder.<GR86Entity>of(GR86Entity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gr86")))
+    );
+
+    public static final EntityType<PorsheGT3Entity> P911GT3 = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gt3"),
+        EntityType.Builder.<PorsheGT3Entity>of(PorsheGT3Entity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gt3")))
+    );
+
+    public static final EntityType<ShelbyGT500Entity> SHELBYGT500 = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gt500"),
+        EntityType.Builder.<ShelbyGT500Entity>of(ShelbyGT500Entity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gt500")))
+    );
+
+    public static final EntityType<HondaCivicTypeREntity> HONDACIVICR = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"),
+        EntityType.Builder.<HondaCivicTypeREntity>of(HondaCivicTypeREntity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"typer")))
+    );
+
+    public static final EntityType<NissanZEntity> NISSANZ = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"),
+        EntityType.Builder.<NissanZEntity>of(NissanZEntity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"nissanz")))
+    );
+
 
 
 
