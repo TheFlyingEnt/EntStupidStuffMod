@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.api.emote;
 
 import java.util.UUID;
 
+import net.ent.entstupidstuff.EntStupidStuff;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -12,7 +13,7 @@ public record EmoteSyncPayload(UUID playerUuid, String emoteName)
  
     public static final CustomPacketPayload.Type<EmoteSyncPayload> TYPE =
         new CustomPacketPayload.Type<>(
-            ResourceLocation.fromNamespaceAndPath("hatsmod", "emote_sync")
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "emote_sync")
         );
  
     public static final StreamCodec<FriendlyByteBuf, EmoteSyncPayload> CODEC =

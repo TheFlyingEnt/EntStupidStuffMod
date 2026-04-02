@@ -127,9 +127,7 @@ public class CarSoundManager {
             // ── 5. Tyre screech ───────────────────────────────────────
             CarTireSoundInstance tyre = tireSounds.get(id);
             if (tyre == null || tyre.isStopped()) {
-                if (car.isDrifting() || car.isBurningOut()
-                        || car.isBraking()
-                        || Math.abs(car.getForwardSpeed()) > 0.15f) {
+                if (car.isDrifting() || car.isBurningOut()) {
                     tyre = new CarTireSoundInstance(
                         car, SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP);
                     sm.play(tyre);

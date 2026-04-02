@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 
@@ -54,6 +55,7 @@ public class HatRegistry {
     public static final Item HAT_BASEBALL_CAP_SPECIAL_RED = registerItem("baseball_cap_special_red", settings -> new Item(settings));
     public static final Item HAT_BASEBALL_CAP_TEAL = registerItem("baseball_cap_teal", settings -> new Item(settings));
     public static final Item HAT_BASEBALL_CAP_TENIS_LIME = registerItem("baseball_cap_tenis_lime", settings -> new Item(settings));
+    public static final Item HAT_BASEBALL_CAP_RGB = registerItem("baseball_cap_rgb", settings -> new Item(settings));
     public static final Item HAT_DISCORD_ZEEZO = registerItem("discord_zeezo", settings -> new Item(settings));
 
     public static final Item HAT_BASEBALL_CAP_BIGGUY = registerItem("baseball_cap_bigguy", settings -> new Item(settings));
@@ -73,7 +75,7 @@ public class HatRegistry {
     public static final Item HAT_BASEBALL_CAP_ZEEZO2021 = registerItem("baseball_cap_zeezo2021", settings -> new Item(settings));
     public static final Item HAT_BASEBALL_CAP_BLAST1400 = registerItem("baseball_cap_blast1400", settings -> new Item(settings));
 
-    public static final Item HAT_CABBY_BLUE = registerItem("cabby_hat", settings -> new Item(settings));
+    public static final Item HAT_CABBY_BLUE = registerItem("cabby_hat_blue", settings -> new Item(settings));
 
     public static final Item HAT_DISCO = registerItem("disco", settings -> new Item(settings));
     public static final Item HAT_FEDORA_BLACK = registerItem("fedora_black", settings -> new Item(settings));
@@ -91,6 +93,7 @@ public class HatRegistry {
     public static final Item HAT_SUNGLASSES_ROCKET = registerItem("sunglasses_rocket", settings -> new Item(settings));
 
     public static final Item HAT_RAINBOW_ORBITERS = registerItem("rainbow_orbiters", settings -> new Item(settings));
+    public static final Item HAT_THE_BLADE = registerItem("the_blade", settings -> new Item(settings));
 
     public static final Item HAT_TOPHAT = registerItem("tophat", settings -> new Item(settings));
     public static final Item HAT_TOPHAT_THANKYOU = registerItem("tophat_thank_you", settings -> new Item(settings));
@@ -115,7 +118,7 @@ public class HatRegistry {
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
         ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/hat/" + name);
-        return register(keyOf(name), function, new Item.Properties().component(DataComponents.ITEM_MODEL, modelId), name);
+        return register(keyOf(name), function, new Item.Properties().component(DataComponents.ITEM_MODEL, modelId).equippable(EquipmentSlot.HEAD), name);
     }
 
     public static Item register(ResourceKey<Item> key, Function<Item.Properties, Item> factory, Item.Properties settings, String name) {
@@ -169,6 +172,5 @@ public class HatRegistry {
         return HATS.keySet();
     }
  
-    /** Called from {@link HatsMod} to force static initialisation. */
     public static void init() {}
 }

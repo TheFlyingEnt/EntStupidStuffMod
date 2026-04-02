@@ -80,6 +80,7 @@ public abstract class BaseCarEntityModel extends EntityModel<CarRenderState> {
  
         // ── 5. Body roll ──────────────────────────────────────────────────
         // Pre-lerped + drift oscillation in CarEntityRenderer.extractRenderState()
-        body().yRot = state.bodyRoll;
+        //body().yRot = state.bodyRoll;
+        body().zRot = state.bodyRoll;
     }
 }

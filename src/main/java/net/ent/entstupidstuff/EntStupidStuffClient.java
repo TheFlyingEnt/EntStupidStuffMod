@@ -3,6 +3,8 @@ package net.ent.entstupidstuff;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.ent.entstupidstuff.api.casting.ArmorCastingComponent;
 import net.ent.entstupidstuff.api.car.CarSoundManager;
 import net.ent.entstupidstuff.api.casting.ArmorCastProperty;
@@ -12,6 +14,7 @@ import net.ent.entstupidstuff.api.casting.ToolCastingComponent;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.ent.entstupidstuff.api.emote.EmoteClientState;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
+import net.ent.entstupidstuff.api.hat.HatMenuScreen;
 import net.ent.entstupidstuff.api.hat.HatRenderLayer;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
@@ -26,6 +29,8 @@ import net.ent.entstupidstuff.item.base.CannonItem;
 import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -35,6 +40,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -51,7 +57,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class EntStupidStuffClient implements ClientModInitializer {
 
-    
+    @Nullable
+    private static Screen pendingScreen = null;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -235,6 +242,24 @@ public class EntStupidStuffClient implements ClientModInitializer {
                 }
             }
         });
+
+        ClientTickEvents.START_CLIENT_TICK.register(mc -> {
+            if (pendingScreen != null && mc.screen == null) {
+                mc.setScreen(pendingScreen);
+                pendingScreen = null;
+            }
+        });
+
+        // ── /hatmenu command (client-side only, opens GUI directly) ───────────
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+            dispatcher.register(
+                ClientCommandManager.literal("hatmenu")
+                .executes(ctx -> {
+                    pendingScreen = new HatMenuScreen();
+                    return 1;
+                })
+            )
+        );
 
 
         // ── Hat sync ──────────────────────────────────────────────────────────

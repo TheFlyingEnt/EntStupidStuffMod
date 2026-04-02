@@ -1,0 +1,9 @@
+{
+  "asset_id": "entstupidstuff:car",
+  "height": 2,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.entstupidstuff.car.title"
+  },
+  "width": 4
+}

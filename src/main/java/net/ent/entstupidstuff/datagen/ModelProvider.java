@@ -1,7 +1,14 @@
 package net.ent.entstupidstuff.datagen;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import com.google.gson.JsonObject;
+
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
+import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
@@ -23,6 +30,9 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -34,8 +44,11 @@ import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 
 public class ModelProvider extends FabricModelProvider{
 
+    private final FabricDataOutput output;
+
     public ModelProvider(FabricDataOutput output) {
         super(output);
+        this.output = output;
     }
     
     BlockModelGenerators blockStateModelGenerator;
@@ -124,8 +137,45 @@ public class ModelProvider extends FabricModelProvider{
         //Cast Template
         itemModelGenerator.generateFlatItem(ItemFactory.KNIGHT_CASTING_TEMPLATE, ModelTemplates.FLAT_ITEM);
 
+        /*for (String hatName : HatRegistry.getNames()) {
+            Item hat = HatRegistry.getHat(hatName);
+            //itemModelGenerator.generateFlatItem(hat, ModelTemplates.FLAT_ITEM); //Creates a Flat Time, but Flat time will be Ignored
+            ItemModelUtils.plainModel(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/hat/" + hatName));
+        }*/
+
 
     }
+
+    @Override
+    public CompletableFuture<?> run(CachedOutput cache) {
+        super.run(cache);
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+ 
+        for (String hatName : HatRegistry.getNames()) {
+            ResourceLocation itemId  = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, hatName);
+            ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "item/hat/" + hatName);
+ 
+            // Build the JSON
+            JsonObject model = new JsonObject();
+            model.addProperty("type",  "minecraft:model");
+            model.addProperty("model", modelId.toString());
+ 
+            JsonObject root = new JsonObject();
+            root.add("model", model);
+ 
+            // Resolve output path: assets/<namespace>/items/<name>.json
+            java.nio.file.Path path = output
+                .getOutputFolder(PackOutput.Target.RESOURCE_PACK)
+                .resolve(itemId.getNamespace())
+                .resolve("items")
+                .resolve(itemId.getPath() + ".json");
+ 
+            futures.add(DataProvider.saveStable(cache, root, path));
+        }
+ 
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
 
     private void registerCastableToolItem(ItemModelOutput output, Item item, String baseName) {
         output.accept(item, ItemModelUtils.select(

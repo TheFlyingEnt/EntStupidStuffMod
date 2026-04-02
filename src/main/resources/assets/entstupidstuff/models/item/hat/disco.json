@@ -1,0 +1,38 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "discoball",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "entstupidstuff:item/hat/discoball",
+		"particle": "entstupidstuff:item/hat/discoball"
+	},
+	"elements": [
+		{
+			"from": [3, 0, 3],
+			"to": [13, 10, 13],
+			"faces": {
+				"north": {"uv": [0, 0, 5, 5], "texture": "#0"},
+				"east": {"uv": [0, 5, 5, 10], "texture": "#0"},
+				"south": {"uv": [5, 0, 10, 5], "texture": "#0"},
+				"west": {"uv": [5, 5, 10, 10], "texture": "#0"},
+				"up": {"uv": [5, 15, 0, 10], "texture": "#0"},
+				"down": {"uv": [15, 0, 10, 5], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"thirdperson_lefthand": {
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"gui": {
+			"rotation": [0, -13, 0],
+			"translation": [0.25, 4, 0]
+		},
+		"head": {
+			"translation": [0, 21.5, 0]
+		}
+	}
+}

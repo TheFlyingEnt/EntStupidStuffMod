@@ -5,6 +5,7 @@ import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
 import net.ent.entstupidstuff.api.hat.HatCommand;
 import net.ent.entstupidstuff.api.hat.HatRegistry;
+import net.ent.entstupidstuff.api.hat.HatSelectPayload;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
 import net.ent.entstupidstuff.block.BlockFactory;
@@ -24,6 +25,7 @@ import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
@@ -181,6 +183,8 @@ public class EntStupidStuff implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(HatSyncPayload.TYPE, HatSyncPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(EmoteSyncPayload.TYPE, EmoteSyncPayload.CODEC);
 
+        PayloadTypeRegistry.playC2S().register(HatSelectPayload.TYPE, HatSelectPayload.CODEC);
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer joining = handler.getPlayer();
             server.execute(() -> {
@@ -193,6 +197,25 @@ public class EntStupidStuff implements ModInitializer {
                     // the PlayerTrackingEvents registered below
                 }
             });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(HatSelectPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            String name = payload.hatName();
+ 
+            // Validate: must be a known hat or "" to remove
+            if (!name.isEmpty() && !HatRegistry.isValid(name)) {
+                LOGGER.warn("Player {} sent unknown hat name: '{}'", player.getName().getString(), name);
+                return;
+            }
+ 
+            player.setAttached(ModAttachments.HAT, name);
+ 
+            HatSyncPayload sync = new HatSyncPayload(player.getUUID(), name);
+            ServerPlayNetworking.send(player, sync);
+            PlayerLookup.tracking(player).forEach(observer ->
+                ServerPlayNetworking.send(observer, sync)
+            );
         });
 
 

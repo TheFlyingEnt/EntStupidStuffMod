@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -598,6 +599,78 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("cast.entstupidstuff.knight", "Knight Cast");
         translationBuilder.add("cast.entstupidstuff.chief", "Chief Cast");
         translationBuilder.add("cast.entstupidstuff.slayer", "Slayer Cast");
+
+        //Hats
+        translationBuilder.add("gui.entstupidstuff.hat_menu", "Hat Menu");
+
+        translationBuilder.add(HatRegistry.HAT_MENACING, "Menacing");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ALPHA, "Baseball Cap (Alpha Tester)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_BETA, "Baseball Cap (Beta Tester)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_DARKEND, "Baseball Cap (Darkend)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ECTOPLASM, "Baseball Cap (Ectoplasm)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_FADE_BLUE, "Baseball Cap (Fade Blue)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_FADE_RED, "Baseball Cap (Fade Red)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_FADE_YELLOW, "Baseball Cap (Fade Yellow)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_GLOWSQUID, "Baseball Cap (Glow Squid)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_GROOVY, "Baseball Cap (Groovy)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_MONKEY, "Baseball Cap (Monkey)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_NEGATIVE, "Baseball Cap (Negative)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ORANGE_BURST, "Baseball Cap (Orange Burst)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_PLATYPUS, "Baseball Cap (Platypus)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_PURPLE_PINK, "Baseball Cap (Purple Pink)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_RETRO_SUN, "Baseball Cap (Retro Sun)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_SPECIAL_RED, "Baseball Cap (Special Red)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_TEAL, "Baseball Cap (Teal)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_TENIS_LIME, "Baseball Cap (Tenis Lime)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_RGB, "Baseball Cap (RGB)");
+
+        translationBuilder.add(HatRegistry.HAT_DISCORD_ZEEZO, "A Message from Zeezo...");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_BIGGUY, "Baseball Cap (Big-Guy)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_BLACK, "Baseball Cap (Black)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_BLUE, "Baseball Cap (Blue)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_CYAN, "Baseball Cap (Cyan)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_GREEN, "Baseball Cap (Green)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_GREEN_TURTLE, "Baseball Cap (Turtle)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_LIME, "Baseball Cap (Lime)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_MINT_GREEN, "Baseball Cap (Mint Green)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ORANGE, "Baseball Cap (Orange)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_PINK, "Baseball Cap (Pink)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_PURPLE, "Baseball Cap (Purple)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_RED, "Baseball Cap (Red)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_YELLOW, "Baseball Cap (Yellow)");
+
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ZEEZO2021, "Baseball Cap (#Zeezo2021)");
+        translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_BLAST1400, "Baseball Cap (#Blast1400)");
+        translationBuilder.add(HatRegistry.HAT_CABBY_BLUE, "Cabby Cap (Blue)");
+
+        translationBuilder.add(HatRegistry.HAT_DISCO, "Discoball!!");
+        translationBuilder.add(HatRegistry.HAT_FEDORA_BLACK, "Fedora (Black)");
+        translationBuilder.add(HatRegistry.HAT_FEDORA_RED, "Fedora (Red)");
+        translationBuilder.add(HatRegistry.HAT_FEDORA_WHITE, "Fedora (White)");
+
+        translationBuilder.add(HatRegistry.HAT_GOGGLES_STEAM_PUNK, "Steampunk Goggles");
+        translationBuilder.add(HatRegistry.HAT_GAKURAN_WHITE, "Gakuran (White)");
+        translationBuilder.add(HatRegistry.HAT_GAKURAN_BLACK, "Gakuran (Black)");
+
+        translationBuilder.add(HatRegistry.HAT_SUNGLASSES_PIXELATED, "Sunglasses (Black)");
+        translationBuilder.add(HatRegistry.HAT_SUNGLASSES_90S, "Sunglasses (90s)");
+        translationBuilder.add(HatRegistry.HAT_SUNGLASSES_GALAXY, "Sunglasses (Galaxy)");
+        translationBuilder.add(HatRegistry.HAT_SUNGLASSES_OCTANE, "Sunglasses (Octane)");
+        translationBuilder.add(HatRegistry.HAT_SUNGLASSES_ROCKET, "Sunglasses (Rocket)");
+        
+        translationBuilder.add(HatRegistry.HAT_RAINBOW_ORBITERS, "Rainbow Orbiters");
+
+        translationBuilder.add(HatRegistry.HAT_TOPHAT, "Tophat");
+        translationBuilder.add(HatRegistry.HAT_TOPHAT_THANKYOU, "Tophat - Thankyou");
+        translationBuilder.add(HatRegistry.HAT_TOPHATHATHAT, "Tophathathat");
+        translationBuilder.add(HatRegistry.HAT_TOPHATHATHATHATHAT, "Tophathathathathat");
+        
+        translationBuilder.add(HatRegistry.HAT_TV_BLANK, "TV (Blank)");
+        translationBuilder.add(HatRegistry.HAT_TV_ERROR, "TV (Error)");
+        translationBuilder.add(HatRegistry.HAT_TV_NYANCAT, "TV (Nyancat)");
+        translationBuilder.add(HatRegistry.HAT_TV_NYANCAT_GALAXY, "TV (Galaxy Nyancat)");
+        translationBuilder.add(HatRegistry.HAT_TV_RICKROLL, "TV (Rickroll)");
+        translationBuilder.add(HatRegistry.HAT_TV_FROG_RAVE, "TV (Frog-rave)");
 
         
 
