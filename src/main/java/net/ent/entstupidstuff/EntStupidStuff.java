@@ -1,15 +1,13 @@
 package net.ent.entstupidstuff;
 
-import net.ent.entstupidstuff.api.emote.EmoteCommand;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
-import net.ent.entstupidstuff.api.hat.HatCommand;
 import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.api.hat.HatSelectPayload;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
+import net.ent.entstupidstuff.api.hat.UnlockSyncPayload;
 import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.datagen.recipes.ShieldDecorationRecipeExtra;
@@ -18,26 +16,19 @@ import net.ent.entstupidstuff.enchantment.UpdatedEnchantmentEffects;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
+import net.ent.entstupidstuff.util.HatnEmoteMainUtil;
+import net.ent.entstupidstuff.util.SkullSupport;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.SkullBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,110 +106,25 @@ public class EntStupidStuff implements ModInitializer {
 
 		ModDataComponentTypes.register();
 
-        for (ModSkullStype type : ModSkullStype.values()) {
-            SkullBlock.Type.TYPES.put(type.getSerializedName(), type);
-        }
+        SkullSupport.onInitialize();
 
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.DROWNED_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.DROWNED_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BLAZE_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BLAZE_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BREEZE_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BREEZE_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.HUSK_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.HUSK_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.STRAY_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.STRAY_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BOGGED_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.BOGGED_WALL_SKULL);
+        
 
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_LOBBER_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_LOBBER_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_SCORCHED_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_SCORCHED_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_SLIMED_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_SLIMED_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_FROSTBITTEN_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_FROSTBITTEN_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_FUNGAL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.ZOMBIE_FUNGAL_WALL_HEAD);
-
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SPOREBONE_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SPOREBONE_SKULL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SPOREPER_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SPOREPER_WALL_HEAD);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SOUL_SKELETON_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.SOUL_SKELETON_WALL_SKULL);
-
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_BRAIN_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_BRAIN_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_FIRE_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_FIRE_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_HORN_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_HORN_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_TUBE_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_TUBE_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_BUBBLE_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_BUBBLE_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_UNUSED_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.CORAL_SKELETON_UNUSED_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_DEFAULT_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_DEFAULT_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_RED_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_RED_WALL_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_BLUE_SKULL);
-        ((FabricBlockEntityType) BlockEntityType.SKULL).addSupportedBlock(BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL);
-
-        // Hats and Emotes
-
+        // ── Hats & Emotes ─────────────────────────────────────────────────────
+ 
         ModAttachments.init();
         HatRegistry.init();
         EmoteRegistry.init();
-
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            HatCommand.register(dispatcher);
-            EmoteCommand.register(dispatcher);
-        });
-
-        PayloadTypeRegistry.playS2C().register(HatSyncPayload.TYPE, HatSyncPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(EmoteSyncPayload.TYPE, EmoteSyncPayload.CODEC);
-
-        PayloadTypeRegistry.playC2S().register(HatSelectPayload.TYPE, HatSelectPayload.CODEC);
-
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ServerPlayer joining = handler.getPlayer();
-            server.execute(() -> {
-                String hat = joining.getAttachedOrElse(ModAttachments.HAT, "");
-                if (!hat.isEmpty()) {
-                    HatSyncPayload payload = new HatSyncPayload(joining.getUUID(), hat);
-                    // Send to the joining player so their client is updated too
-                    ServerPlayNetworking.send(joining, payload);
-                    // Observers will receive the sync when they enter tracking range via
-                    // the PlayerTrackingEvents registered below
-                }
-            });
-        });
-
-        ServerPlayNetworking.registerGlobalReceiver(HatSelectPayload.TYPE, (payload, context) -> {
-            ServerPlayer player = context.player();
-            String name = payload.hatName();
  
-            // Validate: must be a known hat or "" to remove
-            if (!name.isEmpty() && !HatRegistry.isValid(name)) {
-                LOGGER.warn("Player {} sent unknown hat name: '{}'", player.getName().getString(), name);
-                return;
-            }
+        // Payloads
+        PayloadTypeRegistry.playS2C().register(HatSyncPayload.TYPE,    HatSyncPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(EmoteSyncPayload.TYPE,   EmoteSyncPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(UnlockSyncPayload.TYPE,  UnlockSyncPayload.CODEC);  // Phase 3
+        PayloadTypeRegistry.playC2S().register(HatSelectPayload.TYPE,  HatSelectPayload.CODEC);
  
-            player.setAttached(ModAttachments.HAT, name);
+        HatnEmoteMainUtil.onInitialize();
  
-            HatSyncPayload sync = new HatSyncPayload(player.getUUID(), name);
-            ServerPlayNetworking.send(player, sync);
-            PlayerLookup.tracking(player).forEach(observer ->
-                ServerPlayNetworking.send(observer, sync)
-            );
-        });
-
-
+        //Advance Hats:
 
 	}
 

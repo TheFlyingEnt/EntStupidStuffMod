@@ -602,6 +602,10 @@ public class ModLangProvider extends FabricLanguageProvider  {
 
         //Hats
         translationBuilder.add("gui.entstupidstuff.hat_menu", "Hat Menu");
+        translationBuilder.add("gui.hatsmod.source.default", "Default");
+        translationBuilder.add("gui.hatsmod.source.beta_tester", "Beta Tester");
+        translationBuilder.add("gui.hatsmod.source.achievement", "Achievement");
+        translationBuilder.add("gui.hatsmod.source.event", "Event");
 
         translationBuilder.add(HatRegistry.HAT_MENACING, "Menacing");
         translationBuilder.add(HatRegistry.HAT_BASEBALL_CAP_ALPHA, "Baseball Cap (Alpha Tester)");
