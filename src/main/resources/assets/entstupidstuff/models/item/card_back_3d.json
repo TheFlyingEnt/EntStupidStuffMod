@@ -1,0 +1,6 @@
+{
+  "parent": "entstupidstuff:item/template/card_base",
+  "textures": {
+    "card_id": "entstupidstuff:item/card_concept/card_back"
+  }
+}

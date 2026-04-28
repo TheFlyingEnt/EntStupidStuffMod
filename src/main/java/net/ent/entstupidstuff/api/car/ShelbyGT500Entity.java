@@ -121,6 +121,7 @@ public class ShelbyGT500Entity extends BaseCarEntity {
     // ═══════════════════════════════════════════════════════════
  
     @Override protected boolean defaultIsRWD() { return true; }
+    @Override protected float realisticSpeedScale() { return 2.589f; }
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

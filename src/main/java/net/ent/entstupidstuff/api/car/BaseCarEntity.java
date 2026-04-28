@@ -47,6 +47,20 @@ public abstract class BaseCarEntity extends VehicleEntity {
     protected double seatHeight()  { return 0.4; }
     protected double seatSide()    { return 0.5; }
     protected double seatForward() { return -0.5; }
+
+    // ═══════════════════════════════════════════════════════════
+    //  REALISTIC SPEED  (override in subclass)
+    //
+    //  Scale factor = real-life top speed / in-game top speed.
+    //  When realisticSpeed toggle is ON, world velocity is multiplied
+    //  by this value. Internal physics (grip, drift, steering) runs
+    //  at the original tuned speed — only the world output is scaled.
+    //  This preserves the handling feel perfectly.
+    //
+    //  Default 1.0 = no change. Override per car with measured values.
+    // ═══════════════════════════════════════════════════════════
+
+    protected float realisticSpeedScale() { return 1.0f; }
  
     // ═══════════════════════════════════════════════════════════
     //  ABSTRACT SPEC
@@ -146,6 +160,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
     private float   burnoutRPM      = 0f;
     private boolean wasBurningOut   = false;
     private float   handbrakeSmooth = 0f; // 0=released → 1=fully engaged; ramps to prevent snap
+    private float   steerSmooth     = 0f; // -1..+1 ramped steering (Forza-style input smoothing)
  
     // ── Cached spec arrays — avoids allocating new float[] every tick ──
     private float[] cachedGearRatios;
@@ -185,6 +200,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
     /** When false, surface/rain grip multipliers are bypassed. */
     public boolean surfaceFrictionEnabled = true;
+
+    /**
+     * When true, world velocity is multiplied by realisticSpeedScale().
+     * Internal physics (grip, drift, traction) is unchanged — only
+     * the car's actual movement speed in the world is scaled.
+     */
+    public boolean realisticSpeed = false;
  
     /**
      * true  = RWD — drive torque loads rear traction circle → oversteer.
@@ -254,6 +276,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
             rearLat       *= 0.70f;
             overYawRate   *= 0.70f;
             throttleSmooth = 0f;
+            steerSmooth    = 0f;
             burnoutRPM     = idleRpm();
         }
  
@@ -295,11 +318,15 @@ public abstract class BaseCarEntity extends VehicleEntity {
                               boolean left,    boolean right, boolean handbrake) {
  
         // ── 1. Local velocity ─────────────────────────────────────────────
+        // When realisticSpeed is ON, world velocity is scaled up by spdScale.
+        // Divide it back down here so all internal physics runs at the
+        // original tuned speed. Multiply back up at Step 13 (reproject).
+        float  spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
         double yRad  = Math.toRadians(this.getYRot());
         double sinY  = Math.sin(yRad), cosY = Math.cos(yRad);
         Vec3   vel   = this.getDeltaMovement();
  
-        double localFwd  = -vel.x * sinY + vel.z * cosY;
+        double localFwd  = (-vel.x * sinY + vel.z * cosY) / spdScale;
         double localY    =  vel.y;
         float  speed     = (float) Math.abs(localFwd);
         boolean goingFwd = localFwd >  0.01;
@@ -309,8 +336,37 @@ public abstract class BaseCarEntity extends VehicleEntity {
         boolean throttleActive = (forward  && !goingRev) || (backward && !goingFwd);
         boolean brakingActive  = (backward && goingFwd)  || (forward  && goingRev);
         boolean burnout        = forward && (backward || handbrake) && speed < 0.30f;
-        float   steerInput     = left ? -1f : right ? 1f : 0f;
- 
+
+        // ── 2b. Smooth steering (Forza-style) ─────────────────────────────
+        // Keys are binary (0/1) but real steering needs analog ramp.
+        // Tap A briefly = small nudge. Hold A = builds to full lock.
+        // Release = re-centers faster than it turns in.
+        //
+        // Speed-sensitive: at high speed the turn-in rate drops so
+        // tapping A doesn't throw the car sideways at 300 km/h.
+        // During drift: turn-in is boosted for counter-steer responsiveness.
+        float steerTarget = left ? -1f : right ? 1f : 0f;
+
+        //float turnInBase    = 0.12f; // base turn-in rate (~8 ticks to full lock)
+        //float recenterRate  = 0.22f; // re-center rate  (~5 ticks back to zero)
+
+        float turnInBase    = 0.20f; // base turn-in rate (~8 ticks to full lock)
+        float recenterRate  = 0.30f; // re-center rate  (~5 ticks back to zero)
+
+        // Slow turn-in at high speed: lerp from 100% at 0 speed to 55% at 0.6+ bl/tick
+        float speedFactor = 1.0f - Mth.clamp(speed / 0.6f, 0f, 1f) * 0.45f;
+        float turnInRate  = turnInBase * speedFactor;
+
+        // Boost turn-in during drift for counter-steer responsiveness
+        boolean wasDrifting = Math.abs(rearLat) > driftThreshold();
+        if (wasDrifting) turnInRate *= 1.5f;
+
+        float steerRate = (steerTarget != 0f) ? turnInRate : recenterRate;
+        steerSmooth += (steerTarget - steerSmooth) * steerRate;
+        if (Math.abs(steerSmooth) < 0.01f) steerSmooth = 0f;
+
+        float steerInput = steerSmooth;
+
         this.entityData.set(DATA_THROTTLE,    throttleActive || burnout);
         this.entityData.set(DATA_BRAKING,     brakingActive);
         this.entityData.set(DATA_BURNOUT,     burnout);
@@ -559,23 +615,29 @@ public abstract class BaseCarEntity extends VehicleEntity {
         localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
  
         // ── 13. Reproject to world ────────────────────────────────────────
+        // Multiply by spdScale so world movement matches realistic speed.
+        // Internal physics ran at original scale; this is the only place
+        // the scale affects actual movement.
         double nYRad = Math.toRadians(this.getYRot());
         double nSin  = Math.sin(nYRad), nCos = Math.cos(nYRad);
         this.setDeltaMovement(
-            localFwd * (-nSin) + overallLat * nCos,
+            (localFwd * (-nSin) + overallLat * nCos) * spdScale,
             localY,
-            localFwd *   nCos  + overallLat * nSin);
+            (localFwd *   nCos  + overallLat * nSin) * spdScale);
  
         // ── 14. Wheel spin cosmetics ──────────────────────────────────────
         // RWD burnout: rear wheels spin fast, front wheels idle (speed-based).
         // FWD burnout: front wheels spin fast, rear wheels idle (speed-based).
+        // Wheel spin uses world speed (speed * spdScale) so the visual
+        // rotation matches how fast the car appears to move.
+        float worldSpeed = speed * spdScale;
         float burnoutDeg = burnout ? (engineRPM / redlineRpm()) * 90f : 0f;
  
         if (burnout && !isRWD) {
             // FWD burnout — front axle gets RPM spin
             wheelSpin += burnoutDeg;
         } else {
-            wheelSpin += speed * 180f;
+            wheelSpin += worldSpeed * 180f;
         }
         if (wheelSpin > 360000f) wheelSpin -= 360000f;
         this.entityData.set(DATA_WHEEL_SPIN, wheelSpin);
@@ -584,7 +646,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
             // RWD burnout — rear axle gets RPM spin
             rearWheelSpin += burnoutDeg;
         } else if (speed > 0.005f) {
-            rearWheelSpin += speed * 180f;
+            rearWheelSpin += worldSpeed * 180f;
         }
         if (rearWheelSpin > 360000f) rearWheelSpin -= 360000f;
         this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
@@ -851,6 +913,12 @@ public abstract class BaseCarEntity extends VehicleEntity {
     public float getRPM() {
         return Mth.clamp((getEngineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
     }
+
+    /** Public accessor for defaultIsRWD() — used by /carconfig driveType reset. */
+    public boolean getDefaultIsRWD() { return defaultIsRWD(); }
+
+    /** Public accessor for realisticSpeedScale() — used by /carconfig realisticSpeed. */
+    public float getRealisticSpeedScaleValue() { return realisticSpeedScale(); }
  
     // ═══════════════════════════════════════════════════════════
     //  HUD
@@ -858,20 +926,22 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
     private void displaySpeed(Player player) {
         float speed  = this.getForwardSpeed();
-        float kmh    = Math.abs(speed) * 72f;
+        float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+        float kmh    = Math.abs(speed) * 72f * spdScale;
         float rpm    = this.getEngineRPM();
         int   gear   = this.getCurrentGear();
         boolean moving = Math.abs(speed) > 0.04f;
  
         String shiftLabel = speed < -0.04f ? "§cR" : moving ? "§aD" : "§7P";
         String driveType  = isRWD ? "§bRWD" : "§eFWD";
+        String spdMode    = realisticSpeed ? " §c[REAL]" : "";
  
         if (advancedDebug) {
             // ── Advanced debug: full physics snapshot ─────────────────────────
             // Line 1 (action bar) — always visible while driving
             player.displayClientMessage(Component.literal(String.format(
-                "§e[ADV] %s §f%.0f km/h  §cRPM:§f%.0f  §e%s[%d]  §7surf:§f%.2f",
-                driveType, kmh, rpm, shiftLabel, gear, dbgSurfaceFriction)), true);
+                "§e[ADV] %s §f%.0f km/h%s  §cRPM:§f%.0f  §e%s[%d]  §7surf:§f%.2f",
+                driveType, kmh, spdMode, rpm, shiftLabel, gear, dbgSurfaceFriction)), true);
  
             // Lines 2–7 in chat — update every display tick
             // Lateral model
@@ -929,12 +999,12 @@ public abstract class BaseCarEntity extends VehicleEntity {
             float drag = (1f - (float)rollingDrag()) * v;
             if (v > aeroDragStart()) drag += (float)((v - aeroDragStart()) * aeroDragK() * 20);
             float net = effDrive - drag;
-            float vRedline   = (redlineRpm()   / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f;
-            float vDownshift = (downshiftRpm() / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f;
+            float vRedline   = (redlineRpm()   / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f * spdScale;
+            float vDownshift = (downshiftRpm() / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f * spdScale;
  
             player.displayClientMessage(Component.literal(String.format(
-                "§e[DBG] §aSpd:§f%.1f km/h  §cRPM:§f%.0f  §e%s[%d]  §bNet:§f%+.5f",
-                kmh, rpm, shiftLabel, gear, net)), true);
+                "§e[DBG] §aSpd:§f%.1f km/h%s  §cRPM:§f%.0f  §e%s[%d]  §bNet:§f%+.5f",
+                kmh, spdMode, rpm, shiftLabel, gear, net)), true);
             player.displayClientMessage(Component.literal(String.format(
                 "§7── §eDrivetrain§7 ── torque=%.3f rawDrive=%.5f effDrive=%.5f drag=%.5f",
                 torq, rawDrive, effDrive, drag)), false);
@@ -958,13 +1028,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
             else if (moving)                                        state = "§aDRIVING " + shiftLabel + " [" + gear + "]";
             else                                                    state = "§7PARKED";
             player.displayClientMessage(Component.literal(
-                driveType + "  §f" + String.format("%.0f km/h", kmh) + "  " + state), true);
+                driveType + "  §f" + String.format("%.0f km/h", kmh) + spdMode + "  " + state), true);
  
         } else {
             // ── Normal HUD ────────────────────────────────────────────────────
             player.displayClientMessage(Component.literal(String.format(
-                "§aSpeed: §f%.0f km/h  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]",
-                kmh, rpm, shiftLabel, gear)), true);
+                "§aSpeed: §f%.0f km/h%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]",
+                kmh, spdMode, rpm, shiftLabel, gear)), true);
         }
     }
  
@@ -972,6 +1042,10 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //  NBT
     // ═══════════════════════════════════════════════════════════
  
-    @Override protected void readAdditionalSaveData(ValueInput i) {}
-    @Override protected void addAdditionalSaveData(ValueOutput o) {}
+    @Override protected void readAdditionalSaveData(ValueInput i) {
+        realisticSpeed = i.getBooleanOr("realisticSpeed",false);
+    }
+    @Override protected void addAdditionalSaveData(ValueOutput o) {
+        o.putBoolean("realisticSpeed", realisticSpeed);
+    }
 }

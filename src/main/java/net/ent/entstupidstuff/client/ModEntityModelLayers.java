@@ -3,9 +3,11 @@ package net.ent.entstupidstuff.client;
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.models.CyberCarModel;
 import net.ent.entstupidstuff.api.car.models.DMCModel;
+import net.ent.entstupidstuff.api.car.models.F1CarEntityModel;
 import net.ent.entstupidstuff.api.car.models.NissanZEntityModel;
 import net.ent.entstupidstuff.api.car.render.CyberCarEntityRenderer;
 import net.ent.entstupidstuff.api.car.render.DMC12EntityRenderer;
+import net.ent.entstupidstuff.api.car.render.F1CarEntityRenderer;
 import net.ent.entstupidstuff.api.car.render.NissanZEntityRenderer;
 import net.ent.entstupidstuff.client.render.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
@@ -331,6 +333,7 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation GR86 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gr86"), "main");
     public static final ModelLayerLocation HONDACIVICR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"), "main");
     public static final ModelLayerLocation NISSANZ = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"), "main");
+    public static final ModelLayerLocation F1CAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "f1car"), "main");
 
 
 
@@ -630,6 +633,9 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.NISSANZ, (EntityRendererProvider.Context context) -> new NissanZEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.NISSANZ, NissanZEntityModel::createBodyLayer);
+
+        EntityRenderers.register(EntityFactory.F1CAR, (EntityRendererProvider.Context context) -> new F1CarEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.F1CAR, F1CarEntityModel::createBodyLayer);
 
         
 

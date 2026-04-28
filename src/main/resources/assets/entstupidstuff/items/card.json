@@ -1,0 +1,82 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": ["thirdperson_righthand", "thirdperson_lefthand"],
+        "model": {
+          "type": "minecraft:model",
+          "model": "entstupidstuff:item/card_back_3d"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:select",
+      "property": "entstupidstuff:card_id",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "entstupidstuff:item/card/card_joker"
+      },
+      "cases": [
+        { "when": "card_club_2",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_2"     } },
+        { "when": "card_club_3",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_3"     } },
+        { "when": "card_club_4",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_4"     } },
+        { "when": "card_club_5",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_5"     } },
+        { "when": "card_club_6",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_6"     } },
+        { "when": "card_club_7",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_7"     } },
+        { "when": "card_club_8",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_8"     } },
+        { "when": "card_club_9",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_9"     } },
+        { "when": "card_club_10",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_10"    } },
+        { "when": "card_club_j",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_j"     } },
+        { "when": "card_club_q",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_q"     } },
+        { "when": "card_club_k",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_k"     } },
+        { "when": "card_club_a",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_club_a"     } },
+
+        { "when": "card_diamond_2",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_2"  } },
+        { "when": "card_diamond_3",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_3"  } },
+        { "when": "card_diamond_4",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_4"  } },
+        { "when": "card_diamond_5",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_5"  } },
+        { "when": "card_diamond_6",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_6"  } },
+        { "when": "card_diamond_7",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_7"  } },
+        { "when": "card_diamond_8",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_8"  } },
+        { "when": "card_diamond_9",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_9"  } },
+        { "when": "card_diamond_10", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_10" } },
+        { "when": "card_diamond_j",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_j"  } },
+        { "when": "card_diamond_q",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_q"  } },
+        { "when": "card_diamond_k",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_k"  } },
+        { "when": "card_diamond_a",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_diamond_a"  } },
+
+        { "when": "card_heart_2",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_2"    } },
+        { "when": "card_heart_3",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_3"    } },
+        { "when": "card_heart_4",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_4"    } },
+        { "when": "card_heart_5",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_5"    } },
+        { "when": "card_heart_6",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_6"    } },
+        { "when": "card_heart_7",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_7"    } },
+        { "when": "card_heart_8",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_8"    } },
+        { "when": "card_heart_9",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_9"    } },
+        { "when": "card_heart_10",   "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_10"   } },
+        { "when": "card_heart_j",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_j"    } },
+        { "when": "card_heart_q",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_q"    } },
+        { "when": "card_heart_k",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_k"    } },
+        { "when": "card_heart_a",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_heart_a"    } },
+
+        { "when": "card_spade_2",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_2"    } },
+        { "when": "card_spade_3",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_3"    } },
+        { "when": "card_spade_4",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_4"    } },
+        { "when": "card_spade_5",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_5"    } },
+        { "when": "card_spade_6",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_6"    } },
+        { "when": "card_spade_7",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_7"    } },
+        { "when": "card_spade_8",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_8"    } },
+        { "when": "card_spade_9",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_9"    } },
+        { "when": "card_spade_10",   "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_10"   } },
+        { "when": "card_spade_j",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_j"    } },
+        { "when": "card_spade_q",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_q"    } },
+        { "when": "card_spade_k",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_k"    } },
+        { "when": "card_spade_a",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_spade_a"    } },
+
+        { "when": "card_joker",      "model": { "type": "minecraft:model", "model": "entstupidstuff:item/card/card_joker"      } }
+      ]
+    }
+  }
+}

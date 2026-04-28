@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.DMC13Entity;
+import net.ent.entstupidstuff.api.car.F1CarEntity;
 import net.ent.entstupidstuff.api.car.GR86Entity;
 import net.ent.entstupidstuff.api.car.HondaCivicEntity;
 import net.ent.entstupidstuff.api.car.HondaCivicTypeREntity;
@@ -528,6 +529,16 @@ public class EntityFactory {
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"nissanz")))
+    );
+
+    public static final EntityType<F1CarEntity> F1CAR = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "f1car"),
+        EntityType.Builder.<F1CarEntity>of(F1CarEntity::new, MobCategory.MISC)
+            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"f1car")))
     );
 
 

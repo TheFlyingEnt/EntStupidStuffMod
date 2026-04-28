@@ -108,6 +108,7 @@ public class GR86Entity extends BaseCarEntity {
     // ═══════════════════════════════════════════════════════════
  
     @Override protected boolean defaultIsRWD() { return true; }
+    @Override protected float realisticSpeedScale() { return 2.404f; }
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

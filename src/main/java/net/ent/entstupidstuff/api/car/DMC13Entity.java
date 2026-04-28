@@ -96,6 +96,7 @@ public class DMC13Entity extends BaseCarEntity {
     // ═══════════════════════════════════════════════════════════
  
     @Override protected boolean defaultIsRWD() { return true; }
+    @Override protected float realisticSpeedScale() { return 2.636f; }
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

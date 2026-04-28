@@ -1,7 +1,11 @@
 package net.ent.entstupidstuff;
 
+import net.ent.entstupidstuff.api.car.CarConfigCommand;
+import net.ent.entstupidstuff.api.emote.EmoteCommand;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
+import net.ent.entstupidstuff.api.hat.HatAdminCommand;
+import net.ent.entstupidstuff.api.hat.HatCommand;
 import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.api.hat.HatSelectPayload;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
@@ -23,6 +27,7 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
@@ -123,8 +128,12 @@ public class EntStupidStuff implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(HatSelectPayload.TYPE,  HatSelectPayload.CODEC);
  
         HatnEmoteMainUtil.onInitialize();
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            CarConfigCommand.register(dispatcher);
+        });
  
-        //Advance Hats:
+        //Advance Hats:co
 
 	}
 

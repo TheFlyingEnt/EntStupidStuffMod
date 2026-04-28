@@ -33,6 +33,7 @@ public class NissanZEntity extends BaseCarEntity {
  
     // ── Drivetrain type ───────────────────────────────────────────────────────
     @Override protected boolean defaultIsRWD() { return true; }
+    @Override protected float realisticSpeedScale() { return 2.358f; }
  
     // ── Engine ────────────────────────────────────────────────────────────────
     // VR30DDTT: wide idle, flat power band, 7,200 rpm rev limiter

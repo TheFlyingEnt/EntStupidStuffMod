@@ -110,6 +110,7 @@ public class PorsheGT3Entity extends BaseCarEntity {
     // ═══════════════════════════════════════════════════════════
  
     @Override protected boolean defaultIsRWD() { return true; }
+    @Override protected float realisticSpeedScale() { return 2.695f; }
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
