@@ -109,6 +109,7 @@ public class GR86Entity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.404f; }
+    @Override protected float surfacePenaltyScale() { return 1.2f; }  // performance summer tyres
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

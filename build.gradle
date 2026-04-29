@@ -132,3 +132,19 @@ publishing {
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+
+//Double Run-Time
+loom {
+    runs {
+        // This adds a new run configuration called 'runClient2'
+        client2 {
+            client() 
+            name "Minecraft Client 2"
+            runDir "run2" 
+            
+            // This sets a different username so you can join your own LAN world
+            vmArg "-Dfabric.loom.username=DevPlayer2"
+        }
+    }
+}

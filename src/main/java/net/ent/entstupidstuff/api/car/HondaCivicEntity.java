@@ -105,6 +105,7 @@ public class HondaCivicEntity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return false; } // FWD
     @Override protected float realisticSpeedScale() { return 2.174f; }
+    @Override protected float surfacePenaltyScale() { return 1.0f; }  // touring summer tyres — standard
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

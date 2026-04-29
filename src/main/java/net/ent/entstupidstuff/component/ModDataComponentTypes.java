@@ -3,6 +3,7 @@ package net.ent.entstupidstuff.component;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.F1CarEntity;
 import net.ent.entstupidstuff.api.casting.ArmorCastingComponent;
 import net.ent.entstupidstuff.api.casting.ToolCastingComponent;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;
@@ -60,6 +61,13 @@ public class ModDataComponentTypes {
         builder -> builder
             .persistent(MahiMahiEntity.Variant.CODEC)
             .networkSynchronized(MahiMahiEntity.Variant.PACKET_CODEC)
+    );
+
+    public static final DataComponentType<F1CarEntity.Variant> F1CAR_VARIANT = register(
+        "f1car_variant",
+        builder -> builder
+            .persistent(F1CarEntity.Variant.CODEC)
+            .networkSynchronized(F1CarEntity.Variant.PACKET_CODEC)
     );
 
     public static final DataComponentType<Integer> LOADED_ARROWS = DataComponentType.<Integer>builder()

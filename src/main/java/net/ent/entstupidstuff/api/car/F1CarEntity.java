@@ -1,8 +1,30 @@
 package net.ent.entstupidstuff.api.car;
 
+import java.util.Arrays;
+import java.util.function.IntFunction;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.mojang.serialization.Codec;
+
+import io.netty.buffer.ByteBuf;
+import net.ent.entstupidstuff.component.ModDataComponentTypes;
+import net.minecraft.Util;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * 2024 Formula 1 Car — 1.6L Turbo-Hybrid V6 + MGU-K + MGU-H, ~1000 hp combined, RWD.
@@ -207,6 +229,7 @@ public class F1CarEntity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 1.875f; }
+    @Override protected float surfacePenaltyScale() { return 2.5f; }  // full slicks — nearly zero off-surface grip
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -215,4 +238,111 @@ public class F1CarEntity extends BaseCarEntity {
     public F1CarEntity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+    //Varient
+    private Variant variant;
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(F1CarEntity.class, EntityDataSerializers.INT);
+
+    public enum Variant implements StringRepresentable {
+        AUDI(0, "audi"),
+        REDBULL_JAPAN(1, "redbull_japan"),
+        CAMEL(2, "camel"),
+        DEMON_SLAYER(3, "demonslayer");
+
+
+        public static final Variant DEFAULT = AUDI;
+
+        private static final IntFunction<Variant> INDEX_MAPPER = ByIdMap.continuous( Variant::getIndex, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+
+        public static final Codec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
+        public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(INDEX_MAPPER::apply, Variant::getIndex);
+        public static final StreamCodec<ByteBuf, Variant> PACKET_CODEC = ByteBufCodecs.idMapper(INDEX_MAPPER,
+                Variant::getIndex);
+
+        private final int index;
+        private final String id;
+
+        private Variant(int index, String id) {
+            this.index = index;
+            this.id = id;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+
+        public String getId() {
+            return this.id;
+        }
+
+        public static Variant byIndex(int index) {
+            return INDEX_MAPPER.apply(index);
+        }
+
+        public static Variant getRandomNatural(RandomSource random) {
+            Variant[] list = (Variant[]) Arrays.stream(values()).toArray(Variant[]::new);
+            return Util.getRandom(list, random);
+        }
+
+        public static Variant getRandom(RandomSource random) {
+            Variant[] list = values();
+            return Util.getRandom(list, random);
+        }
+
+        @Override
+        public String getSerializedName() {
+            return this.id;
+        }
+
+    }
+
+    public Variant getVariant() {
+        return F1CarEntity.Variant.byIndex((Integer) this.entityData.get(VARIANT));
+    }
+
+    @Override
+    public void addAdditionalSaveData(ValueOutput view) {
+        super.addAdditionalSaveData(view);
+        view.store("Variant", F1CarEntity.Variant.INDEX_CODEC, this.getVariant());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput view) {
+        super.readAdditionalSaveData(view);
+        this.setVariant(
+                (F1CarEntity.Variant) view.read("Variant", F1CarEntity.Variant.CODEC).orElse(F1CarEntity.Variant.DEFAULT));
+    }
+
+    public void setVariant(F1CarEntity.Variant variant) {
+        this.entityData.set(VARIANT, variant.getIndex());
+    }
+
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+    }
+
+    @Nullable
+	@Override
+	public <T> T get(DataComponentType<? extends T> type) {
+		return type == ModDataComponentTypes.F1CAR_VARIANT ? castComponentValue((DataComponentType<T>)type, this.getVariant()) : super.get(type);
+	}
+
+	@Override
+	protected void applyImplicitComponents(DataComponentGetter from) {
+		this.applyImplicitComponentIfPresent(from, ModDataComponentTypes.F1CAR_VARIANT);
+		super.applyImplicitComponents(from);
+	}
+
+	@Override
+	protected <T> boolean applyImplicitComponent(DataComponentType<T> type, T value) {
+		if (type == ModDataComponentTypes.F1CAR_VARIANT) {
+			this.setVariant(castComponentValue(ModDataComponentTypes.F1CAR_VARIANT, value));
+			return true;
+		} else {
+			return super.applyImplicitComponent(type, value);
+		}
+	}
 }

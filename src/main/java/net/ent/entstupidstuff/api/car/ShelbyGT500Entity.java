@@ -122,6 +122,7 @@ public class ShelbyGT500Entity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.589f; }
+    @Override protected float surfacePenaltyScale() { return 1.4f; }  // max-performance PS4S street tyres
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

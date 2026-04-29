@@ -114,6 +114,7 @@ public class HondaCivicTypeREntity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return false; } // FWD
     @Override protected float realisticSpeedScale() { return 2.590f; }
+    @Override protected float surfacePenaltyScale() { return 1.2f; }  // performance PS4S tyres
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR

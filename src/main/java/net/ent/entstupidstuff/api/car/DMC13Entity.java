@@ -97,6 +97,7 @@ public class DMC13Entity extends BaseCarEntity {
  
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.636f; }
+    @Override protected float surfacePenaltyScale() { return 1.4f; }  // max-performance street tyres
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
