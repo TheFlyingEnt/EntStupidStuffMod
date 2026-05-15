@@ -487,8 +487,9 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(ItemFactory.METAL_SKELETON_RED_SKULL, "Metallic Skeleton Skull");
         translationBuilder.add(ItemFactory.METAL_SKELETON_BLUE_SKULL, "Metallic Skeleton Skull");
         
-        translationBuilder.add(ItemFactory.PHANTOM_TORCH, "Metallic Skeleton Skull");
+        translationBuilder.add(ItemFactory.PHANTOM_TORCH, "Phantom Torch");
         translationBuilder.add(ItemFactory.KNIGHT_CASTING_TEMPLATE, "Knight Cast");
+        translationBuilder.add(ItemFactory.CAR_WRAP, "Car Wrap");
         
         
 
@@ -675,6 +676,42 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add(HatRegistry.HAT_TV_NYANCAT_GALAXY, "TV (Galaxy Nyancat)");
         translationBuilder.add(HatRegistry.HAT_TV_RICKROLL, "TV (Rickroll)");
         translationBuilder.add(HatRegistry.HAT_TV_FROG_RAVE, "TV (Frog-rave)");
+
+        //Car Wraps:
+
+        
+        translationBuilder.add("container.carscreen.slot_plate_tooltip", "Place a License Plate");
+        translationBuilder.add("container.carscreen.slot_fuel_tooltip", "Fuel required");
+        translationBuilder.add("container.carscreen.slot_warp_tooltip", "Place a Car Wrap for a Custom Livery");
+        translationBuilder.add("container.carscreen.slot_radio_tooltip", "Place a Music Disc to play while driving");
+        translationBuilder.add("container.carscreen.slot_wheel_tooltip", "Wheel required");
+
+        translationBuilder.add("item.entstupidstuff.carwrap." + "car", "Formula One");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_audi", "Audi #5");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_redbull_japan", "Redbull (Japan) #1");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_camel", "[Custom] Camel #7");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_demonslayer", "Demon Slayer #8");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_senna", "McLaren MP4/4 (Senna) #12");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_redbull", "Redbull #1");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_jurassic_studios", "[Custom] Jurassic Studios #9");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_entity", "[Custom] Entity #9");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_lexus", "Lexus (Concept) #9");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_stake", "Stake #4");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_aston", "Aston Martin #14");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_mclaren", "McLaren");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_ferrari_sf24", "Ferrari SF-24 #15");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_ferrari_sf26", "Ferrari SF-26 #16");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_haas_vf24", "Haas VF-24 #10");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_mercades_w15", "Mercades W-15 #44");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_vcarb_01", "Vcarb-01 #3");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_blast", "[Custom] Blast #10");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_beamy", "[Custom] Beamy N/A");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_ford", "Ford (Concept) #2");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_haas_vf26", "Haas VF-26 #17");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_bentley", "Bentley (Concept) #4");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_clt", "[Custom] Charlotte #49");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_brawngp", "BrawnGP #22");
+        translationBuilder.add("item.entstupidstuff.carwrap.cyberpunk." + "fone_cyberpunk", "BrawnGP #22");
 
         
 

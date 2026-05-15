@@ -1,7 +1,10 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * 2025 Honda Civic Type R — 2.0L Turbo K20C1, simulated automatic, FWD.
@@ -115,10 +118,27 @@ public class HondaCivicTypeREntity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return false; } // FWD
     @Override protected float realisticSpeedScale() { return 2.590f; }
     @Override protected float surfacePenaltyScale() { return 1.2f; }  // performance PS4S tyres
+    @Override protected float crashResistance() { return 0.15f; }  // sports compact — moderate
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (Turbo K20C1 — turbo whistle, mid-range)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.turboFour(
+            SoundFactory.ENTITY_VEHICLE_AUDI_IDLE,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_AUDI_BREAK,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
  
     public HondaCivicTypeREntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -127,5 +147,8 @@ public class HondaCivicTypeREntity extends BaseCarEntity {
     @Override protected double seatHeight()  { return 0.35; }
     @Override protected double seatSide()    { return 0.55; }
     @Override protected double seatForward() { return -0.25; }
+
+    //                                                             x      y     z
+    @Override public Vec3 licensePlateOffset() { return new Vec3(-0.84, 0.60, 3.55); }
 
 }

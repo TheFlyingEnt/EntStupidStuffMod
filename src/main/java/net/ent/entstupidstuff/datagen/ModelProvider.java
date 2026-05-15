@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.datagen;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +14,7 @@ import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.ModSkullStype;
 import net.ent.entstupidstuff.client.item.model.special.HorizontalBannerSpecialRenderer;
 import net.ent.entstupidstuff.item.ItemFactory;
+import net.ent.entstupidstuff.item.util.CarWrapHelper;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -130,12 +132,26 @@ public class ModelProvider extends FabricModelProvider{
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_CANIBEHONEST_HIGH, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.MUSIC_DISC_CANIBEHONEST_LOW, ModelTemplates.FLAT_ITEM);
 
+        itemModelGenerator.generateFlatItem(ItemFactory.CAR_WRAP, ModelTemplates.FLAT_ITEM);
+
         registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_SWORD, "iron_sword");
         registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.DIAMOND_SWORD, "diamond_sword");
         registerCastableToolItem(itemModelGenerator.itemModelOutput, Items.IRON_PICKAXE, "iron_pickaxe");
 
         //Cast Template
         itemModelGenerator.generateFlatItem(ItemFactory.KNIGHT_CASTING_TEMPLATE, ModelTemplates.FLAT_ITEM);
+
+
+
+        
+        
+
+
+
+
+
+
+
 
         /*for (String hatName : HatRegistry.getNames()) {
             Item hat = HatRegistry.getHat(hatName);
@@ -164,7 +180,7 @@ public class ModelProvider extends FabricModelProvider{
             root.add("model", model);
  
             // Resolve output path: assets/<namespace>/items/<name>.json
-            java.nio.file.Path path = output
+            Path path = output
                 .getOutputFolder(PackOutput.Target.RESOURCE_PACK)
                 .resolve(itemId.getNamespace())
                 .resolve("items")
@@ -172,6 +188,27 @@ public class ModelProvider extends FabricModelProvider{
  
             futures.add(DataProvider.saveStable(cache, root, path));
         }
+
+        for (String livery : CarWrapHelper.visableF1Wraps()) {
+            JsonObject modelValue = new JsonObject();
+            modelValue.addProperty("type", "minecraft:model");
+            modelValue.addProperty("model", EntStupidStuff.MOD_ID + ":item/wraps/" + livery + "_wrap");
+
+            JsonObject root = new JsonObject();
+            root.add("model", modelValue);
+
+            // Path: assets/entstupidstuff/items/wraps/fone_audi_wrap.json
+            // Note: We resolve "items" then "wraps" to match your folder structure
+            java.nio.file.Path path = output
+                .getOutputFolder(PackOutput.Target.RESOURCE_PACK)
+                .resolve(EntStupidStuff.MOD_ID)
+                .resolve("items")
+                .resolve("wraps")
+                .resolve(livery + "_wrap.json");
+
+            futures.add(DataProvider.saveStable(cache, root, path));
+        }
+
  
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -374,6 +411,22 @@ public class ModelProvider extends FabricModelProvider{
         }
 
         registerToolCastModels(blockStateModelGenerator2, "diamond_sword", "knight");
+
+        for (String livery : CarWrapHelper.visableF1Wraps()) {
+            // This defines the path: assets/entstupidstuff/models/item/car_wrap/fone_audi_wrap.json
+            ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
+                EntStupidStuff.MOD_ID, 
+                "item/wrap/" + livery + "_wrap"
+            );
+
+            // This creates a flat item model using the texture found at: 
+            // assets/entstupidstuff/textures/item/car_wrap/fone_audi_wrap.png
+            ModelTemplates.FLAT_ITEM.create(
+                modelLocation, 
+                TextureMapping.layer0(modelLocation), 
+                blockStateModelGenerator2.modelOutput
+            );
+        }
         
 
 

@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -106,10 +108,27 @@ public class HondaCivicEntity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return false; } // FWD
     @Override protected float realisticSpeedScale() { return 2.174f; }
     @Override protected float surfacePenaltyScale() { return 1.0f; }  // touring summer tyres — standard
+    @Override protected float crashResistance() { return 0.12f; }  // lightweight economy car
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (Hybrid — quiet, smooth)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.hybrid(
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
  
     public HondaCivicEntity(EntityType<?> type, Level level) {
         super(type, level);

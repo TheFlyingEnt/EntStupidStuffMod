@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.api.car.CarConfigCommand;
+import net.ent.entstupidstuff.api.car.ModNetworking;
 import net.ent.entstupidstuff.api.emote.EmoteCommand;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
@@ -112,6 +113,9 @@ public class EntStupidStuff implements ModInitializer {
 		ModDataComponentTypes.register();
 
         SkullSupport.onInitialize();
+
+        ModNetworking.registerC2SPayloads();
+        ModNetworking.registerServerHandlers();
 
         
 

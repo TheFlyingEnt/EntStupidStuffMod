@@ -8,7 +8,10 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 
 import io.netty.buffer.ByteBuf;
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
+import net.ent.entstupidstuff.item.util.CarWrapHelper;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -25,6 +28,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * 2024 Formula 1 Car — 1.6L Turbo-Hybrid V6 + MGU-K + MGU-H, ~1000 hp combined, RWD.
@@ -230,6 +234,7 @@ public class F1CarEntity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 1.875f; }
     @Override protected float surfacePenaltyScale() { return 2.5f; }  // full slicks — nearly zero off-surface grip
+    @Override protected float crashResistance() { return 0.08f; }  // carbon fibre — fragile
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -239,22 +244,100 @@ public class F1CarEntity extends BaseCarEntity {
         super(type, level);
     }
 
+    @Override
+    public String[] availableWraps() {
+        return CarWrapHelper.visableF1Wraps();
+        /*return new String[]{
+            "fone_audi",
+            "fone_redbull_japan",
+            "fone_camel",
+            "fone_demonslayer",
+            "fone_senna",
+            "fone_redbull",
+            "fone_jurassic_studios",
+            "fone_entity",
+            "fone_lexus",
+            "fone_stake",
+            "fone_aston",
+            "fone_mclaren",
+            "fone_ferrari_sf-24",
+            "fone_ferrari_sf-26",
+            "fone_cadillac",
+            "fone_haas_vf-24",
+            "fone_mercades_w-15",
+            "fone_vcarb_01",
+            "fone_blast",
+            "fone_beamy",
+            "fone_ford",
+            "fone_haas_vf-26",
+            "fone_bentley",
+            "fone_clt",
+            "fone_brawngp",
+            "fone_blank_empty",
+            "fone_stock"*/
+        //};
+    }
+ 
+    @Override public String getCarTypeId() { return "car"; }
+
     //Varient
     private Variant variant;
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(F1CarEntity.class, EntityDataSerializers.INT);
 
+    @Deprecated
     public enum Variant implements StringRepresentable {
         AUDI(0, "audi"),
         REDBULL_JAPAN(1, "redbull_japan"),
         CAMEL(2, "camel"),
-        DEMON_SLAYER(3, "demonslayer");
+        DEMON_SLAYER(3, "demonslayer"),
+        SENNA(4, "senna"),
+        REDBULL(5, "redbull"),
+        JURASSICSTUDIO(6, "jurassic_studio"),
+        ENTITY(7, "entity"),
+        LEXUS(8, "lexus"),
+        STAKE(9, "stake"),
+        ASTON(10, "aston"),
+        MCLAREN(11, "mclaren"),
+        FERRARI24(12, "ferrari_sf-24"),
+        FERRARI26(13, "ferrari_sf-26"),
+        CADILLAC(14, "cadillac"),
+        HAAS24(15, "haas_vf-24"),
+        MERCADES(16, "mercades_w-15"),
+        VCARB(17, "vcarb_01"),
+        BLAST(18, "blast"),
+        BEAMY(19, "beamy"),
+        FORD(20, "ford"),
+        HAAS26(21, "haas_vf-26"),
+        BENTLEY(22, "bentley"),
+        CLT(23, "clt"),
+        BRAWNGP(24, "brawngp"),
+        CYBERPUNK(25, "cyberpunk"),
+
+        BLANK(26, "blank_empty"),
+        STOCK(27, "stock");
+
+        
+        //ALPINE(13, "alpine");
+        //WILLAMS(13, "williams");
+        //MOJANG(11, "mojang");
+        //MCLAREN27(11, "mclaren_mp4-27");
+        //MCLAREN35(11, "mclaren_mlc35");
+        //BMW(11, "bmw");
+        //HONDA(11, "honda");
+        //TESLA(11, "tesla");
+        //JORDAN(11, "jordan");
+        //WILLIAMS(11, "williams");
 
 
         public static final Variant DEFAULT = AUDI;
 
         private static final IntFunction<Variant> INDEX_MAPPER = ByIdMap.continuous( Variant::getIndex, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
 
-        public static final Codec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
+        //public static final Codec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
+        public static final Codec<Variant> CODEC = Codec.STRING.xmap(
+            Variant::byName,
+            Variant::getSerializedName
+        );
         public static final Codec<Variant> INDEX_CODEC = Codec.INT.xmap(INDEX_MAPPER::apply, Variant::getIndex);
         public static final StreamCodec<ByteBuf, Variant> PACKET_CODEC = ByteBufCodecs.idMapper(INDEX_MAPPER,
                 Variant::getIndex);
@@ -294,6 +377,40 @@ public class F1CarEntity extends BaseCarEntity {
             return this.id;
         }
 
+        public static Variant byName(String name) {
+            return switch (name.toLowerCase()) {
+
+                // Ferrari aliases
+                case "ferrari", "ferrari24", "sf24", "sf-24" -> FERRARI24;
+                case "ferrari26", "sf26", "sf-26" -> FERRARI26;
+
+                // Mercedes aliases
+                case "mercedes", "mercades", "w15", "w-15" -> MERCADES;
+
+                // Red Bull aliases
+                case "redbull", "rb" -> REDBULL;
+                case "redbull_japan", "rb_japan" -> REDBULL_JAPAN;
+                case "vcarb_01", "vcarb" -> VCARB;
+
+                // Jurassic aliases
+                case "jurassic_studio", "jurassicstudio", "js", "jurassicstudios" -> JURASSICSTUDIO;
+
+                // Haaz aliases
+                case "haas_vf-24", "vf24" , "vf-24"  -> HAAS24;
+                case "haas_vf-26", "haas", "vf26" , "vf-26"  -> HAAS26;
+
+                // Players
+                case "blast", "blastboy", "theblastboy", "tbb" -> BLAST;
+                case "entity", "flyingent", "ent", "theflyingent", "tfe" -> ENTITY;
+                case "beamy", "beamymax", "thebeamymax", "tbm" -> BEAMY;
+
+                default -> Arrays.stream(values())
+                        .filter(v -> v.id.equalsIgnoreCase(name))
+                        .findFirst()
+                        .orElse(DEFAULT);
+            };
+        }
+
     }
 
     public Variant getVariant() {
@@ -303,7 +420,7 @@ public class F1CarEntity extends BaseCarEntity {
     @Override
     public void addAdditionalSaveData(ValueOutput view) {
         super.addAdditionalSaveData(view);
-        view.store("Variant", F1CarEntity.Variant.INDEX_CODEC, this.getVariant());
+        view.store("Variant", F1CarEntity.Variant.CODEC, this.getVariant());
     }
 
     @Override
@@ -345,4 +462,86 @@ public class F1CarEntity extends BaseCarEntity {
 			return super.applyImplicitComponent(type, value);
 		}
 	}
+
+    /*@Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.normal(
+            /*SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK, //ENTITY_VEHICLE_AUDI_BREAK
+            SoundFactory.ENTITY_VEHICLE_F1_MIX_TEST, //ENTITY_VEHICLE_AUDI_GEAR_TOP
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP*
+
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_IDLE,
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_BREAK, //ENTITY_VEHICLE_AUDI_BREAK
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_GEAR_TOP, //ENTITY_VEHICLE_AUDI_GEAR_TOP
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }*/
+
+        @Override
+    protected CarSoundProfile createSoundProfile() {
+        return new CarSoundProfile(
+            // Sound events
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_IDLE,       // idle
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_GEAR_1,        // accel
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_BREAK,      // decel
+            SoundFactory.ENTITY_VEHICLE_FERRARI_F40_GEAR_TOP, //ENTITY_VEHICLE_F1_TOP_GEAR,    // top speed
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP, // tires
+
+            // Engine pitch: F40 recorded at ~7,500 RPM, F1 revs to 15,000.
+            // At idle (RPM=0): deeper than recording → 0.75 pitch
+            // At redline (RPM=1): way above recording → 1.90 pitch
+            // This wide range makes the F40 sound scream like an F1.
+            0.75f, 1.90f,       // enginePitchLow, enginePitchHigh
+
+            // Accel pitch: slightly narrower than engine to avoid
+            // the accel layer fighting the idle layer at low RPM
+            0.80f, 1.70f,       // accelPitchLow, accelPitchHigh
+
+            // Top speed: f1_top_gear is already at the right pitch
+            1.05f,              // topSpeedPitch
+
+            // Volumes: F1 is LOUD — everything at max
+            1.0f,               // engineVolume
+            1.0f,               // accelVolume
+            0.85f,              // decelVolume (slightly quieter — lift-off, not main event)
+            0.95f,              // topSpeedVolume
+            0.80f,              // tireVolume (slicks are quieter than road tires)
+
+            // Distance: F1 cars are heard from extremely far away
+            64f                 // hearingDistance (blocks)
+        );
+    }
+
+
+    /*
+    return CarSoundProfile.F1V2(
+            /*net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_F1_MIX_TEST,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP()*/
+
+            /*SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_ALL, //1
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK, //SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK, //ENTITY_VEHICLE_AUDI_BREAK
+            SoundFactory.ENTITY_VEHICLE_F1_TOP_GEAR,//ENTITY_VEHICLE_F1_MIX_TEST,//ENTITY_VEHICLE_F1_TOP_GEAR, //ENTITY_VEHICLE_AUDI_GEAR_TOP
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP*/
+
+
+
+            /*SoundFactory.ENTITY_VEHICLE_F1_IDLE, //SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_4, //SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_F1_BREAK, //SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK, //ENTITY_VEHICLE_AUDI_BREAK
+            SoundFactory.ENTITY_VEHICLE_F1_TOP_GEAR, //ENTITY_VEHICLE_AUDI_GEAR_TOP
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP*
+        );
+    
+    */
+
+    //                                                             x      y     z
+    @Override public Vec3 licensePlateOffset() { return new Vec3(-0.75, 0.80, 3.35); }
+
 }

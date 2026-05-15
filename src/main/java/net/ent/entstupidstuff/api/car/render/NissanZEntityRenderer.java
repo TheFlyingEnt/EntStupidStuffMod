@@ -18,7 +18,7 @@ public class NissanZEntityRenderer extends BaseCarEntityRenderer {
         super(context, new NissanZEntityModel(context.bakeLayer(NissanZEntityModel.LAYER_LOCATION)));
     }
  
-    @Override protected ResourceLocation texture()            { return TEXTURE; }
-    @Override protected ResourceLocation glowTexture()        { return GLOW; }
-    @Override protected ResourceLocation glowBackupTexture()  { return GLOW_BACKUP; }
+    @Override protected ResourceLocation texture(CarRenderState state)            { return TEXTURE; }
+    @Override protected ResourceLocation glowTexture(CarRenderState state)        { return GLOW; }
+    @Override protected ResourceLocation glowBackupTexture(CarRenderState state)  { return GLOW_BACKUP; }
 }

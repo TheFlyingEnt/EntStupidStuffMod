@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.api.car.render;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.phys.Vec3;
 
 public class CarRenderState extends EntityRenderState {
  
@@ -48,4 +49,15 @@ public class CarRenderState extends EntityRenderState {
  
     /** Smoothly interpolated body roll Z rotation (radians). */
     public float bodyRoll = 0f;
+
+    // ── Car customization state ──────────────────────────────────────
+    /** Current wrap ID (e.g. "default", "gold", "fone_senna"). */
+    public String wrapId = "default";
+    public boolean isBreaking = false;
+    /** Car type ID for texture path (e.g. "nissan_z", "f1_car"). */
+    public String carTypeId = "car";
+    /** License plate item — empty if no plate installed. */
+    public net.minecraft.world.item.ItemStack licensePlate = net.minecraft.world.item.ItemStack.EMPTY;
+
+    public Vec3 plateOffset = new Vec3(0, -10.65, 1.85);
 }

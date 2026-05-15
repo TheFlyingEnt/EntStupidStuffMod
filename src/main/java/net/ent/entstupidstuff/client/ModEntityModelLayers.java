@@ -74,6 +74,8 @@ import net.ent.entstupidstuff.client.render.entity.renderer.PrismerineArrowRende
 import net.ent.entstupidstuff.client.render.entity.renderer.RedPandaRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.RedStoneGolemRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.ScorchedEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.ShipColliderRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.ShipTestRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SilkmothRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SlimedZombieEntityRenderer;
@@ -84,6 +86,7 @@ import net.ent.entstupidstuff.client.render.entity.renderer.SunkenSkeletonEntity
 import net.ent.entstupidstuff.client.render.entity.renderer.ZebraFishRenderer;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.DrownedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
@@ -334,6 +337,8 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation HONDACIVICR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"), "main");
     public static final ModelLayerLocation NISSANZ = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"), "main");
     public static final ModelLayerLocation F1CAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "f1car"), "main");
+
+    public static final ModelLayerLocation SHIPENTITYTEST = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shiptest"), "main");
 
 
 
@@ -636,6 +641,13 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.F1CAR, (EntityRendererProvider.Context context) -> new F1CarEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.F1CAR, F1CarEntityModel::createBodyLayer);
+
+        EntityRenderers.register(EntityFactory.SHIP, (EntityRendererProvider.Context context) -> new ShipTestRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIPENTITYTEST, CustomBoatModel::getTexturedModelData);
+
+        EntityRenderers.register(EntityFactory.SHIP_COLLIDER, (EntityRendererProvider.Context context) -> new ShipColliderRenderer(context));
+        //EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIP_COLLIDER, CustomBoatModel::getTexturedModelData);
+
 
         
 

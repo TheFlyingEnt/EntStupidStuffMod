@@ -24,6 +24,10 @@ import net.ent.entstupidstuff.item.base.MahiMahiBucketItem;
 import net.ent.entstupidstuff.item.base.PerchBucketItem;
 import net.ent.entstupidstuff.item.base.PrismerineArrowItem;
 import net.ent.entstupidstuff.item.base.ZebraFishBucketItem;
+import net.ent.entstupidstuff.item.base.car.CarWrapItem;
+import net.ent.entstupidstuff.item.base.car.FuelCanisterItem;
+import net.ent.entstupidstuff.item.base.car.LicensePlateItem;
+import net.ent.entstupidstuff.item.base.car.TireItem;
 import net.ent.entstupidstuff.item.base.combat.WeaponBattleAxeItem;
 import net.ent.entstupidstuff.item.base.combat.WeaponClaymoreItem;
 import net.ent.entstupidstuff.item.base.combat.WeaponDaggerNew;
@@ -371,6 +375,11 @@ public class ItemFactory {
     public static final Item DIAMOND_LONG_SWORD = registerItem("diamond_long_sword", settings -> new LongSwordItem(ToolMaterial.DIAMOND, settings));
     public static final Item NETHERITE_LONG_SWORD = registerItem("netherite_long_sword", settings -> new LongSwordItem(ToolMaterial.NETHERITE, settings.fireResistant()));
 
+    public static final Item TIRE           = registerItem("tire", settings -> new TireItem(settings));
+    public static final Item FUEL_CANISTER  = registerItem("fuel_canister", settings -> new FuelCanisterItem(settings));
+    public static final Item LICENSE_PLATE  = registerItem("license_plate", settings -> new LicensePlateItem(settings));
+    public static final Item CAR_WRAP       = registerItem("car_wrap", settings -> new CarWrapItem(settings));
+
     // # Mob Heads
 
     public static final Item DROWNED_HEAD = registerItem( "drown_head", setting -> new StandingAndWallBlockItem(BlockFactory.DROWNED_HEAD, BlockFactory.DROWNED_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
@@ -397,7 +406,7 @@ public class ItemFactory {
     public static final Item METAL_SKELETON_RED_SKULL = registerItem( "metal_skeleton_red_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_RED_SKULL, BlockFactory.METAL_SKELETON_RED_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
     public static final Item METAL_SKELETON_BLUE_SKULL = registerItem( "metal_skeleton_blue_skull", setting -> new StandingAndWallBlockItem(BlockFactory.METAL_SKELETON_BLUE_SKULL, BlockFactory.METAL_SKELETON_BLUE_WALL_SKULL, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));
 
-    
+
 
     public static final Item KNIGHT_CASTING_TEMPLATE = registerItem("knight_casting_template", setting -> new CastingTemplateItem("knight", setting,
         // Iron Armor

@@ -75,6 +75,39 @@ public class ModDataComponentTypes {
             .networkSynchronized(ByteBufCodecs.INT)
             .build();
 
+    public static final DataComponentType<String> LICENSEPLATE = register(
+        "licenseplate_variant",
+        builder -> builder
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+    );
+
+    /*public static final DataComponentType<String> CAR_TYPE = DataComponentType.<String>builder()
+        .persistent(Codec.STRING)
+        .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+        .build();
+
+    public static final DataComponentType<String> WRAP_ID = DataComponentType.<String>builder()
+        .persistent(Codec.STRING)
+        .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+        .build();*/
+
+    public static final DataComponentType<String> CAR_TYPE = register(
+        "car_type",
+        builder -> builder
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+
+    );
+
+    public static final DataComponentType<String> WRAP_ID = register(
+        "wrap_id",
+        builder -> builder
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+    );
+
+
     //public static DataComponentType<ResourceLocation> TOOL_MOLD;
     //public static DataComponentType<ResourceLocation> ARMOR_MOLD;
 

@@ -38,6 +38,7 @@ public class F1CarEntityModel extends BaseCarEntityModel {
 		this.Back_Right_Wheel = this.body.getChild("Back_Right_Wheel");
 	}
 
+    @SuppressWarnings("unused")
     public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();

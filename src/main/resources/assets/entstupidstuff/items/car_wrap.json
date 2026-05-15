@@ -1,0 +1,76 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "entstupidstuff:car_type",
+    "cases": [
+      {
+        "when": "car",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "entstupidstuff:wrap_id",
+          "cases": [
+            { "when": "fone_audi", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_audi_wrap" } },
+            { "when": "fone_redbull_japan", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_redbull_japan_wrap" } },
+            { "when": "fone_camel", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_camel_wrap" } },
+            { "when": "fone_demonslayer", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_demonslayer_wrap" } },
+            { "when": "fone_senna", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_senna_wrap" } },
+            { "when": "fone_redbull", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_redbull_wrap" } },
+            { "when": "fone_jurassic_studios", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_jurassic_studios_wrap" } },
+            { "when": "fone_entity", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_entity_wrap" } },
+            { "when": "fone_lexus", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_lexus_wrap" } },
+            { "when": "fone_stake", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_stake_wrap" } },
+            { "when": "fone_aston", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_aston_wrap" } },
+            { "when": "fone_mclaren", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_mclaren_wrap" } },
+            { "when": "fone_ferrari_sf24", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_ferrari_sf24_wrap" } },
+            { "when": "fone_ferrari_sf26", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_ferrari_sf26_wrap" } },
+            { "when": "fone_cadillac", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_cadillac_wrap" } },
+            { "when": "fone_haas_vf24", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_haas_vf24_wrap" } },
+            { "when": "fone_mercades_w15", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_mercades_w15_wrap" } },
+            { "when": "fone_vcarb_01", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_vcarb_01_wrap" } },
+            { "when": "fone_blast", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_blast_wrap" } },
+            { "when": "fone_beamy", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_beamy_wrap" } },
+            { "when": "fone_ford", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_ford_wrap" } },
+            { "when": "fone_haas_vf26", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_haas_vf26_wrap" } },
+            { "when": "fone_bentley", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_bentley_wrap" } },
+            { "when": "fone_clt", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_clt_wrap" } },
+            { "when": "fone_cyberpunk", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_cyberpunk_wrap" } },
+            { "when": "fone_brawngp", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_brawngp_wrap" } },
+            { "when": "fone_blank_empty", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_blank_empty_wrap" } },
+            { "when": "fone_stock", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_stock_wrap" } }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "entstupidstuff:item/car_wrap"
+          }
+        }
+      },
+      {
+        "when": "nissan_z",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "entstupidstuff:wrap_id",
+          "cases": [
+            {
+              "when": "gold",
+              "model": {
+                "type": "minecraft:model",
+                "model": "entstupidstuff:item/nissan_z_gold_wrap"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "entstupidstuff:item/car_wrap"
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "entstupidstuff:item/car_wrap"
+    }
+  }
+}

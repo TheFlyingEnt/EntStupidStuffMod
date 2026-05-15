@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -110,10 +112,27 @@ public class GR86Entity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.404f; }
     @Override protected float surfacePenaltyScale() { return 1.2f; }  // performance summer tyres
+    @Override protected float crashResistance() { return 0.12f; }  // lightweight — poor crash structure
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (NA Boxer-4 — high-rev, progressive)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.highRevNA(
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
  
     public GR86Entity(EntityType<?> type, Level level) {
         super(type, level);

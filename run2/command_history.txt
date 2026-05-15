@@ -1,3 +1,18 @@
 /gamemode creative
 /summon entstupidstuff:dmc13
 /summon entstupidstuff:f1car
+/gamemode creative
+/summon entstupidstuff:f1car
+/carconfig realisticSpeed true
+/carconfig realisticSpeed false
+/carconfig realisticSpeed true
+/carconfig realisticSpeed false
+/carconfig realisticSpeed true
+/carconfig realisticSpeed false
+/summon entstupidstuff:dmc13
+/summon entstupidstuff:f1car
+/tp Player235
+/tp @s @p
+/tp @s Player781
+/summon entstupidstuff:f1car
+/carconfig realisticSpeed false

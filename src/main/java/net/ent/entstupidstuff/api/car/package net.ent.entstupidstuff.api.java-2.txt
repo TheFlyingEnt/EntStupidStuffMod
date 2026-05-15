@@ -1,0 +1,1327 @@
+package net.ent.entstupidstuff.api.car;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.ent.entstupidstuff.particle.ParticleTypesFactory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InterpolationHandler;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * BaseCarEntity — generic physics engine for all driveable cars.
+ *
+ * Every car-specific value is supplied via abstract methods.
+ * To create a new car:
+ *   1. Extend BaseCarEntity
+ *   2. Implement all abstract spec methods
+ *   3. Register the entity type with your car model/sounds
+ */
+public abstract class BaseCarEntity extends VehicleEntity {
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SEAT  (override in subclass if model differs)
+    // ═══════════════════════════════════════════════════════════
+ 
+    protected double seatHeight()  { return 0.4; }
+    protected double seatSide()    { return 0.5; }
+    protected double seatForward() { return -0.5; }
+
+    // ═══════════════════════════════════════════════════════════
+    //  REALISTIC SPEED  (override in subclass)
+    //
+    //  Scale factor = real-life top speed / in-game top speed.
+    //  When realisticSpeed toggle is ON, world velocity is multiplied
+    //  by this value. Internal physics (grip, drift, steering) runs
+    //  at the original tuned speed — only the world output is scaled.
+    //  This preserves the handling feel perfectly.
+    //
+    //  Default 1.0 = no change. Override per car with measured values.
+    // ═══════════════════════════════════════════════════════════
+
+    protected float realisticSpeedScale() { return 1.0f; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  ABSTRACT SPEC
+    // ═══════════════════════════════════════════════════════════
+ 
+    protected abstract float   idleRpm();
+    protected abstract float   redlineRpm();
+    protected abstract float   maxReverseRpm();
+    protected abstract float   maxReverseSpeed();
+    protected abstract float   downshiftRpm();
+    protected abstract int     clutchTicks();
+    protected abstract int     maxGear();
+    protected abstract float[] torqueRpmPoints();
+    protected abstract float[] torqueCurve();
+    protected abstract float[] gearRatios();
+    protected abstract float   finalDrive();
+    protected abstract float   tyreCirc();
+    protected abstract float   peakDriveForce();
+    protected abstract float   frontBias();
+    protected abstract float   rearBias();
+    protected abstract float   frontDist();
+    protected abstract float   rearDist();
+    protected abstract double  trackHalf();
+    protected abstract float   frontGripMax();
+    protected abstract float   rearGripMax();
+    protected abstract float   gripStiffness();
+    protected abstract float   slipThreshold();
+    protected abstract float   slipFalloff();
+    protected abstract float   latDecay();
+    protected abstract float   longTransfer();
+    protected abstract float   latTransfer();
+    protected abstract float   maxSteerDeg();
+    protected abstract double  peakSteerSpeed();
+    protected abstract double  highSteerFraction();
+    protected abstract float   driftSteerBoost();
+    protected abstract float   handbrakeRearGrip();
+    protected abstract float   yawMomentScale();
+    protected abstract float   yawDamping();
+    protected abstract float   yawMax();
+    protected abstract float   driftThreshold();
+    protected abstract float   throttleRampOn();
+    protected abstract float   throttleRampOff();
+    protected abstract double  rollingDrag();
+    protected abstract double  aeroDragStart();
+    protected abstract double  aeroDragK();
+    protected abstract boolean defaultIsRWD();
+
+    // ═══════════════════════════════════════════════════════════
+    //  SURFACE SENSITIVITY  (override in subclass)
+    //
+    //  Scales how much non-asphalt surfaces penalise grip.
+    //  Default 1.0 = standard road tyres (treaded, all-surface).
+    //
+    //  Higher values amplify the penalty:
+    //    surfaceFriction = 0.72 (gravel), penalty = 0.28
+    //    scale 1.0 → effective 0.72  (road car — moderate loss)
+    //    scale 2.5 → effective 0.30  (F1 slicks — nearly undriveable)
+    //
+    //  On asphalt (friction=1.0) the scale has zero effect.
+    //  Floor of 0.05 prevents complete zero-grip (always some friction).
+    //
+    //  Guidelines:
+    //    1.0  = all-season / touring tyres (Civic, stock road cars)
+    //    1.2  = performance summer tyres (GR86, Type R)
+    //    1.4  = max-performance street tyres (Viper, GT500, Nissan Z)
+    //    1.6  = semi-slick / track tyres (GT3 Cup 2)
+    //    2.5  = full slicks (F1 — almost no off-surface grip)
+    // ═══════════════════════════════════════════════════════════
+
+    protected float surfacePenaltyScale() { return 1.0f; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  FIXED PHYSICS CONSTANTS
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final int    TUNNEL_SCAN_HEIGHT = 8;
+    private static final double GRAVITY            = 0.08;
+    private static final double MAX_FALL_SPEED     = 3.92;
+    private static final double GROUND_STICK       = -0.08;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SYNCED DATA
+    // ═══════════════════════════════════════════════════════════
+ 
+    private static final EntityDataAccessor<Boolean> DATA_DRIFTING =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float>   DATA_WHEEL_SPIN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_REAR_WHEEL_SPIN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_STEER_INPUT =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_FORWARD_SPEED =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float>   DATA_ENGINE_RPM =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_GEAR =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_THROTTLE =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_BRAKING =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_BURNOUT =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_TUNNELED =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SERVER-SIDE PHYSICS STATE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private float   engineRPM      = 0f;
+    private int     currentGear    = 1;
+    private float   localSpeed     = 0f; // last computed forward speed — for client HUD
+
+    // ── Client-side physics state (for packet sending) ───────────
+    // tickPhysics only sets entityData when sync=true (server-side).
+    // On the driver's client, these local fields capture the state
+    // so sendPhysicsPacket() can read them.
+    private boolean localThrottle  = false;
+    private boolean localBraking   = false;
+    private boolean localBurnout   = false;
+    private boolean localDrifting  = false;
+    private int     clutchTimer    = 0;
+    private float   throttleSmooth = 0f;
+    private float   frontLat       = 0f;
+    private float   rearLat        = 0f;
+    private float   overYawRate    = 0f;
+    private float   wheelSpin      = 0f;
+    private float   rearWheelSpin  = 0f;
+    private float   burnoutRPM      = 0f;
+    private boolean wasBurningOut   = false;
+    private float   handbrakeSmooth = 0f; // 0=released → 1=fully engaged; ramps to prevent snap
+    private float   steerSmooth     = 0f; // -1..+1 ramped steering (Forza-style input smoothing)
+ 
+    // ── Cached spec arrays — avoids allocating new float[] every tick ──
+    private float[] cachedGearRatios;
+    private float[] cachedTorqueRpmPoints;
+    private float[] cachedTorqueCurve;
+ 
+ 
+    // ── Debug snapshot — written each tick so displaySpeed can read them ──
+    // These are the last computed values from tickPhysics.
+    private float dbgFrontLat       = 0f;
+    private float dbgRearLat        = 0f;
+    private float dbgOverYawRate    = 0f;
+    private float dbgThrottleSmooth = 0f;
+    private float dbgDriveForce     = 0f;
+    private float dbgRearGripTotal  = 0f;
+    private float dbgFrontGripTotal = 0f;
+    private float dbgRearGripLat    = 0f;
+    private float dbgSurfaceFriction= 1f;
+    private float dbgCoastDecay     = 0f;
+    private boolean dbgYawAllowed   = false;
+    private boolean dbgDrifting      = false;
+ 
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  GLOBAL TOGGLES  (static — shared across ALL car instances)
+    //
+    //  Changed via /carconfig commands. These persist for the
+    //  session — switching cars keeps your settings.
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * HUD mode — mutually exclusive. All false = normal HUD.
+     *   debugMode:     drivetrain focus (4 chat lines).
+     *   advancedDebug: full per-tick physics snapshot (6 chat lines).
+     *   scenarioTest:  single action-bar line with state label.
+     */
+    public static boolean debugMode      = false;
+    public static boolean advancedDebug  = false;
+    public static boolean scenarioTest   = false;
+
+    /**
+     * When true, world velocity is multiplied by realisticSpeedScale().
+     * Internal physics (grip, drift, traction) is unchanged — only
+     * the car's actual movement speed in the world is scaled.
+     */
+    public static boolean realisticSpeed = false;
+
+    /**
+     * When true, keyboard steering input (A/D) is smoothed with
+     * Forza-style ramping — tap = small nudge, hold = full lock.
+     * When false, A/D instantly sets steerInput to ±1 (raw digital).
+     */
+    public static boolean forzaTurning = true;
+
+    // ═══════════════════════════════════════════════════════════
+    //  PER-CAR TOGGLES  (instance — specific to each car entity)
+    // ═══════════════════════════════════════════════════════════
+
+    /** When false, surface/rain grip multipliers are bypassed. */
+    public boolean surfaceFrictionEnabled = true;
+
+    /**
+     * true  = RWD — drive torque loads rear traction circle → oversteer.
+     * false = FWD — drive torque loads front traction circle → understeer.
+     */
+    public boolean isRWD;
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  CONSTRUCTOR
+    // ═══════════════════════════════════════════════════════════
+ 
+    public BaseCarEntity(EntityType<?> type, Level level) {
+        super(type, level);
+        this.isRWD = defaultIsRWD();
+        this.cachedGearRatios      = gearRatios();
+        this.cachedTorqueRpmPoints = torqueRpmPoints();
+        this.cachedTorqueCurve     = torqueCurve();
+    }
+ 
+    @Override public float maxUpStep() { return 1.0f; }
+
+    /**
+     * Returns the first passenger as the controlling entity.
+     *
+     * This makes isLocalInstanceAuthoritative() return true on the
+     * driver's client — giving it ownership of the entity's position.
+     * The driver's client runs physics + move() for jitter-free movement.
+     *
+     * The server ALSO runs physics (without move()) purely to set
+     * entityData, which syncs to all other clients for sounds/particles.
+     */
+    @Override
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        return this.getFirstPassenger() instanceof LivingEntity le ? le : null;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CLIENT MOVEMENT PREDICTION
+    //
+    //  The server runs physics and sends position updates every few
+    //  ticks. Without client-side prediction, the car teleports to
+    //  each update and freezes in between — visible as jitter.
+    //
+    //  This method reconstructs movement from synced entityData
+    //  (forward speed + yaw) and applies it on the client every tick.
+    //  Server position corrections prevent drift over time.
+    //  No version-specific lerp API needed — works everywhere.
+    // ═══════════════════════════════════════════════════════════
+
+    /** Client-only: checks if the local player is riding this car (as driver or passenger). */
+    private boolean isLocalPlayerRiding() {
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        return mc.player != null && mc.player.getVehicle() == this;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CLIENT INTERPOLATION  (for passengers + bystanders)
+    //
+    //  When getInterpolation() returns non-null, server position
+    //  updates go through the handler's interpolateTo() instead of
+    //  snapping the entity position instantly. The built-in
+    //  InterpolationHandler smoothly lerps between updates.
+    //
+    //  interpolate() must be called each tick to advance the lerp.
+    // ═══════════════════════════════════════════════════════════
+
+    private InterpolationHandler carInterpolation;
+
+    @Override
+    @Nullable
+    public InterpolationHandler getInterpolation() {
+        // Only non-authoritative clients need interpolation.
+        // The driver's client runs its own physics — no lerp needed.
+        if (this.level().isClientSide() && !this.isLocalInstanceAuthoritative()) {
+            if (carInterpolation == null) {
+                carInterpolation = new InterpolationHandler(this);
+            }
+            return carInterpolation;
+        }
+        return null;
+    }
+
+    /** Client-only: predicts movement from synced entityData for bystanders. */
+    private void tickClientMovement() {
+        float speed = this.getForwardSpeed();
+        float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+
+        if (Math.abs(speed) > 0.001f) {
+            double yRad = Math.toRadians(this.getYRot());
+            double sinY = Math.sin(yRad), cosY = Math.cos(yRad);
+            double vx = speed * (-sinY) * spdScale;
+            double vz = speed * cosY * spdScale;
+            this.setDeltaMovement(vx, this.getDeltaMovement().y, vz);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+        }
+
+        // Gravity + ground stick on client too
+        if (!this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
+        } else if (this.getDeltaMovement().y < 0) {
+            this.setDeltaMovement(this.getDeltaMovement().x, 0, this.getDeltaMovement().z);
+        }
+    }
+ 
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_DRIFTING,        false);
+        builder.define(DATA_WHEEL_SPIN,      0f);
+        builder.define(DATA_REAR_WHEEL_SPIN, 0f);
+        builder.define(DATA_STEER_INPUT,     0f);
+        builder.define(DATA_FORWARD_SPEED,   0f);
+        builder.define(DATA_ENGINE_RPM,      0f);
+        builder.define(DATA_GEAR,            1);
+        builder.define(DATA_THROTTLE,        false);
+        builder.define(DATA_BRAKING,         false);
+        builder.define(DATA_BURNOUT,         false);
+        builder.define(DATA_TUNNELED,        false);
+        this.engineRPM  = idleRpm();
+        this.burnoutRPM = idleRpm();
+    }
+ 
+    @Override protected Item getDropItem() { return null; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  TICK
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public void tick() {
+        super.tick();
+
+        // ═══════════════════════════════════════════════════════════
+        //  HYBRID PHYSICS: driver's client + server both run physics.
+        //
+        //  Driver's client: reads local input (player.zza/xxa), runs
+        //    physics, calls move(). This gives the driver butter-smooth
+        //    movement with zero jitter — no server corrections to fight.
+        //
+        //  Server: reads input from getLastClientInput(), runs physics,
+        //    sets entityData. entityData syncs server→client so ALL other
+        //    clients (passengers, bystanders) get speed/RPM/drifting/etc.
+        //    Server does NOT call move() — the driver's client owns position
+        //    and sends it via vehicle move packets.
+        //
+        //  Non-driver clients: tickClientMovement() predicts movement
+        //    from synced entityData for smooth display.
+        // ═══════════════════════════════════════════════════════════
+
+        boolean isServer = !this.level().isClientSide();
+        boolean isClient = this.level().isClientSide();
+
+        // ── SERVER ───────────────────────────────────────────────────
+        if (isServer) {
+            if (this.getFirstPassenger() instanceof ServerPlayer sp) {
+                // ── DRIVEN: entityData comes from CarPhysicsPayload ──
+                // The driver's client sends exact physics state via a
+                // custom C2S packet every tick. applyPhysicsPacket()
+                // writes it to entityData → syncs to ALL other clients.
+                // No physics runs on the server — zero fighting.
+                //
+                // We still need to keep deltaMovement in sync so
+                // coasting works when the driver exits.
+                var input = sp.getLastClientInput();
+                boolean forward   = input.forward();
+                boolean backward  = input.backward();
+                boolean handbrake = input.jump();
+                boolean burnout   = forward && (backward || handbrake)
+                                    && Math.abs(this.getForwardSpeed()) < 0.30f;
+
+                // Reconstruct deltaMovement from the last synced speed
+                // so the car coasts correctly after driver exit.
+                float speed    = this.getForwardSpeed();
+                float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+                double yRad = Math.toRadians(this.getYRot());
+                this.setDeltaMovement(
+                    speed * (-Math.sin(yRad)) * spdScale,
+                    this.getDeltaMovement().y,
+                    speed * Math.cos(yRad) * spdScale);
+
+            } else if (this.getFirstPassenger() == null) {
+                // ── EMPTY: run physics for gravity/coast/decay ────────
+                frontLat      *= 0.70f;
+                rearLat       *= 0.70f;
+                overYawRate   *= 0.70f;
+                throttleSmooth = 0f;
+                steerSmooth    = 0f;
+                burnoutRPM     = idleRpm();
+
+                tickPhysics(false, false, false, false, false);
+
+                this.move(MoverType.SELF, this.getDeltaMovement());
+                if (this.onGround() && this.getDeltaMovement().y < 0)
+                    this.setDeltaMovement(this.getDeltaMovement().x, 0, this.getDeltaMovement().z);
+            }
+
+            this.applyEffectsFromBlocks();
+
+            if (this.tickCount % 5 == 0)
+                this.entityData.set(DATA_TUNNELED, detectTunnel());
+        }
+
+        // ── DRIVER'S CLIENT: full physics + movement (smooth) ────────
+        if (isClient && this.isLocalInstanceAuthoritative()) {
+            boolean forward = false, backward = false,
+                    left    = false, right    = false, handbrake = false;
+
+            if (this.getFirstPassenger() instanceof Player player) {
+                forward   = player.zza  >  0f;
+                backward  = player.zza  <  0f;
+                left      = player.xxa  >  0f;
+                right     = player.xxa  <  0f;
+                handbrake = player.isJumping();
+                if (this.tickCount % 2 == 0) displaySpeed(player);
+            } else {
+                frontLat      *= 0.70f;
+                rearLat       *= 0.70f;
+                overYawRate   *= 0.70f;
+                throttleSmooth = 0f;
+                steerSmooth    = 0f;
+                burnoutRPM     = idleRpm();
+            }
+
+            tickPhysics(forward, backward, left, right, handbrake);
+
+            Vec3 preMove = this.getDeltaMovement();
+            this.move(MoverType.SELF, preMove);
+
+            Vec3 postMove = this.getDeltaMovement();
+            boolean steppingUp = postMove.y > 0.01;
+            if (!steppingUp && this.onGround()) {
+                double bounceX = Math.abs(preMove.x) > 0.01 && Math.abs(postMove.x) < Math.abs(preMove.x) * 0.5
+                    ? -preMove.x * 0.35 : postMove.x;
+                double bounceZ = Math.abs(preMove.z) > 0.01 && Math.abs(postMove.z) < Math.abs(preMove.z) * 0.5
+                    ? -preMove.z * 0.35 : postMove.z;
+                if (bounceX != postMove.x || bounceZ != postMove.z)
+                    this.setDeltaMovement(bounceX, postMove.y, bounceZ);
+            }
+
+            if (this.onGround() && this.getDeltaMovement().y < 0)
+                this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
+
+            this.applyEffectsFromBlocks();
+
+            // Send physics state to server → server writes to entityData
+            // → entityData syncs to ALL other clients (sounds, particles, etc.)
+            sendPhysicsPacket();
+        }
+
+        // ── NON-DRIVER CLIENTS: smooth interpolation ─────────────
+        // Use Minecraft's InterpolationHandler for ALL non-driver clients.
+        // Server sends correct position/yaw via entity tracking.
+        // The handler smoothly lerps toward each update — no prediction
+        // drift, no position accumulation errors.
+        if (isClient && !this.isLocalInstanceAuthoritative()) {
+            if (carInterpolation != null) {
+                carInterpolation.interpolate();
+            }
+        }
+
+        // ── ALL CLIENTS: particles + exhaust ─────────────────────────
+        if (isClient) {
+            spawnWheelParticles();
+            spawnExhaust();
+        }
+
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PHYSICS ENGINE
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void tickPhysics(boolean forward, boolean backward,
+                              boolean left,    boolean right, boolean handbrake) {
+ 
+        // Only the server writes to entityData. On integrated server,
+        // both client and server ticks run on the same entity — if both
+        // write entityData, the server's delayed values overwrite the
+        // client's correct values every sync cycle, causing oscillation
+        // (e.g. speed jumping between 14 and 192 km/h).
+        boolean sync = !this.level().isClientSide();
+
+        // ── 1. Local velocity ─────────────────────────────────────────────
+        // When realisticSpeed is ON, world velocity is scaled up by spdScale.
+        // Divide it back down here so all internal physics runs at the
+        // original tuned speed. Multiply back up at Step 13 (reproject).
+        float  spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+        double yRad  = Math.toRadians(this.getYRot());
+        double sinY  = Math.sin(yRad), cosY = Math.cos(yRad);
+        Vec3   vel   = this.getDeltaMovement();
+ 
+        double localFwd  = (-vel.x * sinY + vel.z * cosY) / spdScale;
+        double localY    =  vel.y;
+        float  speed     = (float) Math.abs(localFwd);
+        boolean goingFwd = localFwd >  0.01;
+        boolean goingRev = localFwd < -0.01;
+ 
+        // ── 2. Input flags ────────────────────────────────────────────────
+        boolean throttleActive = (forward  && !goingRev) || (backward && !goingFwd);
+        boolean brakingActive  = (backward && goingFwd)  || (forward  && goingRev);
+        boolean burnout        = forward && (backward || handbrake) && speed < 0.30f;
+
+        // ── 2b. Steering input ─────────────────────────────────────────────
+        float steerInput;
+
+        if (forzaTurning) {
+            // Forza-style: keys are binary (0/1) but steering ramps smoothly.
+            // Tap A briefly = small nudge. Hold A = builds to full lock.
+            // Release = re-centers faster than it turns in.
+            // Speed-sensitive: high speed slows turn-in rate.
+            // Drift boost: counter-steer is more responsive while sliding.
+            float steerTarget = left ? -1f : right ? 1f : 0f;
+
+            float turnInBase    = 0.12f; // base turn-in rate (~8 ticks to full lock)
+            float recenterRate  = 0.22f; // re-center rate  (~5 ticks back to zero)
+
+            // Slow turn-in at high speed: 100% at 0 speed → 55% at 0.6+ bl/tick
+            float speedFactor = 1.0f - Mth.clamp(speed / 0.6f, 0f, 1f) * 0.45f;
+            float turnInRate  = turnInBase * speedFactor;
+
+            // Boost turn-in during drift for counter-steer responsiveness
+            boolean wasDrifting = Math.abs(rearLat) > driftThreshold();
+            if (wasDrifting) turnInRate *= 1.5f;
+
+            float steerRate = (steerTarget != 0f) ? turnInRate : recenterRate;
+            steerSmooth += (steerTarget - steerSmooth) * steerRate;
+            if (Math.abs(steerSmooth) < 0.01f) steerSmooth = 0f;
+
+            steerInput = steerSmooth;
+        } else {
+            // Raw digital: A/D instantly sets ±1 (original behaviour)
+            steerInput = left ? -1f : right ? 1f : 0f;
+            steerSmooth = steerInput; // keep in sync so switching modes is seamless
+        }
+
+        if (sync) this.entityData.set(DATA_THROTTLE,    throttleActive || burnout);
+        if (sync) this.entityData.set(DATA_BRAKING,     brakingActive);
+        if (sync) this.entityData.set(DATA_BURNOUT,     burnout);
+        this.localThrottle = throttleActive || burnout;
+        this.localBraking  = brakingActive;
+        this.localBurnout  = burnout;
+        if (sync) this.entityData.set(DATA_STEER_INPUT, steerInput);
+ 
+        // ── 3. Smooth throttle ────────────────────────────────────────────
+        float throttleTarget = throttleActive ? 1.0f : 0.0f;
+        float ramp = throttleTarget > throttleSmooth ? throttleRampOn() : throttleRampOff();
+        throttleSmooth = Mth.clamp(
+            throttleSmooth + (throttleTarget - throttleSmooth) * ramp, 0f, 1f);
+ 
+        // ── 3b. Handbrake engagement ramp ─────────────────────────────────
+        // Ramps 0→1 over ~7 ticks on press, releases slightly faster.
+        // Prevents the rear grip from dropping instantly — snapping to a
+        // 90–180° spin on first press — giving the driver time to steer into the slide.
+        handbrakeSmooth = handbrake
+            ? Math.min(1f, handbrakeSmooth + 0.14f)
+            : Math.max(0f, handbrakeSmooth - 0.20f);
+ 
+        // ── 4. Drivetrain chain ───────────────────────────────────────────
+        final float[] GR = cachedGearRatios;
+ 
+        if (burnout) {
+            final float BURN_RPM_RISE = 140f;
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                engineRPM = burnoutRPM;
+            } else {
+                burnoutRPM = Math.min(redlineRpm(), burnoutRPM + BURN_RPM_RISE);
+                if (burnoutRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    burnoutRPM *= (GR[currentGear] / GR[currentGear - 1]);
+                } else if (burnoutRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                }
+                engineRPM = burnoutRPM;
+            }
+            engineRPM  = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+            burnoutRPM = engineRPM;
+            wasBurningOut = true;
+ 
+        } else if (speed < 0.005f) {
+            if (!wasBurningOut) currentGear = 1;
+            clutchTimer = 0;
+            engineRPM   = idleRpm() + throttleSmooth * 600f;
+        } else {
+            wasBurningOut = false;
+            float wheelRPS = speed / tyreCirc() * 20f;
+            float rawRPM   = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+ 
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                float blend = clutchTimer / (float) clutchTicks();
+                engineRPM = Mth.lerp(blend, rawRPM, engineRPM * 0.72f);
+            } else if (goingFwd) {
+                if (rawRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                } else if (rawRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                }
+                engineRPM = rawRPM;
+            } else if (goingRev) {
+                float revFraction = Math.min(1f, speed / maxReverseSpeed());
+                engineRPM = idleRpm() + revFraction * (maxReverseRpm() - idleRpm());
+            }
+            engineRPM = Math.max(engineRPM, idleRpm() + throttleSmooth * 500f);
+            engineRPM = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+        }
+ 
+        if (sync) this.entityData.set(DATA_ENGINE_RPM, engineRPM);
+        if (sync) this.entityData.set(DATA_GEAR,       currentGear);
+ 
+        // ── 5. Drive force ────────────────────────────────────────────────
+        float torqueNorm = lookupTorque(engineRPM);
+        float gearMult   = GR[currentGear] / GR[1];
+        float driveForce = torqueNorm * throttleSmooth * peakDriveForce() * gearMult;
+        if (clutchTimer > 0) driveForce = 0f;
+ 
+        // ── 5b. Surface friction ──────────────────────────────────────────
+        // Raw friction: 1.0 = asphalt, 0.10 = blue ice, 0.72 = gravel.
+        // surfacePenaltyScale amplifies the penalty for slick tyres:
+        //   penalty = (1 - raw) * scale, clamped so friction >= 0.05.
+        //   On asphalt (raw=1.0) the scale has zero effect.
+        float rawFriction     = surfaceFrictionEnabled ? computeSurfaceFriction() : 1.0f;
+        float penalty         = (1.0f - rawFriction) * surfacePenaltyScale();
+        float surfaceFriction = Math.max(0.05f, 1.0f - penalty);
+        float adjustedRearGripMax  = rearGripMax()  * surfaceFriction;
+        float adjustedFrontGripMax = frontGripMax() * surfaceFriction;
+        double surfaceRollingDrag  = rollingDrag() - (1.0 - surfaceFriction) * 0.04;
+ 
+        // ── 6. Weight transfer ────────────────────────────────────────────
+        float wt          = driveForce - (brakingActive ? 0.04f : 0f);
+        float rearWeight  = Mth.clamp(rearBias()  + wt * longTransfer(), 0.30f, 0.70f);
+        float frontWeight = Mth.clamp(frontBias() - wt * longTransfer(), 0.30f, 0.70f);
+ 
+        // ── 7. Traction circle ────────────────────────────────────────────
+        float rearGripTotal  = rearWeight  * adjustedRearGripMax;
+        float frontGripTotal = frontWeight * adjustedFrontGripMax;
+ 
+        float driveUsedRear  = isRWD  ? Math.min(Math.abs(driveForce), rearGripTotal)  : 0f;
+        float driveUsedFront = !isRWD ? Math.min(Math.abs(driveForce), frontGripTotal) : 0f;
+ 
+        float rearGripLat;
+        {
+            // Compute normal (non-handbrake) lateral grip first
+            float normalRearGripLat;
+            if (isRWD) {
+                normalRearGripLat = (float) Math.sqrt(Math.max(0.0,
+                    (double) rearGripTotal * rearGripTotal - (double) driveUsedRear * driveUsedRear));
+                normalRearGripLat = Math.max(normalRearGripLat, rearGripTotal * 0.40f);
+            } else {
+                normalRearGripLat = rearGripTotal;
+            }
+            // Blend toward locked-axle grip as handbrake engages.
+            // handbrakeSmooth=0 → full normal grip; handbrakeSmooth=1 → full locked grip.
+            // This gives the driver ~7 ticks to steer into the slide before full lock.
+            float lockedRearGripLat = handbrakeRearGrip() * adjustedRearGripMax;
+            rearGripLat = Mth.lerp(handbrakeSmooth, normalRearGripLat, lockedRearGripLat);
+        }
+ 
+        float frontGripLat;
+        if (!isRWD) {
+            frontGripLat = (float) Math.sqrt(Math.max(0.0,
+                (double) frontGripTotal * frontGripTotal - (double) driveUsedFront * driveUsedFront));
+            frontGripLat = Math.max(frontGripLat, frontGripTotal * 0.40f);
+        } else {
+            frontGripLat = frontGripTotal;
+        }
+ 
+        float latAbs       = Math.max(Math.abs(frontLat), Math.abs(rearLat));
+        float latReduction = Mth.clamp(latAbs * latTransfer(), 0f, 0.18f);
+        frontGripLat *= (1f - latReduction);
+        rearGripLat  *= (1f - latReduction);
+ 
+        // ── 8. Longitudinal motion ────────────────────────────────────────
+        // Brake/handbrake decel scales with surface grip — ice is nearly
+        // impossible to stop on, gravel is noticeably worse than asphalt.
+        // Floor at 0.25 so even blue ice has some braking (engine braking helps too).
+        float brakeFriction = Math.max(surfaceFriction, 0.25f);
+ 
+        if (burnout) {
+            localFwd *= 0.60;
+            if (Math.abs(localFwd) < 0.005) localFwd = 0.0;
+        } else if (throttleActive) {
+            if (forward) {
+                double cap = goingRev ? 0.10 : (isRWD ? rearGripTotal : frontGripTotal);
+                localFwd = Math.min(localFwd + Math.min(driveForce, cap), 75.0);
+            } else {
+                // Reverse accel scales with peakDriveForce — heavy/powerful
+                // cars push backward faster than economy cars.
+                float reverseAccel = peakDriveForce() * 0.04f;
+                localFwd = Math.max(localFwd - reverseAccel, -maxReverseSpeed());
+            }
+        }
+ 
+        if (!burnout && brakingActive) {
+            float brakeDecel = 0.035f * brakeFriction;
+            if (goingFwd)      localFwd = Math.max(0.0, localFwd - brakeDecel);
+            else if (goingRev) localFwd = Math.min(0.0, localFwd + brakeDecel);
+        }
+ 
+        if (!forward && !backward && !handbrake) {
+            double eb = 0.004 * (GR[currentGear] / GR[maxGear()]);
+            if (goingFwd)      localFwd -= eb;
+            else if (goingRev) localFwd += eb;
+        }
+ 
+        if (handbrake) {
+            float handbrakeDecel = 0.06f * brakeFriction;
+            if (goingFwd)      localFwd = Math.max(0.0, localFwd - handbrakeDecel);
+            else if (goingRev) localFwd = Math.min(0.0, localFwd + handbrakeDecel);
+        }
+ 
+        localFwd *= surfaceRollingDrag;
+        if (Math.abs(localFwd) > aeroDragStart()) {
+            double excess = Math.abs(localFwd) - aeroDragStart();
+            localFwd -= Math.signum(localFwd) * excess * aeroDragK() * 20;
+        }
+        if (Math.abs(localFwd) < 0.001) localFwd = 0.0;
+ 
+        // ── 9. Steering ───────────────────────────────────────────────────
+        boolean drifting = Math.abs(rearLat) > driftThreshold();
+        if (speed > 0.01f && steerInput != 0f) {
+            float steerDeg = computeSteerAngle(speed, drifting);
+            if (!isRWD && frontGripTotal > 0f) {
+                float saturation = Mth.clamp(driveUsedFront / frontGripTotal, 0f, 1f);
+                steerDeg *= (1f - saturation * 0.20f);
+            }
+            float revSign = goingRev ? -1f : 1f;
+            this.setYRot(this.getYRot() + steerInput * steerDeg * revSign);
+        }
+ 
+        // ── 10. Centripetal lateral + persistent axle model ───────────────
+        // Fires for both forward and reverse — without this, reversing around
+        // a corner has zero lateral physics (car pivots on a pin).
+        // dirSign flips the centripetal direction for reverse geometry.
+        if (speed > 0.01f && steerInput != 0f) {
+            float steerRad       = (float) Math.toRadians(computeSteerAngle(speed, drifting));
+            float dirSign        = goingRev ? -1f : 1f;
+            float centripetalLat = (float)(Math.sin(steerRad) * Math.abs(localFwd)) * steerInput * dirSign;
+            frontLat += centripetalLat * (rearDist()  / (frontDist() + rearDist()));
+            rearLat  += centripetalLat * (frontDist() / (frontDist() + rearDist()));
+        }
+ 
+        float frontCorrect = computeGripForce(frontLat, frontGripLat);
+        frontLat -= frontCorrect;
+ 
+        float rearCorrect;
+        {
+            float normalCorrect = computeGripForce(rearLat, rearGripLat);
+            float lockedCorrect = rearLat * handbrakeRearGrip() * gripStiffness();
+            rearCorrect = Mth.lerp(handbrakeSmooth, normalCorrect, lockedCorrect);
+        }
+        rearLat -= rearCorrect;
+ 
+        // Coast decay: prevents passive spinning from centripetal injection alone.
+        float coastDecay = (handbrakeSmooth < 0.05f && throttleSmooth < 0.15f)
+            ? 0.50f       // coasting: bleed off fast
+            : latDecay(); // under power or handbrake: normal
+        frontLat *= coastDecay;
+        rearLat  *= coastDecay;
+        if (Math.abs(frontLat) < 0.0005f) frontLat = 0f;
+        if (Math.abs(rearLat)  < 0.0005f) rearLat  = 0f;
+ 
+        float overallLat = frontLat * frontBias() + rearLat * rearBias();
+ 
+        // ── 11. Yaw moment ────────────────────────────────────────────────
+        // RWD: fires under throttle or handbrake.
+        // FWD: handbrake only — no power oversteer.
+        drifting = Math.abs(rearLat) > driftThreshold();
+        boolean yawAllowed = handbrake
+                          || (isRWD && (throttleSmooth > 0.15f || burnout));
+        if (drifting && yawAllowed) {
+            float excessDiff = rearLat - frontLat;
+            overYawRate += excessDiff * yawMomentScale();
+        } else {
+            overYawRate *= 0.55f;
+        }
+        overYawRate *= yawDamping();
+        overYawRate  = Mth.clamp(overYawRate, -yawMax(), yawMax());
+        this.setYRot(this.getYRot() + overYawRate);
+ 
+        if (sync) this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
+        this.localDrifting = drifting || burnout || Math.abs(overYawRate) > 1.2f;
+ 
+        // ── 12. Gravity ───────────────────────────────────────────────────
+        localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
+ 
+        // ── 13. Reproject to world ────────────────────────────────────────
+        // Multiply by spdScale so world movement matches realistic speed.
+        // Internal physics ran at original scale; this is the only place
+        // the scale affects actual movement.
+        double nYRad = Math.toRadians(this.getYRot());
+        double nSin  = Math.sin(nYRad), nCos = Math.cos(nYRad);
+        this.setDeltaMovement(
+            (localFwd * (-nSin) + overallLat * nCos) * spdScale,
+            localY,
+            (localFwd *   nCos  + overallLat * nSin) * spdScale);
+ 
+        // ── 14. Wheel spin cosmetics ──────────────────────────────────────
+        // RWD burnout: rear wheels spin fast, front wheels idle (speed-based).
+        // FWD burnout: front wheels spin fast, rear wheels idle (speed-based).
+        // Wheel spin uses world speed (speed * spdScale) so the visual
+        // rotation matches how fast the car appears to move.
+        float worldSpeed = speed * spdScale;
+        float burnoutDeg = burnout ? (engineRPM / redlineRpm()) * 90f : 0f;
+ 
+        if (burnout && !isRWD) {
+            // FWD burnout — front axle gets RPM spin
+            wheelSpin += burnoutDeg;
+        } else {
+            wheelSpin += worldSpeed * 180f;
+        }
+        if (wheelSpin > 360000f) wheelSpin -= 360000f;
+        if (sync) this.entityData.set(DATA_WHEEL_SPIN, wheelSpin);
+ 
+        if (burnout && isRWD) {
+            // RWD burnout — rear axle gets RPM spin
+            rearWheelSpin += burnoutDeg;
+        } else if (speed > 0.005f) {
+            rearWheelSpin += worldSpeed * 180f;
+        }
+        if (rearWheelSpin > 360000f) rearWheelSpin -= 360000f;
+        if (sync) this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
+        if (sync) this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
+        this.localSpeed = (float) localFwd; // always store for client HUD
+ 
+        // ── Debug snapshot ────────────────────────────────────────────────
+        dbgFrontLat        = frontLat;
+        dbgRearLat         = rearLat;
+        dbgOverYawRate     = overYawRate;
+        dbgThrottleSmooth  = throttleSmooth;
+        dbgDriveForce      = driveForce;
+        dbgRearGripTotal   = rearGripTotal;
+        dbgFrontGripTotal  = frontGripTotal;
+        dbgRearGripLat     = rearGripLat;
+        dbgSurfaceFriction = surfaceFriction;
+        dbgCoastDecay      = coastDecay;
+        dbgYawAllowed      = yawAllowed;
+        dbgDrifting        = drifting;
+ 
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HELPERS
+    // ═══════════════════════════════════════════════════════════
+ 
+    private boolean detectTunnel() {
+        if (!this.onGround()) return false;
+        BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
+        for (int i = 1; i <= TUNNEL_SCAN_HEIGHT; i++) {
+            if (this.level().getBlockState(base.above(i)).isSolid()) return true;
+        }
+        return false;
+    }
+ 
+    public float getTunnelStrength() {
+        if (!this.isTunneled()) return 0f;
+        BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
+        for (int i = 1; i <= TUNNEL_SCAN_HEIGHT; i++) {
+            if (this.level().getBlockState(base.above(i)).isSolid())
+                return 1.0f - (i - 1f) / TUNNEL_SCAN_HEIGHT;
+        }
+        return 0f;
+    }
+ 
+    private float computeSurfaceFriction() {
+        BlockPos underPos = BlockPos.containing(this.getX(), this.getY() - 0.2, this.getZ());
+        BlockState under  = this.level().getBlockState(underPos);
+        net.minecraft.world.level.block.Block block = under.getBlock();
+ 
+        float friction;
+        if      (block == Blocks.BLUE_ICE)                                           friction = 0.10f;
+        else if (block == Blocks.ICE || block == Blocks.PACKED_ICE
+              || block == Blocks.FROSTED_ICE)                                        friction = 0.25f;
+        else if (block == Blocks.SOUL_SAND || block == Blocks.SOUL_SOIL)             friction = 0.45f;
+        else if (block == Blocks.SAND || block == Blocks.RED_SAND
+              || block == Blocks.SUSPICIOUS_SAND)                                    friction = 0.55f;
+        else if (block == Blocks.GRAVEL || block == Blocks.COARSE_DIRT
+              || block == Blocks.DIRT_PATH)                                          friction = 0.72f;
+        else if (under.is(BlockTags.DIRT)
+              || block == Blocks.GRASS_BLOCK || block == Blocks.PODZOL
+              || block == Blocks.FARMLAND   || block == Blocks.MYCELIUM
+              || block == Blocks.MUD        || block == Blocks.MUDDY_MANGROVE_ROOTS) friction = 0.65f;
+        else                                                                          friction = 1.00f;
+ 
+        if (this.level().isRaining() && this.level().canSeeSky(underPos.above()))
+            friction *= 0.80f;
+        return friction;
+    }
+ 
+    private float computeGripForce(float slip, float gripMax) {
+        float raw = Mth.clamp(slip, -gripMax, gripMax);
+        if (Math.abs(slip) > slipThreshold()) {
+            float falloff = slipFalloff() + (1f - slipFalloff()) * (slipThreshold() / Math.abs(slip));
+            raw *= falloff;
+        }
+        return raw * gripStiffness();
+    }
+ 
+    private float lookupTorque(float rpm) {
+        float[] rpmPts = cachedTorqueRpmPoints;
+        float[] trqPts = cachedTorqueCurve;
+        if (rpm <= rpmPts[0]) return trqPts[0];
+        for (int i = 1; i < rpmPts.length; i++) {
+            if (rpm <= rpmPts[i]) {
+                float t = (rpm - rpmPts[i-1]) / (rpmPts[i] - rpmPts[i-1]);
+                return trqPts[i-1] + t * (trqPts[i] - trqPts[i-1]);
+            }
+        }
+        return trqPts[trqPts.length - 1];
+    }
+ 
+    private float computeSteerAngle(float speed, boolean drifting) {
+        float steer;
+        double peak = peakSteerSpeed();
+        if (peak < 0.001) peak = 0.001; // guard against zero
+        if (speed <= peak) {
+            steer = maxSteerDeg() * (float)(speed / peak);
+        } else {
+            double denom = 1.0 - peak;
+            if (denom < 0.001) denom = 0.001; // guard against peakSteerSpeed ≈ 1.0
+            double t = Mth.clamp((speed - peak) / denom, 0.0, 1.0);
+            steer = maxSteerDeg() * (float)(1.0 - t * (1.0 - highSteerFraction()));
+        }
+        return drifting ? steer * driftSteerBoost() : steer;
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PARTICLES
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void spawnWheelParticles() {
+        if (!this.onGround()) return;
+        boolean burnoutActive = this.isBurningOut();
+        double speed = Math.abs(this.getForwardSpeed());
+        if (speed < 0.05 && !burnoutActive) return;
+        boolean drifting = this.isDrifting();
+ 
+        double yRad = Math.toRadians(this.getYRot());
+        double sinY = Math.sin(yRad), cosY = Math.cos(yRad);
+        double fwdX = -sinY, fwdZ = cosY;
+        double rgtX =  cosY, rgtZ = sinY;
+ 
+        // Rearward unit vector — smoke streams away from spinning tires during burnout.
+        // Opposite of forward: (+sinY, 0, -cosY).
+        double rearX = sinY, rearZ = -cosY;
+ 
+        double fax = fwdX * frontDist(), faz = fwdZ * frontDist();
+        double rax = -fwdX * rearDist(), raz = -fwdZ * rearDist();
+        double lox = rgtX * trackHalf(), loz = rgtZ * trackHalf();
+ 
+        if (burnoutActive) {
+            // RWD: rear wheels spin → smoke rear axle.
+            // FWD: front wheels spin → smoke front axle.
+            if (isRWD) {
+                spawnWheelAt(rax + lox, 0.05, raz + loz, true,  rearX, rearZ);
+                spawnWheelAt(rax - lox, 0.05, raz - loz, true,  rearX, rearZ);
+            } else {
+                spawnWheelAt(fax + lox, 0.05, faz + loz, true,  rearX, rearZ);
+                spawnWheelAt(fax - lox, 0.05, faz - loz, true,  rearX, rearZ);
+            }
+        } else {
+            spawnWheelAt(fax + lox, 0.05, faz + loz, drifting, rearX, rearZ);
+            spawnWheelAt(fax - lox, 0.05, faz - loz, drifting, rearX, rearZ);
+            spawnWheelAt(rax + lox, 0.05, raz + loz, drifting, rearX, rearZ);
+            spawnWheelAt(rax - lox, 0.05, raz - loz, drifting, rearX, rearZ);
+        }
+ 
+        // Debug flame particles at physics wheel positions — visible when debugMode is on.
+        // Remove once wheels are correctly aligned in Blockbench.
+        if (debugMode && this.tickCount % 3 == 0) {
+            spawnDebugFlame(fax + lox, 0.05, faz + loz);
+            spawnDebugFlame(fax - lox, 0.05, faz - loz);
+            spawnDebugFlame(rax + lox, 0.05, raz + loz);
+            spawnDebugFlame(rax - lox, 0.05, raz - loz);
+        }
+    }
+ 
+    private void spawnDebugFlame(double ox, double oy, double oz) {
+        Vec3 pos = this.position();
+        this.level().addParticle(ParticleTypes.FLAME,
+            pos.x + ox, pos.y + oy + 0.3, pos.z + oz, 0, 0.05, 0);
+    }
+ 
+    private void spawnWheelAt(double ox, double oy, double oz,
+                               boolean smoking, double rearX, double rearZ) {
+        Vec3 pos = this.position();
+        double px = pos.x + ox, py = pos.y + oy, pz = pos.z + oz;
+ 
+        // Block dust — always spawns while moving
+        BlockState bs = this.level().getBlockState(BlockPos.containing(px, py - 0.2, pz));
+        Vec3 vel = this.getDeltaMovement();
+        double dustVx = -vel.x * 0.15 + (random.nextDouble() - 0.5) * 0.04;
+        double dustVz = -vel.z * 0.15 + (random.nextDouble() - 0.5) * 0.04;
+        this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, bs),
+            px, py, pz, dustVx, 0.01, dustVz);
+ 
+        if (!smoking) return;
+ 
+        boolean burnout = this.isBurningOut();
+        for (int i = 0; i < 4; i++) {
+            double spreadX = (random.nextDouble() - 0.5) * 0.25;
+            double spreadZ = (random.nextDouble() - 0.5) * 0.25;
+            double spreadY = random.nextDouble() * 0.10;
+ 
+            double smokeVx, smokeVy, smokeVz;
+            if (burnout) {
+                // Stream rearward from spinning tire — speed scales with RPM fraction.
+                double stream = 0.04 + this.getRPM() * 0.06;
+                smokeVx = rearX * stream + (random.nextDouble() - 0.5) * 0.02;
+                smokeVy = 0.01 + random.nextDouble() * 0.02;
+                smokeVz = rearZ * stream + (random.nextDouble() - 0.5) * 0.02;
+            } else {
+                // Drift smoke: stationary billowing cloud
+                smokeVx = (random.nextDouble() - 0.5) * 0.002;
+                smokeVy = 0.0;
+                smokeVz = (random.nextDouble() - 0.5) * 0.002;
+            }
+ 
+            this.level().addParticle(ParticleTypesFactory.TYRE_SMOKE,
+                px + spreadX, py + spreadY, pz + spreadZ,
+                smokeVx, smokeVy, smokeVz);
+        }
+    }
+ 
+    /** Override in subclass to add exhaust particles. */
+    protected void spawnExhaust() {}
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  PASSENGERS
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public Vec3 getDismountLocationForPassenger(LivingEntity p) {
+        return this.position().add(1.5 * (p == this.getFirstPassenger() ? 1 : -1), 0, 0);
+    }
+ 
+    @Override
+    protected Vec3 getPassengerAttachmentPoint(Entity p, EntityDimensions dims, float scale) {
+        int i = this.getPassengers().indexOf(p);
+        double lx = (i == 0) ? seatSide() : -seatSide();
+        double yRad = Math.toRadians(this.getYRot());
+        double sin = Math.sin(yRad), cos = Math.cos(yRad);
+        return new Vec3(lx*cos + seatForward()*(-sin), seatHeight(),
+                        lx*sin + seatForward()*   cos);
+    }
+ 
+    @Override protected boolean canAddPassenger(Entity p) { return this.getPassengers().size() < 2; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  INTERACTION
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if (player.isSecondaryUseActive()) return InteractionResult.PASS;
+        if (!this.level().isClientSide()) player.startRiding(this);
+        return InteractionResult.SUCCESS;
+    }
+ 
+    @Override public boolean isPickable() { return !this.isRemoved(); }
+    @Override public boolean isPushable()  { return false; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  NETWORK: physics state sync (C2S packet)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Server-side: called by the packet handler when the driver's client
+     * sends a CarPhysicsPayload. Writes all physics values to entityData,
+     * which auto-syncs to ALL other clients.
+     */
+    public void applyPhysicsPacket(CarPhysicsPayload p) {
+        this.entityData.set(DATA_FORWARD_SPEED, p.forwardSpeed());
+        this.entityData.set(DATA_ENGINE_RPM,    p.engineRPM());
+        this.entityData.set(DATA_GEAR,          p.gear());
+        this.entityData.set(DATA_WHEEL_SPIN,    p.wheelSpin());
+        this.entityData.set(DATA_REAR_WHEEL_SPIN, p.rearWheelSpin());
+        this.entityData.set(DATA_STEER_INPUT,   p.steerInput());
+        this.entityData.set(DATA_THROTTLE,      p.throttle());
+        this.entityData.set(DATA_BRAKING,       p.braking());
+        this.entityData.set(DATA_BURNOUT,       p.burnout());
+        this.entityData.set(DATA_DRIFTING,      p.drifting());
+    }
+
+    /**
+     * Client-side: sends the driver's exact physics state to the server.
+     * Called every tick from the driver's client after tickPhysics().
+     */
+    private void sendPhysicsPacket() {
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+            new CarPhysicsPayload(
+                this.getId(),
+                this.localSpeed,
+                this.engineRPM,
+                this.currentGear,
+                this.wheelSpin,
+                this.rearWheelSpin,
+                this.steerSmooth,
+                this.localThrottle,
+                this.localBraking,
+                this.localBurnout,
+                this.localDrifting
+            )
+        );
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  DATA ACCESSORS
+    // ═══════════════════════════════════════════════════════════
+ 
+    public boolean isDrifting()       { return this.entityData.get(DATA_DRIFTING); }
+    public float   getWheelSpin()     { return this.entityData.get(DATA_WHEEL_SPIN); }
+    public float   getRearWheelSpin() { return this.entityData.get(DATA_REAR_WHEEL_SPIN); }
+    public float   getSteerInput()    { return this.entityData.get(DATA_STEER_INPUT); }
+    public float   getForwardSpeed()  { return this.entityData.get(DATA_FORWARD_SPEED); }
+    public int     getCurrentGear()   { return this.entityData.get(DATA_GEAR); }
+    public boolean isThrottleOn()     { return this.entityData.get(DATA_THROTTLE); }
+    public boolean isBurningOut()     { return this.entityData.get(DATA_BURNOUT); }
+    public boolean isTunneled()       { return this.entityData.get(DATA_TUNNELED); }
+    public boolean isBraking()        { return this.entityData.get(DATA_BRAKING); }
+    public float   getEngineRPM()     { return this.entityData.get(DATA_ENGINE_RPM); }
+ 
+    public float getRPM() {
+        return Mth.clamp((getEngineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
+    }
+
+    /** Public accessor for defaultIsRWD() — used by /carconfig driveType reset. */
+    public boolean getDefaultIsRWD() { return defaultIsRWD(); }
+
+    /** Public accessor for realisticSpeedScale() — used by /carconfig realisticSpeed. */
+    public float getRealisticSpeedScaleValue() { return realisticSpeedScale(); }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  HUD
+    // ═══════════════════════════════════════════════════════════
+ 
+    private void displaySpeed(Player player) {
+        // Read from local physics state — NOT entityData.
+        // entityData is set by the server from observables and may
+        // have slight approximation errors. The local state is exact.
+        float speed  = this.localSpeed;
+        float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+        float kmh    = Math.abs(speed) * 72f * spdScale;
+        float rpm    = this.engineRPM;
+        int   gear   = this.currentGear;
+        boolean moving = Math.abs(speed) > 0.04f;
+ 
+        String shiftLabel = speed < -0.04f ? "§cR" : moving ? "§aD" : "§7P";
+        String driveType  = isRWD ? "§bRWD" : "§eFWD";
+        String spdMode    = realisticSpeed ? " §c[REAL]" : "";
+        String steerMode  = forzaTurning   ? " §b[FORZA]" : "";
+ 
+        if (advancedDebug) {
+            // ── Advanced debug: full physics snapshot ─────────────────────────
+            // Line 1 (action bar) — always visible while driving
+            player.displayClientMessage(Component.literal(String.format(
+                "§e[ADV] %s §f%.0f km/h%s%s  §cRPM:§f%.0f  §e%s[%d]  §7surf:§f%.2f",
+                driveType, kmh, spdMode, steerMode, rpm, shiftLabel, gear, dbgSurfaceFriction)), true);
+ 
+            // Lines 2–7 in chat — update every display tick
+            // Lateral model
+            player.displayClientMessage(Component.literal(String.format(
+                "§b[LAT]  §ffrontLat=§e%+.5f  §frearLat=§e%+.5f  §7(thresh=%.3f)",
+                dbgFrontLat, dbgRearLat, driftThreshold())), false);
+ 
+            // Yaw state
+            player.displayClientMessage(Component.literal(String.format(
+                "§d[YAW]  §foverYawRate=§e%+.4f  §fdrifting=%s  §fyawAllowed=%s",
+                dbgOverYawRate,
+                dbgDrifting   ? "§cY§f" : "§aN§f",
+                dbgYawAllowed ? "§aY§f" : "§cN§f")), false);
+ 
+            // Drivetrain
+            player.displayClientMessage(Component.literal(String.format(
+                "§a[DRV]  §fthrottle=§e%.3f  §fdriveF=§e%.5f  §fgearMult=§e%.3f",
+                dbgThrottleSmooth, dbgDriveForce,
+                gear > 0 ? gearRatios()[gear] / gearRatios()[1] : 0f)), false);
+ 
+            // Traction circle
+            player.displayClientMessage(Component.literal(String.format(
+                "§c[TRC]  §frearTotal=§e%.5f  §frearLat=§e%.5f  §ffrontTotal=§e%.5f",
+                dbgRearGripTotal, dbgRearGripLat, dbgFrontGripTotal)), false);
+ 
+            // Coast / decay
+            player.displayClientMessage(Component.literal(String.format(
+                "§7[DCY]  §fcoastDecay=§e%.2f  §f(%s)  §fburnout=%s  §fbraking=%s",
+                dbgCoastDecay,
+                dbgCoastDecay < latDecay() ? "§9COASTING§f" : "§aPOWER§f",
+                this.isBurningOut() ? "§6Y§f" : "N",
+                this.isBraking()    ? "§9Y§f" : "N")), false);
+ 
+        } else if (debugMode) {
+            // ── Standard debug: drivetrain focus ─────────────────────────────
+            final float[] GR   = cachedGearRatios;
+            final float   FD   = finalDrive();
+            final float   TC   = tyreCirc();
+            final float   PK   = peakDriveForce();
+            final float[] TRPM = cachedTorqueRpmPoints;
+            final float[] TTRQ = cachedTorqueCurve;
+ 
+            float v     = Math.abs(speed);
+            float gMult = gear > 0 ? GR[gear] / GR[1] : 0f;
+            float torq  = TTRQ[TTRQ.length - 1];
+            for (int i = 1; i < TRPM.length; i++) {
+                if (rpm <= TRPM[i]) {
+                    float t = (rpm - TRPM[i-1]) / (TRPM[i] - TRPM[i-1]);
+                    torq = TTRQ[i-1] + t * (TTRQ[i] - TTRQ[i-1]);
+                    break;
+                }
+            }
+            float rawDrive = torq * PK * gMult;
+            float effDrive = Math.min(rawDrive, dbgRearGripTotal);
+            float drag = (1f - (float)rollingDrag()) * v;
+            if (v > aeroDragStart()) drag += (float)((v - aeroDragStart()) * aeroDragK() * 20);
+            float net = effDrive - drag;
+            float vRedline   = (redlineRpm()   / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f * spdScale;
+            float vDownshift = (downshiftRpm() / (GR[gear>0?gear:1]*FD*60f))*TC/20f*72f * spdScale;
+ 
+            player.displayClientMessage(Component.literal(String.format(
+                "§e[DBG] §aSpd:§f%.1f km/h%s%s  §cRPM:§f%.0f  §e%s[%d]  §bNet:§f%+.5f",
+                kmh, spdMode, steerMode, rpm, shiftLabel, gear, net)), true);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §eDrivetrain§7 ── torque=%.3f rawDrive=%.5f effDrive=%.5f drag=%.5f",
+                torq, rawDrive, effDrive, drag)), false);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §bTraction§7 ── rearGripTotal=%.5f rearGripLat=%.5f (capped=%s)",
+                dbgRearGripTotal, dbgRearGripLat,
+                rawDrive > dbgRearGripTotal ? "§cYES" : "§aNO")), false);
+            player.displayClientMessage(Component.literal(String.format(
+                "§7── §aGear %d band§7: %.1f–%.1f km/h  drift=%s burn=%s",
+                gear, vDownshift, vRedline,
+                this.isDrifting()   ? "§cY§7" : "N",
+                this.isBurningOut() ? "§cY§7" : "N")), false);
+ 
+        } else if (scenarioTest) {
+            // ── Scenario test: one-line state label ───────────────────────────
+            String state;
+            if      (this.isBurningOut())                          state = "§6BURNOUT §8gear=" + gear + " rpm=" + String.format("%.0f", rpm);
+            else if (this.isDrifting() && !isRWD)                  state = "§dFWD SLIDE";
+            else if (this.isDrifting())                            state = "§cRWD DRIFT";
+            else if (this.isBraking() && Math.abs(speed) > 0.1f)  state = "§9BRAKING";
+            else if (moving)                                        state = "§aDRIVING " + shiftLabel + " [" + gear + "]";
+            else                                                    state = "§7PARKED";
+            player.displayClientMessage(Component.literal(
+                driveType + "  §f" + String.format("%.0f km/h", kmh) + spdMode + steerMode + "  " + state), true);
+ 
+        } else {
+            // ── Normal HUD ────────────────────────────────────────────────────
+            player.displayClientMessage(Component.literal(String.format(
+                "§aSpeed: §f%.0f km/h%s%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]",
+                kmh, spdMode, steerMode, rpm, shiftLabel, gear)), true);
+        }
+    }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  NBT
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override protected void readAdditionalSaveData(ValueInput i) {}
+    @Override protected void addAdditionalSaveData(ValueOutput o) {}
+}

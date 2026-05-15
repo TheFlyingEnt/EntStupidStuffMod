@@ -1,7 +1,10 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * 2025 Nissan Z — 3.0L Twin-Turbo V6 (VR30DDTT)
@@ -35,6 +38,7 @@ public class NissanZEntity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.358f; }
     @Override protected float surfacePenaltyScale() { return 1.4f; }  // max-performance street tyres
+    @Override protected float crashResistance() { return 0.15f; }  // sports coupe — moderate
  
     // ── Engine ────────────────────────────────────────────────────────────────
     // VR30DDTT: wide idle, flat power band, 7,200 rpm rev limiter
@@ -130,4 +134,29 @@ public class NissanZEntity extends BaseCarEntity {
     @Override protected double rollingDrag()   { return 0.988; }
     @Override protected double aeroDragStart() { return 2.78;  } // ~200 km/h
     @Override protected double aeroDragK()     { return 0.013; }
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (Twin-turbo VR30 — mid grunt, turbo spool)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.twinTurboV6(
+            SoundFactory.ENTITY_VEHICLE_AUDI_IDLE,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_AUDI_BREAK,
+            SoundFactory.ENTITY_VEHICLE_AUDI_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
+    @Override
+    public String[] availableWraps() {
+        return new String[]{ "default", "gold", "green", "silver" };
+    }
+ 
+    @Override public String getCarTypeId() { return "nissan_z"; }
+    @Override public Vec3 licensePlateOffset() { return new Vec3(0, 0.72, 2.98); }
+
+
 }

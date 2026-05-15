@@ -2,8 +2,12 @@ package net.ent.entstupidstuff.api.car;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.item.base.car.CarWrapItem;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -14,14 +18,20 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InterpolationHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,6 +71,37 @@ public abstract class BaseCarEntity extends VehicleEntity {
     // ═══════════════════════════════════════════════════════════
 
     protected float realisticSpeedScale() { return 1.0f; }
+
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (override in subclass for per-car sounds)
+    //
+    //  Returns a CarSoundProfile containing all sound events and
+    //  pitch/volume/distance tuning for this car. Override in
+    //  subclass to give each car a unique sound character.
+    //
+    //  Default returns an americanV8 profile with Viper sounds.
+    //  Use the presets (americanV8, highRevNA, turboFour, hybrid,
+    //  twinTurboV6, f1HybridV6) or construct a fully custom one.
+    // ═══════════════════════════════════════════════════════════
+
+    private CarSoundProfile cachedSoundProfile;
+
+    public CarSoundProfile getSoundProfile() {
+        if (cachedSoundProfile == null) {
+            cachedSoundProfile = createSoundProfile();
+        }
+        return cachedSoundProfile;
+    }
+
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.americanV8(
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP,
+            net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
  
     // ═══════════════════════════════════════════════════════════
     //  ABSTRACT SPEC
@@ -131,6 +172,26 @@ public abstract class BaseCarEntity extends VehicleEntity {
     // ═══════════════════════════════════════════════════════════
 
     protected float surfacePenaltyScale() { return 1.0f; }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CRASH RESISTANCE  (override in subclass)
+    //
+    //  How much speed the car retains after a max-severity crash.
+    //  0.0 = car stops dead on impact (paper thin)
+    //  0.5 = car retains 50% speed (heavy, tanks through walls)
+    //
+    //  Heavy cars with strong chassis retain more speed.
+    //  Light/fragile cars (F1, GR86) lose almost everything.
+    //
+    //  Guidelines:
+    //    0.08 = F1 car — carbon fibre, disintegrates on contact
+    //    0.12 = GR86, Civic — lightweight, poor crash structure
+    //    0.15 = Type R, Nissan Z — sports car, moderate
+    //    0.20 = GT3, Viper — heavy sports car
+    //    0.25 = GT500 — heavy muscle car, tanks through more
+    // ═══════════════════════════════════════════════════════════
+
+    protected float crashResistance() { return 0.15f; }
  
     // ═══════════════════════════════════════════════════════════
     //  FIXED PHYSICS CONSTANTS
@@ -167,6 +228,79 @@ public abstract class BaseCarEntity extends VehicleEntity {
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_TUNNELED =
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<String>  DATA_WRAP =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<ItemStack> LICENSE_PLATE =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<ItemStack> RADIO_DISC  =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.ITEM_STACK);
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  CAR INVENTORY  (8 slots: plate, fuel, wrap, radio, 4 wheels)
+    // ═══════════════════════════════════════════════════════════
+ 
+    private final SimpleContainer carInventory = new SimpleContainer(8) {
+        @Override public void setChanged() {
+            super.setChanged();
+            onInventoryChanged();
+        }
+    };
+ 
+    private int     fuelTickCounter = 0;
+    private boolean radioPlaying    = false;
+ 
+    /** Returns the car's 8-slot inventory. Used by CarMenu. */
+    public SimpleContainer getCarInventory() { return carInventory; }
+ 
+    /** Whether a music disc is in the radio slot. */
+    public boolean hasRadioDisc() {
+        //ItemStack stack = carInventory.getItem(3);
+        ItemStack stack = getSyncedRadioDisc();
+
+
+        return !stack.isEmpty()
+                && stack.has(DataComponents.JUKEBOX_PLAYABLE);
+    }
+ 
+    /** Called when any inventory slot changes. */
+    private void onInventoryChanged() {
+        // Wrap changed — sync to all clients for texture swap
+        ItemStack wrapStack = carInventory.getItem(2); // slot 2 = wrap
+        ItemStack licenceStack = carInventory.getItem(0); // slot 0 = license
+        ItemStack radiostack = carInventory.getItem(3); // slot 0 = license
+        String wrapId = "default";
+        if (!wrapStack.isEmpty()) {
+            // Use CarWrapItem data if available, otherwise fall back to item name
+            if (wrapStack.getItem() instanceof CarWrapItem) {
+                wrapId = CarWrapItem.getWrapId(wrapStack);
+            } else {
+                wrapId = wrapStack.getHoverName().getString().toLowerCase().replace(" ", "_");
+            }
+        }
+        if (!this.level().isClientSide()) {
+            this.entityData.set(DATA_WRAP, wrapId);
+            entityData.set(LICENSE_PLATE, licenceStack);
+            entityData.set(RADIO_DISC, radiostack);
+            //setLicensePlate(licenceStack);
+        }
+    }
+ 
+    /** Returns the current wrap ID for texture selection. */
+    public String getCurrentWrap() { return this.entityData.get(DATA_WRAP); }
+ 
+    /**
+     * Override in subclass to define available wrap IDs.
+     * Default: only "default" (base texture).
+     */
+    public String[] availableWraps() { return new String[]{ "default" }; }
+ 
+    /**
+     * Returns a string ID for this car type, used in texture paths.
+     * Override in each subclass.
+     * Path: assets/entstupidstuff/textures/entity/{carTypeId}/{wrapId}.png
+     */
+    public String getCarTypeId() { return "car"; }
+
  
     // ═══════════════════════════════════════════════════════════
     //  SERVER-SIDE PHYSICS STATE
@@ -174,6 +308,16 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
     private float   engineRPM      = 0f;
     private int     currentGear    = 1;
+    private float   localSpeed     = 0f; // last computed forward speed — for client HUD
+
+    // ── Client-side physics state (for packet sending) ───────────
+    // tickPhysics only sets entityData when sync=true (server-side).
+    // On the driver's client, these local fields capture the state
+    // so sendPhysicsPacket() can read them.
+    private boolean localThrottle  = false;
+    private boolean localBraking   = false;
+    private boolean localBurnout   = false;
+    private boolean localDrifting  = false;
     private int     clutchTimer    = 0;
     private float   throttleSmooth = 0f;
     private float   frontLat       = 0f;
@@ -185,6 +329,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
     private boolean wasBurningOut   = false;
     private float   handbrakeSmooth = 0f; // 0=released → 1=fully engaged; ramps to prevent snap
     private float   steerSmooth     = 0f; // -1..+1 ramped steering (Forza-style input smoothing)
+    private float   lastServerSpeed   = 0f; // last known speed before driver exit — for coasting
+    private float   lastServerYRot    = 0f; // last known yaw before driver exit
  
     // ── Cached spec arrays — avoids allocating new float[] every tick ──
     private float[] cachedGearRatios;
@@ -265,6 +411,108 @@ public abstract class BaseCarEntity extends VehicleEntity {
     }
  
     @Override public float maxUpStep() { return 1.0f; }
+
+    /**
+     * Called by Minecraft's networking to apply server velocity corrections.
+     * When the local player is driving, IGNORE these — the client's physics
+     * engine owns the velocity. Server corrections would:
+     *   - Cause periodic speed dips (~10 sec from entity tracking updates)
+     *   - Cancel collision bounces (server still has pre-crash velocity)
+     *
+     * For non-driver clients and empty cars, pass through normally.
+     */
+    @Override
+    public void lerpMotion(Vec3 vec3) {
+        if (this.level().isClientSide() && this.isLocalInstanceAuthoritative()) {
+            // Driver's client — ignore server velocity corrections
+            return;
+        }
+        super.lerpMotion(vec3);
+    }
+
+    /**
+     * Returns the first passenger as the controlling entity.
+     *
+     * This makes isLocalInstanceAuthoritative() return true on the
+     * driver's client — giving it ownership of the entity's position.
+     * The driver's client runs physics + move() for jitter-free movement.
+     *
+     * The server ALSO runs physics (without move()) purely to set
+     * entityData, which syncs to all other clients for sounds/particles.
+     */
+    @Override
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        return this.getFirstPassenger() instanceof LivingEntity le ? le : null;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CLIENT MOVEMENT PREDICTION
+    //
+    //  The server runs physics and sends position updates every few
+    //  ticks. Without client-side prediction, the car teleports to
+    //  each update and freezes in between — visible as jitter.
+    //
+    //  This method reconstructs movement from synced entityData
+    //  (forward speed + yaw) and applies it on the client every tick.
+    //  Server position corrections prevent drift over time.
+    //  No version-specific lerp API needed — works everywhere.
+    // ═══════════════════════════════════════════════════════════
+
+    /** Client-only: checks if the local player is riding this car (as driver or passenger). */
+    private boolean isLocalPlayerRiding() {
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        return mc.player != null && mc.player.getVehicle() == this;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CLIENT INTERPOLATION  (for passengers + bystanders)
+    //
+    //  When getInterpolation() returns non-null, server position
+    //  updates go through the handler's interpolateTo() instead of
+    //  snapping the entity position instantly. The built-in
+    //  InterpolationHandler smoothly lerps between updates.
+    //
+    //  interpolate() must be called each tick to advance the lerp.
+    // ═══════════════════════════════════════════════════════════
+
+    private InterpolationHandler carInterpolation;
+
+    @Override
+    @Nullable
+    public InterpolationHandler getInterpolation() {
+        // Only non-authoritative clients need interpolation.
+        // The driver's client runs its own physics — no lerp needed.
+        if (this.level().isClientSide() && !this.isLocalInstanceAuthoritative()) {
+            if (carInterpolation == null) {
+                carInterpolation = new InterpolationHandler(this);
+            }
+            return carInterpolation;
+        }
+        return null;
+    }
+
+    /** Client-only: predicts movement from synced entityData for bystanders. */
+    private void tickClientMovement() {
+        float speed = this.getForwardSpeed();
+        float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+
+        if (Math.abs(speed) > 0.001f) {
+            double yRad = Math.toRadians(this.getYRot());
+            double sinY = Math.sin(yRad), cosY = Math.cos(yRad);
+            double vx = speed * (-sinY) * spdScale;
+            double vz = speed * cosY * spdScale;
+            this.setDeltaMovement(vx, this.getDeltaMovement().y, vz);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+        }
+
+        // Gravity + ground stick on client too
+        if (!this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
+        } else if (this.getDeltaMovement().y < 0) {
+            this.setDeltaMovement(this.getDeltaMovement().x, 0, this.getDeltaMovement().z);
+        }
+    }
  
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -280,6 +528,9 @@ public abstract class BaseCarEntity extends VehicleEntity {
         builder.define(DATA_BRAKING,         false);
         builder.define(DATA_BURNOUT,         false);
         builder.define(DATA_TUNNELED,        false);
+        builder.define(DATA_WRAP,            "default");
+        builder.define(LICENSE_PLATE, ItemStack.EMPTY);
+        builder.define(RADIO_DISC, ItemStack.EMPTY);
         this.engineRPM  = idleRpm();
         this.burnoutRPM = idleRpm();
     }
@@ -293,59 +544,265 @@ public abstract class BaseCarEntity extends VehicleEntity {
     @Override
     public void tick() {
         super.tick();
- 
-        if (!this.isLocalInstanceAuthoritative()) {
-            this.setDeltaMovement(Vec3.ZERO);
-            return;
+
+        // ═══════════════════════════════════════════════════════════
+        //  HYBRID PHYSICS: driver's client + server both run physics.
+        //
+        //  Driver's client: reads local input (player.zza/xxa), runs
+        //    physics, calls move(). This gives the driver butter-smooth
+        //    movement with zero jitter — no server corrections to fight.
+        //
+        //  Server: reads input from getLastClientInput(), runs physics,
+        //    sets entityData. entityData syncs server→client so ALL other
+        //    clients (passengers, bystanders) get speed/RPM/drifting/etc.
+        //    Server does NOT call move() — the driver's client owns position
+        //    and sends it via vehicle move packets.
+        //
+        //  Non-driver clients: tickClientMovement() predicts movement
+        //    from synced entityData for smooth display.
+        // ═══════════════════════════════════════════════════════════
+
+        boolean isServer = !this.level().isClientSide();
+        boolean isClient = this.level().isClientSide();
+
+        // ── SERVER ───────────────────────────────────────────────────
+        if (isServer) {
+            if (this.getFirstPassenger() instanceof ServerPlayer sp) {
+                // ── DRIVEN: entityData comes from CarPhysicsPayload ──
+                // The driver's client sends exact physics state via a
+                // custom C2S packet every tick. applyPhysicsPacket()
+                // writes it to entityData → syncs to ALL other clients.
+                // No physics runs on the server — zero fighting.
+                //
+                // We still need to keep deltaMovement in sync so
+                // coasting works when the driver exits.
+                var input = sp.getLastClientInput();
+                boolean forward   = input.forward();
+                boolean backward  = input.backward();
+                boolean handbrake = input.jump();
+                boolean burnout   = forward && (backward || handbrake)
+                                    && Math.abs(this.getForwardSpeed()) < 0.30f;
+
+                // Store last known speed for coasting when driver exits.
+                // Do NOT call setDeltaMovement() here — entity tracking
+                // would broadcast it to the driver's client, overwriting
+                // the client's locally-computed velocity. This causes:
+                //   - periodic speed dips (~10 sec) from tracking corrections
+                //   - collision bounces being immediately cancelled
+                lastServerSpeed = this.getForwardSpeed();
+                lastServerYRot  = this.getYRot();
+
+            } else if (this.getFirstPassenger() == null) {
+                // ── EMPTY: run physics for gravity/coast/decay ────────
+                // On first tick with no driver, set deltaMovement from
+                // the last known speed so the car coasts.
+                if (lastServerSpeed != 0f) {
+                    float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
+                    double yRad = Math.toRadians(lastServerYRot);
+                    this.setDeltaMovement(
+                        lastServerSpeed * (-Math.sin(yRad)) * spdScale,
+                        this.getDeltaMovement().y,
+                        lastServerSpeed * Math.cos(yRad) * spdScale);
+                    lastServerSpeed = 0f;
+                }
+                frontLat      *= 0.70f;
+                rearLat       *= 0.70f;
+                overYawRate   *= 0.70f;
+                throttleSmooth = 0f;
+                steerSmooth    = 0f;
+                burnoutRPM     = idleRpm();
+
+                tickPhysics(false, false, false, false, false);
+
+                this.move(MoverType.SELF, this.getDeltaMovement());
+                if (this.onGround() && this.getDeltaMovement().y < 0)
+                    this.setDeltaMovement(this.getDeltaMovement().x, 0, this.getDeltaMovement().z);
+            }
+
+            this.applyEffectsFromBlocks();
+
+            if (this.tickCount % 5 == 0)
+                this.entityData.set(DATA_TUNNELED, detectTunnel());
+
+            // Adding Support for tickCarSystem() - Wheel and Tire Wear:
+            if (this.getFirstPassenger() != null) {
+                tickCarSystems();
+            }
+
         }
- 
-        boolean forward = false, backward = false,
-                left    = false, right    = false, handbrake = false;
- 
-        if (this.getFirstPassenger() instanceof Player player) {
-            forward   = player.zza  >  0f;
-            backward  = player.zza  <  0f;
-            left      = player.xxa  >  0f;
-            right     = player.xxa  <  0f;
-            handbrake = player.isJumping();
-            if (this.tickCount % 2 == 0) displaySpeed(player);
-        } else {
-            frontLat      *= 0.70f;
-            rearLat       *= 0.70f;
-            overYawRate   *= 0.70f;
-            throttleSmooth = 0f;
-            steerSmooth    = 0f;
-            burnoutRPM     = idleRpm();
+
+        // ── DRIVER'S CLIENT: full physics + movement (smooth) ────────
+        if (isClient && this.isLocalInstanceAuthoritative()) {
+            boolean forward = false, backward = false,
+                    left    = false, right    = false, handbrake = false;
+
+            if (this.getFirstPassenger() instanceof Player player) {
+                forward   = player.zza  >  0f;
+                backward  = player.zza  <  0f;
+                left      = player.xxa  >  0f;
+                right     = player.xxa  <  0f;
+                handbrake = player.isJumping();
+                if (this.tickCount % 2 == 0) displaySpeed(player);
+            } else {
+                frontLat      *= 0.70f;
+                rearLat       *= 0.70f;
+                overYawRate   *= 0.70f;
+                throttleSmooth = 0f;
+                steerSmooth    = 0f;
+                burnoutRPM     = idleRpm();
+            }
+
+            tickPhysics(forward, backward, left, right, handbrake);
+
+            // ── Movement with sub-stepping ───────────────────────────
+            Vec3 fullMove = this.getDeltaMovement();
+            double moveLen = fullMove.horizontalDistance();
+            int subSteps = Math.max(1, (int) Math.ceil(moveLen / 1.0));
+
+            // Track which axis actually collided (for sub-step accuracy)
+            boolean wallHitX = false, wallHitZ = false;
+
+            if (subSteps <= 1) {
+                this.move(MoverType.SELF, fullMove);
+                Vec3 post = this.getDeltaMovement();
+                wallHitX = Math.abs(fullMove.x) > 0.01
+                        && Math.abs(post.x) < Math.abs(fullMove.x) * 0.5;
+                wallHitZ = Math.abs(fullMove.z) > 0.01
+                        && Math.abs(post.z) < Math.abs(fullMove.z) * 0.5;
+            } else {
+                Vec3 step = new Vec3(fullMove.x / subSteps, fullMove.y / subSteps, fullMove.z / subSteps);
+                for (int s = 0; s < subSteps; s++) {
+                    this.setDeltaMovement(step);
+                    this.move(MoverType.SELF, step);
+                    if (this.horizontalCollision) {
+                        // Compare post-move against STEP size, not full size.
+                        // This correctly identifies which axis actually hit.
+                        Vec3 post = this.getDeltaMovement();
+                        wallHitX = Math.abs(step.x) > 0.005
+                                && Math.abs(post.x) < Math.abs(step.x) * 0.5;
+                        wallHitZ = Math.abs(step.z) > 0.005
+                                && Math.abs(post.z) < Math.abs(step.z) * 0.5;
+                        break;
+                    }
+                }
+                if (!this.horizontalCollision) {
+                    this.setDeltaMovement(fullMove);
+                }
+            }
+
+            // ── Wall collision response ──────────────────────────────
+            Vec3 postMove = this.getDeltaMovement();
+            boolean steppingUp = postMove.y > 0.01;
+            if (!steppingUp && this.onGround() && (wallHitX || wallHitZ)) {
+                double impactSpeed = fullMove.horizontalDistance();
+
+                // Bounce + speed retention scale with impact speed
+                float bounce, retain;
+                if (impactSpeed < 0.15) {
+                    bounce = 0.30f; retain = 0.90f;
+                } else if (impactSpeed < 0.50) {
+                    bounce = 0.28f; retain = 0.80f;
+                } else if (impactSpeed < 1.00) {
+                    bounce = 0.22f; retain = 0.60f;
+                } else {
+                    bounce = 0.15f; retain = 0.35f;
+                }
+
+                double vx = wallHitX ? -fullMove.x * bounce : fullMove.x * retain;
+                double vz = wallHitZ ? -fullMove.z * bounce : fullMove.z * retain;
+                this.setDeltaMovement(vx, postMove.y, vz);
+
+                // ── Spin-out ─────────────────────────────────────────
+                if (impactSpeed > 0.10) {
+                    double yRad    = Math.toRadians(this.getYRot());
+                    double carDirX = -Math.sin(yRad);
+                    double carDirZ =  Math.cos(yRad);
+                    // Wall normal: only on the axis that ACTUALLY hit
+                    double wallNX  = wallHitX ? Math.signum(fullMove.x) : 0;
+                    double wallNZ  = wallHitZ ? Math.signum(fullMove.z) : 0;
+                    double cross   = carDirX * wallNZ - carDirZ * wallNX;
+
+                    float spinAmount = (float)(cross * impactSpeed * impactSpeed * 6.0);
+
+                    // Head-on: random spin nudge
+                    if (Math.abs(cross) < 0.15 && impactSpeed > 0.30) {
+                        spinAmount += (this.random.nextFloat() - 0.5f) * (float)(impactSpeed * 3.0);
+                    }
+
+                    spinAmount = Mth.clamp(spinAmount, -yawMax() * 2f, yawMax() * 2f);
+
+                    // Apply immediately + persist through yaw system
+                    this.setYRot(this.getYRot() + spinAmount);
+                    overYawRate = Mth.clamp(spinAmount, -yawMax(), yawMax());
+                }
+
+                // ── Crash sound + particles ──────────────────────────
+                if (impactSpeed > 0.10) {
+                    float vol = (float) Math.min(1.0, impactSpeed * 0.8);
+                    if (this.level().isClientSide()) {
+                        this.playSound(net.minecraft.sounds.SoundEvents.ANVIL_LAND, vol * 0.5f, 0.75f + (float)(impactSpeed * 0.2));
+                        this.playSound(SoundFactory.ENTITY_VEHICLE_HEAVY_CRASH, vol * 0.5f, 0.75f + (float)(impactSpeed * 0.2));
+                    }
+
+                    //this.playSound(net.minecraft.sounds.SoundEvents.ANVIL_LAND, vol * 0.5f, 0.75f + (float)(impactSpeed * 0.2));
+                }
+                if (this.level().isClientSide() && impactSpeed > 0.20) {
+                    int count = (int) Math.min(15, impactSpeed * 8);
+                    float vol = (float) Math.min(1.0, impactSpeed * 0.8);
+                    //this.playSound(SoundFactory.ENTITY_VEHICLE_HEAVY_CRASH, vol * 0.5f, 0.75f + (float)(impactSpeed * 0.2));
+                     float pitch = 0.75f + (float)(impactSpeed * 0.2);
+
+                    this.level().playLocalSound(
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        SoundFactory.ENTITY_VEHICLE_HEAVY_CRASH,
+                        net.minecraft.sounds.SoundSource.PLAYERS,
+                        vol * 2.5f,
+                        pitch,
+                        false
+                    );
+                        for (int i = 0; i < count; i++) {
+                        this.level().addParticle(
+                            net.minecraft.core.particles.ParticleTypes.CRIT,
+                            this.getX() + (this.random.nextDouble() - 0.5) * 1.5,
+                            this.getY() + 0.2 + this.random.nextDouble() * 0.6,
+                            this.getZ() + (this.random.nextDouble() - 0.5) * 1.5,
+                            (this.random.nextDouble() - 0.5) * 0.4,
+                            this.random.nextDouble() * 0.15,
+                            (this.random.nextDouble() - 0.5) * 0.4
+                        );
+                    }
+                }
+            }
+
+            if (this.onGround() && this.getDeltaMovement().y < 0)
+                this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
+
+            this.applyEffectsFromBlocks();
+
+            // Send physics state to server → server writes to entityData
+            // → entityData syncs to ALL other clients (sounds, particles, etc.)
+            sendPhysicsPacket();
         }
- 
-        tickPhysics(forward, backward, left, right, handbrake);
- 
-        Vec3 preMove = this.getDeltaMovement();
-        this.move(MoverType.SELF, preMove);
- 
-        Vec3 postMove = this.getDeltaMovement();
-        boolean steppingUp = postMove.y > 0.01;
-        if (!steppingUp && this.onGround()) {
-            double bounceX = Math.abs(preMove.x) > 0.01 && Math.abs(postMove.x) < Math.abs(preMove.x) * 0.5
-                ? -preMove.x * 0.35 : postMove.x;
-            double bounceZ = Math.abs(preMove.z) > 0.01 && Math.abs(postMove.z) < Math.abs(preMove.z) * 0.5
-                ? -preMove.z * 0.35 : postMove.z;
-            if (bounceX != postMove.x || bounceZ != postMove.z)
-                this.setDeltaMovement(bounceX, postMove.y, bounceZ);
+
+        // ── NON-DRIVER CLIENTS: smooth interpolation ─────────────
+        // Use Minecraft's InterpolationHandler for ALL non-driver clients.
+        // Server sends correct position/yaw via entity tracking.
+        // The handler smoothly lerps toward each update — no prediction
+        // drift, no position accumulation errors.
+        if (isClient && !this.isLocalInstanceAuthoritative()) {
+            if (carInterpolation != null) {
+                carInterpolation.interpolate();
+            }
         }
- 
-        if (this.onGround() && this.getDeltaMovement().y < 0)
-            this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
- 
-        this.applyEffectsFromBlocks();
- 
-        if (!this.level().isClientSide() && this.tickCount % 5 == 0)
-            this.entityData.set(DATA_TUNNELED, detectTunnel());
- 
-        if (this.level().isClientSide()) {
+
+        // ── ALL CLIENTS: particles + exhaust ─────────────────────────
+        if (isClient) {
             spawnWheelParticles();
             spawnExhaust();
         }
+
     }
  
     // ═══════════════════════════════════════════════════════════
@@ -355,6 +812,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
     private void tickPhysics(boolean forward, boolean backward,
                               boolean left,    boolean right, boolean handbrake) {
  
+        // Only the server writes to entityData. On integrated server,
+        // both client and server ticks run on the same entity — if both
+        // write entityData, the server's delayed values overwrite the
+        // client's correct values every sync cycle, causing oscillation
+        // (e.g. speed jumping between 14 and 192 km/h).
+        boolean sync = !this.level().isClientSide();
+
         // ── 1. Local velocity ─────────────────────────────────────────────
         // When realisticSpeed is ON, world velocity is scaled up by spdScale.
         // Divide it back down here so all internal physics runs at the
@@ -411,10 +875,14 @@ public abstract class BaseCarEntity extends VehicleEntity {
             steerSmooth = steerInput; // keep in sync so switching modes is seamless
         }
 
-        this.entityData.set(DATA_THROTTLE,    throttleActive || burnout);
-        this.entityData.set(DATA_BRAKING,     brakingActive);
-        this.entityData.set(DATA_BURNOUT,     burnout);
-        this.entityData.set(DATA_STEER_INPUT, steerInput);
+        if (sync) this.entityData.set(DATA_THROTTLE,    throttleActive || burnout);
+        if (sync) this.entityData.set(DATA_BRAKING,     brakingActive);
+        if (sync) this.entityData.set(DATA_BURNOUT,     burnout);
+        
+        this.localThrottle = throttleActive || burnout;
+        this.localBraking  = brakingActive;
+        this.localBurnout  = burnout;
+        if (sync) this.entityData.set(DATA_STEER_INPUT, steerInput);
  
         // ── 3. Smooth throttle ────────────────────────────────────────────
         float throttleTarget = throttleActive ? 1.0f : 0.0f;
@@ -486,8 +954,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
             engineRPM = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
         }
  
-        this.entityData.set(DATA_ENGINE_RPM, engineRPM);
-        this.entityData.set(DATA_GEAR,       currentGear);
+        if (sync) this.entityData.set(DATA_ENGINE_RPM, engineRPM);
+        if (sync) this.entityData.set(DATA_GEAR,       currentGear);
  
         // ── 5. Drive force ────────────────────────────────────────────────
         float torqueNorm = lookupTorque(engineRPM);
@@ -652,6 +1120,10 @@ public abstract class BaseCarEntity extends VehicleEntity {
         if (drifting && yawAllowed) {
             float excessDiff = rearLat - frontLat;
             overYawRate += excessDiff * yawMomentScale();
+        } else if (Math.abs(overYawRate) > yawMax() * 0.3f) {
+            // High overYawRate from a crash — don't kill it with 0.55×.
+            // Just let normal yawDamping handle the decay naturally.
+            // This gives crash spin-outs time to play out visually.
         } else {
             overYawRate *= 0.55f;
         }
@@ -659,7 +1131,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
         overYawRate  = Mth.clamp(overYawRate, -yawMax(), yawMax());
         this.setYRot(this.getYRot() + overYawRate);
  
-        this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
+        if (sync) this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
+        this.localDrifting = drifting || burnout || Math.abs(overYawRate) > 1.2f;
  
         // ── 12. Gravity ───────────────────────────────────────────────────
         localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
@@ -690,7 +1163,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
             wheelSpin += worldSpeed * 180f;
         }
         if (wheelSpin > 360000f) wheelSpin -= 360000f;
-        this.entityData.set(DATA_WHEEL_SPIN, wheelSpin);
+        if (sync) this.entityData.set(DATA_WHEEL_SPIN, wheelSpin);
  
         if (burnout && isRWD) {
             // RWD burnout — rear axle gets RPM spin
@@ -699,8 +1172,9 @@ public abstract class BaseCarEntity extends VehicleEntity {
             rearWheelSpin += worldSpeed * 180f;
         }
         if (rearWheelSpin > 360000f) rearWheelSpin -= 360000f;
-        this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
-        this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
+        if (sync) this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
+        if (sync) this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
+        this.localSpeed = (float) localFwd; // always store for client HUD
  
         // ── Debug snapshot ────────────────────────────────────────────────
         dbgFrontLat        = frontLat;
@@ -802,6 +1276,121 @@ public abstract class BaseCarEntity extends VehicleEntity {
         }
         return drifting ? steer * driftSteerBoost() : steer;
     }
+
+        // ═══════════════════════════════════════════════════════════
+    //  CAR SYSTEMS  (fuel, wheels, radio)
+    // ═══════════════════════════════════════════════════════════
+ 
+    /** Server-side: ticks fuel consumption and wheel wear while driving. */
+    private void tickCarSystems() {
+        float speed = Math.abs(this.getForwardSpeed());
+ 
+        // ── Fuel consumption ─────────────────────────────────────
+        // Fuel canister loses 1 durability every 100 ticks (~5 sec) while moving.
+        // Faster speed doesn't burn more — just moving at all consumes fuel.
+        // No fuel = no penalty (fuel is optional performance boost, not required).
+        if (speed > 0.05f) {
+            fuelTickCounter++;
+            if (fuelTickCounter >= 100) {
+                fuelTickCounter = 0;
+                ItemStack fuel = carInventory.getItem(1); // slot 1 = fuel
+                if (!fuel.isEmpty() && fuel.isDamageableItem()) {
+                    fuel.setDamageValue(fuel.getDamageValue() + 1);
+                    if (fuel.getDamageValue() >= fuel.getMaxDamage()) {
+                        carInventory.setItem(1, ItemStack.EMPTY);
+                    }
+                }
+            }
+        }
+ 
+        // ── Wheel wear ───────────────────────────────────────────
+        // Each wheel loses 1 durability every 200 ticks (~10 sec) while moving.
+        // Drifting wears wheels 3× faster.
+        if (speed > 0.05f && this.tickCount % 200 == 0) {
+            int wearAmount = this.isDrifting() ? 3 : 1;
+            for (int slot = 4; slot <= 7; slot++) { // slots 4-7 = wheels
+                ItemStack wheel = carInventory.getItem(slot);
+                if (!wheel.isEmpty() && wheel.isDamageableItem()) {
+                    wheel.setDamageValue(wheel.getDamageValue() + wearAmount);
+                    if (wheel.getDamageValue() >= wheel.getMaxDamage()) {
+                        carInventory.setItem(slot, ItemStack.EMPTY);
+                    }
+                }
+            }
+        }
+    }
+ 
+    /**
+     * Returns a grip multiplier (0.0–1.0) based on wheel condition.
+     * Called by tickPhysics to scale front/rear grip.
+     *
+     * - All 4 wheels present at full durability: 1.0 (100% grip)
+     * - Wheels at 25% durability: ~0.75 (traction degrades rapidly below 25%)
+     * - Missing wheels: that axle gets 0.3 grip (barely driveable)
+     * - No wheels at all: 0.3 (can still limp to pit stop)
+     *
+     * @param front true for front axle (slots 4-5), false for rear (slots 6-7)
+     */
+
+    public float getWheelGripMultiplier(boolean front) {
+        int slot1 = front ? 4 : 6;
+        int slot2 = front ? 5 : 7;
+        float avg = (wheelCondition(slot1) + wheelCondition(slot2)) / 2f;
+        return Math.max(0.3f, avg);
+    }
+ 
+    /** Returns 0.0–1.0 condition for a wheel slot. Empty = 0.3 (limping). */
+    private float wheelCondition(int slot) {
+        ItemStack wheel = carInventory.getItem(slot);
+        if (wheel.isEmpty() || !wheel.isDamageableItem()) return 0.3f;
+        float pct = 1f - (float) wheel.getDamageValue() / wheel.getMaxDamage();
+        // Full grip until 25% durability, then rapid falloff
+        if (pct > 0.25f) return 1.0f;
+        return 0.3f + (pct / 0.25f) * 0.7f; // 0.3 at 0%, 1.0 at 25%
+    }
+ 
+    /**
+     * Returns true if fuel is present (for optional performance boost).
+     * Cars drive without fuel, but having it gives +10% peakDriveForce.
+     */
+    public boolean hasFuel() {
+        ItemStack fuel = carInventory.getItem(1);
+        return !fuel.isEmpty() && fuel.isDamageableItem()
+            && fuel.getDamageValue() < fuel.getMaxDamage();
+    }
+ 
+    /** Returns the license plate item, or EMPTY if none. */
+    public ItemStack getLicensePlate() {
+        return carInventory.getItem(0); // slot 0 = plate
+    }
+
+    public void setLicensePlate(ItemStack stack) {
+        carInventory.setItem(0, stack);
+
+        if (!level().isClientSide()) {
+            entityData.set(LICENSE_PLATE, stack.copy());
+        }
+    }
+
+    public void setRadioMusic(ItemStack stack) {
+        carInventory.setItem(3, stack);
+
+        if (!level().isClientSide()) {
+            entityData.set(RADIO_DISC, stack.copy());
+        }
+    }
+
+    public ItemStack getSyncedLicensePlate() {
+        return entityData.get(LICENSE_PLATE);
+    }
+
+    public ItemStack getSyncedRadioDisc() {
+        return entityData.get(RADIO_DISC);
+    }
+
+    public Vec3 licensePlateOffset() { return new Vec3(0, 0.25, 3.35); }
+    //public Vec3 licensePlateOffset() { return new Vec3(0, 0.72, 3); }
+
  
     // ═══════════════════════════════════════════════════════════
     //  PARTICLES
@@ -838,10 +1427,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
                 spawnWheelAt(fax - lox, 0.05, faz - loz, true,  rearX, rearZ);
             }
         } else {
-            spawnWheelAt(fax + lox, 0.05, faz + loz, drifting, rearX, rearZ);
-            spawnWheelAt(fax - lox, 0.05, faz - loz, drifting, rearX, rearZ);
-            spawnWheelAt(rax + lox, 0.05, raz + loz, drifting, rearX, rearZ);
-            spawnWheelAt(rax - lox, 0.05, raz - loz, drifting, rearX, rearZ);
+            // Normal driving: block dust from all four wheels.
+            // Drift smoke: REAR wheels only — they're the ones sliding.
+            // (Both RWD oversteer and FWD handbrake slides rotate the rear.)
+            spawnWheelAt(fax + lox, 0.05, faz + loz, false,    rearX, rearZ); // front-left: dust only
+            spawnWheelAt(fax - lox, 0.05, faz - loz, false,    rearX, rearZ); // front-right: dust only
+            spawnWheelAt(rax + lox, 0.05, raz + loz, drifting, rearX, rearZ); // rear-left: dust + drift smoke
+            spawnWheelAt(rax - lox, 0.05, raz - loz, drifting, rearX, rearZ); // rear-right: dust + drift smoke
         }
  
         // Debug flame particles at physics wheel positions — visible when debugMode is on.
@@ -925,25 +1517,93 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
     @Override protected boolean canAddPassenger(Entity p) { return this.getPassengers().size() < 2; }
  
-    @Override @Nullable
-    public LivingEntity getControllingPassenger() {
-        return this.getFirstPassenger() instanceof LivingEntity le ? le : null;
-    }
- 
     // ═══════════════════════════════════════════════════════════
     //  INTERACTION
     // ═══════════════════════════════════════════════════════════
  
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (player.isSecondaryUseActive()) return InteractionResult.PASS;
-        if (!this.level().isClientSide()) player.startRiding(this);
+
+        if (player.isSecondaryUseActive()) {
+            if (!this.level().isClientSide() && player instanceof ServerPlayer sp) {
+                sp.openMenu(new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return Component.literal("Car Customization");
+                    }
+
+                    @Override
+                    public AbstractContainerMenu createMenu(
+                            int id,
+                            net.minecraft.world.entity.player.Inventory inv,
+                            Player p
+                    ) {
+                        return new net.ent.entstupidstuff.api.car.menu.CarMenu(
+                                id,
+                                inv,
+                                BaseCarEntity.this
+                        );
+                    }
+                });
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
+        if (!this.level().isClientSide()) {
+            player.startRiding(this);
+        }
+
         return InteractionResult.SUCCESS;
     }
  
     @Override public boolean isPickable() { return !this.isRemoved(); }
     @Override public boolean isPushable()  { return false; }
  
+    // ═══════════════════════════════════════════════════════════
+    //  NETWORK: physics state sync (C2S packet)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Server-side: called by the packet handler when the driver's client
+     * sends a CarPhysicsPayload. Writes all physics values to entityData,
+     * which auto-syncs to ALL other clients.
+     */
+    public void applyPhysicsPacket(CarPhysicsPayload p) {
+        this.entityData.set(DATA_FORWARD_SPEED, p.forwardSpeed());
+        this.entityData.set(DATA_ENGINE_RPM,    p.engineRPM());
+        this.entityData.set(DATA_GEAR,          p.gear());
+        this.entityData.set(DATA_WHEEL_SPIN,    p.wheelSpin());
+        this.entityData.set(DATA_REAR_WHEEL_SPIN, p.rearWheelSpin());
+        this.entityData.set(DATA_STEER_INPUT,   p.steerInput());
+        this.entityData.set(DATA_THROTTLE,      p.throttle());
+        this.entityData.set(DATA_BRAKING,       p.braking());
+        this.entityData.set(DATA_BURNOUT,       p.burnout());
+        this.entityData.set(DATA_DRIFTING,      p.drifting());
+    }
+
+    /**
+     * Client-side: sends the driver's exact physics state to the server.
+     * Called every tick from the driver's client after tickPhysics().
+     */
+    private void sendPhysicsPacket() {
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+            new CarPhysicsPayload(
+                this.getId(),
+                this.localSpeed,
+                this.engineRPM,
+                this.currentGear,
+                this.wheelSpin,
+                this.rearWheelSpin,
+                this.steerSmooth,
+                this.localThrottle,
+                this.localBraking,
+                this.localBurnout,
+                this.localDrifting
+            )
+        );
+    }
+
     // ═══════════════════════════════════════════════════════════
     //  DATA ACCESSORS
     // ═══════════════════════════════════════════════════════════
@@ -975,11 +1635,14 @@ public abstract class BaseCarEntity extends VehicleEntity {
     // ═══════════════════════════════════════════════════════════
  
     private void displaySpeed(Player player) {
-        float speed  = this.getForwardSpeed();
+        // Read from local physics state — NOT entityData.
+        // entityData is set by the server from observables and may
+        // have slight approximation errors. The local state is exact.
+        float speed  = this.localSpeed;
         float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
         float kmh    = Math.abs(speed) * 72f * spdScale;
-        float rpm    = this.getEngineRPM();
-        int   gear   = this.getCurrentGear();
+        float rpm    = this.engineRPM;
+        int   gear   = this.currentGear;
         boolean moving = Math.abs(speed) > 0.04f;
  
         String shiftLabel = speed < -0.04f ? "§cR" : moving ? "§aD" : "§7P";
@@ -1093,6 +1756,29 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //  NBT
     // ═══════════════════════════════════════════════════════════
  
-    @Override protected void readAdditionalSaveData(ValueInput i) {}
-    @Override protected void addAdditionalSaveData(ValueOutput o) {}
+    @Override protected void readAdditionalSaveData(ValueInput in) {
+        for (int i = 0; i < 8; i++) {
+            final int slot = i;
+            in.read("CarSlot" + i, ItemStack.CODEC).ifPresent(stack ->
+                carInventory.setItem(slot, stack));
+        }
+        in.read("wrap", com.mojang.serialization.Codec.STRING).ifPresent(w ->
+            this.entityData.set(DATA_WRAP, w));
+    }
+
+    @Override protected void addAdditionalSaveData(ValueOutput out) {
+        for (int i = 0; i < 8; i++) {
+            ItemStack stack = carInventory.getItem(i);
+            if (!stack.isEmpty()) {
+                out.store("CarSlot" + i, ItemStack.CODEC, stack);
+            }
+        }
+        out.store("wrap", com.mojang.serialization.Codec.STRING, this.entityData.get(DATA_WRAP));
+    }
+
+    @Override
+    public boolean canBeCollidedWith(@Nullable Entity entity) {
+		return false;
+	}
+
 }

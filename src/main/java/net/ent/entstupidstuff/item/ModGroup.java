@@ -4,7 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.F1CarEntity;
 import net.ent.entstupidstuff.block.BlockFactory;
+import net.ent.entstupidstuff.item.util.CarWrapHelper;
 import net.ent.entstupidstuff.item.util.OminousBannerHelper;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -304,6 +306,13 @@ public class ModGroup {
                 entries.getContext().holders().lookupOrThrow(Registries.BANNER_PATTERN)
             ))
         );
+
+        for (ItemStack carStack : CarWrapHelper.getCarWrapInstance_F1Cars()) {
+            ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(
+                entries -> entries.accept(carStack)
+            );
+        }
+
 
 
         

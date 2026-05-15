@@ -67,6 +67,10 @@ tasks.withType(AbstractArchiveTask).configureEach {
 
 dependencies {
 	// To change the versions see the gradle.properties file
+
+    // Source: https://mvnrepository.com/artifact/net.fabricmc/fabric-loom
+    //implementation("net.fabricmc:fabric-loom:1.12.5")
+
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -137,13 +141,22 @@ tasks.processResources {
 //Double Run-Time
 loom {
     runs {
-        // This adds a new run configuration called 'runClient2'
+        client {
+            client()
+            name "Minecraft Client"
+            source sourceSets.main
+        }
+
+        
         client2 {
-            client() 
-            name "Minecraft Client 2"
-            runDir "run2" 
-            
-            // This sets a different username so you can join your own LAN world
+            inherit client
+
+            // REQUIRED in Loom 1.11+
+            environment = "client"
+
+            configName = "Minecraft Client 2"
+            runDir = "run2"
+
             vmArg "-Dfabric.loom.username=DevPlayer2"
         }
     }

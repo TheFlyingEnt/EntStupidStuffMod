@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
  
@@ -112,10 +114,27 @@ public class PorsheGT3Entity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.695f; }
     @Override protected float surfacePenaltyScale() { return 1.6f; }  // semi-slick Cup 2 — poor off-surface
+    @Override protected float crashResistance() { return 0.20f; }  // heavy rear-engine — sturdy
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (NA Flat-6 — high-rev scream)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.highRevNA(
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
  
     public PorsheGT3Entity(EntityType<?> type, Level level) {
         super(type, level);

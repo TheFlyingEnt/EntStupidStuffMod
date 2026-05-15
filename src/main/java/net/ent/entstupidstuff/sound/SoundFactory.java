@@ -161,6 +161,30 @@ public class SoundFactory {
     public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_IDLE = registerSoundEvent("entity.vehicle.dodgevipergts_idle");
     public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_START = registerSoundEvent("entity.vehicle.dodgevipergts_start");
     public static final SoundEvent ENTITY_VEHICLE_TIRES_SQUAL_LOOP = registerSoundEvent("entity.vehicle.tires_squal_loop");
+    public static final SoundEvent ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_ALL = registerSoundEvent("entity.vehicle.dodgevipergts_gear_all");
+
+    public static final SoundEvent ENTITY_VEHICLE_AUDI_GEAR_TOP = registerSoundEvent("entity.vehicle.audi_gear_top");
+    public static final SoundEvent ENTITY_VEHICLE_AUDI_GEAR_1 = registerSoundEvent("entity.vehicle.audi_gear_one");
+    public static final SoundEvent ENTITY_VEHICLE_AUDI_GEAR_ALL = registerSoundEvent("entity.vehicle.audi_gear_all");
+    public static final SoundEvent ENTITY_VEHICLE_AUDI_BREAK = registerSoundEvent("entity.vehicle.audi_gear_break");
+    public static final SoundEvent ENTITY_VEHICLE_AUDI_IDLE = registerSoundEvent("entity.vehicle.audi_idle");
+
+    public static final SoundEvent ENTITY_VEHICLE_F1_TOP_GEAR = registerSoundEvent("entity.vehicle.f1_gear_top");
+    public static final SoundEvent ENTITY_VEHICLE_F1_IDLE = registerSoundEvent("entity.vehicle.f1_idle");
+    public static final SoundEvent ENTITY_VEHICLE_F1_BREAK = registerSoundEvent("entity.vehicle.f1_decelerate");
+    public static final SoundEvent ENTITY_VEHICLE_HEAVY_CRASH = registerSoundEvent("entity.vehicle.heavy_crash");
+    public static final SoundEvent ENTITY_VEHICLE_LIGHT_CRASH = registerSoundEvent("entity.vehicle.light_crash");
+
+    public static final SoundEvent ENTITY_VEHICLE_F1_MIX_TEST = registerSoundEvent("entity.vehicle.f1_mix");
+    public static final SoundEvent ENTITY_VEHICLE_POWER_DRILL = registerSoundEvent("entity.vehicle.power_drill");
+    public static final SoundEvent ENTITY_VEHICLE_WRAP = registerSoundEvent("entity.vehicle.applied_wrap");
+
+    public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_GEAR_TOP = registerSoundEvent("entity.vehicle.ferrari_gear_top");
+    public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_GEAR_1 = registerSoundEvent("entity.vehicle.ferrari_gear_one");
+    public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_BREAK = registerSoundEvent("entity.vehicle.ferrari_gear_break");
+    public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_IDLE = registerSoundEvent("entity.vehicle.ferrari_idle");
+
+
 
     private static SoundEvent registerSoundEvent(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, name);

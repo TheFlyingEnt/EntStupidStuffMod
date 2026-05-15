@@ -1,5 +1,7 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
  
@@ -123,10 +125,27 @@ public class ShelbyGT500Entity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.589f; }
     @Override protected float surfacePenaltyScale() { return 1.4f; }  // max-performance PS4S street tyres
+    @Override protected float crashResistance() { return 0.25f; }  // heavy muscle car — tanks through
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════
+ 
+    // ═══════════════════════════════════════════════════════════
+    //  SOUND PROFILE  (Supercharged V8 — deep rumble, loud)
+    // ═══════════════════════════════════════════════════════════
+ 
+    @Override
+    protected CarSoundProfile createSoundProfile() {
+        return CarSoundProfile.americanV8(
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_1,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_BREAK,
+            SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_GEAR_TOP,
+            SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
+        );
+    }
+
  
     public ShelbyGT500Entity(EntityType<?> type, Level level) {
         super(type, level);

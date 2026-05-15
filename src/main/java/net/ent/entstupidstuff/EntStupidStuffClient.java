@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff;
 
 import net.ent.entstupidstuff.api.car.CarSoundManager;
+import net.ent.entstupidstuff.api.car.menu.CarScreen;
 import net.ent.entstupidstuff.api.casting.ArmorCastProperty;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.ent.entstupidstuff.block.ModRenderLayers;
@@ -56,6 +57,7 @@ public class EntStupidStuffClient implements ClientModInitializer {
         });
 
         MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
+        MenuScreens.register(ScreenHandlerFactory.CAR_MENU, CarScreen::new);
 
         BlockEntityRenderers.register(
             BlockEntityFactory.HORIZONTAL_BANNER,

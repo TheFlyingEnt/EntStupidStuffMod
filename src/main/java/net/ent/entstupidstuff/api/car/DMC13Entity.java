@@ -2,6 +2,7 @@ package net.ent.entstupidstuff.api.car;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Dodge Viper GTS — 8.0L V10, Tremec T56, RWD.
@@ -98,6 +99,7 @@ public class DMC13Entity extends BaseCarEntity {
     @Override protected boolean defaultIsRWD() { return true; }
     @Override protected float realisticSpeedScale() { return 2.636f; }
     @Override protected float surfacePenaltyScale() { return 1.4f; }  // max-performance street tyres
+    @Override protected float crashResistance() { return 0.20f; }
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -106,4 +108,8 @@ public class DMC13Entity extends BaseCarEntity {
     public DMC13Entity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+    @Override public Vec3 licensePlateOffset() { return new Vec3(0, 0.25, 3.35); }
+
+
 }

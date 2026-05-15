@@ -934,5 +934,133 @@
     ],
     "steam": true,
     "volume": 2.0
+  },
+  "entity.vehicle.dodgevipergts_gear_all": {
+    "sounds": [
+      "entstupidstuff:vehicle/dodgevipergts_gear_all_master"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.audi_gear_one": {
+    "sounds": [
+      "entstupidstuff:vehicle/audi_gear_one"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.audi_gear_top": {
+    "sounds": [
+      "entstupidstuff:vehicle/audi_gear_top"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.audi_gear_all": {
+    "sounds": [
+      "entstupidstuff:vehicle/audi_gear_all"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.audi_idle": {
+    "sounds": [
+      "entstupidstuff:vehicle/audi_idle"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_gear_top": {
+    "sounds": [
+      "entstupidstuff:vehicle/f1_top_gear"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.audi_gear_break": {
+    "sounds": [
+      "entstupidstuff:vehicle/audi_slow_down"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.heavy_crash": {
+    "sounds": [
+      "entstupidstuff:vehicle/heavy_crash"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.light_crash": {
+    "sounds": [
+      "entstupidstuff:vehicle/light_crash"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_idle": {
+    "sounds": [
+      "entstupidstuff:vehicle/f1_idle"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_decelerate": {
+    "sounds": [
+      "entstupidstuff:vehicle/f1_decelerate"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_mix": {
+    "sounds": [
+      "entstupidstuff:vehicle/concept_gear_top"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.power_drill": {
+    "sounds": [
+      "entstupidstuff:vehicle/power_drill_2"
+    ],
+    "subtitle": "subtitles.ent.entity.vehicle.applied_wheel",
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.wrap": {
+    "sounds": [
+      "entstupidstuff:vehicle/wrap"
+    ],
+    "subtitle": "subtitles.ent.entity.vehicle.applied_wrap",
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.ferrari_gear_top": {
+    "sounds": [
+      "entstupidstuff:vehicle/Ferrari_F40_top"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.ferrari_gear_one": {
+    "sounds": [
+      "entstupidstuff:vehicle/Ferrari_F40_acc"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.ferrari_gear_break": {
+    "sounds": [
+      "entstupidstuff:vehicle/Ferrari_F40_deacc"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.ferrari_idle": {
+    "sounds": [
+      "entstupidstuff:vehicle/Ferrari_F40_idle"
+    ],
+    "steam": true,
+    "volume": 2.0
   }
 }

@@ -11,6 +11,8 @@ import net.ent.entstupidstuff.api.car.HondaCivicTypeREntity;
 import net.ent.entstupidstuff.api.car.NissanZEntity;
 import net.ent.entstupidstuff.api.car.PorsheGT3Entity;
 import net.ent.entstupidstuff.api.car.ShelbyGT500Entity;
+import net.ent.entstupidstuff.api.ship.ShipCollider;
+import net.ent.entstupidstuff.api.ship.ShipEntityTest;
 import net.ent.entstupidstuff.client.entity.CustomBoatEntity;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
@@ -455,6 +457,59 @@ public class EntityFactory {
         .clientTrackingRange(8)
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"coral_skeleton")))
     );
+
+    ///////////////////////
+
+    public static final EntityType<ShipEntityTest> SHIP = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shiptest"),
+            EntityType.Builder.<ShipEntityTest>of(ShipEntityTest::new, MobCategory.MISC)
+                    // Generous outer box for frustum culling. Doesn't affect
+                    // collision because canBeCollidedWith() defaults to false.
+                    .sized(10.0f, 6.0f)
+                    // Track within ~160 blocks. Must be at least as wide as
+                    // the SHIP_COLLIDER tracking range so colliders aren't
+                    // visible past the ship itself.
+                    .clientTrackingRange(10)
+                    // Position updates every tick while the ship is moving.
+                    .updateInterval(1)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"shiptest")))
+    );
+
+    public static final EntityType<ShipCollider> SHIP_COLLIDER  = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ship_collider"),
+                        EntityType.Builder.<ShipCollider>of(ShipCollider::new, MobCategory.MISC)
+                    // Matches the brick: 1 wide, 1 tall, 1 deep.
+                    .sized(1.0f, 1.0f)
+                    // Match the parent ship — colliders need to be loaded
+                    // wherever the ship is loaded.
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    // Block /summon — these only exist as ship children.
+                    .noSummon()
+                    // Don't save to disk. The parent Ship re-spawns the full
+                    // collider set on its first tick after world load (the
+                    // SloopLayout is deterministic, so respawning is fine).
+                    // Lets you delete the colliderUuids field + save logic
+                    // from Ship.
+                    .noSave()
+                    // Immune to fire/lava ticks for safety; we override
+                    // hurtServer anyway.
+                    .fireImmune()
+
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"ship_collider")))
+    );
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////
 
 
     private static EntityType.EntityFactory<CustomBoatEntity> getBigBoatFactory(Supplier<Item> itemSupplier) {
