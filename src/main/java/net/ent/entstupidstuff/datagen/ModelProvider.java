@@ -209,6 +209,26 @@ public class ModelProvider extends FabricModelProvider{
             futures.add(DataProvider.saveStable(cache, root, path));
         }
 
+        for (String livery : CarWrapHelper.visableDMC13()) {
+            JsonObject modelValue = new JsonObject();
+            modelValue.addProperty("type", "minecraft:model");
+            modelValue.addProperty("model", EntStupidStuff.MOD_ID + ":item/wraps/" + livery + "_wrap");
+
+            JsonObject root = new JsonObject();
+            root.add("model", modelValue);
+
+            // Path: assets/entstupidstuff/items/wraps/fone_audi_wrap.json
+            // Note: We resolve "items" then "wraps" to match your folder structure
+            java.nio.file.Path path = output
+                .getOutputFolder(PackOutput.Target.RESOURCE_PACK)
+                .resolve(EntStupidStuff.MOD_ID)
+                .resolve("items")
+                .resolve("wraps")
+                .resolve(livery + "_wrap.json");
+
+            futures.add(DataProvider.saveStable(cache, root, path));
+        }
+
  
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -413,6 +433,54 @@ public class ModelProvider extends FabricModelProvider{
         registerToolCastModels(blockStateModelGenerator2, "diamond_sword", "knight");
 
         for (String livery : CarWrapHelper.visableF1Wraps()) {
+            // This defines the path: assets/entstupidstuff/models/item/car_wrap/fone_audi_wrap.json
+            ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
+                EntStupidStuff.MOD_ID, 
+                "item/wrap/" + livery + "_wrap"
+            );
+
+            // This creates a flat item model using the texture found at: 
+            // assets/entstupidstuff/textures/item/car_wrap/fone_audi_wrap.png
+            ModelTemplates.FLAT_ITEM.create(
+                modelLocation, 
+                TextureMapping.layer0(modelLocation), 
+                blockStateModelGenerator2.modelOutput
+            );
+        }
+
+        for (String livery : CarWrapHelper.visableDMC13()) {
+            // This defines the path: assets/entstupidstuff/models/item/car_wrap/fone_audi_wrap.json
+            ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
+                EntStupidStuff.MOD_ID, 
+                "item/wrap/" + livery + "_wrap"
+            );
+
+            // This creates a flat item model using the texture found at: 
+            // assets/entstupidstuff/textures/item/car_wrap/fone_audi_wrap.png
+            ModelTemplates.FLAT_ITEM.create(
+                modelLocation, 
+                TextureMapping.layer0(modelLocation), 
+                blockStateModelGenerator2.modelOutput
+            );
+        }
+
+        for (String livery : CarWrapHelper.visableAE86()) {
+            // This defines the path: assets/entstupidstuff/models/item/car_wrap/fone_audi_wrap.json
+            ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
+                EntStupidStuff.MOD_ID, 
+                "item/wrap/" + livery + "_wrap"
+            );
+
+            // This creates a flat item model using the texture found at: 
+            // assets/entstupidstuff/textures/item/car_wrap/fone_audi_wrap.png
+            ModelTemplates.FLAT_ITEM.create(
+                modelLocation, 
+                TextureMapping.layer0(modelLocation), 
+                blockStateModelGenerator2.modelOutput
+            );
+        }
+
+        for (String livery : CarWrapHelper.visableMustang77()) {
             // This defines the path: assets/entstupidstuff/models/item/car_wrap/fone_audi_wrap.json
             ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
                 EntStupidStuff.MOD_ID, 

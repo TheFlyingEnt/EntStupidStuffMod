@@ -1,6 +1,7 @@
 package net.ent.entstupidstuff.api.car.models;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.render.BaseCarRenderState;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,9 +12,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class CyberCarModel extends BaseCarEntityModel  {
+public class CyberCarModel extends BaseCarEntityModel<BaseCarRenderState>  {
 
-    private static final float MAX_WHEEL_STEER_RAD = 0.4f;
+    //private static final float MAX_WHEEL_STEER_RAD = 0.4f;
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "cybercar"), "main"
@@ -470,5 +471,9 @@ public class CyberCarModel extends BaseCarEntityModel  {
 	@Override protected ModelPart backRightWheel()   { return this.Back_Right_Wheel; }
 	@Override protected ModelPart steeringWheel()    { return this.steering_wheel; }
 	@Override protected ModelPart shifter()          { return this.shifter; }
+    @Override protected ModelPart bodykits()         {return null; }
+    @Override protected ModelPart leftDoor()         {return null; }
+    @Override protected ModelPart rightDoor()         {return null; }
+    @Override protected ModelPart hood()         {return null; }
 
 }

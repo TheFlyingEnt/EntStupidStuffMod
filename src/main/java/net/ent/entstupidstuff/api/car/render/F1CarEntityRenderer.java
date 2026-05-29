@@ -1,6 +1,8 @@
 package net.ent.entstupidstuff.api.car.render;
 
+
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.F1CarEntity;
@@ -50,7 +52,12 @@ public class F1CarEntityRenderer extends BaseCarEntityRenderer<F1CarEntity, F1Ca
     private static final ResourceLocation GLOW_REVERSE_CYBERPUNK= ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_cyberpunk_reverse.png");
     
     private static final ResourceLocation GLOW_BACKUP = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/f1one_base_light_backup.png");
-    private static final ResourceLocation GLOW_REVERSE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/f1one_base_light_reverse.png");
+    //private static final ResourceLocation GLOW_REVERSE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/f1one_base_light_reverse.png");
+
+    private static final ResourceLocation GEAR_1 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_gear_1.png");
+    private static final ResourceLocation GEAR_2 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_gear_2.png");
+    private static final ResourceLocation GEAR_3 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_gear_3.png");
+    private static final ResourceLocation GEAR_4 = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_gear_4.png");
  
     public F1CarEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new F1CarEntityModel(context.bakeLayer(F1CarEntityModel.LAYER_LOCATION)));
@@ -71,6 +78,7 @@ public class F1CarEntityRenderer extends BaseCarEntityRenderer<F1CarEntity, F1Ca
         state.variant = entity.getVariant();
         state.wrapId      = entity.getCurrentWrap();
         state.isBreaking = entity.isBraking();
+        state.revLightState = entity.getRevLightState();
     }
 
 
@@ -88,6 +96,39 @@ public class F1CarEntityRenderer extends BaseCarEntityRenderer<F1CarEntity, F1Ca
         };
     }
     
+    @Override
+    public void submit(F1CarRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+        super.submit(state, poseStack, collector, cameraState);
+
+        poseStack.pushPose();
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(180f - state.yRot));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
+ 
+        poseStack.scale(1.0f, 1.0f, 1.0f);
+        poseStack.translate(0, -1.35F, 0);
+
+        ResourceLocation revTex = switch (state.revLightState) {
+            case 1 -> GEAR_1;  // red only
+            case 2 -> GEAR_2;  // red + orange
+            case 3 -> GEAR_3;  // red + orange + yellow
+            case 4 -> GEAR_4;  // all lit
+            default -> null;
+        };
+
+        int alphaByte = Math.round(1 * 255.0f);
+        int color = (alphaByte << 24) | 0x00FFFFFF;
+
+        if (revTex != null) {
+            collector.order(2)
+                .submitModel(
+				this.model(), state, poseStack, RenderType.eyes(revTex), state.lightCoords, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null
+			);
+        }
+
+        poseStack.popPose();
+
+    }
     
     public ResourceLocation texturelist(F1CarRenderState state) {
         //System.out.println(state.variant);

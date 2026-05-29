@@ -20,8 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 
-@Mixin(SmithingScreen.class)
 @Environment(EnvType.CLIENT)
+@Mixin(SmithingScreen.class)
 public class SmithingScreenMixin {
 
     @Shadow private CyclingSlotBackground templateIcon;

@@ -1,10 +1,10 @@
 package net.ent.entstupidstuff.api.car.models;
 
-import net.ent.entstupidstuff.api.car.render.CarRenderState;
+import net.ent.entstupidstuff.api.car.render.BaseCarRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 
-public abstract class BaseCarEntityModel extends EntityModel<CarRenderState> {
+public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends EntityModel<S> {
  
     /** Maximum physical steering angle of the front wheels (radians). */
     private static final float MAX_WHEEL_STEER_RAD = 0.4f;
@@ -29,6 +29,14 @@ public abstract class BaseCarEntityModel extends EntityModel<CarRenderState> {
  
     /** Gear shifter. Return null if model has none. */
     protected abstract ModelPart shifter();
+
+    /** BodyKits. */
+    protected abstract ModelPart bodykits();
+
+    /** Doors */
+    protected abstract ModelPart leftDoor();
+    protected abstract ModelPart rightDoor();
+    protected abstract ModelPart hood();
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -43,7 +51,7 @@ public abstract class BaseCarEntityModel extends EntityModel<CarRenderState> {
     // ═══════════════════════════════════════════════════════════
  
     @Override
-    public void setupAnim(CarRenderState state) {
+    public void setupAnim(S state) {
  
         // ── 1. Wheel spin ─────────────────────────────────────────────────
         // Front wheels track actual forward speed direction.
@@ -82,5 +90,96 @@ public abstract class BaseCarEntityModel extends EntityModel<CarRenderState> {
         // Pre-lerped + drift oscillation in CarEntityRenderer.extractRenderState()
         //body().yRot = state.bodyRoll;
         body().zRot = state.bodyRoll;
+
+        // ── 6. Body kits ────────────────────────────────────────────
+        // Hide ALL kits first, then show only the active one.
+        // This prevents multiple kits being visible simultaneously.
+
+        if (this.bodykits() != null) { //Legacy Car Support
+            ModelPart bodykits = this.bodykits();
+
+            // Hide all kits
+            for (ModelPart part : bodykits.getAllParts()) {
+                if (part != bodykits) { // avoid toggling parent itself
+                    part.visible = false;
+                }
+            }
+
+            // Show active kit
+            if (state.bodyKit != null && !state.bodyKit.equals("stock")) {
+                ModelPart activeKit = bodykits.getChild(state.bodyKit);
+
+                if (activeKit != null) {
+
+                    for (ModelPart part : activeKit.getAllParts()) {
+                        if (part != bodykits) { // avoid toggling parent itself
+                            part.visible = true;
+                        }
+                    }
+
+
+                    activeKit.visible = true;
+                }
+            }
+        }
+
+        // ── Door animation ───────────────────────────────────────────
+        // leftDoorAngle/rightDoorAngle are pre-lerped in the renderer's
+        // extractRenderState() — smooth swing, no snapping.
+        ModelPart leftDoor  = this.leftDoor();
+        ModelPart rightDoor = this.rightDoor();
+        ModelPart hood      = this.hood();
+ 
+        if (leftDoor != null) {
+            leftDoor.yRot = state.leftDoorAngle;
+        }
+        if (rightDoor != null) {
+            rightDoor.yRot = state.rightDoorAngle;
+        }
+ 
+        // ── Hood animation ───────────────────────────────────────────
+        // Opens upward (tilts toward windshield) when GUI is accessed.
+        if (hood != null) {
+            hood.xRot = -state.hoodAngle;
+        }
+
+
+
+
+
+
+
+
+        /*if (this.bodykits() != null && state.bodyKit != "stock") {
+            for (ModelPart kit : this.bodykits().getAllParts()) {
+
+                if (this.bodykits().getChild(state.bodyKit) == kit ) {
+                    try {
+                        for (ModelPart kit2 : kit.getAllParts()) {
+                            kit2.visible = true;
+                        }
+                    } catch (Exception ignored) {
+                        // Kit name doesn't match any ModelPart — silently ignore
+                    }
+
+                } else kit.visible = false;
+            }
+
+
+        } else if (state.bodyKit == "stock" || state.bodyKit == "base"){
+            this.bodykits().visible = false;
+        }
+
+
+        // Show the active kit (if any)
+        /*if (state.bodyKit != null && !state.bodyKit.equals("stock")) {
+            try {
+                this.bodykits().getChild(state.bodyKit).visible = true;
+            } catch (Exception ignored) {
+                // Kit name doesn't match any ModelPart — silently ignore
+            }
+        }*/
+
+
     }
 }

@@ -46,17 +46,75 @@ public class CarWrapHelper {
             "fone_brawngp",
             "fone_blank_empty",
             "fone_stock",
-            "fone_cyberpunk"
+            "fone_cyberpunk",
+            "fone_stark",
+            "fone_williams_renault",
+            "fone_mojang",
+            "fone_jordan"
+        };
+    }
+
+    public static String[] visableDMC13() {
+        return new String[]{
+            "dmc_13_yellow",
+            "dmc_13_red",
+            "dmc_13_blue",
+            "dmc_13_black"
+        };
+    }
+
+    public static String[] visableMustang77() {
+        return new String[]{
+            "mustang_77_special_yellow",
+            "mustang_aqua",
+            "mustang_black",
+            "mustang_cream",
+            "mustang_green",
+            "mustang_light_aqua",
+            "mustang_silver"
+        };
+    }
+
+    public static String[] visableAE86() {
+        return new String[]{
+            "ae86_red",
+            "ae86_gold",
+            "ae86_gray",
+            "ae86_initd"
         };
     }
 
 
-    public static List<ItemStack> getCarWrapInstance_F1Cars() {
+    public static List<ItemStack> getCarWrapInstance_All() {
         List<ItemStack> wraps = new ArrayList<>();
 
         for (String livery : visableF1Wraps()) {
             ItemStack itemStack = new ItemStack(ItemFactory.CAR_WRAP);
             itemStack.set(ModDataComponentTypes.CAR_TYPE, "car");
+            itemStack.set(ModDataComponentTypes.WRAP_ID, livery);
+
+            wraps.add(itemStack);
+        }
+
+        for (String livery : visableDMC13()) {
+            ItemStack itemStack = new ItemStack(ItemFactory.CAR_WRAP);
+            itemStack.set(ModDataComponentTypes.CAR_TYPE, "dmc_13");
+            itemStack.set(ModDataComponentTypes.WRAP_ID, livery);
+
+            wraps.add(itemStack);
+        }
+
+        for (String livery : visableAE86()) {
+            ItemStack itemStack = new ItemStack(ItemFactory.CAR_WRAP);
+            itemStack.set(ModDataComponentTypes.CAR_TYPE, "ae86");
+            itemStack.set(ModDataComponentTypes.WRAP_ID, livery);
+
+            wraps.add(itemStack);
+        }
+
+        for (String livery : visableMustang77()) {
+            ItemStack itemStack = new ItemStack(ItemFactory.CAR_WRAP);
+            itemStack.set(ModDataComponentTypes.CAR_TYPE, "mustang77");
             itemStack.set(ModDataComponentTypes.WRAP_ID, livery);
 
             wraps.add(itemStack);

@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.api.car.menu;
 
 import net.ent.entstupidstuff.api.car.BaseCarEntity;
-import net.ent.entstupidstuff.component.ModDataComponentTypes;
 import net.ent.entstupidstuff.item.base.car.CarWrapItem;
 import net.ent.entstupidstuff.item.base.car.FuelCanisterItem;
 import net.ent.entstupidstuff.item.base.car.LicensePlateItem;
@@ -9,7 +8,6 @@ import net.ent.entstupidstuff.item.base.car.TireItem;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
  
 /**
@@ -69,7 +66,6 @@ public class CarMenu extends AbstractContainerMenu {
                 }
 
                 String wrapCarType = CarWrapItem.getCarType(stack);
-
                 return wrapCarType.equals(car.getCarTypeId());
             }
         
@@ -256,7 +252,17 @@ public class CarMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         super.removed(player);
         carInv.stopOpen(player);
+ 
+        // Close hood when GUI closes
+        // carEntityId is the entity ID stored from the constructor
+        if (!player.level().isClientSide()) {
+            var entity = player.level().getEntity(carEntityId);
+            if (entity instanceof BaseCarEntity car) {
+                car.closeHood();
+            }
+        }
     }
+
 
     
 }

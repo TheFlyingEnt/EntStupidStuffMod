@@ -139,4 +139,6 @@ public class PorsheGT3Entity extends BaseCarEntity {
     public PorsheGT3Entity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+    @Override protected float carMass() { return 0.85f; }
 }

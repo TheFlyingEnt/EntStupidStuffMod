@@ -686,6 +686,41 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("container.carscreen.slot_radio_tooltip", "Place a Music Disc to play while driving");
         translationBuilder.add("container.carscreen.slot_wheel_tooltip", "Wheel required");
 
+        /*
+            REDBULL            1
+            REDBULL_JAPAN      1
+            FORD               2
+            VCARB              3
+            STAKE              4
+            BENTLEY            4
+            AUDI               5
+            WILLIAM-RENULT     5
+            TBA                6 - TBA....... Alpine?
+            TBA                7 - TBA....... Williams?
+            CAMEL              7 - SPECIAL
+            DEMON_SLAYER       8 - SPECIAL
+            TBA                8 - TBA
+            TBA                9 - TBA
+            ENTITY             9 - SPECIAL
+            LEXUS              9 - SPECIAL
+            JURASSICSTUDIO     9 - SPECIAL
+            HAAS24            10
+            BLAST             10 - SPECIAL
+            CADILLAC          11
+            BEAMY             12 - SPECIAL
+            ASTON             14
+            FERRARI24         15
+            FERRARI26         16
+            HAAS26            17
+            CYBERPUNK         21 - SPECIAL
+            BRAWNGP           22
+            JORDAN            33
+            STARK             41 - SPECIAL
+            MERCADES          44
+            CHARLOTTE         49 - SPECIAL
+            MOJANG            66 - SPECIAL
+        */
+
         translationBuilder.add("item.entstupidstuff.carwrap." + "car", "Formula One");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_audi", "Audi #5");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_redbull_japan", "Redbull (Japan) #1");
@@ -705,13 +740,44 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_mercades_w15", "Mercades W-15 #44");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_vcarb_01", "Vcarb-01 #3");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_blast", "[Custom] Blast #10");
-        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_beamy", "[Custom] Beamy N/A");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_beamy", "[Custom] Beamy #12");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_ford", "Ford (Concept) #2");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_haas_vf26", "Haas VF-26 #17");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_bentley", "Bentley (Concept) #4");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_clt", "[Custom] Charlotte #49");
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_brawngp", "BrawnGP #22");
-        translationBuilder.add("item.entstupidstuff.carwrap.cyberpunk." + "fone_cyberpunk", "BrawnGP #22");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_cyberpunk", "[Custom] Cyberpunk #21");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_williams_renault", "Williams-Renault #5");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_stark", "[Custom] Stark Industries #41");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_mojang", "[Custom] Mojang #64");
+        translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_jordan", "Jordan #33");
+
+        translationBuilder.add("item.entstupidstuff.carwrap." + "dmc_13", "DMC-13");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_black", "Factory Black");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_red", "Factory Red");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_yellow", "Factory Yellow");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_blue", "Factory Blue");
+
+        translationBuilder.add("item.entstupidstuff.carwrap." + "ae86", "AE86");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_red", "Factory Red");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gold", "Factory Special Edition Gold");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gray", "Factory Gray");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_initd", "Inital D (The White Ghost of Akina)");
+
+        translationBuilder.add("item.entstupidstuff.carwrap." + "mustang77", "1977 Mustang");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_special_yellow", "1977 Camero Yellow");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_aqua", "Factory Aqua");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_black", "Factory Cobra II Black");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_cream", "Factory Cream");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_green", "Factory Green");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_light_aqua", "Factory Aqua");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_silver", "Factory Cobra II Silver");
+
+        translationBuilder.add("key.entstupidstuff.shift_up", "Shift Up (Manual)");
+        translationBuilder.add("key.entstupidstuff.shift_down", "Shift Down (Manual)");
+
+        translationBuilder.add("subtitles.ent.entity.vehicle.applied_wrap", "Applied Wrap");
+        translationBuilder.add("subtitles.ent.entity.vehicle.applied_wheel", "Applied Wheel");
 
         
 

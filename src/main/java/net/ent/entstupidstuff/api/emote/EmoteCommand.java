@@ -23,7 +23,7 @@ public class EmoteCommand {
                 // /emote <name>
                 .then(Commands.argument("emote_name", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
-                        EmoteRegistry.getNames().forEach(builder::suggest);
+                        EmoteNames.getNames().forEach(builder::suggest);
                         return builder.buildFuture();
                     })
                     .executes(ctx -> executePlay(
@@ -45,7 +45,7 @@ public class EmoteCommand {
             return 0;
         }
  
-        if (!EmoteRegistry.isValid(name)) {
+        if (!EmoteNames.isValid(name)) {
             source.sendFailure(Component.literal(
                 "Unknown emote: \"" + name + "\". Use /emote stop to cancel."
             ));

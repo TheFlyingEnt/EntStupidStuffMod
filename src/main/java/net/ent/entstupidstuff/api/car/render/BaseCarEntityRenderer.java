@@ -2,27 +2,22 @@ package net.ent.entstupidstuff.api.car.render;
 
 import java.util.List;
 
-import org.joml.Matrix4f;
-
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.ent.entstupidstuff.api.car.models.BaseCarEntityModel;
+import net.ent.entstupidstuff.api.car.render.util.CarTextureHelper;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.car.LicensePlateItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
@@ -32,10 +27,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends CarRenderState> extends EntityRenderer<E, S> {
+public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends BaseCarRenderState> extends EntityRenderer<E, S> {
  
     /** Main texture for this car's model. Supplied by subclass. */
     protected abstract ResourceLocation texture(S state);
@@ -44,7 +38,7 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
     /** Glow texture shown when in reverse (reverse lights). */
     protected abstract ResourceLocation glowBackupTexture(S state);
  
-    protected final List<RenderLayer<S, BaseCarEntityModel>> layers = Lists.<RenderLayer<S, BaseCarEntityModel>>newArrayList();
+    protected final List<RenderLayer<S, BaseCarEntityModel<S>>> layers = Lists.<RenderLayer<S, BaseCarEntityModel<S>>>newArrayList();
  
     private static final float MODEL_SCALE = 1.0f;
  
@@ -55,21 +49,22 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
     private static final float BODY_ROLL_LERP            = 0.15f;
     private static final float STEER_WHEEL_LERP          = 0.20f;
     private static final float SHIFTER_LERP              = 0.10f;
-    private final BaseCarEntityModel model;
+    private final BaseCarEntityModel<S> model;
  
-    public BaseCarEntityRenderer(EntityRendererProvider.Context context, BaseCarEntityModel model) {
+    public BaseCarEntityRenderer(EntityRendererProvider.Context context, BaseCarEntityModel<S> model) {
         super(context);
         this.model = model;
         this.shadowRadius = 1.6f;
     }
  
-    protected final boolean addLayer(RenderLayer<S, BaseCarEntityModel> renderLayer) {
+    protected final boolean addLayer(RenderLayer<S, BaseCarEntityModel<S>> renderLayer) {
 		return this.layers.add(renderLayer);
 	}
  
+    @SuppressWarnings("unchecked")
     @Override
     public S createRenderState() {
-        return (S) new CarRenderState();
+        return (S) new BaseCarRenderState();
     }
  
     @Override
@@ -83,6 +78,7 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
         state.steerInput   = entity.getSteerInput();
         state.forwardSpeed = entity.getForwardSpeed();
         state.yRot         = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
+        state.bodyKit = entity.getCurrentBodyKit();
 
 
         Vec3 vel = entity.getDeltaMovement();
@@ -97,6 +93,40 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
         state.plateOffset = entity.licensePlateOffset();
 
         state.isBreaking = entity.isBraking();
+
+        // ── Door & hood animation lerp ───────────────────────────────
+        // Raw booleans from entity data (open/closed).
+        state.leftDoorOpen  = entity.isLeftDoorOpen();
+        state.rightDoorOpen = entity.isRightDoorOpen();
+        state.hoodOpen      = entity.isHoodOpen();
+ 
+        // Smooth animation — lerp toward target angle.
+        // Door: swings to ~70° (1.22 rad) when open.
+        // Hood: tilts to ~45° (0.78 rad) when open.
+        // Open speed is slightly slower than close (feels more natural).
+        float doorOpenAngle = 3.22f;   // ~70 degrees
+        float hoodOpenAngle = 2.78f;   // ~45 degrees
+        float doorOpenRate  = 0.15f;   // ~7 ticks to fully open
+        float doorCloseRate = 0.20f;   // ~5 ticks to fully close
+        float hoodOpenRate  = 0.10f;   // ~10 ticks to open (heavier)
+        float hoodCloseRate = 0.12f;   // ~8 ticks to close
+ 
+        float leftTarget  = state.leftDoorOpen  ? doorOpenAngle : 0f;
+        float rightTarget = state.rightDoorOpen  ? -doorOpenAngle : 0f; // negative = swings the other way
+        float hoodTarget  = state.hoodOpen       ? hoodOpenAngle : 0f;
+ 
+        state.leftDoorAngle  = Mth.lerp(state.leftDoorOpen  ? doorOpenRate : doorCloseRate,
+                                         state.leftDoorAngle, leftTarget);
+        state.rightDoorAngle = Mth.lerp(state.rightDoorOpen ? doorOpenRate : doorCloseRate,
+                                         state.rightDoorAngle, rightTarget);
+        state.hoodAngle      = Mth.lerp(state.hoodOpen      ? hoodOpenRate : hoodCloseRate,
+                                         state.hoodAngle, hoodTarget);
+ 
+        // Snap to zero when very close (prevents float drift)
+        if (Math.abs(state.leftDoorAngle)  < 0.01f) state.leftDoorAngle  = 0f;
+        if (Math.abs(state.rightDoorAngle) < 0.01f) state.rightDoorAngle = 0f;
+        if (Math.abs(state.hoodAngle)      < 0.01f) state.hoodAngle      = 0f;
+
 
  
         // ── Per-entity lerp — runs once per entity per frame ───────────────
@@ -157,7 +187,7 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
 			this.model(), state, poseStack, this.renderType(state), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null
 		);
  
-        for (RenderLayer<S, BaseCarEntityModel> renderLayer : this.layers) {
+        for (RenderLayer<S, BaseCarEntityModel<S>> renderLayer : this.layers) {
 			renderLayer.submit(
 				poseStack, collector, state.lightCoords, state, state.yRot, state.xRot
 			);
@@ -202,13 +232,11 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends C
 	}
 
  
-    protected EntityModel<CarRenderState> model() {
+    protected EntityModel<S> model() {
         return this.model;
     }
 
-    private static final ResourceLocation PLATE_TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/license_plate.png");
-
-    private void renderLicensePlate(CarRenderState state, PoseStack pose, SubmitNodeCollector collector) {
+    private void renderLicensePlate(BaseCarRenderState state, PoseStack pose, SubmitNodeCollector collector) {
 
         if (state.plateOffset == null) return;
         if (state.licensePlate.isEmpty()) return;

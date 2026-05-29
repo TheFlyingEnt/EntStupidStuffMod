@@ -177,12 +177,25 @@ public class SoundFactory {
 
     public static final SoundEvent ENTITY_VEHICLE_F1_MIX_TEST = registerSoundEvent("entity.vehicle.f1_mix");
     public static final SoundEvent ENTITY_VEHICLE_POWER_DRILL = registerSoundEvent("entity.vehicle.power_drill");
-    public static final SoundEvent ENTITY_VEHICLE_WRAP = registerSoundEvent("entity.vehicle.applied_wrap");
+    public static final SoundEvent ENTITY_VEHICLE_WRAP = registerSoundEvent("entity.vehicle.wrap");
 
     public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_GEAR_TOP = registerSoundEvent("entity.vehicle.ferrari_gear_top");
     public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_GEAR_1 = registerSoundEvent("entity.vehicle.ferrari_gear_one");
     public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_BREAK = registerSoundEvent("entity.vehicle.ferrari_gear_break");
     public static final SoundEvent ENTITY_VEHICLE_FERRARI_F40_IDLE = registerSoundEvent("entity.vehicle.ferrari_idle");
+
+    public static final SoundEvent ENTITY_VEHICLE_F1_DEACC_UPDATED = registerSoundEvent("entity.vehicle.f1_deacc_updated");
+    public static final SoundEvent ENTITY_VEHICLE_F1_ACC_UPDATED = registerSoundEvent("entity.vehicle.f1_acc_updated");
+    public static final SoundEvent ENTITY_VEHICLE_CAR_RAIN = registerSoundEvent("entity.vehicle.car_rain");
+    public static final SoundEvent ENTITY_VEHICLE_TURBO_SPOOL = registerSoundEvent("entity.vehicle.turbo_spool-hide");
+    public static final SoundEvent ENTITY_VEHICLE_SHIFT_DOWN = registerSoundEvent("entity.vehicle.shift_down");
+    public static final SoundEvent ENTITY_VEHICLE_SHIFT_UP = registerSoundEvent("entity.vehicle.shift_up");
+
+    public static final SoundEvent ENTITY_VEHICLE_HOOD_OPEN = registerSoundEvent("entity.vehicle.hood_open");
+    public static final SoundEvent ENTITY_VEHICLE_HOOD_CLOSE = registerSoundEvent("entity.vehicle.hood_close");
+    public static final SoundEvent ENTITY_VEHICLE_CAR_DOOR_CLOSE = registerSoundEvent("entity.vehicle.car_door_close");
+    public static final SoundEvent ENTITY_VEHICLE_CAR_DOOR_OPEN = registerSoundEvent("entity.vehicle.car_door_open");
+    
 
 
 

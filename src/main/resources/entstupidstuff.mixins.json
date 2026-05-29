@@ -18,12 +18,14 @@
         "HumanoidArmorLayerMixin",
         "ItemCombinerMenuAccessor",
         "SmithingMenuMixin",
-        "SmithingScreenMixin",
-        "SmithingScreenAccessor",
-        "SmithingScreenFontAccessor",
         "PlayerModelMixin"
 
 	],
+    "client": [
+        "SmithingScreenMixin",
+        "SmithingScreenAccessor",
+        "SmithingScreenFontAccessor"
+    ],
 	"injectors": {
 		"defaultRequire": 1
 	}

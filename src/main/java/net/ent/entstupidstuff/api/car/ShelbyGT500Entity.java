@@ -1,9 +1,11 @@
 package net.ent.entstupidstuff.api.car;
 
 import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
+import net.ent.entstupidstuff.item.util.CarWrapHelper;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
  
 /**
  * 2023 Ford Mustang Shelby GT500 — 5.2L Supercharged V8, 760 hp, RWD.
@@ -150,4 +152,18 @@ public class ShelbyGT500Entity extends BaseCarEntity {
     public ShelbyGT500Entity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+     @Override public Vec3 licensePlateOffset() { return new Vec3(0, 0.50, 2.97); }
+
+    public String[] availableWraps() {
+        return CarWrapHelper.visableMustang77();
+    }
+
+    @Override public String getCarTypeId() { return "mustang77"; }
+    
+    @Override protected double seatHeight()  { return 0.30; /*0.35 */}
+    @Override protected double seatSide()    { return 0.7; }
+    @Override protected double seatForward() { return 0.17;}//0.25; }
+
+    @Override protected float carMass() { return 1.00f; }
 }

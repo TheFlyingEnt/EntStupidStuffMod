@@ -159,5 +159,17 @@ loom {
 
             vmArg "-Dfabric.loom.username=DevPlayer2"
         }
+
+        client3 {
+            inherit client
+
+            // REQUIRED in Loom 1.11+
+            environment = "client"
+
+            configName = "Minecraft Client 3"
+            runDir = "run3"
+
+            vmArg "-Dfabric.loom.username=DevPlayer3"
+        }
     }
 }

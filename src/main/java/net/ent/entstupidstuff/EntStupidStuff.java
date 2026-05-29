@@ -3,6 +3,7 @@ package net.ent.entstupidstuff;
 import net.ent.entstupidstuff.api.car.CarConfigCommand;
 import net.ent.entstupidstuff.api.car.ModNetworking;
 import net.ent.entstupidstuff.api.emote.EmoteCommand;
+import net.ent.entstupidstuff.api.emote.EmoteNames;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.emote.EmoteSyncPayload;
 import net.ent.entstupidstuff.api.hat.HatAdminCommand;
@@ -22,6 +23,7 @@ import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.util.HatnEmoteMainUtil;
+import net.ent.entstupidstuff.util.ModdedDispenseItemBehavior;
 import net.ent.entstupidstuff.util.SkullSupport;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
 import net.ent.entstupidstuff.item.ItemFactory;
@@ -104,6 +106,7 @@ public class EntStupidStuff implements ModInitializer {
 		
 
 		DispenserBlock.registerProjectileBehavior(ItemFactory.PRISMERINE_ARROW);
+        ModdedDispenseItemBehavior.init();
 
 		UpdatedEnchantmentEffects.registerEnchantmentEffects();
 
@@ -123,7 +126,8 @@ public class EntStupidStuff implements ModInitializer {
  
         ModAttachments.init();
         HatRegistry.init();
-        EmoteRegistry.init();
+        //EmoteRegistry.init();
+        EmoteNames.getNames();
  
         // Payloads
         PayloadTypeRegistry.playS2C().register(HatSyncPayload.TYPE,    HatSyncPayload.CODEC);

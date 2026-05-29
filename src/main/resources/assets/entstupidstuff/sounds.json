@@ -1021,7 +1021,7 @@
   },
   "entity.vehicle.power_drill": {
     "sounds": [
-      "entstupidstuff:vehicle/power_drill_2"
+      "entstupidstuff:vehicle/power_drill_3"
     ],
     "subtitle": "subtitles.ent.entity.vehicle.applied_wheel",
     "steam": true,
@@ -1061,6 +1061,76 @@
       "entstupidstuff:vehicle/Ferrari_F40_idle"
     ],
     "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_deacc_updated": {
+    "sounds": [
+      "entstupidstuff:vehicle/f1_deacc"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.f1_acc_updated": {
+    "sounds": [
+      "entstupidstuff:vehicle/f1_acc"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.car_rain": {
+    "sounds": [
+      "entstupidstuff:vehicle/car_rain"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.turbo_spool": {
+    "sounds": [
+      "entstupidstuff:vehicle/turbo_spool"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.shift_down": {
+    "sounds": [
+      "entstupidstuff:vehicle/shift_down"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.shift_up": {
+    "sounds": [
+      "entstupidstuff:vehicle/shift_up"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.vehicle.hood_close": {
+    "sounds": [
+      "entstupidstuff:vehicle/hood_close"
+    ],
+    "steam": false,
+    "volume": 2.0
+  },
+  "entity.vehicle.car_door_open": {
+    "sounds": [
+      "entstupidstuff:vehicle/car_door_open"
+    ],
+    "steam": false,
+    "volume": 2.0
+  },
+  "entity.vehicle.car_door_close": {
+    "sounds": [
+      "entstupidstuff:vehicle/car_door_close"
+    ],
+    "steam": false,
+    "volume": 2.0
+  },
+  "entity.vehicle.hood_open": {
+    "sounds": [
+      "entstupidstuff:vehicle/hood_open"
+    ],
+    "steam": false,
     "volume": 2.0
   }
 }

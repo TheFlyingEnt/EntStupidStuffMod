@@ -3,7 +3,7 @@ package net.ent.entstupidstuff.api.car.render;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.phys.Vec3;
 
-public class CarRenderState extends EntityRenderState {
+public class BaseCarRenderState extends EntityRenderState {
  
     /** Whether the car is actively drifting this frame. */
     public boolean isDrifting = false;
@@ -60,4 +60,28 @@ public class CarRenderState extends EntityRenderState {
     public net.minecraft.world.item.ItemStack licensePlate = net.minecraft.world.item.ItemStack.EMPTY;
 
     public Vec3 plateOffset = new Vec3(0, -10.65, 1.85);
+    public int revLightState = 0;
+
+    public String bodyKit = "stock";
+
+    // ── Door & hood animation state ──────────────────────────────
+    /** Whether each door/hood should be open (raw boolean from entity). */
+    public boolean leftDoorOpen  = false;
+    public boolean rightDoorOpen = false;
+    public boolean hoodOpen      = false;
+ 
+    /**
+     * Smoothly interpolated door/hood angles (radians).
+     * Lerped each frame in extractRenderState() so the door
+     * swings open/closed instead of snapping.
+     *
+     * Door: 0 = closed, ~1.2 rad (~70°) = fully open.
+     * Hood: 0 = closed, ~0.8 rad (~45°) = fully open.
+     */
+    public float leftDoorAngle  = 0f;
+    public float rightDoorAngle = 0f;
+    public float hoodAngle      = 0f;
+ 
+
+
 }

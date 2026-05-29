@@ -63,6 +63,10 @@ public class CarRadioSoundInstance extends AbstractTickableSoundInstance
         } else {
             volume = VOLUME_MAX * (1f - (float)((dist - 8.0) / (RADIO_DISTANCE - 8.0)));
         }
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.RADIO, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

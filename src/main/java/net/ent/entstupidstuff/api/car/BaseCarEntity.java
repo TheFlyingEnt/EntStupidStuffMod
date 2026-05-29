@@ -2,6 +2,8 @@ package net.ent.entstupidstuff.api.car;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Codec;
+
 import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
 import net.ent.entstupidstuff.item.base.car.CarWrapItem;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
@@ -28,6 +30,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
@@ -71,6 +75,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
     // ═══════════════════════════════════════════════════════════
 
     protected float realisticSpeedScale() { return 1.0f; }
+    public static boolean perCarSteering = true;
 
     // ═══════════════════════════════════════════════════════════
     //  SOUND PROFILE  (override in subclass for per-car sounds)
@@ -102,6 +107,137 @@ public abstract class BaseCarEntity extends VehicleEntity {
             net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_TIRES_SQUAL_LOOP
         );
     }
+
+    protected SoundEvent engineStartSound() {
+        return net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_START;
+    }
+
+    public static boolean carCollisionEnabled = true;
+    public boolean isOpenCockpit() { return false; }
+    private int carCollisionCooldown = 0;
+    protected float carMass() { return 0.80f; }
+
+    private void tickCarCollision() {
+        if (carCollisionCooldown > 0) {
+            carCollisionCooldown--;
+            return;
+        }
+ 
+        var nearby = this.level().getEntities(this, this.getBoundingBox().inflate(0.3));
+        for (var entity : nearby) {
+            if (!(entity instanceof BaseCarEntity other)) continue;
+            if (other == this) continue;
+ 
+            handleCarToCarCollision(other);
+            break; // handle one collision per tick to prevent cascades
+        }
+    }
+
+    private void handleCarToCarCollision(BaseCarEntity other) {
+        // ── Direction and distance ───────────────────────────────
+        Vec3 delta = other.position().subtract(this.position());
+        double dist = delta.horizontalDistance();
+        if (dist < 0.01) return; // perfectly overlapping — skip
+ 
+        Vec3 normal = new Vec3(delta.x / dist, 0, delta.z / dist);
+ 
+        // ── Approach speed ───────────────────────────────────────
+        Vec3 relVel = this.getDeltaMovement().subtract(other.getDeltaMovement());
+        double approach = relVel.x * normal.x + relVel.z * normal.z;
+        if (approach <= 0) return; // cars moving apart — no collision
+ 
+        // ── Mass-based impulse ───────────────────────────────────
+        // Heavier car barely moves. Lighter car gets pushed hard.
+        float massA = this.carMass();
+        float massB = other.carMass();
+        float totalMass = massA + massB;
+ 
+        float bounceCoeff = 0.55f; // energy retained (0=sticky, 1=elastic)
+        double impulse = approach * (1f + bounceCoeff);
+ 
+        // Impulse split by mass ratio
+        double impulseA = impulse * (massB / totalMass);
+        double impulseB = impulse * (massA / totalMass);
+ 
+        // Apply impulse along collision normal
+        this.setDeltaMovement(
+            this.getDeltaMovement().x - normal.x * impulseA,
+            this.getDeltaMovement().y,
+            this.getDeltaMovement().z - normal.z * impulseA
+        );
+        other.setDeltaMovement(
+            other.getDeltaMovement().x + normal.x * impulseB,
+            other.getDeltaMovement().y,
+            other.getDeltaMovement().z + normal.z * impulseB
+        );
+ 
+        // ── Separation push (prevent sticking) ──────────────────
+        double minSep = 2.2; // minimum distance between car centers
+        if (dist < minSep) {
+            double pushDist = (minSep - dist) * 0.5;
+            Vec3 push = new Vec3(normal.x * pushDist, 0, normal.z * pushDist);
+            this.setPos(this.position().subtract(push));
+            other.setPos(other.position().add(push));
+        }
+ 
+        // ── Spin from angled impacts ─────────────────────────────
+        float speed = (float) approach;
+        if (speed > 0.10f) {
+            // This car's heading vs collision normal
+            double yRadA = Math.toRadians(this.getYRot());
+            double crossA = (-Math.sin(yRadA)) * normal.z - Math.cos(yRadA) * normal.x;
+            float spinA = (float)(crossA * speed * speed * 3.0f);
+            spinA = Mth.clamp(spinA, -yawMax() * 1.5f, yawMax() * 1.5f);
+            this.overYawRate += spinA;
+            this.overYawRate = Mth.clamp(this.overYawRate, -yawMax(), yawMax());
+            this.setYRot(this.getYRot() + spinA * 0.5f); // immediate rotation
+ 
+            // Other car's spin (opposite direction)
+            double yRadB = Math.toRadians(other.getYRot());
+            double crossB = (-Math.sin(yRadB)) * (-normal.z) - Math.cos(yRadB) * (-normal.x);
+            float spinB = (float)(crossB * speed * speed * 3.0f);
+            spinB = Mth.clamp(spinB, -other.yawMax() * 1.5f, other.yawMax() * 1.5f);
+            other.overYawRate += spinB;
+            other.overYawRate = Mth.clamp(other.overYawRate, -other.yawMax(), other.yawMax());
+            other.setYRot(other.getYRot() + spinB * 0.5f);
+        }
+ 
+        // ── Collision effects ────────────────────────────────────
+        if (speed > 0.08f) {
+            float vol = Math.min(1.0f, speed * 1.5f);
+            float pitch = 0.7f + speed * 0.3f;
+ 
+            this.level().playLocalSound(
+                this.getX(), this.getY(), this.getZ(),
+                net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_HEAVY_CRASH,
+                net.minecraft.sounds.SoundSource.NEUTRAL,
+                vol, pitch, false
+            );
+ 
+            // Spark particles at collision point (midpoint between cars)
+            double midX = (this.getX() + other.getX()) / 2;
+            double midY = (this.getY() + other.getY()) / 2 + 0.5;
+            double midZ = (this.getZ() + other.getZ()) / 2;
+            int count = (int) Math.min(12, speed * 10);
+            for (int i = 0; i < count; i++) {
+                this.level().addParticle(
+                    net.minecraft.core.particles.ParticleTypes.CRIT,
+                    midX + (this.random.nextDouble() - 0.5) * 1.2,
+                    midY + this.random.nextDouble() * 0.5,
+                    midZ + (this.random.nextDouble() - 0.5) * 1.2,
+                    (this.random.nextDouble() - 0.5) * 0.3,
+                    this.random.nextDouble() * 0.15,
+                    (this.random.nextDouble() - 0.5) * 0.3
+                );
+            }
+        }
+ 
+        // ── Cooldown — prevent jitter from re-checking next tick ──
+        this.carCollisionCooldown = 3;
+    }
+
+
+
  
     // ═══════════════════════════════════════════════════════════
     //  ABSTRACT SPEC
@@ -234,6 +370,19 @@ public abstract class BaseCarEntity extends VehicleEntity {
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<ItemStack> RADIO_DISC  =
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<Integer> DATA_REV_LIGHT_STATE =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> DATA_BODYKIT =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.STRING);
+    
+    private static final EntityDataAccessor<Boolean> DATA_LEFT_DOOR_OPEN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_RIGHT_DOOR_OPEN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_HOOD_OPEN =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_ENGINE_JUST_STARTED =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
  
     // ═══════════════════════════════════════════════════════════
     //  CAR INVENTORY  (8 slots: plate, fuel, wrap, radio, 4 wheels)
@@ -287,12 +436,16 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
     /** Returns the current wrap ID for texture selection. */
     public String getCurrentWrap() { return this.entityData.get(DATA_WRAP); }
+    public String getCurrentBodyKit() { return this.entityData.get(DATA_BODYKIT); }
+    
+    public void setCurrentBodyKit(String Value) {this.entityData.set(DATA_BODYKIT, Value); }
  
     /**
      * Override in subclass to define available wrap IDs.
      * Default: only "default" (base texture).
      */
     public String[] availableWraps() { return new String[]{ "default" }; }
+    public String[] availableBodyKits() { return new String[]{}; }
  
     /**
      * Returns a string ID for this car type, used in texture paths.
@@ -322,15 +475,24 @@ public abstract class BaseCarEntity extends VehicleEntity {
     private float   throttleSmooth = 0f;
     private float   frontLat       = 0f;
     private float   rearLat        = 0f;
-    private float   overYawRate    = 0f;
+    protected   float   overYawRate    = 0f;
     private float   wheelSpin      = 0f;
     private float   rearWheelSpin  = 0f;
     private float   burnoutRPM      = 0f;
     private boolean wasBurningOut   = false;
     private float   handbrakeSmooth = 0f; // 0=released → 1=fully engaged; ramps to prevent snap
     private float   steerSmooth     = 0f; // -1..+1 ramped steering (Forza-style input smoothing)
+    private boolean shiftUpRequested   = false;
+    private boolean shiftDownRequested = false;
+    private int     revLimiterTicks    = 0; // ticks at rev limiter (for sound/visual)
     private float   lastServerSpeed   = 0f; // last known speed before driver exit — for coasting
     private float   lastServerYRot    = 0f; // last known yaw before driver exit
+
+    /** Called from ModKeybinds when R is pressed. */
+    public void requestShiftUp()   { this.shiftUpRequested = true; }
+    /** Called from ModKeybinds when F is pressed. */
+    public void requestShiftDown() { this.shiftDownRequested = true; }
+
  
     // ── Cached spec arrays — avoids allocating new float[] every tick ──
     private float[] cachedGearRatios;
@@ -384,6 +546,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
      * When false, A/D instantly sets steerInput to ±1 (raw digital).
      */
     public static boolean forzaTurning = true;
+    protected float steerSpeedReference() { return 0.6f; }
+    protected float steerMinSensitivity() { return 0.55f; }
 
     // ═══════════════════════════════════════════════════════════
     //  PER-CAR TOGGLES  (instance — specific to each car entity)
@@ -397,6 +561,36 @@ public abstract class BaseCarEntity extends VehicleEntity {
      * false = FWD — drive torque loads front traction circle → understeer.
      */
     public boolean isRWD;
+
+    /**
+     * When true, player must shift manually using R (up) and F (down).
+     * Rev limiter at redline — no auto-upshift, power cut if you don't shift.
+     * Toggle via /carconfig manualTransmission true/false.
+     */
+    public static boolean manualTransmission = false;
+
+        /**
+     * Left-hand drive (LHD) = driver sits on the LEFT side.
+     * Right-hand drive (RHD) = driver sits on the RIGHT side (UK, Japan, Australia).
+     *
+     * This determines which door opens for the driver:
+     *   LHD (default): driver → left door,  passenger → right door
+     *   RHD:           driver → right door, passenger → left door
+     */
+    protected boolean isLeftHandDrive() { return true; }
+ 
+ 
+    /** Whether the hood should open when GUI is accessed. Default true.
+     *  F1 cars return false (no hood). */
+    protected boolean hasHood() { return true; }
+
+    private int  leftDoorTimer  = 0;   // ticks remaining before door auto-closes
+    private int  rightDoorTimer = 0;
+    private int  previousPassengerCount = 0;
+    private boolean wasOccupied = false; // for engine start detection
+
+
+
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -459,12 +653,6 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //  No version-specific lerp API needed — works everywhere.
     // ═══════════════════════════════════════════════════════════
 
-    /** Client-only: checks if the local player is riding this car (as driver or passenger). */
-    private boolean isLocalPlayerRiding() {
-        var mc = net.minecraft.client.Minecraft.getInstance();
-        return mc.player != null && mc.player.getVehicle() == this;
-    }
-
     // ═══════════════════════════════════════════════════════════
     //  CLIENT INTERPOLATION  (for passengers + bystanders)
     //
@@ -475,6 +663,10 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //
     //  interpolate() must be called each tick to advance the lerp.
     // ═══════════════════════════════════════════════════════════
+
+    public boolean isTurbo() {
+        return false;
+    }
 
     private InterpolationHandler carInterpolation;
 
@@ -490,28 +682,6 @@ public abstract class BaseCarEntity extends VehicleEntity {
             return carInterpolation;
         }
         return null;
-    }
-
-    /** Client-only: predicts movement from synced entityData for bystanders. */
-    private void tickClientMovement() {
-        float speed = this.getForwardSpeed();
-        float spdScale = realisticSpeed ? realisticSpeedScale() : 1.0f;
-
-        if (Math.abs(speed) > 0.001f) {
-            double yRad = Math.toRadians(this.getYRot());
-            double sinY = Math.sin(yRad), cosY = Math.cos(yRad);
-            double vx = speed * (-sinY) * spdScale;
-            double vz = speed * cosY * spdScale;
-            this.setDeltaMovement(vx, this.getDeltaMovement().y, vz);
-            this.move(MoverType.SELF, this.getDeltaMovement());
-        }
-
-        // Gravity + ground stick on client too
-        if (!this.onGround()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
-        } else if (this.getDeltaMovement().y < 0) {
-            this.setDeltaMovement(this.getDeltaMovement().x, 0, this.getDeltaMovement().z);
-        }
     }
  
     @Override
@@ -531,6 +701,12 @@ public abstract class BaseCarEntity extends VehicleEntity {
         builder.define(DATA_WRAP,            "default");
         builder.define(LICENSE_PLATE, ItemStack.EMPTY);
         builder.define(RADIO_DISC, ItemStack.EMPTY);
+        builder.define(DATA_REV_LIGHT_STATE,        0);
+        builder.define(DATA_BODYKIT, "stock");
+        builder.define(DATA_LEFT_DOOR_OPEN,     false);
+        builder.define(DATA_RIGHT_DOOR_OPEN,    false);
+        builder.define(DATA_HOOD_OPEN,          false);
+        builder.define(DATA_ENGINE_JUST_STARTED, false);
         this.engineRPM  = idleRpm();
         this.burnoutRPM = idleRpm();
     }
@@ -627,6 +803,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
             // Adding Support for tickCarSystem() - Wheel and Tire Wear:
             if (this.getFirstPassenger() != null) {
                 tickCarSystems();
+                tickDoorAndHood();
             }
 
         }
@@ -776,6 +953,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
                 }
             }
 
+            if (carCollisionEnabled) tickCarCollision();
+
             if (this.onGround() && this.getDeltaMovement().y < 0)
                 this.setDeltaMovement(this.getDeltaMovement().x, 0.0, this.getDeltaMovement().z);
 
@@ -857,7 +1036,18 @@ public abstract class BaseCarEntity extends VehicleEntity {
             float recenterRate  = 0.30f; // re-center rate  (~5 ticks back to zero)
 
             // Slow turn-in at high speed: 100% at 0 speed → 55% at 0.6+ bl/tick
-            float speedFactor = 1.0f - Mth.clamp(speed / 0.6f, 0f, 1f) * 0.45f;
+            //float speedFactor = 1.0f - Mth.clamp(speed / 0.6f, 0f, 1f) * 0.45f; - GENERAL
+
+            float speedRef, minSens;
+            if (perCarSteering) {
+                speedRef = steerSpeedReference();
+                minSens  = steerMinSensitivity();
+            } else {
+                speedRef = 0.6f;
+                minSens  = 0.55f;
+            }
+            float speedFactor = 1.0f - Mth.clamp(speed / speedRef, 0f, 1f) * (1.0f - minSens);
+
             float turnInRate  = turnInBase * speedFactor;
 
             // Boost turn-in during drift for counter-steer responsiveness
@@ -898,8 +1088,115 @@ public abstract class BaseCarEntity extends VehicleEntity {
             ? Math.min(1f, handbrakeSmooth + 0.14f)
             : Math.max(0f, handbrakeSmooth - 0.20f);
  
-        // ── 4. Drivetrain chain ───────────────────────────────────────────
+        // ── 4. Drivetrain chain - Manuel Update ────────────────────────────
+
         final float[] GR = cachedGearRatios;
+ 
+        if (burnout) {
+            final float BURN_RPM_RISE = 140f;
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                engineRPM = burnoutRPM;
+            } else {
+                burnoutRPM = Math.min(redlineRpm(), burnoutRPM + BURN_RPM_RISE);
+                if (burnoutRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    burnoutRPM *= (GR[currentGear] / GR[currentGear - 1]);
+                } else if (burnoutRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                }
+                engineRPM = burnoutRPM;
+            }
+            engineRPM  = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+            burnoutRPM = engineRPM;
+            wasBurningOut = true;
+ 
+        } else if (speed < 0.005f) {
+            if (!wasBurningOut) currentGear = 1;
+            clutchTimer = 0;
+            engineRPM   = idleRpm() + throttleSmooth * 600f;
+        } else {
+            wasBurningOut = false;
+            float wheelRPS = speed / tyreCirc() * 20f;
+            float rawRPM   = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+ 
+            if (clutchTimer > 0) {
+                clutchTimer--;
+                float blend = clutchTimer / (float) clutchTicks();
+                engineRPM = Mth.lerp(blend, rawRPM, engineRPM * 0.72f);
+ 
+            } else if (manualTransmission) {
+                // ── MANUAL TRANSMISSION ──────────────────────────────
+                // Player controls shifting via R (up) and F (down).
+                // Rev limiter at redline: power cut, RPM bounces.
+                // Over-rev protection on downshift.
+ 
+                // Process shift requests (edge-triggered from keybinds)
+                if (shiftUpRequested && currentGear < maxGear() && goingFwd) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                }
+                if (shiftDownRequested && currentGear > 1) {
+                    // Over-rev protection: check if downshift would exceed redline
+                    float projectedRPM = wheelRPS * GR[currentGear - 1] * finalDrive() * 60f;
+                    if (projectedRPM <= redlineRpm() * 1.05f) {
+                        // Safe downshift
+                        currentGear--;
+                        clutchTimer = clutchTicks();
+                        rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                    }
+                    // If over-rev: downshift rejected silently
+                }
+                shiftUpRequested   = false;
+                shiftDownRequested = false;
+ 
+                engineRPM = rawRPM;
+ 
+                // Rev limiter: at redline, RPM stays pinned and power is cut
+                if (engineRPM >= redlineRpm()) {
+                    engineRPM = redlineRpm();
+                    revLimiterTicks++;
+                } else {
+                    revLimiterTicks = 0;
+                }
+ 
+            } else if (goingFwd) {
+                // ── AUTOMATIC TRANSMISSION (original) ────────────────
+                if (rawRPM >= redlineRpm() && currentGear < maxGear()) {
+                    currentGear++;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                } else if (rawRPM <= downshiftRpm() && currentGear > 1) {
+                    currentGear--;
+                    clutchTimer = clutchTicks();
+                    rawRPM = wheelRPS * GR[currentGear] * finalDrive() * 60f;
+                }
+                engineRPM = rawRPM;
+                revLimiterTicks = 0;
+ 
+            } else if (goingRev) {
+                float revFraction = Math.min(1f, speed / maxReverseSpeed());
+                engineRPM = idleRpm() + revFraction * (maxReverseRpm() - idleRpm());
+                revLimiterTicks = 0;
+            }
+            engineRPM = Math.max(engineRPM, idleRpm() + throttleSmooth * 500f);
+            engineRPM = Mth.clamp(engineRPM, idleRpm(), redlineRpm());
+        }
+ 
+        // Clear shift requests even if not used (prevents buffering)
+        shiftUpRequested   = false;
+        shiftDownRequested = false;
+ 
+        if (sync) this.entityData.set(DATA_ENGINE_RPM, engineRPM);
+        if (sync) this.entityData.set(DATA_GEAR,       currentGear);
+
+
+
+        // ── 4.OLD Drivetrain chain ───────────────────────────────────────────
+        /*final float[] GR = cachedGearRatios;
  
         if (burnout) {
             final float BURN_RPM_RISE = 140f;
@@ -955,13 +1252,28 @@ public abstract class BaseCarEntity extends VehicleEntity {
         }
  
         if (sync) this.entityData.set(DATA_ENGINE_RPM, engineRPM);
-        if (sync) this.entityData.set(DATA_GEAR,       currentGear);
+        if (sync) this.entityData.set(DATA_GEAR,       currentGear);*/
  
         // ── 5. Drive force ────────────────────────────────────────────────
+        /*float torqueNorm = lookupTorque(engineRPM);
+        float gearMult   = GR[currentGear] / GR[1];
+        float driveForce = torqueNorm * throttleSmooth * peakDriveForce() * gearMult;
+        if (clutchTimer > 0) driveForce = 0f;*/
+
         float torqueNorm = lookupTorque(engineRPM);
         float gearMult   = GR[currentGear] / GR[1];
         float driveForce = torqueNorm * throttleSmooth * peakDriveForce() * gearMult;
+        if (hasFuel()) driveForce *= 1.10f; // +10% power with fuel
         if (clutchTimer > 0) driveForce = 0f;
+ 
+        // Rev limiter power cut: in manual mode, hitting redline kills power.
+        // This makes the car stop accelerating until the player shifts up.
+        if (manualTransmission && revLimiterTicks > 0) {
+            //driveForce *= 0.005f;//0.15f; // 85% power cut — car barely accelerates
+            driveForce  = 0f;
+            
+        }
+
  
         // ── 5b. Surface friction ──────────────────────────────────────────
         // Raw friction: 1.0 = asphalt, 0.10 = blue ice, 0.72 = gravel.
@@ -1175,6 +1487,16 @@ public abstract class BaseCarEntity extends VehicleEntity {
         if (sync) this.entityData.set(DATA_REAR_WHEEL_SPIN, rearWheelSpin);
         if (sync) this.entityData.set(DATA_FORWARD_SPEED, (float) localFwd);
         this.localSpeed = (float) localFwd; // always store for client HUD
+
+        float rpmPct = Mth.clamp((engineRPM - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
+        int revLightState;
+        if      (rpmPct > 0.93f) revLightState = 4; // all lit — SHIFT NOW
+        else if (rpmPct > 0.85f) revLightState = 3; // red + orange + yellow
+        else if (rpmPct > 0.75f) revLightState = 2; // red + orange
+        else if (rpmPct > 0.60f) revLightState = 1; // red only
+        else                     revLightState = 0; // all off
+ 
+        if (sync) this.entityData.set(DATA_REV_LIGHT_STATE, revLightState);
  
         // ── Debug snapshot ────────────────────────────────────────────────
         dbgFrontLat        = frontLat;
@@ -1516,46 +1838,63 @@ public abstract class BaseCarEntity extends VehicleEntity {
     }
  
     @Override protected boolean canAddPassenger(Entity p) { return this.getPassengers().size() < 2; }
+
  
     // ═══════════════════════════════════════════════════════════
     //  INTERACTION
     // ═══════════════════════════════════════════════════════════
+
+    private boolean inventoryOpen = false;
  
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-
         if (player.isSecondaryUseActive()) {
+            // Shift-click: open car customization GUI + open hood
             if (!this.level().isClientSide() && player instanceof ServerPlayer sp) {
+                // Open hood visually
+                if (hasHood()) {
+                    this.entityData.set(DATA_HOOD_OPEN, true);
+                    if (!player.level().isClientSide() && player != null) {
+                        player.level().playSound(null, player.blockPosition(), SoundFactory.ENTITY_VEHICLE_HOOD_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
+                    }
+
+                }
+ 
+                final BaseCarEntity self = this;
                 sp.openMenu(new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
                         return Component.literal("Car Customization");
                     }
-
+ 
                     @Override
                     public AbstractContainerMenu createMenu(
                             int id,
                             net.minecraft.world.entity.player.Inventory inv,
-                            Player p
-                    ) {
-                        return new net.ent.entstupidstuff.api.car.menu.CarMenu(
-                                id,
-                                inv,
-                                BaseCarEntity.this
-                        );
+                            Player p) {
+                        return new net.ent.entstupidstuff.api.car.menu.CarMenu(id, inv, self);
                     }
                 });
             }
-
             return InteractionResult.SUCCESS;
         }
-
+ 
+        // Normal click: ride the car
         if (!this.level().isClientSide()) {
             player.startRiding(this);
         }
-
         return InteractionResult.SUCCESS;
     }
+
+    /** Called by CarMenu when the GUI is closed. Closes the hood. */
+    public void closeHood() {
+        if (!this.level().isClientSide() && hasHood()) {
+            this.entityData.set(DATA_HOOD_OPEN, false);
+            this.level().playSound(null, this.blockPosition(), SoundFactory.ENTITY_VEHICLE_HOOD_CLOSE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        }
+    }
+
+
  
     @Override public boolean isPickable() { return !this.isRemoved(); }
     @Override public boolean isPushable()  { return false; }
@@ -1580,6 +1919,15 @@ public abstract class BaseCarEntity extends VehicleEntity {
         this.entityData.set(DATA_BRAKING,       p.braking());
         this.entityData.set(DATA_BURNOUT,       p.burnout());
         this.entityData.set(DATA_DRIFTING,      p.drifting());
+
+        // Rev light state — computed from packet RPM
+        float rpmPct = Mth.clamp((p.engineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
+        int revState = 0;
+        if      (rpmPct > 0.93f) revState = 4;
+        else if (rpmPct > 0.85f) revState = 3;
+        else if (rpmPct > 0.75f) revState = 2;
+        else if (rpmPct > 0.60f) revState = 1;
+        this.entityData.set(DATA_REV_LIGHT_STATE, revState);
     }
 
     /**
@@ -1617,8 +1965,15 @@ public abstract class BaseCarEntity extends VehicleEntity {
     public boolean isThrottleOn()     { return this.entityData.get(DATA_THROTTLE); }
     public boolean isBurningOut()     { return this.entityData.get(DATA_BURNOUT); }
     public boolean isTunneled()       { return this.entityData.get(DATA_TUNNELED); }
+    public int getRevLightState()       { return this.entityData.get(DATA_REV_LIGHT_STATE); }
     public boolean isBraking()        { return this.entityData.get(DATA_BRAKING); }
     public float   getEngineRPM()     { return this.entityData.get(DATA_ENGINE_RPM); }
+    public boolean isLeftDoorOpen()  { return this.entityData.get(DATA_LEFT_DOOR_OPEN); }
+    public boolean isRightDoorOpen() { return this.entityData.get(DATA_RIGHT_DOOR_OPEN); }
+    public boolean isHoodOpen()      { return this.entityData.get(DATA_HOOD_OPEN); }
+    public boolean isEngineJustStarted() { return this.entityData.get(DATA_ENGINE_JUST_STARTED); }
+    public boolean getIsLeftHandDrive() { return isLeftHandDrive(); }
+
  
     public float getRPM() {
         return Mth.clamp((getEngineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
@@ -1649,6 +2004,10 @@ public abstract class BaseCarEntity extends VehicleEntity {
         String driveType  = isRWD ? "§bRWD" : "§eFWD";
         String spdMode    = realisticSpeed ? " §c[REAL]" : "";
         String steerMode  = forzaTurning   ? " §b[FORZA]" : "";
+
+        String transMode = manualTransmission ? " §d[MAN]" : "";
+        String revLimiter = (manualTransmission && revLimiterTicks > 0) ? " §c§lSHIFT!" : "";
+        String steerSens = perCarSteering ? " §b[PCS]" : "";
  
         if (advancedDebug) {
             // ── Advanced debug: full physics snapshot ─────────────────────────
@@ -1746,9 +2105,26 @@ public abstract class BaseCarEntity extends VehicleEntity {
  
         } else {
             // ── Normal HUD ────────────────────────────────────────────────────
-            player.displayClientMessage(Component.literal(String.format(
+            /*player.displayClientMessage(Component.literal(String.format(
                 "§aSpeed: §f%.0f km/h%s%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]",
-                kmh, spdMode, steerMode, rpm, shiftLabel, gear)), true);
+                kmh, spdMode, steerMode, rpm, shiftLabel, gear)), true);*/
+
+            /*player.displayClientMessage(Component.literal(String.format(
+            "§aSpeed: §f%.0f km/h%s%s%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]%s",
+            kmh, spdMode, steerMode, transMode, rpm, shiftLabel, gear, revLimiter)), true);*/
+
+            // Compact version — combine all toggles into one bracket
+            String modes = (realisticSpeed ? "R" : "") 
+                        + (forzaTurning ? "F" : "") 
+                        + (manualTransmission ? "M" : "") 
+                        + (perCarSteering ? "S" : "");
+            String modeTag = modes.isEmpty() ? "" : " §8[§b" + modes + "§8]";
+
+            player.displayClientMessage(Component.literal(String.format(
+                "§aSpeed: §f%.0f km/h%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]%s",
+                kmh, modeTag, rpm, shiftLabel, gear, revLimiter)), true);
+ 
+
         }
     }
  
@@ -1762,8 +2138,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
             in.read("CarSlot" + i, ItemStack.CODEC).ifPresent(stack ->
                 carInventory.setItem(slot, stack));
         }
-        in.read("wrap", com.mojang.serialization.Codec.STRING).ifPresent(w ->
-            this.entityData.set(DATA_WRAP, w));
+        in.read("wrap", Codec.STRING).ifPresent(w -> this.entityData.set(DATA_WRAP, w));
+        in.read("bodykit", Codec.STRING).ifPresent(k -> this.entityData.set(DATA_BODYKIT, k));
     }
 
     @Override protected void addAdditionalSaveData(ValueOutput out) {
@@ -1773,12 +2149,104 @@ public abstract class BaseCarEntity extends VehicleEntity {
                 out.store("CarSlot" + i, ItemStack.CODEC, stack);
             }
         }
-        out.store("wrap", com.mojang.serialization.Codec.STRING, this.entityData.get(DATA_WRAP));
+        out.store("wrap", Codec.STRING, this.entityData.get(DATA_WRAP));
+        out.store("bodykit", Codec.STRING, this.entityData.get(DATA_BODYKIT));
     }
 
     @Override
     public boolean canBeCollidedWith(@Nullable Entity entity) {
 		return false;
 	}
+
+    private void tickDoorAndHood() {
+        int currentPassengers = this.getPassengers().size();
+ 
+        // ── Detect passenger entering ────────────────────────────
+        if (currentPassengers > previousPassengerCount) {
+            int newIndex = currentPassengers - 1; // 0 = driver, 1 = passenger
+
+            this.level().playPlayerSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
+            this.level().playLocalSound(null, SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
+ 
+            if (newIndex == 0) {
+                // Driver entered — open driver's door
+                if (isLeftHandDrive()) {
+                    leftDoorTimer = 15;
+                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);              
+                } else {
+                    rightDoorTimer = 15;
+                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
+                }
+            } else {
+                // Passenger entered — open passenger's door
+                if (isLeftHandDrive()) {
+                    rightDoorTimer = 15;
+                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
+                } else {
+                    leftDoorTimer = 15;
+                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
+                }
+            }
+        }
+ 
+        // ── Detect passenger exiting ─────────────────────────────
+        if (currentPassengers < previousPassengerCount) {
+            // Someone left — open both doors briefly since we can't
+            // easily tell which passenger index left. The visual is
+            // the same either way — door opens, person walks away.
+
+            this.level().playPlayerSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE, SoundSource.PLAYERS, 1.0f, 1.0f);
+            this.level().playLocalSound(null, SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+            if (previousPassengerCount == 2) {
+                // Passenger left — open passenger door
+                if (isLeftHandDrive()) {
+                    rightDoorTimer = 15;
+                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
+                } else {
+                    leftDoorTimer = 15;
+                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
+                }
+            } else {
+                // Driver left (was alone) — open driver door
+                if (isLeftHandDrive()) {
+                    leftDoorTimer = 15;
+                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
+                } else {
+                    rightDoorTimer = 15;
+                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
+                }
+            }
+        }
+ 
+        previousPassengerCount = currentPassengers;
+ 
+        // ── Door auto-close timers ───────────────────────────────
+        if (leftDoorTimer > 0) {
+            leftDoorTimer--;
+            if (leftDoorTimer == 0) {
+                this.entityData.set(DATA_LEFT_DOOR_OPEN, false);
+            }
+        }
+        if (rightDoorTimer > 0) {
+            rightDoorTimer--;
+            if (rightDoorTimer == 0) {
+                this.entityData.set(DATA_RIGHT_DOOR_OPEN, false);
+            }
+        }
+ 
+        // ── Engine start tracking ────────────────────────────────
+        boolean occupied = currentPassengers > 0;
+        if (occupied && !wasOccupied) {
+            // Car just became occupied — engine start sound needed.
+            // The sound is played client-side by CarSoundManager.
+            // We set a flag that the manager reads.
+            this.entityData.set(DATA_ENGINE_JUST_STARTED, true);
+        } else {
+            this.entityData.set(DATA_ENGINE_JUST_STARTED, false);
+        }
+        wasOccupied = occupied;
+    }
+
 
 }

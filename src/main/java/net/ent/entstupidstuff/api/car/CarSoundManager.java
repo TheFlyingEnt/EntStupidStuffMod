@@ -4,47 +4,54 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.ent.entstupidstuff.api.car.soundengine.AbstractCarSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarAccelSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarDeaccelSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarEchoSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarEngineSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarReverseSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarSoundProfile;
-import net.ent.entstupidstuff.api.car.soundengine.CarTireSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarTopSpeedSoundInstance;
-import net.ent.entstupidstuff.api.car.soundengine.CarRadioSoundInstance;
+import net.ent.entstupidstuff.api.car.soundengine.*;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxPlayable;
 
 /**
- * CarSoundManager — seven layered sound instances per car.
+ * CarSoundManager — manages all car sound layers.
  *
- * Now reads sound events from car.getSoundProfile() instead of
- * hardcoded SoundFactory constants. Each car type provides its
- * own sounds via createSoundProfile() override.
+ * Layers per car:
+ *   1. Engine idle (RPM-pitched loop)
+ *   2. Echo (tunnel reverb)
+ *   3. Accel (RPM-gated driving sound)
+ *   4. Reverse
+ *   5. Decel (throttle lift-off)
+ *   6. Top speed (high-RPM cruise)
+ *   7. Tire screech (drift/burnout)
+ *   8. Turbo spool (turbo cars only)
+ *   9. Rain ambient (weather-dependent)
+ *  10. Radio (music disc)
  *
- * All sound instances use Attenuation.NONE and handle distance
- * falloff manually via SoundDistanceHelper, allowing cars to be
- * heard from much further away than the default 16-block range.
+ * Plus one-shot sounds:
+ *   - Gear shift up/down (triggered on gear change detection)
  */
 public class CarSoundManager {
 
+    // ── Looping sound instance maps ──────────────────────────────
     private static final Map<Integer, CarEngineSoundInstance>   engineSounds  = new HashMap<>();
-    private static final Map<Integer, CarEchoSoundInstance>      echoSounds    = new HashMap<>();
+    private static final Map<Integer, CarEchoSoundInstance>     echoSounds    = new HashMap<>();
     private static final Map<Integer, CarAccelSoundInstance>    accelSounds   = new HashMap<>();
     private static final Map<Integer, CarReverseSoundInstance>  reverseSounds = new HashMap<>();
     private static final Map<Integer, CarDeaccelSoundInstance>  deaccelSounds = new HashMap<>();
     private static final Map<Integer, CarTopSpeedSoundInstance> topSounds     = new HashMap<>();
     private static final Map<Integer, CarTireSoundInstance>     tireSounds    = new HashMap<>();
-    private static final Map<Integer, CarRadioSoundInstance>   radioSounds   = new HashMap<>();
+    private static final Map<Integer, CarTurboSoundInstance>    turboSounds   = new HashMap<>();
+    private static final Map<Integer, CarRainSoundInstance>     rainSounds    = new HashMap<>();
+    private static final Map<Integer, CarRadioSoundInstance>    radioSounds   = new HashMap<>();
+    private static final Map<Integer, Boolean>                  engineStarted = new HashMap<>();
+
+    // ── Gear shift tracking (for one-shot shift sounds) ──────────
+    private static final Map<Integer, Integer> previousGear = new HashMap<>();
 
     public static void tick() {
         Minecraft mc = Minecraft.getInstance();
@@ -58,118 +65,115 @@ public class CarSoundManager {
             int id = car.getId();
             CarSoundProfile p = car.getSoundProfile();
 
+            // ── 0. Engine start one-shot ──────────────────────────────
+            // Plays ONCE when the car goes from empty to occupied.
+            // Uses DATA_ENGINE_JUST_STARTED which is true for exactly
+            // one tick when the first player enters.
+            if (car.isEngineJustStarted()) {
+                Boolean alreadyStarted = engineStarted.get(id);
+                if (alreadyStarted == null || !alreadyStarted) {
+                    // Play engine start sound at car's position
+                    float vol = 1.0f * SoundDistanceHelper.falloff(car, p);
+                    level.playLocalSound(
+                        car.getX(), car.getY(), car.getZ(),
+                        car.engineStartSound(),
+                        SoundSource.NEUTRAL,
+                        vol, 1.0f, false
+                    );
+                    engineStarted.put(id, true);
+                }
+            }
+ 
+            // Reset when car becomes empty (so start plays again next time)
+            if (car.getFirstPassenger() == null) {
+                engineStarted.put(id, false);
+            }
+
+
             // ── 1. Engine idle / RPM ──────────────────────────────────
-            CarEngineSoundInstance engine = engineSounds.get(id);
-            if (engine == null || engine.isStopped()) {
-                if (car.getFirstPassenger() != null) {
-                    engine = new CarEngineSoundInstance(car, p.idle());
-                    sm.play(engine);
-                    engineSounds.put(id, engine);
-                }
+            ensureLayer(engineSounds, id, car, sm,
+                car.getFirstPassenger() != null,
+                () -> new CarEngineSoundInstance(car, p.idle()));
+
+            // ── 2. Echo — tunnel reverb ──────────────────────────────
+            ensureLayer(echoSounds, id, car, sm,
+                car.isTunneled() || car.getFirstPassenger() != null,
+                () -> new CarEchoSoundInstance(car, p.idle()));
+
+            // ── 3. Acceleration ───────────────────────────────────────
+            ensureLayer(accelSounds, id, car, sm,
+                car.getFirstPassenger() != null,
+                () -> new CarAccelSoundInstance(car, p.accel()));
+
+            // ── 4. Reverse ────────────────────────────────────────────
+            ensureLayer(reverseSounds, id, car, sm,
+                car.getFirstPassenger() != null,
+                () -> new CarReverseSoundInstance(car, p.idle()));
+
+            // ── 5. Deceleration / brake ───────────────────────────────
+            ensureLayer(deaccelSounds, id, car, sm,
+                car.getFirstPassenger() != null,
+                () -> new CarDeaccelSoundInstance(car, p.decel()));
+
+            // ── 6. Top speed ──────────────────────────────────────────
+            ensureLayer(topSounds, id, car, sm,
+                car.getFirstPassenger() != null,
+                () -> new CarTopSpeedSoundInstance(car, p.topSpeed()));
+
+            // ── 7. Tyre screech ───────────────────────────────────────
+            ensureLayer(tireSounds, id, car, sm,
+                car.isDrifting() || car.isBurningOut(),
+                () -> new CarTireSoundInstance(car, p.tireSqueal()));
+
+            // ── 8. Turbo spool (turbo cars only) ──────────────────────
+            if (car.isTurbo()) {
+                ensureLayer(turboSounds, id, car, sm,
+                    car.getFirstPassenger() != null,
+                    () -> new CarTurboSoundInstance(car, SoundFactory.ENTITY_VEHICLE_TURBO_SPOOL));
             }
 
-            // ── 1b. Echo — tunnel reverb ──────────────────────────────
-            CarEchoSoundInstance echo = echoSounds.get(id);
-            if (echo == null || echo.isStopped()) {
-                if (car.isTunneled() || car.getFirstPassenger() != null) {
-                    echo = new CarEchoSoundInstance(car, p.idle());
-                    sm.play(echo);
-                    echoSounds.put(id, echo);
+            // ── 9. Rain ambient ───────────────────────────────────────
+            ensureLayer(rainSounds, id, car, sm,
+                car.level().isRaining() && car.getFirstPassenger() != null,
+                () -> new CarRainSoundInstance(car, SoundFactory.ENTITY_VEHICLE_CAR_RAIN));
+
+            // ── 10. Gear shift one-shots ──────────────────────────────
+            if (car.getFirstPassenger() != null) {
+                int currentGear = car.getCurrentGear();
+                Integer prevGear = previousGear.get(id);
+
+                if (prevGear != null && prevGear != currentGear && currentGear > 0) {
+                    float speed = Math.abs(car.getForwardSpeed());
+                    if (speed > 0.03f) { // don't play shift sound when parked
+                        SoundEvent shiftSound = currentGear > prevGear
+                            ? SoundFactory.ENTITY_VEHICLE_SHIFT_UP
+                            : SoundFactory.ENTITY_VEHICLE_SHIFT_DOWN;
+
+                        // Play one-shot at car's position
+                        float vol = 0.6f * SoundDistanceHelper.falloff(car, p);
+                        float pitch = 0.9f + car.getRPM() * 0.2f; // slight pitch variation with RPM
+                        level.playLocalSound(
+                            car.getX(), car.getY(), car.getZ(),
+                            shiftSound, SoundSource.NEUTRAL,
+                            vol, pitch, false
+                        );
+                    }
                 }
+                previousGear.put(id, currentGear);
             }
 
-            // ── 2. Acceleration roar ──────────────────────────────────
-            CarAccelSoundInstance accel = accelSounds.get(id);
-            if (accel == null || accel.isStopped()) {
-                if (car.getFirstPassenger() != null) {
-                    accel = new CarAccelSoundInstance(car, p.accel());
-                    sm.play(accel);
-                    accelSounds.put(id, accel);
-                }
-            }
-
-            // ── 2b. Reverse ───────────────────────────────────────────
-            CarReverseSoundInstance reverse = reverseSounds.get(id);
-            if (reverse == null || reverse.isStopped()) {
-                if (car.getFirstPassenger() != null) {
-                    reverse = new CarReverseSoundInstance(car, p.idle());
-                    sm.play(reverse);
-                    reverseSounds.put(id, reverse);
-                }
-            }
-
-            // ── 3. Deceleration / brake ───────────────────────────────
-            CarDeaccelSoundInstance deaccel = deaccelSounds.get(id);
-            if (deaccel == null || deaccel.isStopped()) {
-                if (car.getFirstPassenger() != null) {
-                    deaccel = new CarDeaccelSoundInstance(car, p.decel());
-                    sm.play(deaccel);
-                    deaccelSounds.put(id, deaccel);
-                }
-            }
-
-            // ── 4. Top speed layer ────────────────────────────────────
-            CarTopSpeedSoundInstance top = topSounds.get(id);
-            if (top == null || top.isStopped()) {
-                if (car.getFirstPassenger() != null) {
-                    top = new CarTopSpeedSoundInstance(car, p.topSpeed());
-                    sm.play(top);
-                    topSounds.put(id, top);
-                }
-            }
-
-            // ── 5. Tyre screech ───────────────────────────────────────
-            CarTireSoundInstance tyre = tireSounds.get(id);
-            if (tyre == null || tyre.isStopped()) {
-                if (car.isDrifting() || car.isBurningOut()) {
-                    tyre = new CarTireSoundInstance(car, p.tireSqueal());
-                    sm.play(tyre);
-                    tireSounds.put(id, tyre);
-                }
-            }
-
-            // ── 6. Radio — music disc ─────────────────────────────────
-            //.getSyncedRADIO()
+            // ── 11. Radio — music disc ────────────────────────────────
             CarRadioSoundInstance radio = radioSounds.get(id);
-            
-            //System.out.println("car.getSyncedRadioDisc() " + car.getSyncedRadioDisc());
-            //System.out.println("car.hasRadioDisc " + car.hasRadioDisc());
-            //System.out.println("car.getFirstPassenger() " + car.getFirstPassenger());
-
             if (car.hasRadioDisc() && car.getFirstPassenger() != null) {
-                
                 if (radio == null || radio.isStopped()) {
-                    //var discStack = car.getSyncedRadioDisc();
                     ItemStack discStack = car.getSyncedRadioDisc();
                     JukeboxPlayable playable = discStack.get(DataComponents.JUKEBOX_PLAYABLE);
-
-                    var optionalHolder =
-                        playable.song().unwrap(level.registryAccess());
-                    
-                    System.out.println("optionalHolder " + optionalHolder);
-                    
-
-                    if (optionalHolder.isPresent()) {
-
-                        var songHolder = optionalHolder.get();
-
-                        var jukeboxSong = songHolder.value();
-
-                        var soundEvent = jukeboxSong.soundEvent();
-
-                        //System.out.println("songHolder " + songHolder);
-                        //System.out.println("jukeboxSong " + jukeboxSong);
-                        //System.out.println("soundEvent " + soundEvent);
-
-                        if (radio == null || radio.isStopped()) {
-
-                            radio = new CarRadioSoundInstance(
-                                    car,
-                                    soundEvent.value()
-                            );
-
+                    if (playable != null) {
+                        var optionalHolder = playable.song().unwrap(level.registryAccess());
+                        if (optionalHolder.isPresent()) {
+                            var soundEvent = optionalHolder.get().value().soundEvent().value();
+                            radio = new CarRadioSoundInstance(car, soundEvent);
                             sm.play(radio);
-
                             radioSounds.put(id, radio);
                         }
                     }
@@ -180,6 +184,7 @@ public class CarSoundManager {
             }
         }
 
+        // ── Prune dead/removed instances ─────────────────────────────
         pruneMap(engineSounds,  level);
         pruneMap(echoSounds,    level);
         pruneMap(accelSounds,   level);
@@ -187,7 +192,30 @@ public class CarSoundManager {
         pruneMap(deaccelSounds, level);
         pruneMap(topSounds,     level);
         pruneMap(tireSounds,    level);
+        pruneMap(turboSounds,   level);
+        pruneMap(rainSounds,    level);
         pruneMap(radioSounds,   level);
+
+        // Prune gear tracking for removed entities
+        previousGear.entrySet().removeIf(e -> level.getEntity(e.getKey()) == null);
+    }
+
+    /**
+     * Ensures a looping sound instance exists for a car.
+     * Creates it if missing/stopped AND the condition is true.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T extends AbstractTickableSoundInstance> void ensureLayer(
+            Map<Integer, T> map, int id, BaseCarEntity car, SoundManager sm,
+            boolean createCondition, java.util.function.Supplier<T> factory) {
+        T instance = map.get(id);
+        if (instance == null || instance.isStopped()) {
+            if (createCondition) {
+                instance = factory.get();
+                sm.play(instance);
+                map.put(id, instance);
+            }
+        }
     }
 
     private static <T extends AbstractTickableSoundInstance> void pruneMap(
@@ -203,6 +231,7 @@ public class CarSoundManager {
     public static void stopAll() {
         Minecraft mc = Minecraft.getInstance();
         SoundManager sm = mc.getSoundManager();
+
         engineSounds.values().forEach(sm::stop);
         echoSounds.values().forEach(sm::stop);
         accelSounds.values().forEach(sm::stop);
@@ -210,7 +239,10 @@ public class CarSoundManager {
         deaccelSounds.values().forEach(sm::stop);
         topSounds.values().forEach(sm::stop);
         tireSounds.values().forEach(sm::stop);
+        turboSounds.values().forEach(sm::stop);
+        rainSounds.values().forEach(sm::stop);
         radioSounds.values().forEach(sm::stop);
+
         engineSounds.clear();
         echoSounds.clear();
         accelSounds.clear();
@@ -218,6 +250,10 @@ public class CarSoundManager {
         deaccelSounds.clear();
         topSounds.clear();
         tireSounds.clear();
+        turboSounds.clear();
+        rainSounds.clear();
         radioSounds.clear();
+        previousGear.clear();
+        engineStarted.clear();
     }
 }

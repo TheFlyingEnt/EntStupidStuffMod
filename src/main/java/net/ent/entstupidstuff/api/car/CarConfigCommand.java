@@ -2,7 +2,8 @@ package net.ent.entstupidstuff.api.car;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.ent.entstupidstuff.api.car.BaseCarEntity;
+import com.mojang.brigadier.arguments.StringArgumentType;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -89,6 +90,82 @@ public class CarConfigCommand {
                 .then(Commands.literal("reset")
                     .executes(ctx -> resetDriveType(ctx.getSource())))
             )
+
+            .then(Commands.literal("manualTransmission")
+                .then(Commands.argument("enabled", BoolArgumentType.bool())
+                    .executes(ctx -> {
+                        boolean enabled = BoolArgumentType.getBool(ctx, "enabled");
+                        BaseCarEntity.manualTransmission = enabled;
+                        ctx.getSource().sendSuccess(
+                            () -> Component.literal(enabled
+                                ? "§d[MAN] Manual transmission ON — use R to shift up, F to shift down"
+                                : "§7[AUTO] Automatic transmission restored"),
+                            false);
+                        return 1;
+                    })
+                )
+            )
+
+            .then(Commands.literal("perCarSteering")
+                .then(Commands.argument("enabled", BoolArgumentType.bool())
+                    .executes(ctx -> {
+                        boolean enabled = BoolArgumentType.getBool(ctx, "enabled");
+                        BaseCarEntity.perCarSteering = enabled;
+                        ctx.getSource().sendSuccess(
+                            () -> Component.literal(enabled
+                                ? "§b[STEER] Per-car steering sensitivity ON"
+                                : "§7[STEER] Universal steering sensitivity (0.6/0.55)"),
+                            false);
+                        return 1;
+                    })
+                )
+            )
+
+            .then(Commands.literal("bodykit")
+                .then(Commands.argument("kit", StringArgumentType.word())
+                    .executes(ctx -> {
+                        var player = ctx.getSource().getPlayerOrException();
+                        if (!(player.getVehicle() instanceof BaseCarEntity car)) {
+                            ctx.getSource().sendFailure(Component.literal("Must be driving a car"));
+                            return 0;
+                        }
+                        String kit = StringArgumentType.getString(ctx, "kit");
+                        // Validate
+                        if (!kit.equals("none")) {
+                            boolean valid = false;
+                            for (String k : car.availableBodyKits()) {
+                                if (k.equals(kit)) { valid = true; break; }
+                            }
+                            if (!valid) {
+                                ctx.getSource().sendFailure(Component.literal(
+                                    "Available kits: none, " + String.join(", ", car.availableBodyKits())));
+                                return 0;
+                            }
+                        }
+                        //car.getEntityData().set(DATA_BODYKIT, kit);
+                        car.setCurrentBodyKit(kit);
+                        ctx.getSource().sendSuccess(
+                            () -> Component.literal("§a[BODYKIT] Set to: " + kit), false);
+                        return 1;
+                    })
+                )
+            )
+
+            .then(Commands.literal("carCollision")
+                .then(Commands.argument("enabled", BoolArgumentType.bool())
+                    .executes(ctx -> {
+                        boolean enabled = BoolArgumentType.getBool(ctx, "enabled");
+                        BaseCarEntity.carCollisionEnabled = enabled;
+                        ctx.getSource().sendSuccess(
+                            () -> Component.literal(enabled
+                                ? "§c[COLLISION] Car-to-car collision ON — cars bounce off each other"
+                                : "§7[COLLISION] Car-to-car collision OFF — cars pass through each other"),
+                            false);
+                        return 1;
+                    })
+                )
+            )
+
         );
     }
 

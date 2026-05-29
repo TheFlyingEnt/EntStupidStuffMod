@@ -139,16 +139,38 @@ public class HondaCivicTypeREntity extends BaseCarEntity {
         );
     }
 
+    public boolean isTurbo() {
+        return true;
+    }
+
+    @Override public String getCarTypeId() { return "ae86"; }
+
  
     public HondaCivicTypeREntity(EntityType<?> type, Level level) {
         super(type, level);
     }
 
     @Override protected double seatHeight()  { return 0.35; }
-    @Override protected double seatSide()    { return 0.55; }
+    @Override protected double seatSide()    { return -0.55; }
     @Override protected double seatForward() { return -0.25; }
 
     //                                                             x      y     z
     @Override public Vec3 licensePlateOffset() { return new Vec3(-0.84, 0.60, 3.55); }
+
+    @Override
+    public String[] availableBodyKits() {
+        return new String[]{ "street_body_kit", "racing_body_kit" };
+    }
+
+    //protected double seatHeight()  { return 0.4; }
+    //protected double seatSide()    { return 0.5; }
+    //protected double seatForward() { return -0.5; }
+
+    @Override protected float carMass() { return 0.72f; }
+    
+
+
+
+
 
 }

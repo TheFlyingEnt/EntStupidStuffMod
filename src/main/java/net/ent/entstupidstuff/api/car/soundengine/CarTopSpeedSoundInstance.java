@@ -7,42 +7,43 @@ import net.minecraft.sounds.SoundSource;
 import net.ent.entstupidstuff.api.car.BaseCarEntity;
 
 /**
- * Top-speed cruising layer — the high-gear roar at speed.
+ * Top-speed cruising layer — the high-RPM sustained roar.
  *
- * OLD BUG: only checked speed, not throttle. Releasing W at top speed
- * kept this layer at full volume until the car coasted below 0.70 bl/tick,
- * which took several seconds. The sound felt "stuck on".
+ * FIXES:
+ *   OLD: activated at absolute speed > 0.80 bl/tick.
+ *        F1 hits 0.80 in gear 1 → top speed sound in first gear.
+ *        Viper hits 0.80 in gear 4 → premature activation.
  *
- * NEW: two-factor system — speed gate AND throttle gate.
+ *   NEW: activated at RPM > 80% of redline (with hysteresis).
+ *        Only plays when the engine is ACTUALLY at high RPM,
+ *        regardless of gear or absolute speed. This means:
+ *          - F1 in gear 1 at 80 km/h: RPM=60% → no top speed sound ✓
+ *          - F1 in gear 8 at 350 km/h: RPM=92% → top speed sound ✓
+ *          - Viper in gear 4 at 90 km/h: RPM=55% → no top speed sound ✓
+ *          - Viper in gear 5 at 120 km/h: RPM=85% → top speed sound ✓
  *
- *   Speed gate:   fades in above 0.80, out below 0.70 (hysteresis)
- *   Throttle gate: on-throttle = full volume; off-throttle = rapid fade
- *
- *   Releasing W at top speed now fades the top speed layer in ~5 ticks
- *   while the decel layer takes over. Re-pressing W fades it back in.
- *   This gives the "lift-off drop" that real cars have.
- *
- * Forza/GT approach adapted for Minecraft:
- *   Real games crossfade between "on-load" and "off-load" recordings.
- *   We simulate this by fading the top speed layer (on-load) out when
- *   throttle is released, letting the decel layer (off-load) through.
+ *   Throttle gate: releasing W drops the layer quickly so the
+ *   decel layer can take over (lift-off feel).
  */
 public class CarTopSpeedSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
 
-    private static final float THRESHOLD_IN      = 0.80f;
-    private static final float THRESHOLD_OUT     = 0.70f;
+    /** RPM above this = top speed layer activates. */
+    private static final float RPM_THRESHOLD_IN  = 0.82f;
+    /** RPM below this = top speed layer deactivates (hysteresis). */
+    private static final float RPM_THRESHOLD_OUT = 0.75f;
+
     private static final float FADE_IN_RATE      = 0.05f;
     private static final float FADE_OUT_RATE     = 0.04f;
-    /** How fast volume drops when throttle is released at speed. */
+    /** How fast volume drops when throttle is released. */
     private static final float THROTTLE_OFF_FADE = 0.12f;
     /** How fast volume recovers when throttle is re-applied. */
     private static final float THROTTLE_ON_FADE  = 0.08f;
 
     private final BaseCarEntity car;
     private final CarSoundProfile profile;
-    private float fadeFactor     = 0f; // speed gate: 0=below threshold, 1=above
-    private float throttleFactor = 0f; // throttle gate: 0=off, 1=on
+    private float fadeFactor     = 0f; // RPM gate
+    private float throttleFactor = 0f; // throttle gate
 
     public CarTopSpeedSoundInstance(BaseCarEntity car, SoundEvent sound) {
         super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
@@ -64,30 +65,37 @@ public class CarTopSpeedSoundInstance extends AbstractTickableSoundInstance
         if (car.isRemoved()) { stop(); return; }
         syncPosition();
 
-        float speed = Math.abs(car.getForwardSpeed());
+        float rpm = car.getRPM(); // 0–1 normalized
 
-        // ── Speed gate (hysteresis) ──────────────────────────────
-        boolean speedActive = fadeFactor > 0f ? speed > THRESHOLD_OUT : speed > THRESHOLD_IN;
-        fadeFactor = speedActive
+        // ── RPM gate (hysteresis) ────────────────────────────────
+        // Uses RPM percentage instead of absolute speed.
+        // Activates at 82% RPM, deactivates at 75% (hysteresis
+        // prevents flickering when RPM hovers near threshold).
+        boolean rpmActive = fadeFactor > 0f ? rpm > RPM_THRESHOLD_OUT : rpm > RPM_THRESHOLD_IN;
+        fadeFactor = rpmActive
             ? Math.min(1f, fadeFactor + FADE_IN_RATE)
             : Math.max(0f, fadeFactor - FADE_OUT_RATE);
 
         // ── Throttle gate ────────────────────────────────────────
         // On-throttle: volume builds up. Off-throttle: rapid fade.
-        // This is the "lift-off" feel — releasing W drops the top
-        // speed roar quickly, letting the decel layer through.
+        // Releasing W drops the top speed roar quickly, letting
+        // the decel layer through.
         boolean onThrottle = car.isThrottleOn();
         throttleFactor = onThrottle
             ? Math.min(1f, throttleFactor + THROTTLE_ON_FADE)
             : Math.max(0f, throttleFactor - THROTTLE_OFF_FADE);
 
-        // Final volume = speed gate × throttle gate × profile × distance
+        // Final volume = RPM gate × throttle gate × profile × distance
         volume = fadeFactor * throttleFactor * profile.topSpeedVolume()
                * SoundDistanceHelper.falloff(car, profile);
 
         pitch = profile.topSpeedPitch();
 
         if (fadeFactor <= 0f && car.getFirstPassenger() == null) stop();
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.TOP_SPEED, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

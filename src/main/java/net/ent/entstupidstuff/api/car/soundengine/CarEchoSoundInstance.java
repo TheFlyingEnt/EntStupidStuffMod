@@ -57,6 +57,10 @@ public class CarEchoSoundInstance extends AbstractTickableSoundInstance
         pitch  = PITCH_IDLE + rpm * (PITCH_MAX - PITCH_IDLE);
 
         if (fadeFactor <= 0f && car.getFirstPassenger() == null) stop();
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.ECHO, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

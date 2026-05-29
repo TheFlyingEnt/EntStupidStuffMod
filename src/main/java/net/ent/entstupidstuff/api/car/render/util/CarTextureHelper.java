@@ -1,7 +1,6 @@
-package net.ent.entstupidstuff.api.car.render;
+package net.ent.entstupidstuff.api.car.render.util;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.ent.entstupidstuff.item.base.car.LicensePlateItem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;

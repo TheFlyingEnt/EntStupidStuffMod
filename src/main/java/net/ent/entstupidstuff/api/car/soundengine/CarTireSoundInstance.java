@@ -52,6 +52,10 @@ public class CarTireSoundInstance extends AbstractTickableSoundInstance
         if (active) pitch = PITCH_BASE + (speed / 1.0f) * PITCH_RANGE;
 
         if (fadeFactor <= 0f && car.getFirstPassenger() == null) stop();
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.TIRES, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

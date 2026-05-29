@@ -1,6 +1,5 @@
 package net.ent.entstupidstuff.api.car.soundengine;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -50,6 +49,10 @@ public class CarEngineSoundInstance extends AbstractTickableSoundInstance
         volume = fadeFactor * profile.engineVolume() * SoundDistanceHelper.falloff(car, profile);
 
         if (fadeFactor <= 0f && car.getFirstPassenger() == null) stop();
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.ENGINE, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

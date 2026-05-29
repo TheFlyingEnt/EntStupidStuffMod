@@ -307,7 +307,7 @@ public class ModGroup {
             ))
         );
 
-        for (ItemStack carStack : CarWrapHelper.getCarWrapInstance_F1Cars()) {
+        for (ItemStack carStack : CarWrapHelper.getCarWrapInstance_All()) {
             ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(
                 entries -> entries.accept(carStack)
             );

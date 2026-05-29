@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "entstupidstuff:item/wrap/mustang_77_special_yellow_wrap"
+  }
+}

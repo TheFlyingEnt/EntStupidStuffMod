@@ -544,4 +544,10 @@ public class F1CarEntity extends BaseCarEntity {
     //                                                             x      y     z
     @Override public Vec3 licensePlateOffset() { return new Vec3(-0.75, 0.80, 3.35); }
 
+    @Override protected float steerSpeedReference()  { return 2.0f; }
+    @Override protected float steerMinSensitivity()  { return 0.25f; }
+
+    @Override protected boolean hasHood() { return false; }
+    @Override protected float carMass() { return 0.50f; }
+
 }

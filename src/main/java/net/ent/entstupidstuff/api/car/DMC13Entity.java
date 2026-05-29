@@ -1,5 +1,6 @@
 package net.ent.entstupidstuff.api.car;
 
+import net.ent.entstupidstuff.item.util.CarWrapHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -111,5 +112,12 @@ public class DMC13Entity extends BaseCarEntity {
 
     @Override public Vec3 licensePlateOffset() { return new Vec3(0, 0.25, 3.35); }
 
+    public String[] availableWraps() {
+        return CarWrapHelper.visableDMC13();
+    }
+
+    @Override public String getCarTypeId() { return "dmc_13"; }
+
+    @Override protected float carMass() { return 0.90f; }
 
 }

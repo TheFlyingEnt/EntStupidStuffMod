@@ -1,35 +1,7 @@
-package net.ent.entstupidstuff.api.car.render;
-
-import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.api.car.F1CarEntity;
-import net.ent.entstupidstuff.api.car.models.F1CarEntityModel;
-import net.ent.entstupidstuff.api.car.models.NissanZEntityModel;
-import net.ent.entstupidstuff.client.entity.passive.BassEntity;
-import net.ent.entstupidstuff.client.render.entity.state.BassRenderState;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
-
-import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+package net.ent.entstupidstuff.api.car.render.util;
 
 
-public class OldF1CarEntityRenderer extends EntityRenderer<F1CarEntity, F1CarRenderState> {
+public class OldF1CarEntityRenderer {} /*extends EntityRenderer<F1CarEntity, F1CarRenderState> {
 
     private static final ResourceLocation AUDI = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_audi.png");
     private static final ResourceLocation REDBULL_JAPAN = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/car/fone_redbull_japan.png");
@@ -111,7 +83,7 @@ public class OldF1CarEntityRenderer extends EntityRenderer<F1CarEntity, F1CarRen
             FERRARI26         16
             HAAS26            17
             MERCADES          44
-            */
+            *
 		};
     }
 
@@ -198,7 +170,7 @@ public class OldF1CarEntityRenderer extends EntityRenderer<F1CarEntity, F1CarRen
         state.bodyRoll = Mth.lerp(BODY_ROLL_LERP, state.bodyRoll, targetRoll);
         if (state.isDrifting) {
             state.bodyRoll += Mth.sin(state.ageInTicks * 0.3f) * 0.025f;
-        }*/
+        }*
 
         float rollScale = state.isDrifting ? 1.8f : 1.0f;
         float targetRoll = Mth.clamp(state.lateralVelocity * -0.8f * rollScale,
@@ -265,3 +237,4 @@ public class OldF1CarEntityRenderer extends EntityRenderer<F1CarEntity, F1CarRen
     }
  
 }
+*/

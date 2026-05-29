@@ -1,19 +1,10 @@
 package net.ent.entstupidstuff.api.casting;
 
-import java.util.function.Consumer;
-
 import com.mojang.serialization.Codec;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipProvider;
 
 /*public record ToolMoldComponent(ResourceLocation castId) implements TooltipProvider {
 

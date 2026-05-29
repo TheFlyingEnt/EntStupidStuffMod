@@ -137,4 +137,6 @@ public class GR86Entity extends BaseCarEntity {
     public GR86Entity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+    @Override protected float carMass() { return 0.70f; }
 }

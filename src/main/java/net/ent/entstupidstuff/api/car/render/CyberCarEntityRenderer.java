@@ -1,11 +1,12 @@
 package net.ent.entstupidstuff.api.car.render;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.ent.entstupidstuff.api.car.models.CyberCarModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public class CyberCarEntityRenderer extends BaseCarEntityRenderer {
+public class CyberCarEntityRenderer extends BaseCarEntityRenderer<BaseCarEntity, BaseCarRenderState> {
  
     private static final ResourceLocation TEXTURE =
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/cybercar.png");
@@ -18,7 +19,7 @@ public class CyberCarEntityRenderer extends BaseCarEntityRenderer {
         super(context, new CyberCarModel(context.bakeLayer(CyberCarModel.LAYER_LOCATION)));
     }
  
-    @Override protected ResourceLocation texture(CarRenderState state)            { return TEXTURE; }
-    @Override protected ResourceLocation glowTexture(CarRenderState state)        { return GLOW; }
-    @Override protected ResourceLocation glowBackupTexture(CarRenderState state)  { return GLOW_BACKUP; }
+    @Override protected ResourceLocation texture(BaseCarRenderState state)            { return TEXTURE; }
+    @Override protected ResourceLocation glowTexture(BaseCarRenderState state)        { return GLOW; }
+    @Override protected ResourceLocation glowBackupTexture(BaseCarRenderState state)  { return GLOW_BACKUP; }
 }

@@ -37,8 +37,48 @@
             { "when": "fone_clt", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_clt_wrap" } },
             { "when": "fone_cyberpunk", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_cyberpunk_wrap" } },
             { "when": "fone_brawngp", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_brawngp_wrap" } },
-            { "when": "fone_blank_empty", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_blank_empty_wrap" } },
+            { "when": "fone_stark", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_stark_wrap" } },
+            { "when": "fone_williams_renault", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_williams_renault_wrap" } },
+            { "when": "fone_mojang", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_mojang_wrap" } },
+            { "when": "fone_jordan", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_jordan_wrap" } },
+            { "when": "fone_blank_empty", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_stock" } },
             { "when": "fone_stock", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/fone_stock_wrap" } }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "entstupidstuff:item/car_wrap"
+          }
+        }
+      },
+      {
+        "when": "dmc_13",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "entstupidstuff:wrap_id",
+          "cases": [
+            { "when": "dmc_13_yellow", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/dmc_13_yellow_wrap" } },
+            { "when": "dmc_13_red", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/dmc_13_red_wrap" } },
+            { "when": "dmc_13_blue", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/dmc_13_blue_wrap" } },
+            { "when": "dmc_13_black", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/dmc_13_black_wrap" } }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "entstupidstuff:item/car_wrap"
+          }
+        }
+      },
+      {
+        "when": "ae86",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "entstupidstuff:wrap_id",
+          "cases": [
+            { "when": "ae86_red", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/ae86_red_wrap" } },
+            { "when": "ae86_gray", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/ae86_gray_wrap" } },
+            { "when": "ae86_gold", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/ae86_gold_wrap" } },
+            { "when": "ae86_initd", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/ae86_initd_wrap" } }
           ],
           "fallback": {
             "type": "minecraft:model",
@@ -60,6 +100,27 @@
                 "model": "entstupidstuff:item/nissan_z_gold_wrap"
               }
             }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "entstupidstuff:item/car_wrap"
+          }
+        }
+      },
+      {
+        "when": "mustang77",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "entstupidstuff:wrap_id",
+          "cases": [
+            { "when": "mustang_77_special_yellow", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_77_special_yellow_wrap" } },
+            { "when": "mustang_aqua", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_aqua_wrap" } },
+            { "when": "mustang_black", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_black_wrap" } },
+            { "when": "mustang_cream", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cream_wrap" } },
+            { "when": "mustang_green", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_green_wrap" } },
+            { "when": "mustang_light_aqua", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_light_aqua_wrap" } },
+            { "when": "mustang_silver", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_silver_wrap" } }
           ],
           "fallback": {
             "type": "minecraft:model",

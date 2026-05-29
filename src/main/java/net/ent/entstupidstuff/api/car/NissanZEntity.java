@@ -158,5 +158,7 @@ public class NissanZEntity extends BaseCarEntity {
     @Override public String getCarTypeId() { return "nissan_z"; }
     @Override public Vec3 licensePlateOffset() { return new Vec3(0, 0.72, 2.98); }
 
+    @Override protected float carMass() { return 0.80f; }
+
 
 }

@@ -16,3 +16,10 @@
 /tp @s Player781
 /summon entstupidstuff:f1car
 /carconfig realisticSpeed false
+/carconfig bodykit
+/carconfig bodykit no
+/carconfig bodykit street_body_kit
+/summon entstupidstuff:f1car
+/summon entstupidstuff:typer
+/tp @s Player32
+/summon entstupidstuff:typer

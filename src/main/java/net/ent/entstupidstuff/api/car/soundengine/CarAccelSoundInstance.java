@@ -7,30 +7,33 @@ import net.minecraft.sounds.SoundSource;
 import net.ent.entstupidstuff.api.car.BaseCarEntity;
 
 /**
- * Acceleration sound layer — the main "driving" sound.
+ * Acceleration sound layer — the main "driving under power" sound.
  *
- * OLD BUG: pitch followed RPM linearly up to accelPitchHigh (e.g. 1.40)
- * then accel faded out and top speed kicked in at topSpeedPitch (0.92).
- * That's a jarring pitch drop from 1.40 → 0.92 at the crossfade.
+ * FIXES:
+ *   1. Only plays when RPM is above 25% — no more accel sound
+ *      when crawling through sand at 2 km/h with the engine barely
+ *      above idle. Below 25% RPM, only the idle layer is heard.
  *
- * NEW: as speed approaches the crossfade zone (0.60–0.85), the pitch
- * smoothly blends toward topSpeedPitch. By the time accel fades out,
- * its pitch already matches the top speed layer — seamless handoff.
+ *   2. Pitch blends toward topSpeedPitch in the crossfade zone
+ *      (RPM 0.70–0.85) so the handoff to the top speed layer
+ *      is seamless — no jarring pitch jump.
  *
- * Crossfade zones:
- *   0.00–0.60: pure RPM-based pitch (sounds natural in low/mid gears)
- *   0.60–0.85: pitch blends from RPM-based toward topSpeedPitch
- *   0.85+:     volume fades out (top speed layer takes over)
+ *   3. Fades out based on RPM, not absolute speed. This means
+ *      it fades at the right point regardless of which gear
+ *      you're in or how fast the car actually goes.
  */
 public class CarAccelSoundInstance extends AbstractTickableSoundInstance
         implements AbstractCarSoundInstance {
 
-    private static final float FADE_IN_RATE      = 0.08f;
-    private static final float FADE_OUT_RATE     = 0.06f;
-    private static final float MIN_SPEED         = 0.03f;
-    private static final float ACCEL_FADE_START  = 0.85f;
-    /** Speed at which pitch blending toward top speed begins. */
-    private static final float BLEND_START       = 0.60f;
+    /** RPM below this = accel layer silent, only idle plays. */
+    private static final float RPM_MIN_ACTIVATE = 0.20f;
+    /** RPM above this = accel layer fades out, top speed takes over. */
+    private static final float RPM_FADE_OUT     = 0.85f;
+    /** RPM where pitch starts blending toward topSpeedPitch. */
+    private static final float RPM_BLEND_START  = 0.70f;
+
+    private static final float FADE_IN_RATE  = 0.08f;
+    private static final float FADE_OUT_RATE = 0.06f;
 
     private final BaseCarEntity car;
     private final CarSoundProfile profile;
@@ -56,13 +59,15 @@ public class CarAccelSoundInstance extends AbstractTickableSoundInstance
         if (car.isRemoved()) { stop(); return; }
         syncPosition();
 
-        float signedSpeed = car.getForwardSpeed();
-        float speed       = Math.abs(signedSpeed);
-        float rpm         = car.getRPM(); // 0–1
-
+        float rpm = car.getRPM(); // 0–1 normalized
         boolean burningOut = car.isBurningOut();
+
+        // Active when:
+        //   - Throttle on AND RPM above minimum threshold
+        //   - OR burning out (burnout always plays accel)
+        //   - AND RPM below the top-speed crossfade point
         boolean active = burningOut
-                      || (car.isThrottleOn() && signedSpeed > MIN_SPEED && speed < ACCEL_FADE_START);
+            || (car.isThrottleOn() && rpm > RPM_MIN_ACTIVATE && rpm < RPM_FADE_OUT);
 
         fadeFactor = active
             ? Math.min(1f, fadeFactor + FADE_IN_RATE)
@@ -71,19 +76,22 @@ public class CarAccelSoundInstance extends AbstractTickableSoundInstance
         volume = fadeFactor * profile.accelVolume() * SoundDistanceHelper.falloff(car, profile);
 
         // ── Pitch with crossfade blending ─────────────────────────
-        // Pure RPM-based pitch at low/mid speed
         float rpmPitch = profile.accelPitchLow()
                        + rpm * (profile.accelPitchHigh() - profile.accelPitchLow());
 
-        if (speed > BLEND_START && speed <= ACCEL_FADE_START && !burningOut) {
-            // Blend toward topSpeedPitch as speed approaches crossfade
-            float blendT = (speed - BLEND_START) / (ACCEL_FADE_START - BLEND_START);
+        // Blend toward topSpeedPitch as RPM approaches crossfade zone
+        if (rpm > RPM_BLEND_START && rpm <= RPM_FADE_OUT && !burningOut) {
+            float blendT = (rpm - RPM_BLEND_START) / (RPM_FADE_OUT - RPM_BLEND_START);
             pitch = rpmPitch + blendT * (profile.topSpeedPitch() - rpmPitch);
         } else {
             pitch = rpmPitch;
         }
 
         if (fadeFactor <= 0f && car.getFirstPassenger() == null) stop();
+
+        float[] mix = CabinSoundMix.apply(car, CabinSoundMix.Layer.ACCEL, volume, pitch);
+        volume = mix[0]; pitch = mix[1];
+
     }
 
     private void syncPosition() { x = car.getX(); y = car.getY(); z = car.getZ(); }

@@ -4,6 +4,8 @@ import net.ent.entstupidstuff.api.car.CarSoundManager;
 import net.ent.entstupidstuff.api.car.menu.CarScreen;
 import net.ent.entstupidstuff.api.casting.ArmorCastProperty;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
+import net.ent.entstupidstuff.api.emote.EmoteRegistry;
+import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
@@ -15,6 +17,7 @@ import net.ent.entstupidstuff.screen.DarkEnchantingTableScreen;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.util.CastingClientUtil;
 import net.ent.entstupidstuff.util.HatnEmoteClientUtil;
+import net.ent.entstupidstuff.util.ModKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -38,8 +41,11 @@ public class EntStupidStuffClient implements ClientModInitializer {
         ModSpecialModelTypes.onInit();
         ParticlesClient.initalize();
 
+        EmoteRegistry.init();
+
         CastingClientUtil.onInitializeClient();
         HatnEmoteClientUtil.onInitializeClient();
+        ModKeybinds.register();
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             Minecraft client = Minecraft.getInstance();
@@ -74,5 +80,6 @@ public class EntStupidStuffClient implements ClientModInitializer {
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> CarSoundManager.tick());
+        ClientTickEvents.END_CLIENT_TICK.register(client -> ModKeybinds.tick());
     }
 }
