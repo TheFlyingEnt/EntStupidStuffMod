@@ -6,8 +6,8 @@ import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.DMC13Entity;
 import net.ent.entstupidstuff.api.car.F1CarEntity;
 import net.ent.entstupidstuff.api.car.GR86Entity;
-import net.ent.entstupidstuff.api.car.HondaCivicEntity;
 import net.ent.entstupidstuff.api.car.HondaCivicTypeREntity;
+import net.ent.entstupidstuff.api.car.NissanSilviaS13Entity;
 import net.ent.entstupidstuff.api.car.NissanZEntity;
 import net.ent.entstupidstuff.api.car.PorsheGT3Entity;
 import net.ent.entstupidstuff.api.car.ShelbyGT500Entity;
@@ -520,7 +520,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "cybercar"),
         EntityType.Builder.<HondaCivicTypeREntity>of(HondaCivicTypeREntity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"cybercar")))
@@ -530,7 +530,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "dmc13"),
         EntityType.Builder.<DMC13Entity>of(DMC13Entity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"dmc13")))
@@ -540,7 +540,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gr86"),
         EntityType.Builder.<GR86Entity>of(GR86Entity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gr86")))
@@ -550,7 +550,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gt3"),
         EntityType.Builder.<PorsheGT3Entity>of(PorsheGT3Entity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gt3")))
@@ -560,7 +560,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gt500"),
         EntityType.Builder.<ShelbyGT500Entity>of(ShelbyGT500Entity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"gt500")))
@@ -570,7 +570,7 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"),
         EntityType.Builder.<HondaCivicTypeREntity>of(HondaCivicTypeREntity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"typer")))
@@ -580,17 +580,27 @@ public class EntityFactory {
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"),
         EntityType.Builder.<NissanZEntity>of(NissanZEntity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"nissanz")))
+    );
+
+    public static final EntityType<NissanSilviaS13Entity> NISSANS13 = Registry.register(
+        BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissans13"),
+        EntityType.Builder.<NissanSilviaS13Entity>of(NissanSilviaS13Entity::new, MobCategory.MISC)
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .clientTrackingRange(10)
+            .updateInterval(1)   // update every tick for smooth physics sync
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"nissans13")))
     );
 
     public static final EntityType<F1CarEntity> F1CAR = Registry.register(
         BuiltInRegistries.ENTITY_TYPE,
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "f1car"),
         EntityType.Builder.<F1CarEntity>of(F1CarEntity::new, MobCategory.MISC)
-            .sized(2.5f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
+            .sized(1.9f, 1.5f)   // hitbox: 2.5 wide, 1.5 tall
             .clientTrackingRange(10)
             .updateInterval(1)   // update every tick for smooth physics sync
             .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"f1car")))

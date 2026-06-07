@@ -753,25 +753,32 @@ public class ModLangProvider extends FabricLanguageProvider  {
         translationBuilder.add("item.entstupidstuff.carwrap.car." + "fone_jordan", "Jordan #33");
 
         translationBuilder.add("item.entstupidstuff.carwrap." + "dmc_13", "DMC-13");
-        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_black", "Factory Black");
-        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_red", "Factory Red");
-        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_yellow", "Factory Yellow");
-        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_blue", "Factory Blue");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_black", "Black; Limited Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_red", "Red; Limited Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_yellow", "Yellow; Limited Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.dmc_13." + "dmc_blue", "Blue; Limited Factory");
 
         translationBuilder.add("item.entstupidstuff.carwrap." + "ae86", "AE86");
-        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_red", "Factory Red");
-        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gold", "Factory Special Edition Gold");
-        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gray", "Factory Gray");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_red", "Red; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gold", "Special Edition Gold; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_gray", "Gray; Factory");
         translationBuilder.add("item.entstupidstuff.carwrap.ae86." + "ae86_initd", "Inital D (The White Ghost of Akina)");
 
         translationBuilder.add("item.entstupidstuff.carwrap." + "mustang77", "1977 Mustang");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_special_yellow", "1977 Camero Yellow");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_aqua", "Factory Aqua");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_black", "Factory Cobra II Black");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_cream", "Factory Cream");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_green", "Factory Green");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_light_aqua", "Factory Aqua");
-        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_silver", "Factory Cobra II Silver");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang77_special_yellow", "1977 Camero Yellow; Custom");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cobra_blackwithgold", "Cobra II Black with Gold; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cobra_blackwithred", "Cobra II Black; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cream", "Cream; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_dark_green", "Dark Green; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_emerald_glow", "Emerald Glow; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_light_aqua", "Light Aqua; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_navy_blue", "Navy Blue; Painted");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_silver", "Silver; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cobra_silverwithgreen", "Cobra II Silver with Green; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cobra_silverwithblue", "Cobra II Silver with Blue; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_cobra_silverwithred", "Cobra II Silver with Red; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_silverwithred", "Silver with Red; Factory");
+        translationBuilder.add("item.entstupidstuff.carwrap.mustang77." + "mustang_silverwithblack", "Silver with Black; Factory");
 
         translationBuilder.add("key.entstupidstuff.shift_up", "Shift Up (Manual)");
         translationBuilder.add("key.entstupidstuff.shift_down", "Shift Down (Manual)");

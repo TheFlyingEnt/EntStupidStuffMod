@@ -114,13 +114,20 @@
           "property": "minecraft:component",
           "component": "entstupidstuff:wrap_id",
           "cases": [
-            { "when": "mustang_77_special_yellow", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_77_special_yellow_wrap" } },
-            { "when": "mustang_aqua", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_aqua_wrap" } },
-            { "when": "mustang_black", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_black_wrap" } },
-            { "when": "mustang_cream", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cream_wrap" } },
-            { "when": "mustang_green", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_green_wrap" } },
-            { "when": "mustang_light_aqua", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_light_aqua_wrap" } },
-            { "when": "mustang_silver", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_silver_wrap" } }
+            { "when": "mustang_77_special_yellow",     "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_77_special_yellow_wrap" } },
+            { "when": "mustang_cobra_blackwithgold",   "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cobra_blackwithgold_wrap" } },
+            { "when": "mustang_cobra_blackwithred",    "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cobra_blackwithred_wrap" } },
+            { "when": "mustang_cream",                 "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cream_wrap" } },
+            { "when": "mustang_dark_green",            "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_dark_green_wrap" } },
+            { "when": "mustang_emerald_glow",          "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_emerald_glow_wrap" } },
+            { "when": "mustang_light_aqua",            "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_light_aqua_wrap" } },
+            { "when": "mustang_navy_blue",             "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_navy_blue_wrap" } },
+            { "when": "mustang_silver",                "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_silver_wrap" } },
+            { "when": "mustang_cobra_silverwithgreen", "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cobra_silverwithgreen_wrap" } },
+            { "when": "mustang_cobra_silverwithblue",  "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cobra_silverwithblue_wrap" } },
+            { "when": "mustang_cobra_silverwithred",   "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_cobra_silverwithred_wrap" } },
+            { "when": "mustang_silverwithred",         "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_silverwithred_wrap" } },
+            { "when": "mustang_silverwithblack",       "model": { "type": "minecraft:model", "model": "entstupidstuff:item/wrap/mustang_silverwithblack_wrap" } }
           ],
           "fallback": {
             "type": "minecraft:model",

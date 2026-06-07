@@ -204,7 +204,6 @@ public class CarSoundManager {
      * Ensures a looping sound instance exists for a car.
      * Creates it if missing/stopped AND the condition is true.
      */
-    @SuppressWarnings("unchecked")
     private static <T extends AbstractTickableSoundInstance> void ensureLayer(
             Map<Integer, T> map, int id, BaseCarEntity car, SoundManager sm,
             boolean createCondition, java.util.function.Supplier<T> factory) {

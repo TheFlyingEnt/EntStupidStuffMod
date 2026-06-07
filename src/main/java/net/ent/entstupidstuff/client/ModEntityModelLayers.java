@@ -340,6 +340,7 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation GR86 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "gr86"), "main");
     public static final ModelLayerLocation HONDACIVICR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "typer"), "main");
     public static final ModelLayerLocation NISSANZ = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissanz"), "main");
+    public static final ModelLayerLocation NISSANS13 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "nissans13"), "main");
     public static final ModelLayerLocation F1CAR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "f1car"), "main");
 
     public static final ModelLayerLocation SHIPENTITYTEST = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shiptest"), "main");
@@ -642,6 +643,9 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.NISSANZ, (EntityRendererProvider.Context context) -> new NissanZEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.NISSANZ, NissanZEntityModel::createBodyLayer);
+
+        EntityRenderers.register(EntityFactory.NISSANS13, (EntityRendererProvider.Context context) -> new NissanZEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.NISSANS13, NissanZEntityModel::createBodyLayer);
 
         EntityRenderers.register(EntityFactory.F1CAR, (EntityRendererProvider.Context context) -> new F1CarEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.F1CAR, F1CarEntityModel::createBodyLayer);

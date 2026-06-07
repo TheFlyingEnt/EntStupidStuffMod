@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.api.casting;
 
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
-import net.ent.entstupidstuff.event.callback.ModDataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

@@ -80,6 +80,10 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends B
         state.yRot         = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
         state.bodyKit = entity.getCurrentBodyKit();
 
+        state.carLength = entity.carLength();
+        state.carWidth  = entity.carWidth();
+
+
 
         Vec3 vel = entity.getDeltaMovement();
         double yRad = Math.toRadians(entity.getYRot());
@@ -215,9 +219,14 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends B
         }
  
         poseStack.popPose();
+
+
+
  
         super.submit(state, poseStack, collector, cameraState);
+        
     }
+
  
 	/*protected RenderType renderType() {
 		return this.model.renderType(texture());

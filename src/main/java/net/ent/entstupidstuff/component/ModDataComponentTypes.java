@@ -108,6 +108,13 @@ public class ModDataComponentTypes {
             .networkSynchronized(ByteBufCodecs.STRING_UTF8)
     );
 
+    public static final DataComponentType<String> WRAP_DESC = register(
+        "wrap_desc",
+        builder -> builder
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+    );
+
 
 
     //public static DataComponentType<ResourceLocation> TOOL_MOLD;

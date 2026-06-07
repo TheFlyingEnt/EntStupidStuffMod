@@ -1,8 +1,6 @@
 package net.ent.entstupidstuff.api.hat;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.block.BlockFactory;
-import net.ent.entstupidstuff.item.ModGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;

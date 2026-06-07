@@ -95,30 +95,75 @@ public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends E
         // Hide ALL kits first, then show only the active one.
         // This prevents multiple kits being visible simultaneously.
 
-        if (this.bodykits() != null) { //Legacy Car Support
+        if (this.bodykits() != null) { // Legacy Car Support
             ModelPart bodykits = this.bodykits();
 
             // Hide all kits
             for (ModelPart part : bodykits.getAllParts()) {
-                if (part != bodykits) { // avoid toggling parent itself
+                if (part != bodykits) {
                     part.visible = false;
                 }
             }
 
             // Show active kit
-            if (state.bodyKit != null && !state.bodyKit.equals("stock")) {
-                ModelPart activeKit = bodykits.getChild(state.bodyKit);
+            if (state.bodyKit != null && (!state.bodyKit.equals("stock") || !state.bodyKit.equals("none")) ) {
+
+
+                ModelPart activeKit = null;;
+                try {
+                    activeKit = bodykits.getChild(state.bodyKit);
+
+                } catch (Exception e) {}
 
                 if (activeKit != null) {
 
                     for (ModelPart part : activeKit.getAllParts()) {
-                        if (part != bodykits) { // avoid toggling parent itself
+                        if (part != bodykits) {
                             part.visible = true;
                         }
                     }
 
-
                     activeKit.visible = true;
+
+                    // ----------------------------------------------------
+                    // Bodykit animated parts
+                    // ----------------------------------------------------
+
+                    String kitName = state.bodyKit;
+
+                    //ModelPart kitLeftDoor =
+                    //    activeKit.getChild(kitName + "_left_door");
+
+                    //ModelPart kitRightDoor =
+                    //    activeKit.getChild(kitName + "_right_door");
+
+                    //ModelPart kitHood =
+                    //    activeKit.getChild(kitName + "_hood");
+
+                    try {
+                        if (activeKit.getChild(kitName + "_left_door") != null) {
+                            activeKit.getChild(kitName + "_left_door").yRot = state.leftDoorAngle;
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                    try {
+                        if (activeKit.getChild(kitName + "_right_door") != null) {
+                            activeKit.getChild(kitName + "_right_door").yRot = state.rightDoorAngle;
+                        }
+                    } catch (Exception e) {
+  
+                    }
+
+                    try {
+                        if (activeKit.getChild(kitName + "_hood") != null) {
+                            activeKit.getChild(kitName + "_hood").xRot = -state.hoodAngle;
+                        }
+                    } catch (Exception e) {
+      
+                    }
+
                 }
             }
         }

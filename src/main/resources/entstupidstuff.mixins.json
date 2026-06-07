@@ -24,7 +24,9 @@
     "client": [
         "SmithingScreenMixin",
         "SmithingScreenAccessor",
-        "SmithingScreenFontAccessor"
+        "SmithingScreenFontAccessor",
+        "CameraWeightMixin",
+        "CameraFovMixin"
     ],
 	"injectors": {
 		"defaultRequire": 1

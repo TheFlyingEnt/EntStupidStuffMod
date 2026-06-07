@@ -30,6 +30,7 @@ public class ModGroup {
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_DEFAULT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_default_group"));
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_COMBAT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_combat_group"));
     public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_NEXT_UPDATE = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_next_update_group"));
+    public static final ResourceKey<CreativeModeTab> ENTSTUPIDSTUFF_CAR_EVENT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ent_car_event_group"));
 
     public static final Map<ResourceLocation, Item> Natural_Group = new LinkedHashMap<>();
 
@@ -65,10 +66,16 @@ public class ModGroup {
         .title(Component.translatable("item.entstupidstuff.next_update_group")) //Advance Combat
         .build());
 
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ENTSTUPIDSTUFF_CAR_EVENT_GROUP, FabricItemGroup.builder()
+        .icon(() -> new ItemStack(ItemFactory.TIRE))
+        .title(Component.translatable("item.entstupidstuff.car_event_ground")) //Advance Combat
+        .build());
+
 
         LaunchItem();
         NextUpdateItem();
         AddItem();
+        CarEventGroupItems();
 
         /*
          * Natural Group
@@ -110,6 +117,11 @@ public class ModGroup {
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_COMBAT_GROUP).register(entries -> entries.accept(id));
     }
 
+    public static void addToCarEvent(String item){
+        ItemLike  id = ItemFactory.callItem(item);
+        ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_CAR_EVENT_GROUP).register(entries -> entries.accept(id));
+    }
+
     public static void addToServer(String item){
         ItemLike  id = ItemFactory.callItem(item);
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
@@ -130,6 +142,19 @@ public class ModGroup {
         ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_SERVER_GROUP).register(entries -> entries.accept(id));
         //System.out.println("addToServerBlock: " + id);
         //System.out.println("[EntStupidStuff: Error] - addToServerBlock: " + block);
+    }
+
+    public static void CarEventGroupItems() {
+        for (ItemStack carStack : CarWrapHelper.getCarWrapInstance_All()) {
+            ItemGroupEvents.modifyEntriesEvent(ENTSTUPIDSTUFF_CAR_EVENT_GROUP).register(
+                entries -> entries.accept(carStack)
+            );
+        }
+
+        ModGroup.addToCarEvent("tire");
+        ModGroup.addToCarEvent("fuel_canister");
+        ModGroup.addToCarEvent("license_plate");
+
     }
 
     public static void NextUpdateItem() {

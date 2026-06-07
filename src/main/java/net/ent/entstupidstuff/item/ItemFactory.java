@@ -380,6 +380,15 @@ public class ItemFactory {
     public static final Item LICENSE_PLATE  = registerItem("license_plate", settings -> new LicensePlateItem(settings));
     public static final Item CAR_WRAP       = registerItem("car_wrap", settings -> new CarWrapItem(settings));
 
+    public static final Item DEV_MUSTANG77 = registerItem("mustang77_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SHELBYGT500)));
+    public static final Item DEV_DMC13 = registerItem("dmc13_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.DMC13)));
+    public static final Item DEV_FormulaOne = registerItem("formulaone_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.F1CAR)));
+    public static final Item DEV_GR86 = registerItem("gr86_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.GR86)));
+    public static final Item DEV_AE68 = registerItem("ae86_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.HONDACIVICR)));
+    public static final Item DEV_NISSANZ = registerItem("nissanz_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.NISSANZ)));
+    public static final Item DEV_PORSHEGT3 = registerItem("porshegt3_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.P911GT3)));
+    public static final Item DEV_NISSANS13 = registerItem("nissans13_spawn_item", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.NISSANS13)));
+
     // # Mob Heads
 
     public static final Item DROWNED_HEAD = registerItem( "drown_head", setting -> new StandingAndWallBlockItem(BlockFactory.DROWNED_HEAD, BlockFactory.DROWNED_WALL_HEAD, Direction.DOWN, Waypoint.addHideAttribute(setting).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD).rarity(Rarity.UNCOMMON).equippableUnswappable(EquipmentSlot.HEAD)));

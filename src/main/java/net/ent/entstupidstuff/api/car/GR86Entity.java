@@ -139,4 +139,9 @@ public class GR86Entity extends BaseCarEntity {
     }
 
     @Override protected float carMass() { return 0.70f; }
+
+    @Override public float carLength() { return 3.5f; }
+    @Override public float carWidth()  { return 1.7f; }
+    @Override public float cameraWeight() { return 0.45f; }
+
 }

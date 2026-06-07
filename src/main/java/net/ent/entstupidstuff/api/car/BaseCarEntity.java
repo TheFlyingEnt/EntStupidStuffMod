@@ -29,6 +29,7 @@ import net.minecraft.world.entity.InterpolationHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -61,6 +62,9 @@ public abstract class BaseCarEntity extends VehicleEntity {
     protected double seatHeight()  { return 0.4; }
     protected double seatSide()    { return 0.5; }
     protected double seatForward() { return -0.5; }
+
+    public float carLength() { return 4.0f; }
+    public float carWidth() { return 1.8f; }
 
     // ═══════════════════════════════════════════════════════════
     //  REALISTIC SPEED  (override in subclass)
@@ -98,6 +102,46 @@ public abstract class BaseCarEntity extends VehicleEntity {
         return cachedSoundProfile;
     }
 
+    public boolean isPointInsideCarShape(Vec3 point) {
+        double dx = point.x - this.getX();
+        double dz = point.z - this.getZ();
+        double yaw = Math.toRadians(this.getYRot());
+        double cosY = Math.cos(yaw);
+        double sinY = Math.sin(yaw);
+ 
+        // Rotate point into car-local coordinate space
+        // localX = left/right (perpendicular to car heading)
+        // localZ = front/back (along car heading)
+        double localX =  dx * cosY + dz * sinY;
+        double localZ = -dx * sinY + dz * cosY;
+ 
+        float halfWidth  = carWidth()  / 2f;
+        float halfLength = carLength() / 2f;
+ 
+        return Math.abs(localX) <= halfWidth && Math.abs(localZ) <= halfLength;
+    }
+
+    @Nullable
+    public Vec3 raycastCarShape(Vec3 eyePos, Vec3 lookDir, double reach) {
+        // Test points along the ray in 0.1-block increments
+        int steps = (int)(reach / 0.1);
+        for (int i = 0; i <= steps; i++) {
+            double t = i * 0.1;
+            Vec3 point = eyePos.add(lookDir.x * t, lookDir.y * t, lookDir.z * t);
+ 
+            // Quick Y check — skip if too high or too low
+            double dy = point.y - this.getY();
+            if (dy < -0.1 || dy > 2.0) continue;
+ 
+            if (isPointInsideCarShape(point)) {
+                return point;
+            }
+        }
+        return null;
+    }
+
+
+
     protected CarSoundProfile createSoundProfile() {
         return CarSoundProfile.americanV8(
             net.ent.entstupidstuff.sound.SoundFactory.ENTITY_VEHICLE_DODGEVIPERGTS_IDLE,
@@ -116,6 +160,24 @@ public abstract class BaseCarEntity extends VehicleEntity {
     public boolean isOpenCockpit() { return false; }
     private int carCollisionCooldown = 0;
     protected float carMass() { return 0.80f; }
+
+    /**
+     * Camera "weight" for the Forza-style spring-lagged chase camera.
+     * 0.0 = featherweight (camera glued to car, instant, kart-like)
+     * 1.0 = very heavy   (camera lags far behind, big overshoot)
+     *
+     * Heavier cars use a softer camera spring → more lag under accel,
+     * more swing in corners → the car FEELS heavier.
+     *
+     * Guidelines (match these to carMass()):
+     *   0.35 = F1 car      — stiff, planted, instant
+     *   0.45 = GR86, Civic — light & nimble
+     *   0.55 = Type R, Nissan Z, GR86
+     *   0.70 = Viper, GT3  — heavy sports car
+     *   1.00 = GT500       — heavy muscle car, lots of lag
+     */
+    public float cameraWeight() { return 0.6f; }
+
 
     private void tickCarCollision() {
         if (carCollisionCooldown > 0) {
@@ -308,6 +370,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
     // ═══════════════════════════════════════════════════════════
 
     protected float surfacePenaltyScale() { return 1.0f; }
+    private int handbrakeHoldTicks = 0;
 
     // ═══════════════════════════════════════════════════════════
     //  CRASH RESISTANCE  (override in subclass)
@@ -396,6 +459,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
     };
  
     private int     fuelTickCounter = 0;
+    @SuppressWarnings("unused")
     private boolean radioPlaying    = false;
  
     /** Returns the car's 8-slot inventory. Used by CarMenu. */
@@ -756,6 +820,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
                 boolean forward   = input.forward();
                 boolean backward  = input.backward();
                 boolean handbrake = input.jump();
+                @SuppressWarnings("unused")
                 boolean burnout   = forward && (backward || handbrake)
                                     && Math.abs(this.getForwardSpeed()) < 0.30f;
 
@@ -813,12 +878,33 @@ public abstract class BaseCarEntity extends VehicleEntity {
             boolean forward = false, backward = false,
                     left    = false, right    = false, handbrake = false;
 
+            /*if (this.getFirstPassenger() instanceof Player player) {
+                forward   = player.zza  >  0f;
+                backward  = player.zza  <  0f;
+                left      = player.xxa  >  0f;
+                right     = player.xxa  <  0f;
+                handbrake = player.isJumping();
+                if (this.tickCount % 2 == 0) displaySpeed(player);
+            } else {*/
             if (this.getFirstPassenger() instanceof Player player) {
                 forward   = player.zza  >  0f;
                 backward  = player.zza  <  0f;
                 left      = player.xxa  >  0f;
                 right     = player.xxa  <  0f;
                 handbrake = player.isJumping();
+
+                // W+S cancel out in zza (Minecraft sums them to 0), so a
+                // brake-torque burnout (throttle + brake while stopped) would
+                // never register. Read the raw keys and force both flags true
+                // in the low-speed burnout zone. Speed-gated so it doesn't
+                // fight throttle/brake while actually driving.
+                var opts = net.minecraft.client.Minecraft.getInstance().options;
+                if (opts.keyUp.isDown() && opts.keyDown.isDown()
+                        && Math.abs(this.localSpeed) < 0.30f) {
+                    forward  = true;
+                    backward = true;
+                }
+
                 if (this.tickCount % 2 == 0) displaySpeed(player);
             } else {
                 frontLat      *= 0.70f;
@@ -842,16 +928,18 @@ public abstract class BaseCarEntity extends VehicleEntity {
             if (subSteps <= 1) {
                 this.move(MoverType.SELF, fullMove);
                 Vec3 post = this.getDeltaMovement();
-                wallHitX = Math.abs(fullMove.x) > 0.01
+                wallHitX = !this.minorHorizontalCollision
+                        && Math.abs(fullMove.x) > 0.01
                         && Math.abs(post.x) < Math.abs(fullMove.x) * 0.5;
-                wallHitZ = Math.abs(fullMove.z) > 0.01
+                wallHitZ = !this.minorHorizontalCollision
+                        && Math.abs(fullMove.z) > 0.01
                         && Math.abs(post.z) < Math.abs(fullMove.z) * 0.5;
             } else {
                 Vec3 step = new Vec3(fullMove.x / subSteps, fullMove.y / subSteps, fullMove.z / subSteps);
                 for (int s = 0; s < subSteps; s++) {
                     this.setDeltaMovement(step);
                     this.move(MoverType.SELF, step);
-                    if (this.horizontalCollision) {
+                    if (this.horizontalCollision && !this.minorHorizontalCollision) {
                         // Compare post-move against STEP size, not full size.
                         // This correctly identifies which axis actually hit.
                         Vec3 post = this.getDeltaMovement();
@@ -1016,7 +1104,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
         // ── 2. Input flags ────────────────────────────────────────────────
         boolean throttleActive = (forward  && !goingRev) || (backward && !goingFwd);
         boolean brakingActive  = (backward && goingFwd)  || (forward  && goingRev);
-        boolean burnout        = forward && (backward || handbrake) && speed < 0.30f;
+        //boolean burnout = forward && backward && !handbrake && speed < 0.30f;
+        boolean burnout = forward && backward && !handbrake && speed < 0.30f;
 
         // ── 2b. Steering input ─────────────────────────────────────────────
         float steerInput;
@@ -1084,9 +1173,26 @@ public abstract class BaseCarEntity extends VehicleEntity {
         // Ramps 0→1 over ~7 ticks on press, releases slightly faster.
         // Prevents the rear grip from dropping instantly — snapping to a
         // 90–180° spin on first press — giving the driver time to steer into the slide.
+        /*handbrakeSmooth = handbrake
+            ? Math.min(1f, handbrakeSmooth + 0.20f)
+            : Math.max(0f, handbrakeSmooth - 0.25f);*/
+
         handbrakeSmooth = handbrake
-            ? Math.min(1f, handbrakeSmooth + 0.14f)
-            : Math.max(0f, handbrakeSmooth - 0.20f);
+            ? Math.min(1f, handbrakeSmooth + 0.18f)
+            : Math.max(0f, handbrakeSmooth - 0.25f);
+
+        float steerMagnitude = Math.abs(steerInput);
+        float handbrakeGripFactor;
+        if (handbrakeSmooth > 0.01f) {
+            // Straight: 35% rear grip → holds briefly, then goes unstable
+            // Turning:  full lock → immediate drift
+            float straightGrip = 0.28f; //0.35f; ----------------------------------------------------------------------------------------------------------------------------
+            float driftGrip    = handbrakeRearGrip();
+            float targetGrip   = Mth.lerp(steerMagnitude, straightGrip, driftGrip);
+            handbrakeGripFactor = Mth.lerp(handbrakeSmooth, 1.0f, targetGrip);
+        } else {
+            handbrakeGripFactor = 1.0f;
+        }
  
         // ── 4. Drivetrain chain - Manuel Update ────────────────────────────
 
@@ -1299,9 +1405,8 @@ public abstract class BaseCarEntity extends VehicleEntity {
         float driveUsedRear  = isRWD  ? Math.min(Math.abs(driveForce), rearGripTotal)  : 0f;
         float driveUsedFront = !isRWD ? Math.min(Math.abs(driveForce), frontGripTotal) : 0f;
  
-        float rearGripLat;
+        /*float rearGripLat;
         {
-            // Compute normal (non-handbrake) lateral grip first
             float normalRearGripLat;
             if (isRWD) {
                 normalRearGripLat = (float) Math.sqrt(Math.max(0.0,
@@ -1310,11 +1415,20 @@ public abstract class BaseCarEntity extends VehicleEntity {
             } else {
                 normalRearGripLat = rearGripTotal;
             }
-            // Blend toward locked-axle grip as handbrake engages.
-            // handbrakeSmooth=0 → full normal grip; handbrakeSmooth=1 → full locked grip.
-            // This gives the driver ~7 ticks to steer into the slide before full lock.
-            float lockedRearGripLat = handbrakeRearGrip() * adjustedRearGripMax;
-            rearGripLat = Mth.lerp(handbrakeSmooth, normalRearGripLat, lockedRearGripLat);
+            rearGripLat = normalRearGripLat * handbrakeGripFactor;
+        }*/
+
+        float rearGripLat;
+        {
+            float normalRearGripLat;
+            if (isRWD) {
+                normalRearGripLat = (float) Math.sqrt(Math.max(0.0,
+                    (double) rearGripTotal * rearGripTotal - (double) driveUsedRear * driveUsedRear));
+                normalRearGripLat = Math.max(normalRearGripLat, rearGripTotal * 0.40f);
+            } else {
+                normalRearGripLat = rearGripTotal;
+            }
+            rearGripLat = normalRearGripLat * handbrakeGripFactor;
         }
  
         float frontGripLat;
@@ -1340,7 +1454,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
         if (burnout) {
             localFwd *= 0.60;
             if (Math.abs(localFwd) < 0.005) localFwd = 0.0;
-        } else if (throttleActive) {
+        } else if (throttleActive && !handbrake) {
             if (forward) {
                 double cap = goingRev ? 0.10 : (isRWD ? rearGripTotal : frontGripTotal);
                 localFwd = Math.min(localFwd + Math.min(driveForce, cap), 75.0);
@@ -1365,7 +1479,9 @@ public abstract class BaseCarEntity extends VehicleEntity {
         }
  
         if (handbrake) {
-            float handbrakeDecel = 0.06f * brakeFriction;
+            // Lighter than before — momentum carries the slide.
+            float brakeStrength = Mth.lerp(steerMagnitude, 0.055f, 0.015f);
+            float handbrakeDecel = brakeStrength * brakeFriction;
             if (goingFwd)      localFwd = Math.max(0.0, localFwd - handbrakeDecel);
             else if (goingRev) localFwd = Math.min(0.0, localFwd + handbrakeDecel);
         }
@@ -1400,16 +1516,36 @@ public abstract class BaseCarEntity extends VehicleEntity {
             frontLat += centripetalLat * (rearDist()  / (frontDist() + rearDist()));
             rearLat  += centripetalLat * (frontDist() / (frontDist() + rearDist()));
         }
+
+        if (handbrake && handbrakeSmooth > 0.4f && speed > 0.05f) {
+            handbrakeHoldTicks++;
+            float buildup = Math.min(1.0f, handbrakeHoldTicks / 25f);
+
+            // Direction priority:
+            //  1. If steering — push rear out the way you're turning (drift assist)
+            //  2. Else if already rotating — follow that rotation
+            //  3. Else (straight) — default bias so it eventually spins out
+            float instabilityDir;
+            if (Math.abs(steerInput) > 0.05f) {
+                instabilityDir = Math.signum(steerInput);
+            } else if (Math.abs(overYawRate) > 0.005f) {
+                instabilityDir = Math.signum(overYawRate);
+            } else {
+                instabilityDir = 1f;
+            }
+
+            rearLat += instabilityDir * speed * (0.015f + buildup * 0.060f);
+        } else {
+            handbrakeHoldTicks = 0;
+        }
  
         float frontCorrect = computeGripForce(frontLat, frontGripLat);
         frontLat -= frontCorrect;
  
-        float rearCorrect;
-        {
-            float normalCorrect = computeGripForce(rearLat, rearGripLat);
-            float lockedCorrect = rearLat * handbrakeRearGrip() * gripStiffness();
-            rearCorrect = Mth.lerp(handbrakeSmooth, normalCorrect, lockedCorrect);
-        }
+        //float rearCorrect = computeGripForce(rearLat, rearGripLat);
+        //rearLat -= rearCorrect;
+
+        float rearCorrect = computeGripForce(rearLat, rearGripLat);
         rearLat -= rearCorrect;
  
         // Coast decay: prevents passive spinning from centripetal injection alone.
@@ -1443,8 +1579,12 @@ public abstract class BaseCarEntity extends VehicleEntity {
         overYawRate  = Mth.clamp(overYawRate, -yawMax(), yawMax());
         this.setYRot(this.getYRot() + overYawRate);
  
-        if (sync) this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
-        this.localDrifting = drifting || burnout || Math.abs(overYawRate) > 1.2f;
+        //if (sync) this.entityData.set(DATA_DRIFTING, drifting || burnout || Math.abs(overYawRate) > 1.2f);
+        //this.localDrifting = drifting || burnout || Math.abs(overYawRate) > 1.2f;
+
+        boolean handbrakeSmoking = handbrake && speed > 0.05f;
+        if (sync) this.entityData.set(DATA_DRIFTING, drifting || burnout || handbrakeSmoking || Math.abs(overYawRate) > 1.2f);
+        this.localDrifting = drifting || burnout || handbrakeSmoking || Math.abs(overYawRate) > 1.2f;
  
         // ── 12. Gravity ───────────────────────────────────────────────────
         localY = this.onGround() ? GROUND_STICK : Math.max(-MAX_FALL_SPEED, localY - GRAVITY);
@@ -1518,6 +1658,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //  HELPERS
     // ═══════════════════════════════════════════════════════════
  
+    @SuppressWarnings("deprecation")
     private boolean detectTunnel() {
         if (!this.onGround()) return false;
         BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
@@ -1527,6 +1668,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
         return false;
     }
  
+    @SuppressWarnings("deprecation")
     public float getTunnelStrength() {
         if (!this.isTunneled()) return 0f;
         BlockPos base = BlockPos.containing(this.getX(), this.getY() + 0.5, this.getZ());
@@ -1844,20 +1986,30 @@ public abstract class BaseCarEntity extends VehicleEntity {
     //  INTERACTION
     // ═══════════════════════════════════════════════════════════
 
+    @SuppressWarnings("unused")
     private boolean inventoryOpen = false;
  
-    @Override
+        @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
+        // ── Rotated hitbox check ─────────────────────────────────
+        // The AABB is square and oversized. Before processing the
+        // interaction, verify the player is actually looking at the
+        // car's real shape (rotated rectangle), not empty air beside it.
+        Vec3 eyePos = player.getEyePosition();
+        Vec3 lookDir = player.getLookAngle();
+        double reach = 4.5; // survival reach distance
+ 
+        Vec3 hit = raycastCarShape(eyePos, lookDir, reach);
+        if (hit == null) {
+            return InteractionResult.PASS; // missed the actual car shape
+        }
+ 
+        // ── Shift-click: open GUI + hood ─────────────────────────
         if (player.isSecondaryUseActive()) {
-            // Shift-click: open car customization GUI + open hood
             if (!this.level().isClientSide() && player instanceof ServerPlayer sp) {
-                // Open hood visually
                 if (hasHood()) {
                     this.entityData.set(DATA_HOOD_OPEN, true);
-                    if (!player.level().isClientSide() && player != null) {
-                        player.level().playSound(null, player.blockPosition(), SoundFactory.ENTITY_VEHICLE_HOOD_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
-                    }
-
+                    this.level().playSound(null, this.blockPosition(), SoundFactory.ENTITY_VEHICLE_HOOD_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
                 }
  
                 final BaseCarEntity self = this;
@@ -1879,12 +2031,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
             return InteractionResult.SUCCESS;
         }
  
-        // Normal click: ride the car
+        // ── Normal click: ride ───────────────────────────────────
         if (!this.level().isClientSide()) {
             player.startRiding(this);
         }
         return InteractionResult.SUCCESS;
     }
+
 
     /** Called by CarMenu when the GUI is closed. Closes the hood. */
     public void closeHood() {
@@ -2005,8 +2158,10 @@ public abstract class BaseCarEntity extends VehicleEntity {
         String spdMode    = realisticSpeed ? " §c[REAL]" : "";
         String steerMode  = forzaTurning   ? " §b[FORZA]" : "";
 
+        @SuppressWarnings("unused")
         String transMode = manualTransmission ? " §d[MAN]" : "";
         String revLimiter = (manualTransmission && revLimiterTicks > 0) ? " §c§lSHIFT!" : "";
+        @SuppressWarnings("unused")
         String steerSens = perCarSteering ? " §b[PCS]" : "";
  
         if (advancedDebug) {
@@ -2246,6 +2401,19 @@ public abstract class BaseCarEntity extends VehicleEntity {
             this.entityData.set(DATA_ENGINE_JUST_STARTED, false);
         }
         wasOccupied = occupied;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        if (source.getEntity() instanceof Player player) {
+            Vec3 eyePos = player.getEyePosition();
+            Vec3 lookDir = player.getLookAngle();
+            Vec3 hit = raycastCarShape(eyePos, lookDir, 4.5);
+            if (hit == null) {
+                return false; // swung at empty air beside the car
+            }
+        }
+        return super.hurtServer(serverLevel, source, amount);
     }
 
 

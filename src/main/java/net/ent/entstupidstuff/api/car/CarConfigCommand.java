@@ -166,6 +166,18 @@ public class CarConfigCommand {
                 )
             )
 
+            .then(Commands.literal("cameraWeight")
+                .then(Commands.argument("on", BoolArgumentType.bool())
+                    .executes(ctx -> {
+                        CameraWeightHandler.enabled =
+                        BoolArgumentType.getBool(ctx, "on");
+                        ctx.getSource().sendSuccess(() -> net.minecraft.network.chat.Component.literal(
+                            "Camera weight: " + (CameraWeightHandler.enabled ? "ON" : "OFF")), false);
+                    return 1;
+                }))
+            )
+
+
         );
     }
 

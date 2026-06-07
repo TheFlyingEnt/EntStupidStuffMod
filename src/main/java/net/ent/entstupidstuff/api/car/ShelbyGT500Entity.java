@@ -160,10 +160,19 @@ public class ShelbyGT500Entity extends BaseCarEntity {
     }
 
     @Override public String getCarTypeId() { return "mustang77"; }
+    @Override
+    public String[] availableBodyKits() {
+        return new String[]{ "cobraii" };
+    }
     
     @Override protected double seatHeight()  { return 0.30; /*0.35 */}
     @Override protected double seatSide()    { return 0.7; }
     @Override protected double seatForward() { return 0.17;}//0.25; }
 
     @Override protected float carMass() { return 1.00f; }
+
+    @Override public float carLength() { return 4.0f; }
+    @Override public float carWidth()  { return 2.0f; }
+    @Override public float cameraWeight() { return 1.0f; }
+
 }

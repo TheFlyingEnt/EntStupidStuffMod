@@ -550,4 +550,10 @@ public class F1CarEntity extends BaseCarEntity {
     @Override protected boolean hasHood() { return false; }
     @Override protected float carMass() { return 0.50f; }
 
+    @Override public float carLength() { return 4.5f; }
+    @Override public float carWidth()  { return 2.0f; }
+
+    @Override public float cameraWeight() { return 0.35f; }
+
+
 }

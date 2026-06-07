@@ -865,6 +865,13 @@
     "steam": true,
     "volume": 2.0
   },
+  "music_disc.timesup": {
+    "sounds": [
+      "entstupidstuff:music_flynentity_timesup"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
   "entity.vehicle.dodgevipergts_break": {
     "sounds": [
       "entstupidstuff:vehicle/dodgevipergts_break"
@@ -1096,14 +1103,14 @@
       "entstupidstuff:vehicle/shift_down"
     ],
     "steam": true,
-    "volume": 2.0
+    "volume": 10.0
   },
   "entity.vehicle.shift_up": {
     "sounds": [
       "entstupidstuff:vehicle/shift_up"
     ],
     "steam": true,
-    "volume": 2.0
+    "volume": 10.0
   },
   "entity.vehicle.hood_close": {
     "sounds": [

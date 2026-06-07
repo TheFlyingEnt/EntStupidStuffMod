@@ -167,6 +167,11 @@ public class HondaCivicTypeREntity extends BaseCarEntity {
     //protected double seatForward() { return -0.5; }
 
     @Override protected float carMass() { return 0.72f; }
+
+    @Override public float carLength() { return 3.3f; }
+    @Override public float carWidth()  { return 1.7f; }
+    @Override public float cameraWeight() { return 0.55f; }
+
     
 
 

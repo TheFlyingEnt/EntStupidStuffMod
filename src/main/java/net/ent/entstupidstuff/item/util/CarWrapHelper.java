@@ -66,12 +66,21 @@ public class CarWrapHelper {
     public static String[] visableMustang77() {
         return new String[]{
             "mustang_77_special_yellow",
-            "mustang_aqua",
-            "mustang_black",
+            "mustang_cobra_blackwithgold",
+            "mustang_cobra_blackwithred",
+            "mustang_blue_glow",
             "mustang_cream",
-            "mustang_green",
+            "mustang_dark_green",
+            "mustang_emerald_glow",
             "mustang_light_aqua",
-            "mustang_silver"
+            "mustang_navy_blue",
+            "mustang_silver",
+            "mustang_cobra_silverwithgreen",
+            "mustang_cobra_silverwithblue",
+            "mustang_cobra_silverwithred",
+            "mustang_silverwithred",
+            "mustang_silverwithblack"
+  
         };
     }
 

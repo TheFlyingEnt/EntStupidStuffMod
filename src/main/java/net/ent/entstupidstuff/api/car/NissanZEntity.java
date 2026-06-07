@@ -160,5 +160,10 @@ public class NissanZEntity extends BaseCarEntity {
 
     @Override protected float carMass() { return 0.80f; }
 
+    @Override public float carLength() { return 3.5f; }
+    @Override public float carWidth()  { return 1.8f; }
+    @Override public float cameraWeight() { return 0.55f; }
+
+
 
 }

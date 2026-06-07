@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.core.component.DataComponents;
 
 import java.util.function.Consumer;
  
@@ -43,7 +44,7 @@ public class CarWrapItem extends Item {
         ItemStack stack = new ItemStack(wrapItem);
         stack.set(ModDataComponentTypes.CAR_TYPE, carType);
         stack.set(ModDataComponentTypes.WRAP_ID, wrapId);
-        stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.literal(displayName));
+        stack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName));
         return stack;
     }
  

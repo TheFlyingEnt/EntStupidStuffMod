@@ -18,6 +18,7 @@ import net.ent.entstupidstuff.block.base.PointedIceBlock;
 import net.ent.entstupidstuff.block.base.ShroomiumBlock;
 import net.ent.entstupidstuff.block.base.SilkwormVineBlock;
 import net.ent.entstupidstuff.block.base.SilkwormVinePlantBlock;
+import net.ent.entstupidstuff.block.base.SpinBlock;
 import net.ent.entstupidstuff.block.base.TransparentMushroomBlock;
 import net.ent.entstupidstuff.effects.ModEffects;
 import net.ent.entstupidstuff.item.ModGroup;
@@ -426,6 +427,8 @@ public class BlockFactory {
         HorizontalBannersFamily();
 
         //TODO: Add Glowing Bed, Glowing Banners
+
+        Block SPIN_BLOCK = register("spin_block", (settings) -> new SpinBlock(settings), BlockBehaviour.Properties.of().strength(1f).noCollision());
 
 
     }

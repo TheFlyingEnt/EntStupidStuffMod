@@ -1,6 +1,5 @@
 package net.ent.entstupidstuff.api.car;
 
-import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
  

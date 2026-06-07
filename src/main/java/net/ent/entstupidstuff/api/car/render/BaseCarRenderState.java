@@ -81,6 +81,10 @@ public class BaseCarRenderState extends EntityRenderState {
     public float leftDoorAngle  = 0f;
     public float rightDoorAngle = 0f;
     public float hoodAngle      = 0f;
+
+    public float carLength = 4.0f;
+    public float carWidth  = 1.8f;
+
  
 
 

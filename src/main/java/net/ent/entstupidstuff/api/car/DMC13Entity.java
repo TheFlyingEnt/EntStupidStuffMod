@@ -120,4 +120,9 @@ public class DMC13Entity extends BaseCarEntity {
 
     @Override protected float carMass() { return 0.90f; }
 
+    @Override public float carLength() { return 4.0f; }
+    @Override public float carWidth()  { return 2.0f; }
+    @Override public float cameraWeight() { return 0.70f; }
+
+
 }

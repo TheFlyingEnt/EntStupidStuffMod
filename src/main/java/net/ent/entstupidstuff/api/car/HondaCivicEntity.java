@@ -133,4 +133,6 @@ public class HondaCivicEntity extends BaseCarEntity {
     public HondaCivicEntity(EntityType<?> type, Level level) {
         super(type, level);
     }
+
+    @Override public float cameraWeight() { return 0.45f; }
 }

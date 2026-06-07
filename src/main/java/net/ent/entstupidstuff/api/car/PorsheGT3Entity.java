@@ -141,4 +141,9 @@ public class PorsheGT3Entity extends BaseCarEntity {
     }
 
     @Override protected float carMass() { return 0.85f; }
+
+    @Override public float carLength() { return 3.6f; }
+    @Override public float carWidth()  { return 1.8f; }
+    @Override public float cameraWeight() { return 0.70f; }
+
 }
