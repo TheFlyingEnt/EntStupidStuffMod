@@ -85,6 +85,9 @@ public class BaseCarRenderState extends EntityRenderState {
     public float carLength = 4.0f;
     public float carWidth  = 1.8f;
 
+    public int   tireAnimCorner   = -1;   // -1 none, 0 FL, 1 FR, 2 RL, 3 RR
+    public float[] tireAnimProgress = new float[]{ -1f, -1f, -1f, -1f };
+
  
 
 

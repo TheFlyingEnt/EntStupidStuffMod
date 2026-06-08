@@ -23,3 +23,4 @@
 /summon entstupidstuff:typer
 /tp @s Player32
 /summon entstupidstuff:typer
+/tp Player256 Player206

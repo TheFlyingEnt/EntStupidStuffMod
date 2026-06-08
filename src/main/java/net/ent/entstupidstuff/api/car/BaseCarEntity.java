@@ -446,6 +446,41 @@ public abstract class BaseCarEntity extends VehicleEntity {
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_ENGINE_JUST_STARTED =
         SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<Boolean> DATA_HAS_FUEL =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> DATA_FRONT_GRIP =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_REAR_GRIP =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
+
+    private static final EntityDataAccessor<Integer> DATA_TIRE_ANIM_CORNER =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_TIRE_ANIM_TICKS =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+
+    private static final EntityDataAccessor<Integer> DATA_TIRE_TICKS_FL =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_TIRE_TICKS_FR =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_TIRE_TICKS_RL =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_TIRE_TICKS_RR =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);
+
+    private static final EntityDataAccessor<Float> DATA_FUEL_LEVEL =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);   // 0..1
+    private static final EntityDataAccessor<Integer> DATA_WHEEL_PCTS =
+        SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.INT);     // packed FL,FR,RL,RR (0..100 each)
+
+
+    private static final int TIRE_ANIM_DURATION = 9; // ticks (~1.2 s)
+ 
+    // Tracks which wheel slots had a tire last tick (server) — to detect installs.
+    private final boolean[] prevWheelPresent = new boolean[4]; // FL,FR,RL,RR = slots 4,5,6,7
+
+
+
  
     // ═══════════════════════════════════════════════════════════
     //  CAR INVENTORY  (8 slots: plate, fuel, wrap, radio, 4 wheels)
@@ -494,6 +529,24 @@ public abstract class BaseCarEntity extends VehicleEntity {
             this.entityData.set(DATA_WRAP, wrapId);
             entityData.set(LICENSE_PLATE, licenceStack);
             entityData.set(RADIO_DISC, radiostack);
+
+            for (int i = 0; i < 4; i++) {
+                boolean present = !carInventory.getItem(4 + i).isEmpty();
+                if (present && !prevWheelPresent[i]) {
+                    // This wheel was just installed — start ITS timer.
+                    this.entityData.set(tireTicksAccessor(i), TIRE_ANIM_DURATION);
+                    this.level().playSound(null, this.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.ITEM_FRAME_ADD_ITEM, // swap for a wheel-clunk
+                        SoundSource.PLAYERS, 1.0f, 0.8f);
+                }
+                prevWheelPresent[i] = present;
+            }
+            syncCarSystemState();
+
+
+
+
+
             //setLicensePlate(licenceStack);
         }
     }
@@ -771,9 +824,55 @@ public abstract class BaseCarEntity extends VehicleEntity {
         builder.define(DATA_RIGHT_DOOR_OPEN,    false);
         builder.define(DATA_HOOD_OPEN,          false);
         builder.define(DATA_ENGINE_JUST_STARTED, false);
+
+        builder.define(DATA_HAS_FUEL,         true);
+        builder.define(DATA_FRONT_GRIP,       1.0f);
+        builder.define(DATA_REAR_GRIP,        1.0f);
+        builder.define(DATA_TIRE_ANIM_CORNER, -1);
+        builder.define(DATA_TIRE_ANIM_TICKS,  0);
+
+        builder.define(DATA_TIRE_TICKS_FL, 0);
+        builder.define(DATA_TIRE_TICKS_FR, 0);
+        builder.define(DATA_TIRE_TICKS_RL, 0);
+        builder.define(DATA_TIRE_TICKS_RR, 0);
+
+        builder.define(DATA_FUEL_LEVEL, 1.0f);
+        builder.define(DATA_WHEEL_PCTS, packWheelPcts(100, 100, 100, 100));
+
+
         this.engineRPM  = idleRpm();
         this.burnoutRPM = idleRpm();
+
+        
     }
+
+    private EntityDataAccessor<Integer> tireTicksAccessor(int corner) {
+        return switch (corner) {
+            case 0 -> DATA_TIRE_TICKS_FL;
+            case 1 -> DATA_TIRE_TICKS_FR;
+            case 2 -> DATA_TIRE_TICKS_RL;
+            default -> DATA_TIRE_TICKS_RR;
+        };
+    }
+
+    private static int packWheelPcts(int fl, int fr, int rl, int rr) {
+        return ((fl & 0xFF) << 24) | ((fr & 0xFF) << 16) | ((rl & 0xFF) << 8) | (rr & 0xFF);
+    }
+
+    private float computeFuelLevel() {
+        ItemStack fuel = carInventory.getItem(1);
+        if (fuel.isEmpty() || !fuel.isDamageableItem()) return 0f;
+        return Mth.clamp(1f - (float) fuel.getDamageValue() / fuel.getMaxDamage(), 0f, 1f);
+    }
+
+    private int computeWheelPct(int slot) {
+        ItemStack w = carInventory.getItem(slot);
+        if (w.isEmpty() || !w.isDamageableItem()) return 0; // 0 = no tire
+        return Math.round(Mth.clamp(1f - (float) w.getDamageValue() / w.getMaxDamage(), 0f, 1f) * 100f);
+    }
+
+
+    protected float noFuelPowerFactor() { return 0.22f; }
  
     @Override protected Item getDropItem() { return null; }
  
@@ -864,6 +963,9 @@ public abstract class BaseCarEntity extends VehicleEntity {
 
             if (this.tickCount % 5 == 0)
                 this.entityData.set(DATA_TUNNELED, detectTunnel());
+
+            tickTireAnim();
+            if (this.tickCount % 10 == 0) syncCarSystemState(); // safety re-sync as durability drops
 
             // Adding Support for tickCarSystem() - Wheel and Tire Wear:
             if (this.getFirstPassenger() != null) {
@@ -1369,7 +1471,14 @@ public abstract class BaseCarEntity extends VehicleEntity {
         float torqueNorm = lookupTorque(engineRPM);
         float gearMult   = GR[currentGear] / GR[1];
         float driveForce = torqueNorm * throttleSmooth * peakDriveForce() * gearMult;
-        if (hasFuel()) driveForce *= 1.10f; // +10% power with fuel
+
+        //if (hasFuel()) driveForce *= 1.10f; // +10% power with fuel
+        if (!hasFuel()) driveForce *= noFuelPowerFactor();
+
+
+
+
+        
         if (clutchTimer > 0) driveForce = 0f;
  
         // Rev limiter power cut: in manual mode, hitting redline kills power.
@@ -1389,8 +1498,13 @@ public abstract class BaseCarEntity extends VehicleEntity {
         float rawFriction     = surfaceFrictionEnabled ? computeSurfaceFriction() : 1.0f;
         float penalty         = (1.0f - rawFriction) * surfacePenaltyScale();
         float surfaceFriction = Math.max(0.05f, 1.0f - penalty);
-        float adjustedRearGripMax  = rearGripMax()  * surfaceFriction;
-        float adjustedFrontGripMax = frontGripMax() * surfaceFriction;
+        //float adjustedRearGripMax  = rearGripMax()  * surfaceFriction;
+        //float adjustedFrontGripMax = frontGripMax() * surfaceFriction;
+
+        float adjustedRearGripMax  = rearGripMax()  * surfaceFriction * getRearWheelGrip();
+        float adjustedFrontGripMax = frontGripMax() * surfaceFriction * getFrontWheelGrip();
+
+
         double surfaceRollingDrag  = rollingDrag() - (1.0 - surfaceFriction) * 0.04;
  
         // ── 6. Weight transfer ────────────────────────────────────────────
@@ -1796,32 +1910,79 @@ public abstract class BaseCarEntity extends VehicleEntity {
      * @param front true for front axle (slots 4-5), false for rear (slots 6-7)
      */
 
-    public float getWheelGripMultiplier(boolean front) {
+    /*public float getWheelGripMultiplier(boolean front) {
         int slot1 = front ? 4 : 6;
         int slot2 = front ? 5 : 7;
         float avg = (wheelCondition(slot1) + wheelCondition(slot2)) / 2f;
         return Math.max(0.3f, avg);
+    }*/
+
+    private float computeAxleGrip(boolean front) {
+        int slot1 = front ? 4 : 6;
+        int slot2 = front ? 5 : 7;
+        float avg = (wheelCondition(slot1) + wheelCondition(slot2)) / 2f;
+        return Math.max(0.10f, avg);
     }
+
+    private void syncCarSystemState() {
+        if (this.level().isClientSide()) return;
+        this.entityData.set(DATA_HAS_FUEL,   computeHasFuel());
+        this.entityData.set(DATA_FRONT_GRIP, computeAxleGrip(true));
+        this.entityData.set(DATA_REAR_GRIP,  computeAxleGrip(false));
+        this.entityData.set(DATA_FUEL_LEVEL, computeFuelLevel());
+        this.entityData.set(DATA_WHEEL_PCTS, packWheelPcts(
+            computeWheelPct(4), computeWheelPct(5), computeWheelPct(6), computeWheelPct(7)));
+    }
+
+    public float getFuelLevel() { return this.entityData.get(DATA_FUEL_LEVEL); }
+
+    public int getWheelPct(int corner) {
+        int p = this.entityData.get(DATA_WHEEL_PCTS);
+        return switch (corner) {
+            case 0 -> (p >> 24) & 0xFF;
+            case 1 -> (p >> 16) & 0xFF;
+            case 2 -> (p >> 8)  & 0xFF;
+            default ->  p        & 0xFF;
+        };
+    }
+
+
  
     /** Returns 0.0–1.0 condition for a wheel slot. Empty = 0.3 (limping). */
-    private float wheelCondition(int slot) {
+    /*private float wheelCondition(int slot) {
         ItemStack wheel = carInventory.getItem(slot);
         if (wheel.isEmpty() || !wheel.isDamageableItem()) return 0.3f;
         float pct = 1f - (float) wheel.getDamageValue() / wheel.getMaxDamage();
         // Full grip until 25% durability, then rapid falloff
         if (pct > 0.25f) return 1.0f;
         return 0.3f + (pct / 0.25f) * 0.7f; // 0.3 at 0%, 1.0 at 25%
+    }*/
+
+    private float wheelCondition(int slot) {
+        ItemStack wheel = carInventory.getItem(slot);
+        if (wheel.isEmpty() || !wheel.isDamageableItem()) return 0.10f; // no tire
+        float pct = 1f - (float) wheel.getDamageValue() / wheel.getMaxDamage();
+        if (pct > 0.25f) return 1.0f;                  // healthy
+        return 0.30f + (pct / 0.25f) * 0.70f;          // worn: grip falls off under 25%
     }
+
  
     /**
      * Returns true if fuel is present (for optional performance boost).
      * Cars drive without fuel, but having it gives +10% peakDriveForce.
      */
-    public boolean hasFuel() {
+    /*public boolean hasFuel() {
+        ItemStack fuel = carInventory.getItem(1);
+        return !fuel.isEmpty() && fuel.isDamageableItem()
+            && fuel.getDamageValue() < fuel.getMaxDamage();
+    }*/
+
+    private boolean computeHasFuel() {
         ItemStack fuel = carInventory.getItem(1);
         return !fuel.isEmpty() && fuel.isDamageableItem()
             && fuel.getDamageValue() < fuel.getMaxDamage();
     }
+
  
     /** Returns the license plate item, or EMPTY if none. */
     public ItemStack getLicensePlate() {
@@ -1909,6 +2070,16 @@ public abstract class BaseCarEntity extends VehicleEntity {
             spawnDebugFlame(rax - lox, 0.05, raz - loz);
         }
     }
+
+    private void tickTireAnim() {
+        if (this.level().isClientSide()) return;
+        for (int c = 0; c < 4; c++) {
+            int ticks = this.entityData.get(tireTicksAccessor(c));
+            if (ticks > 0) this.entityData.set(tireTicksAccessor(c), ticks - 1);
+        }
+    }
+
+
  
     private void spawnDebugFlame(double ox, double oy, double oz) {
         Vec3 pos = this.position();
@@ -2127,6 +2298,25 @@ public abstract class BaseCarEntity extends VehicleEntity {
     public boolean isEngineJustStarted() { return this.entityData.get(DATA_ENGINE_JUST_STARTED); }
     public boolean getIsLeftHandDrive() { return isLeftHandDrive(); }
 
+    public boolean hasFuel()            { return this.entityData.get(DATA_HAS_FUEL); }
+    public float getFrontWheelGrip()    { return this.entityData.get(DATA_FRONT_GRIP); }
+    public float getRearWheelGrip()     { return this.entityData.get(DATA_REAR_GRIP); }
+
+    public int getTireAnimCorner()      { return this.entityData.get(DATA_TIRE_ANIM_CORNER); }
+    public float getTireAnimProgress() {
+        int ticks = this.entityData.get(DATA_TIRE_ANIM_TICKS);
+        return 1f - (ticks / (float) TIRE_ANIM_DURATION); // 0 at start → 1 at end
+    }
+
+    public float getTireAnimProgress(int corner) {
+        int ticks = this.entityData.get(tireTicksAccessor(corner));
+        if (ticks <= 0) return -1f;
+        return 1f - (ticks / (float) TIRE_ANIM_DURATION);
+    }
+
+
+
+
  
     public float getRPM() {
         return Mth.clamp((getEngineRPM() - idleRpm()) / (redlineRpm() - idleRpm()), 0f, 1f);
@@ -2269,7 +2459,7 @@ public abstract class BaseCarEntity extends VehicleEntity {
             kmh, spdMode, steerMode, transMode, rpm, shiftLabel, gear, revLimiter)), true);*/
 
             // Compact version — combine all toggles into one bracket
-            String modes = (realisticSpeed ? "R" : "") 
+            /*String modes = (realisticSpeed ? "R" : "") 
                         + (forzaTurning ? "F" : "") 
                         + (manualTransmission ? "M" : "") 
                         + (perCarSteering ? "S" : "");
@@ -2277,10 +2467,33 @@ public abstract class BaseCarEntity extends VehicleEntity {
 
             player.displayClientMessage(Component.literal(String.format(
                 "§aSpeed: §f%.0f km/h%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]%s",
-                kmh, modeTag, rpm, shiftLabel, gear, revLimiter)), true);
+                kmh, modeTag, rpm, shiftLabel, gear, revLimiter)), true);*/
+
+            String modes = (realisticSpeed ? "R" : "")
+                        + (forzaTurning ? "F" : "")
+                        + (manualTransmission ? "M" : "")
+                        + (perCarSteering ? "S" : "");
+            String modeTag = modes.isEmpty() ? "" : " §8[§b" + modes + "§8]";
+
+            int fuelPct = Math.round(getFuelLevel() * 100f);
+            String fuelCol = fuelPct > 50 ? "§a" : fuelPct > 20 ? "§e" : "§c";
+
+            String tires =
+                  wheelTag(getWheelPct(0)) + "§7/" + wheelTag(getWheelPct(1)) + "§7/"
+                + wheelTag(getWheelPct(2)) + "§7/" + wheelTag(getWheelPct(3));
+
+            player.displayClientMessage(Component.literal(String.format(
+                "§aSpeed: §f%.0f km/h%s  §7|  §cRPM: §f%.0f  §7|  §e%s §8[%d]%s  §7|  §bFuel %s%d%%  §7|  §6T %s",
+                kmh, modeTag, rpm, shiftLabel, gear, revLimiter, fuelCol, fuelPct, tires)), true);
  
 
         }
+    }
+
+    private static String wheelTag(int pct) {
+        if (pct <= 0) return "§8X";                       // no tire fitted
+        String c = pct > 50 ? "§a" : pct > 20 ? "§e" : "§c";
+        return c + pct;
     }
  
     // ═══════════════════════════════════════════════════════════
@@ -2313,65 +2526,37 @@ public abstract class BaseCarEntity extends VehicleEntity {
 		return false;
 	}
 
+    private void playDoorSound(net.minecraft.sounds.SoundEvent sound) {
+        // Server-side broadcast — every nearby client hears it.
+        this.level().playSound(null, this.blockPosition(), sound, SoundSource.PLAYERS, 1.0f, 1.0f);
+    }
+
+    private void openLeftDoor() {
+        leftDoorTimer = 15;
+        this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
+        playDoorSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN);
+    }
+
+    private void openRightDoor() {
+        rightDoorTimer = 15;
+        this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
+        playDoorSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN);
+    }
+
     private void tickDoorAndHood() {
         int currentPassengers = this.getPassengers().size();
  
         // ── Detect passenger entering ────────────────────────────
         if (currentPassengers > previousPassengerCount) {
             int newIndex = currentPassengers - 1; // 0 = driver, 1 = passenger
-
-            this.level().playPlayerSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
-            this.level().playLocalSound(null, SoundFactory.ENTITY_VEHICLE_CAR_DOOR_OPEN, SoundSource.PLAYERS, 1.0f, 1.0f);
- 
-            if (newIndex == 0) {
-                // Driver entered — open driver's door
-                if (isLeftHandDrive()) {
-                    leftDoorTimer = 15;
-                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);              
-                } else {
-                    rightDoorTimer = 15;
-                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
-                }
-            } else {
-                // Passenger entered — open passenger's door
-                if (isLeftHandDrive()) {
-                    rightDoorTimer = 15;
-                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
-                } else {
-                    leftDoorTimer = 15;
-                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
-                }
-            }
+            boolean driver = (newIndex == 0);
+            if (driver == isLeftHandDrive()) openLeftDoor(); else openRightDoor();
         }
  
         // ── Detect passenger exiting ─────────────────────────────
         if (currentPassengers < previousPassengerCount) {
-            // Someone left — open both doors briefly since we can't
-            // easily tell which passenger index left. The visual is
-            // the same either way — door opens, person walks away.
-
-            this.level().playPlayerSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE, SoundSource.PLAYERS, 1.0f, 1.0f);
-            this.level().playLocalSound(null, SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE, SoundSource.PLAYERS, 1.0f, 1.0f);
-
-            if (previousPassengerCount == 2) {
-                // Passenger left — open passenger door
-                if (isLeftHandDrive()) {
-                    rightDoorTimer = 15;
-                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
-                } else {
-                    leftDoorTimer = 15;
-                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
-                }
-            } else {
-                // Driver left (was alone) — open driver door
-                if (isLeftHandDrive()) {
-                    leftDoorTimer = 15;
-                    this.entityData.set(DATA_LEFT_DOOR_OPEN, true);
-                } else {
-                    rightDoorTimer = 15;
-                    this.entityData.set(DATA_RIGHT_DOOR_OPEN, true);
-                }
-            }
+            boolean passengerLeft = (previousPassengerCount == 2);
+            if (passengerLeft == isLeftHandDrive()) openRightDoor(); else openLeftDoor();
         }
  
         previousPassengerCount = currentPassengers;
@@ -2381,12 +2566,14 @@ public abstract class BaseCarEntity extends VehicleEntity {
             leftDoorTimer--;
             if (leftDoorTimer == 0) {
                 this.entityData.set(DATA_LEFT_DOOR_OPEN, false);
+                playDoorSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE);
             }
         }
         if (rightDoorTimer > 0) {
             rightDoorTimer--;
             if (rightDoorTimer == 0) {
                 this.entityData.set(DATA_RIGHT_DOOR_OPEN, false);
+                playDoorSound(SoundFactory.ENTITY_VEHICLE_CAR_DOOR_CLOSE);
             }
         }
  

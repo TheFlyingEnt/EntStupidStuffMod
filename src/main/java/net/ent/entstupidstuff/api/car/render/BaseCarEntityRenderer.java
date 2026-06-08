@@ -172,6 +172,11 @@ public abstract class BaseCarEntityRenderer<E extends BaseCarEntity, S extends B
             state.bodyRoll += Mth.sin(state.ageInTicks * 0.3f) * 0.025f;
         }
 
+        for (int c = 0; c < 4; c++) {
+            state.tireAnimProgress[c] = entity.getTireAnimProgress(c);
+        }
+
+
     }
  
     @Override

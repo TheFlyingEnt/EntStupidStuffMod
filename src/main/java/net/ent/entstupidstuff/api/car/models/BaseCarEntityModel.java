@@ -37,6 +37,9 @@ public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends E
     protected abstract ModelPart leftDoor();
     protected abstract ModelPart rightDoor();
     protected abstract ModelPart hood();
+
+    private boolean wheelHomeCaptured = false;
+    private float flHomeX, frHomeX, rlHomeX, rrHomeX;
  
     // ═══════════════════════════════════════════════════════════
     //  CONSTRUCTOR
@@ -52,6 +55,14 @@ public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends E
  
     @Override
     public void setupAnim(S state) {
+
+        if (!wheelHomeCaptured) {
+            flHomeX = frontLeftWheel().x;
+            frHomeX = frontRightWheel().x;
+            rlHomeX = backLeftWheel().x;
+            rrHomeX = backRightWheel().x;
+            wheelHomeCaptured = true;
+        }
  
         // ── 1. Wheel spin ─────────────────────────────────────────────────
         // Front wheels track actual forward speed direction.
@@ -89,7 +100,9 @@ public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends E
         // ── 5. Body roll ──────────────────────────────────────────────────
         // Pre-lerped + drift oscillation in CarEntityRenderer.extractRenderState()
         //body().yRot = state.bodyRoll;
+        //body().zRot = state.bodyRoll;
         body().zRot = state.bodyRoll;
+        body().xRot = 0f; // baseline pitch — tire-install tip adds onto this
 
         // ── 6. Body kits ────────────────────────────────────────────
         // Hide ALL kits first, then show only the active one.
@@ -189,6 +202,60 @@ public abstract class BaseCarEntityModel<S extends BaseCarRenderState> extends E
         }
 
 
+        // ── Tire-install animation ────────────────────────────────────
+        // Car tips up toward the corner being fitted (sine bump), the wheel
+        // slides in from outboard, then the body settles back to level.
+        frontLeftWheel().x  = flHomeX;
+        frontRightWheel().x = frHomeX;
+        backLeftWheel().x   = rlHomeX;
+        backRightWheel().x  = rrHomeX;
+ 
+        float MAX_TIP    = 0.05f; //0.13f;  // radians (~7.5°)
+        float SLIDE_DIST = 14.0f;  // model units the wheel starts outboard
+        float tipZ = 0f, tipX = 0f;
+ 
+        for (int corner = 0; corner < 4; corner++) {
+            float prog = state.tireAnimProgress[corner];
+            if (prog < 0f) continue;                       // this wheel idle
+ 
+            float tip = (float) Math.sin(prog * Math.PI) * MAX_TIP; // up then back
+ 
+            // Signs that RAISE this corner (tip UP toward the wheel).
+            float rollSign, pitchSign;
+            switch (corner) {
+                case 0 -> { rollSign = -1f; pitchSign = -1f; } // FL
+                case 1 -> { rollSign = +1f; pitchSign = -1f; } // FR
+                case 2 -> { rollSign = -1f; pitchSign = +1f; } // RL
+                default -> { rollSign = +1f; pitchSign = +1f; } // RR
+            }
+            tipZ += rollSign  * tip;
+            tipX += pitchSign * tip * 0.8f;
+ 
+            // Wheel slides from OUTSIDE → home during 15%–60% of the anim.
+            float wheelSlide = net.minecraft.util.Mth.clamp((prog - 0.15f) / 0.45f, 0f, 1f);
+            float lateral = (1f - wheelSlide) * SLIDE_DIST;
+ 
+            // "Outside" = same direction as the wheel's home offset from
+            // center, so it always starts outboard regardless of axis sign.
+            float homeX = switch (corner) {
+                case 0 -> flHomeX; case 1 -> frHomeX;
+                case 2 -> rlHomeX; default -> rrHomeX;
+            };
+            float outward = Math.signum(homeX);
+            if (outward == 0f) outward = (corner == 0 || corner == 2) ? -1f : 1f;
+            float x = homeX + outward * lateral;
+ 
+            switch (corner) {
+                case 0 -> frontLeftWheel().x  = x;
+                case 1 -> frontRightWheel().x = x;
+                case 2 -> backLeftWheel().x   = x;
+                default -> backRightWheel().x = x;
+            }
+        }
+ 
+        // Add the combined tip onto the body (zRot already = bodyRoll, xRot = 0).
+        body().zRot += tipZ;
+        body().xRot += tipX;
 
 
 
