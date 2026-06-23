@@ -24,3 +24,5 @@
 /tp @s Player32
 /summon entstupidstuff:typer
 /tp Player256 Player206
+/time set day
+/tp Player171 Player902

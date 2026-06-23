@@ -13,6 +13,9 @@ import net.ent.entstupidstuff.api.hat.HatSelectPayload;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
 import net.ent.entstupidstuff.api.hat.UnlockSyncPayload;
+import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
+import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
+import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
@@ -23,6 +26,7 @@ import net.ent.entstupidstuff.registry.EntityFactory;
 import net.ent.entstupidstuff.screen.ScreenHandlerFactory;
 import net.ent.entstupidstuff.sound.SoundFactory;
 import net.ent.entstupidstuff.util.HatnEmoteMainUtil;
+import net.ent.entstupidstuff.util.ModKeybinds;
 import net.ent.entstupidstuff.util.ModdedDispenseItemBehavior;
 import net.ent.entstupidstuff.util.SkullSupport;
 import net.ent.entstupidstuff.world.gen.ModEntitySpawns;
@@ -30,9 +34,14 @@ import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShieldDecorationRecipe;
@@ -117,6 +126,9 @@ public class EntStupidStuff implements ModInitializer {
 
         SkullSupport.onInitialize();
 
+        PayloadTypeRegistry.playC2S().register(SwapSeatPayload.TYPE,  SwapSeatPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(DeckOffsetPayload.TYPE, DeckOffsetPayload.CODEC);
+
         ModNetworking.registerC2SPayloads();
         ModNetworking.registerServerHandlers();
 
@@ -134,12 +146,15 @@ public class EntStupidStuff implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(EmoteSyncPayload.TYPE,   EmoteSyncPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(UnlockSyncPayload.TYPE,  UnlockSyncPayload.CODEC);  // Phase 3
         PayloadTypeRegistry.playC2S().register(HatSelectPayload.TYPE,  HatSelectPayload.CODEC);
+
+        
  
         HatnEmoteMainUtil.onInitialize();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CarConfigCommand.register(dispatcher);
         });
+
  
         //Advance Hats:co
 

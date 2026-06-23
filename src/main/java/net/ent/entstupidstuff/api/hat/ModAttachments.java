@@ -6,7 +6,9 @@ import java.util.Set;
 import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
+import net.ent.entstupidstuff.api.ship.DeckSync;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -37,6 +39,12 @@ public class ModAttachments {
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "unlocked_hats"),
         builder -> builder.initializer(HashSet::new)
     );
+
+    public static final AttachmentType<DeckSync.Anchor> DECK_ANCHOR =
+        AttachmentRegistry.create(
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "deck_anchor"),
+            builder -> builder.syncWith(DeckSync.Anchor.STREAM_CODEC, AttachmentSyncPredicate.all())
+        );
 
     public static void init() {}
 }

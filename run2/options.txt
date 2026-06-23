@@ -1,7 +1,7 @@
 version:4556
 ao:true
 biomeBlendRadius:2
-enableVsync:true
+enableVsync:false
 entityDistanceScaling:1.0
 entityShadows:true
 forceUnicodeFont:false
@@ -16,7 +16,7 @@ fullscreen:false
 gamma:0.5
 graphicsMode:1
 guiScale:2
-maxFps:120
+maxFps:260
 inactivityFpsLimit:"minimized"
 mipmapLevels:4
 narrator:0
@@ -137,6 +137,8 @@ key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
 key_key.entstupidstuff.shift_up:key.keyboard.r
 key_key.entstupidstuff.shift_down:key.keyboard.f
+key_key.entstupidstuff.swap_seat:key.keyboard.left.control
+key_key.entstupidstuff.anchor:key.keyboard.g
 soundCategory_master:1.0
 soundCategory_music:0.0
 soundCategory_record:1.0

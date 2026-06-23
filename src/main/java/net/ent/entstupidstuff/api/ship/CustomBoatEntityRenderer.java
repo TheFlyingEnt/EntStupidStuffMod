@@ -1,8 +1,8 @@
-package net.ent.entstupidstuff.client.render;
+package net.ent.entstupidstuff.api.ship;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
+import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -15,9 +15,10 @@ import net.minecraft.client.renderer.entity.state.BoatRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 
 public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/ccustomboat_3.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bigboat_alt.png");// //ccustomboat_3.png");
 	private final Model.Simple waterMaskModel;
 	private final CustomBoatModel model;
 
@@ -28,7 +29,7 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
 		ModelLayerLocation modelLayer = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "main");
 		ModelPart modelPart = ctx.bakeLayer(modelLayer);
 		this.model = new CustomBoatModel(modelPart);
-		this.waterMaskModel = new Model.Simple(ctx.bakeLayer(modelLayer), id -> RenderType.waterMask());
+		this.waterMaskModel = new Model.Simple(ctx.bakeLayer(ModEntityModelLayers.WATER_PATCH), id -> RenderType.waterMask());
 
 	}
 
@@ -37,14 +38,30 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
 		return this.model.renderType(TEXTURE);
 	}
 
+    private static final float MODEL_SCALE = 1.15f;
+
 	@Override
 	protected void submitTypeAdditions(BoatRenderState state, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light) {
+        matrices.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+
 		if (!state.isUnderWater) {
 			orderedRenderCommandQueue.submitModel(
 				this.waterMaskModel, Unit.INSTANCE, matrices, this.waterMaskModel.renderType(TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null
 			);
 		}
 	}
+
+    @Override
+    public void extractRenderState(AbstractBoat boat, BoatRenderState state, float partialTick) {
+        super.extractRenderState(boat, state, partialTick);
+        if (boat instanceof CustomBoatEntity ship) {
+            this.model.sailLevel    = ship.getSailLevel();
+            this.model.forwardSpeed = ship.getForwardSpeed();
+            this.model.sinkProgress = ship.getSinkProgress();
+            this.model.rudderTurn   = ship.getDeckDYaw();   // per-tick yaw change = how hard she's turning
+            this.model.waveTime = ship.tickCount + partialTick;
+        }
+    }
 
 	@Override
 	protected EntityModel<BoatRenderState> model() {

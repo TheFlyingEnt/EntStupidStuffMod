@@ -18,7 +18,8 @@
         "HumanoidArmorLayerMixin",
         "ItemCombinerMenuAccessor",
         "SmithingMenuMixin",
-        "PlayerModelMixin"
+        "PlayerModelMixin",
+        "ShipControlMixin"
 
 	],
     "client": [

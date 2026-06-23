@@ -13,11 +13,13 @@ import net.ent.entstupidstuff.api.car.render.DMC12EntityRenderer;
 import net.ent.entstupidstuff.api.car.render.F1CarEntityRenderer;
 import net.ent.entstupidstuff.api.car.render.Mustang77EntityRenderer;
 import net.ent.entstupidstuff.api.car.render.NissanZEntityRenderer;
-import net.ent.entstupidstuff.client.render.CustomBoatEntityRenderer;
+import net.ent.entstupidstuff.api.ship.AnchorEntityRenderer;
+import net.ent.entstupidstuff.api.ship.AnchorModel;
+import net.ent.entstupidstuff.api.ship.CustomBoatEntityRenderer;
+import net.ent.entstupidstuff.api.ship.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
-import net.ent.entstupidstuff.client.render.entity.model.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.StrongShieldEntityModel;
 import net.ent.entstupidstuff.client.render.entity.model.WarBannerFlagModel;
 import net.ent.entstupidstuff.client.render.entity.model.WarBannerModel;
@@ -71,6 +73,7 @@ import net.ent.entstupidstuff.client.render.entity.renderer.MahiMahiRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.MetalSkeletonEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.MountaineerPillagerEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.MountaineerVindicatorEntityRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.NoopEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PerchFishRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PhantomSkeletonEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PiglinExtraRenderer;
@@ -78,8 +81,6 @@ import net.ent.entstupidstuff.client.render.entity.renderer.PrismerineArrowRende
 import net.ent.entstupidstuff.client.render.entity.renderer.RedPandaRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.RedStoneGolemRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.ScorchedEntityRenderer;
-import net.ent.entstupidstuff.client.render.entity.renderer.ShipColliderRenderer;
-import net.ent.entstupidstuff.client.render.entity.renderer.ShipTestRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SilkmothRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SlimedZombieEntityRenderer;
@@ -274,6 +275,9 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation CUSTOMBOAT =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "main");
 
+    public static final ModelLayerLocation WATER_PATCH = new ModelLayerLocation(
+    ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "water_patch");
+
     public static final ModelLayerLocation WOODEN_OAK_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "wooden_oak_shield"), "main");
     public static final ModelLayerLocation WOODEN_SPRUCE_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "wooden_spruce_shield"), "main");
     public static final ModelLayerLocation WOODEN_BIRCH_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "wooden_birch_shield"), "main");
@@ -291,6 +295,8 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation GOLDEN_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "golden_shield"), "main");
     
     public static final ModelLayerLocation DIAMOND_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "diamond_shield"), "main");
+
+    public static final ModelLayerLocation ANCHOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "anchor"), "main");
 
     //Mob Heads
 
@@ -650,11 +656,15 @@ public class ModEntityModelLayers {
         EntityRenderers.register(EntityFactory.F1CAR, (EntityRendererProvider.Context context) -> new F1CarEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.F1CAR, F1CarEntityModel::createBodyLayer);
 
-        EntityRenderers.register(EntityFactory.SHIP, (EntityRendererProvider.Context context) -> new ShipTestRenderer(context));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIPENTITYTEST, CustomBoatModel::getTexturedModelData);
+        EntityRenderers.register(EntityFactory.SHIP_PART, (EntityRendererProvider.Context context) -> new NoopEntityRenderer(context));
 
-        EntityRenderers.register(EntityFactory.SHIP_COLLIDER, (EntityRendererProvider.Context context) -> new ShipColliderRenderer(context));
-        //EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIP_COLLIDER, CustomBoatModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(WATER_PATCH, CustomBoatModel::getBaseTexturedModelData);
+
+        //EntityRendererRegistry.register(EntityFactory.SHIP_PART, NoopEntityRenderer::new);
+        //EntityRendererRegistry.register(ModEntities.ANCHOR, AnchorEntityRenderer::new);
+
+        EntityRenderers.register(EntityFactory.ANCHOR, (EntityRendererProvider.Context context) -> new AnchorEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCHOR, AnchorModel::createLayer);
 
 
         

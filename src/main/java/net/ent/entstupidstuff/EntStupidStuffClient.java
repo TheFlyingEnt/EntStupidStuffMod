@@ -6,6 +6,12 @@ import net.ent.entstupidstuff.api.casting.ArmorCastProperty;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
 import net.ent.entstupidstuff.api.hat.HatRegistry;
+import net.ent.entstupidstuff.api.hat.ModAttachments;
+import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
+import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
+import net.ent.entstupidstuff.api.ship.DeckSync;
+import net.ent.entstupidstuff.api.ship.ShipHud;
+import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
@@ -20,16 +26,23 @@ import net.ent.entstupidstuff.util.HatnEmoteClientUtil;
 import net.ent.entstupidstuff.util.ModKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+
 
 
 public class EntStupidStuffClient implements ClientModInitializer {
+
+    private static boolean wasDeckAnchored = false;
 
 
     @SuppressWarnings("deprecation")
@@ -81,5 +94,51 @@ public class EntStupidStuffClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> CarSoundManager.tick());
         ClientTickEvents.END_CLIENT_TICK.register(client -> ModKeybinds.tick());
+
+        /*ClientTickEvents.END_CLIENT_TICK.register(mc -> {
+            LocalPlayer p = mc.player;
+            if (p == null || p.isPassenger() || mc.level == null) return;
+
+            AABB box = p.getBoundingBox().inflate(4.0, 2.0, 4.0);
+            for (CustomBoatEntity boat : mc.level.getEntitiesOfClass(CustomBoatEntity.class, box)) {
+                if (boat.isOnDeck(p)) {
+                    boat.carryEntity(p);   // client owns the local player → no rubber-band
+                    break;
+                }
+            }
+        });*/
+
+        // in onInitializeClient():
+        ClientTickEvents.END_CLIENT_TICK.register(mc -> {
+            if (mc.level == null) return;
+            LocalPlayer p = mc.player;
+
+            // (A) local walker: carry immediately (no round-trip) + report offset
+            boolean anchored = false;
+            if (p != null && !p.isPassenger()) {
+                CustomBoatEntity boat = DeckSync.findDeckBoat(mc.level, p);
+                if (boat != null && !boat.isSinking()) {
+                    boat.carryEntity(p);
+                    DeckSync.Anchor a = DeckSync.compute(boat, p);
+                    ClientPlayNetworking.send(new DeckOffsetPayload(boat.getId(), a.x(), a.y(), a.z()));
+                    anchored = true;
+                }
+            }
+            if (!anchored && wasDeckAnchored) {
+                ClientPlayNetworking.send(new DeckOffsetPayload(-1, 0, 0, 0));  // stepped off → clear
+            }
+            wasDeckAnchored = anchored;
+
+            // (B) remote walkers: rebuild their position from the local smooth boat pos
+            for (Entity e : mc.level.entitiesForRendering()) {
+                if (e == p) continue;
+                DeckSync.Anchor a = e.getAttached(ModAttachments.DECK_ANCHOR);
+                if (a != null && a.boatId() >= 0) DeckSync.apply(mc.level, e, a);
+            }
+        });
+
+        ShipHud.register();
+
+
     }
 }
