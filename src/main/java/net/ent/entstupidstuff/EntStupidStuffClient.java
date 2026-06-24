@@ -138,6 +138,15 @@ public class EntStupidStuffClient implements ClientModInitializer {
         });
 
         ShipHud.register();
+        EntStupidStuff.LOGGER.info("Registering ShipHud...");
+
+        /*HudRenderCallback.EVENT.register((g, tickDelta) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null) return;
+            // TEST: always show this, even off the boat
+            g.drawString(mc.font, "HUD TEST", 10, 10, 0xFFFF0000);
+            // ... rest of the code
+        });*/
 
 
     }

@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractChestBoat;
 import net.minecraft.world.item.Item;
@@ -61,6 +62,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // --- sail / anchor ---
     public  static final int   SAIL_MAX        = 3;       // 0 furled, 1=33%, 2=66%, 3=100%
     private static final float MAX_SAIL_THRUST = 0.07f;   // terminal speed ≈ thrust × 10
+
+    // --- attachments (bow slot) ---
+    public static final int ATTACHMENT_NONE    = 0;
+    public static final int ATTACHMENT_HARPOON = 1;
+    public static final int ATTACHMENT_CANNON  = 2;
 
     // --- deck carry ---
     private static final double DECK_HALF_LEN  = 4.0;   // bow<->stern reach
@@ -117,6 +123,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_RUDDER =         // -1.0 .. +1.0
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_ATTACHMENT =    // 0 none, 1 harpoon, 2 cannon
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
 
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] SEAT_OCCUPANTS =
@@ -139,6 +147,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_ANCHOR_STATE, 0);
         builder.define(DATA_ANCHOR_ENTITY, -1);
         builder.define(DATA_RUDDER, 0f);
+        builder.define(DATA_ATTACHMENT, ATTACHMENT_NONE);
         for (int i = 0; i < SEAT_COUNT; i++) builder.define(SEAT_OCCUPANTS[i], -1);
     }
 
@@ -167,6 +176,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // Synced via DATA_RUDDER so all clients see the animation.
     public float  getRudderAngle() { return this.entityData.get(DATA_RUDDER); }
     private void  setRudderAngle(float a) { this.entityData.set(DATA_RUDDER, Mth.clamp(a, -1f, 1f)); }
+
+    // bow attachment: NONE, HARPOON, or CANNON
+    public int  getAttachment()       { return this.entityData.get(DATA_ATTACHMENT); }
+    public void setAttachment(int type) { this.entityData.set(DATA_ATTACHMENT, type); }
+    public boolean hasAttachment()    { return getAttachment() != ATTACHMENT_NONE; }
 
     // deck mob tracking
     private final java.util.Set<java.util.UUID> deckRiders = new java.util.HashSet<>();
@@ -691,6 +705,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
         passenger.setPos(px, py, pz);
         this.clampRotation(passenger);
+
+        // Driver stands at the helm instead of sitting
+        if (seat == 0 && passenger instanceof LivingEntity) {
+            passenger.setPose(Pose.STANDING);
+        }
     }
 
     @Override
@@ -698,6 +717,16 @@ public class CustomBoatEntity extends AbstractChestBoat {
         int id = this.entityData.get(SEAT_OCCUPANTS[0]);
         if (id != -1 && this.level().getEntity(id) instanceof LivingEntity le && this.hasPassenger(le)) return le;
         return super.getControllingPassenger();
+    }
+
+    /** Returns true if this entity is in the driver seat (seat 0). */
+    public boolean isDriver(Entity e) {
+        return this.entityData.get(SEAT_OCCUPANTS[0]) == e.getId();
+    }
+
+    /** Returns true if this entity is in the bow seat (seat 5) — controls attachments. */
+    public boolean isBowGunner(Entity e) {
+        return this.entityData.get(SEAT_OCCUPANTS[5]) == e.getId();
     }
 
     public void setSeat(Player player, int target) {
