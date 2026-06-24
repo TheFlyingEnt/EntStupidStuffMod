@@ -82,14 +82,14 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public float shipMaxHealth() { return 200f; }
 
     // --- steering (rudder-based, "memory foam" behavior) ---
-    private static final float  TURN_RATE_MAX       = 0.8f;   // max yaw change per tick at full rudder + full speed
+    private static final float  TURN_RATE_MAX       = 1.2f;   // max yaw change per tick at full rudder + full speed
     private static final double TURN_SPEED_REF      = 0.45;   // forward speed for full rudder authority
-    private static final float  RUDDER_SPEED        = 0.035f; // how fast the rudder deflects while holding A/D
-    private static final float  RUDDER_RETURN       = 0.015f; // how fast it springs back to center (memory foam)
+    private static final float  RUDDER_SPEED        = 0.06f;  // how fast the rudder deflects while holding A/D
+    private static final float  RUDDER_RETURN       = 0.02f;  // how fast it springs back to center (memory foam)
     /** Minimum rudder authority at standstill (0.0 = dead helm, 1.0 = full authority even at rest).
      *  Raise this to let the boat pivot faster at low speed / sails just raised.
      *  Lower it for a heavier, more realistic feel that only bites once you're moving. */
-    private static final float  STANDSTILL_AUTHORITY = 0.15f;
+    private static final float  STANDSTILL_AUTHORITY = 0.25f;
 
     // --- debug ---
     /** Toggle to show deck boundary particles. Flip in-game or set via /entstupidstuff debug. */

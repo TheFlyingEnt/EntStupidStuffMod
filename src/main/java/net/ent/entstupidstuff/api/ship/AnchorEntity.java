@@ -1,11 +1,9 @@
 package net.ent.entstupidstuff.api.ship;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -72,7 +70,6 @@ public class AnchorEntity extends Entity {
         // ── RAISING: fly back to the ship ──────────────────────────────
         if (ship.isRaisingAnchor()) {
             tickRaise(ship);
-            tickChainParticles(ship);
             return;   // skip normal drag behavior
         }
 
@@ -101,9 +98,6 @@ public class AnchorEntity extends Entity {
         Vec3 v = this.getDeltaMovement();
         double fr = this.onGround() ? GROUND_FR : WATER_FR;
         this.setDeltaMovement(v.x * fr, v.y * 0.95, v.z * fr);
-
-        // ── chain particles ────────────────────────────────────────────
-        tickChainParticles(ship);
     }
 
     /** While raising: fly toward the ship, ignoring collision. Discard on arrival. */
@@ -124,33 +118,6 @@ public class AnchorEntity extends Entity {
         this.noPhysics = true;
         this.setDeltaMovement(dx * inv, dy * inv, dz * inv);
         this.move(MoverType.SELF, this.getDeltaMovement());
-    }
-
-    /**
-     * Chain visualization: spawn particles along the line from anchor to ship
-     * with a catenary (hanging curve) droop. Renders every 3 ticks to avoid spam.
-     */
-    private void tickChainParticles(CustomBoatEntity ship) {
-        if (!level().isClientSide() || tickCount % 3 != 0) return;
-
-        Vec3 start = position().add(0, 0.3, 0);              // anchor attachment point
-        Vec3 end   = new Vec3(ship.getX(), ship.getY() + 0.8, ship.getZ());  // ship attachment point
-        double totalDist = start.distanceTo(end);
-        int segments = Mth.clamp((int) (totalDist * 1.5), 4, 18);
-
-        // Droop: more slack = more sag; taut chain barely droops
-        double slack = Math.max(0, CHAIN_LENGTH - totalDist);
-        double droop = 0.4 + slack * 0.12;   // minimum droop + slack bonus
-
-        for (int i = 0; i <= segments; i++) {
-            double t = i / (double) segments;
-            double x = Mth.lerp(t, start.x, end.x);
-            double z = Mth.lerp(t, start.z, end.z);
-            // catenary approximation: sin curve peaks at midpoint
-            double y = Mth.lerp(t, start.y, end.y) - Math.sin(t * Math.PI) * droop;
-
-            this.level().addParticle(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0, 0);
-        }
     }
 
     /** Set on spawn so it doesn't render-streak from the origin. */

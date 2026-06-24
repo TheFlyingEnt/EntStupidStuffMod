@@ -15,6 +15,7 @@ import net.ent.entstupidstuff.api.car.render.Mustang77EntityRenderer;
 import net.ent.entstupidstuff.api.car.render.NissanZEntityRenderer;
 import net.ent.entstupidstuff.api.ship.AnchorEntityRenderer;
 import net.ent.entstupidstuff.api.ship.AnchorModel;
+import net.ent.entstupidstuff.api.ship.ChainLinkModel;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.api.ship.CustomBoatModel;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
@@ -351,6 +352,8 @@ public class ModEntityModelLayers {
 
     public static final ModelLayerLocation SHIPENTITYTEST = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shiptest"), "main");
 
+    public static final ModelLayerLocation CHAIN_LINK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "chain_link"), "main");
+
 
 
     /*
@@ -665,6 +668,8 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.ANCHOR, (EntityRendererProvider.Context context) -> new AnchorEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCHOR, AnchorModel::createLayer);
+
+        EntityModelLayerRegistry.registerModelLayer(CHAIN_LINK, ChainLinkModel::createLayer);
 
 
         
