@@ -842,8 +842,7 @@ public class CustomBoatModel extends AbstractBoatModel{
         this.sail_4.visible = (this.sailLevel == 3);
 
         // rudder swings with the helm
-        float turn = Mth.wrapDegrees(this.rudderTurn);
-        this.rudder.yRot = Mth.clamp(turn * 0.06f, -0.6f, 0.6f);
+        this.rudder.yRot = this.rudderTurn * -0.6f;
 
         // --- hull motion: xRot = ROLL, zRot = PITCH on this rotated model ---
         float t = this.waveTime;
@@ -853,7 +852,7 @@ public class CustomBoatModel extends AbstractBoatModel{
         float rockPitch = Mth.sin(t * 0.031f + 1.0f) * 0.009f;
 
         // heel into the turn — just a hint of lean
-        float bank = Mth.clamp(turn * 0.015f, -0.07f, 0.07f);
+        float bank = Mth.clamp(this.rudderTurn * 0.07f, -0.07f, 0.07f);
 
         this.root.xRot = rockRoll + bank;   // roll
         this.root.zRot = rockPitch;   

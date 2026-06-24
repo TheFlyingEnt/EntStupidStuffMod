@@ -27,11 +27,9 @@ import net.minecraft.world.entity.vehicle.AbstractChestBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -63,8 +61,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // --- sail / anchor ---
     public  static final int   SAIL_MAX        = 3;       // 0 furled, 1=33%, 2=66%, 3=100%
     private static final float MAX_SAIL_THRUST = 0.07f;   // terminal speed ≈ thrust × 10
-    private static final int   ANCHOR_TICKS_PER_BLOCK = 4;
-    private static final int   ANCHOR_MIN_TICKS = 20;
 
     // --- deck carry ---
     private static final double DECK_HALF_LEN  = 4.0;   // bow<->stern reach
@@ -85,15 +81,19 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     public float shipMaxHealth() { return 200f; }
 
-    // --- steering ---
-    private static final float  TURN_RATE_MAX  = 0.8f;  // top swing speed (lower = wider radius)
-    private static final double TURN_SPEED_REF = 0.45;  // forward speed needed for full rudder authority
-    private static final float  TURN_RESPONSE  = 0.10f; // how quickly she answers the helm
-    private static final float  TURN_DAMP      = 0.93f; // how long she keeps swinging after you release
+    // --- steering (rudder-based, "memory foam" behavior) ---
+    private static final float  TURN_RATE_MAX       = 0.8f;   // max yaw change per tick at full rudder + full speed
+    private static final double TURN_SPEED_REF      = 0.45;   // forward speed for full rudder authority
+    private static final float  RUDDER_SPEED        = 0.035f; // how fast the rudder deflects while holding A/D
+    private static final float  RUDDER_RETURN       = 0.015f; // how fast it springs back to center (memory foam)
+    /** Minimum rudder authority at standstill (0.0 = dead helm, 1.0 = full authority even at rest).
+     *  Raise this to let the boat pivot faster at low speed / sails just raised.
+     *  Lower it for a heavier, more realistic feel that only bites once you're moving. */
+    private static final float  STANDSTILL_AUTHORITY = 0.15f;
 
     // --- debug ---
     /** Toggle to show deck boundary particles. Flip in-game or set via /entstupidstuff debug. */
-    public static boolean DEBUG_DECK = true;
+    public static boolean DEBUG_DECK = false;
 
 
     // ════════════════════════════════════════════════════════════════
@@ -115,6 +115,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_ANCHOR_ENTITY =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> DATA_RUDDER =         // -1.0 .. +1.0
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
 
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] SEAT_OCCUPANTS =
@@ -136,6 +138,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_SAIL_LEVEL, 0);
         builder.define(DATA_ANCHOR_STATE, 0);
         builder.define(DATA_ANCHOR_ENTITY, -1);
+        builder.define(DATA_RUDDER, 0f);
         for (int i = 0; i < SEAT_COUNT; i++) builder.define(SEAT_OCCUPANTS[i], -1);
     }
 
@@ -157,13 +160,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private double deckDX, deckDZ, deckDY;
     private float  deckDYaw;
 
-    // anchor raise timer (server-only)
-    private int anchorRaiseTicks = 0;
-    private int anchorRaiseTotal = 0;
+    // anchor (server-only)
+    // No timer needed — the AnchorEntity handles raise movement and discards itself on arrival.
 
-    // steering momentum
-    private float turnMomentum = 0f;
-    public  float getTurnMomentum() { return turnMomentum; }
+    // rudder angle: -1.0 (hard port) to +1.0 (hard starboard)
+    // Synced via DATA_RUDDER so all clients see the animation.
+    public float  getRudderAngle() { return this.entityData.get(DATA_RUDDER); }
+    private void  setRudderAngle(float a) { this.entityData.set(DATA_RUDDER, Mth.clamp(a, -1f, 1f)); }
 
     // deck mob tracking
     private final java.util.Set<java.util.UUID> deckRiders = new java.util.HashSet<>();
@@ -258,27 +261,37 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     /**
      * Called by ShipControlMixin when a helmsman is aboard.
-     * The mixin shadows AbstractBoat's inputLeft/inputRight and passes them here.
-     * A/D steer; W/S raise/lower sails (handled separately via keybinds).
+     *
+     * "Memory foam" rudder:
+     *  - Holding A/D gradually deflects the rudder further from center
+     *  - The more you hold, the sharper the turn becomes
+     *  - Releasing lets the rudder slowly spring back to center
+     *  - The boat's actual turn rate = rudder angle × speed authority
+     *
+     * The rudder angle is synced via DATA_RUDDER so the model animates on all clients.
      */
     public void steer(boolean left, boolean right) {
-        double speed = getDeltaMovement().horizontalDistance();
-        // Minimum 15% authority so the rudder has some bite even at a standstill
-        // (e.g. turning at anchor or with sails just raised). Full authority at TURN_SPEED_REF.
-        float authority = (float) Math.max(0.15, Math.min(1.0, speed / TURN_SPEED_REF));
+        float angle = getRudderAngle();
 
-        float target = 0f;
-        if (left)  target -= TURN_RATE_MAX * authority;
-        if (right) target += TURN_RATE_MAX * authority;
+        // Deflect rudder while holding A/D
+        if (left)  angle -= RUDDER_SPEED;
+        if (right) angle += RUDDER_SPEED;
 
-        if (target != 0f) {
-            turnMomentum += (target - turnMomentum) * TURN_RESPONSE; // ramp toward helm
-        } else {
-            turnMomentum *= TURN_DAMP;                                // coast when released
+        // Spring return to center when released (memory foam)
+        if (!left && !right) {
+            if (Math.abs(angle) <= RUDDER_RETURN) {
+                angle = 0f;
+            } else {
+                angle -= Math.signum(angle) * RUDDER_RETURN;
+            }
         }
-        if (Math.abs(turnMomentum) < 0.001f) turnMomentum = 0f;
 
-        setYRot(getYRot() + turnMomentum);
+        setRudderAngle(angle);  // clamps to [-1, 1] and syncs to clients
+
+        // Boat turn rate = rudder deflection × speed authority
+        double speed = getDeltaMovement().horizontalDistance();
+        float authority = (float) Math.max(STANDSTILL_AUTHORITY, Math.min(1.0, speed / TURN_SPEED_REF));
+        setYRot(getYRot() + getRudderAngle() * TURN_RATE_MAX * authority);
     }
 
 
@@ -309,9 +322,18 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
             // When a helmsman is aboard, ShipControlMixin.controlBoat() handles
             // steer + applySailThrust + applyChainConstraint (via mixin on AbstractBoat).
-            // Here we only handle the UNMANNED case: sails still push, chain still holds.
+            // Here we only handle the UNMANNED case: sails still push, chain still holds,
+            // and the rudder springs back to center on its own.
             if (getControllingPassenger() == null) {
-                if (!isAnchorHolding() && !isSinking()) {
+                // Rudder returns to center when no one is at the helm
+                float angle = getRudderAngle();
+                if (Math.abs(angle) > 0.001f) {
+                    angle -= Math.signum(angle) * RUDDER_RETURN;
+                    if (Math.abs(angle) < RUDDER_RETURN) angle = 0f;
+                    setRudderAngle(angle);
+                }
+
+                if (!isSinking()) {
                     applySailThrust();
                 }
                 applyChainConstraint();
@@ -379,16 +401,16 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     private void setSailLevel(int lvl) { this.entityData.set(DATA_SAIL_LEVEL, Mth.clamp(lvl, 0, SAIL_MAX)); }
 
-    public void raiseSail() { if (!level().isClientSide() && !isAnchorHolding()) setSailLevel(getSailLevel() + 1); }
+    public void raiseSail() { if (!level().isClientSide()) setSailLevel(getSailLevel() + 1); }
     public void lowerSail() { if (!level().isClientSide()) setSailLevel(getSailLevel() - 1); }
     public void furlSail()  { if (!level().isClientSide()) setSailLevel(0); }
 
     /** WIND HOOK — 1.0 until the wind pass adds point-of-sail + trim. */
     public float getSailEfficiency() { return 1.0f; }
 
-    /** Net forward thrust: sail level × wind, zero when furled/anchored/sinking. */
+    /** Net forward thrust: sail level × wind. Chain constraint handles anchor stopping. */
     public float getEffectiveThrust() {
-        if (isSinking() || isAnchorHolding()) return 0f;
+        if (isSinking()) return 0f;
         return getSailFraction() * MAX_SAIL_THRUST * getSailEfficiency();
     }
 
@@ -399,14 +421,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
     }
 
     /**
-     * BUG FIX: Unified anchor toggle. Previously there were two separate methods:
-     *   - toggleAnchor() managed the state but never spawned the entity
-     *   - toggleAnchorEntity() spawned the entity but was never called
-     * Now this single method does both: state + entity in lockstep.
-     *
-     * Up → drop anchor (spawn entity + set state 1 + furl sails)
-     * Down → begin raising (set state 2 + start timer; entity removed when timer finishes)
-     * Raising → ignore (wait for it to finish)
+     * Anchor toggle:
+     *   Up (0) → deploy anchor entity, set state 1. Boat keeps sailing — the
+     *            chain constraint is the only thing that stops it, once the
+     *            anchor snags on a block.
+     *   Deployed (1) → begin raising, set state 2. The AnchorEntity flies
+     *                   back toward the ship and discards itself on arrival.
+     *   Raising (2) → ignore, wait for it to finish.
      */
     public void toggleAnchor() {
         if (level().isClientSide()) return;
@@ -416,18 +437,14 @@ public class CustomBoatEntity extends AbstractChestBoat {
         } else if (s == 1) {
             beginRaiseAnchor();
         }
-        // state 2 (raising) → ignore, let the timer finish
     }
 
     private void dropAnchor() {
-        // --- state ---
         this.entityData.set(DATA_ANCHOR_STATE, 1);
-        furlSail();  // dropping anchor furls the sails (full stop)
+        // NO furlSail() — the boat keeps sailing. The anchor drags behind it
+        // until it snags on a block, then the chain constraint stops the ship.
 
-        int depth = measureDepth();
-        anchorRaiseTotal = Math.max(ANCHOR_MIN_TICKS, depth * ANCHOR_TICKS_PER_BLOCK);
-
-        // --- spawn the physical anchor entity ---
+        // Spawn the physical anchor entity
         AnchorEntity a = new AnchorEntity(EntityFactory.ANCHOR, level());
         a.setShipId(getId());
         a.place(getX(), getY() + 0.5, getZ());
@@ -440,37 +457,27 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     private void beginRaiseAnchor() {
         this.entityData.set(DATA_ANCHOR_STATE, 2);
-        anchorRaiseTicks = anchorRaiseTotal;
+        // The AnchorEntity detects isRaisingAnchor() on the ship and starts
+        // flying back. When it arrives, it discards itself; tickAnchor() notices.
         level().playSound(null, blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 1f, 1.2f);
     }
 
     private void tickAnchor() {
+        // Raising: the anchor entity moves itself toward the ship.
+        // Once it arrives and discards itself, we clear the state.
         if (getAnchorState() == 2) {
-            if (--anchorRaiseTicks <= 0) {
-                // raise complete — remove the entity and clear state
-                AnchorEntity a = getAnchor();
-                if (a != null) a.discard();
+            AnchorEntity a = getAnchor();
+            if (a == null || a.isRemoved()) {
                 entityData.set(DATA_ANCHOR_ENTITY, -1);
                 this.entityData.set(DATA_ANCHOR_STATE, 0);
             }
         }
 
-        // Safety: if the entity got removed by something else, clear the reference
+        // Safety: if the entity got removed externally, clear the reference
         if (entityData.get(DATA_ANCHOR_ENTITY) >= 0 && getAnchor() == null) {
             entityData.set(DATA_ANCHOR_ENTITY, -1);
-            // If we thought we were anchored but the entity is gone, reset state
             if (getAnchorState() == 1) this.entityData.set(DATA_ANCHOR_STATE, 0);
         }
-    }
-
-    /** Raycast straight down to the floor; returns depth in blocks. */
-    private int measureDepth() {
-        Vec3 from = position();
-        Vec3 to = from.add(0, -64, 0);
-        HitResult hit = level().clip(new ClipContext(from, to,
-            ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-        if (hit.getType() == HitResult.Type.MISS) return 8;
-        return (int) Math.max(1, from.y - hit.getLocation().y);
     }
 
     /** Forward drive from the sails. */
