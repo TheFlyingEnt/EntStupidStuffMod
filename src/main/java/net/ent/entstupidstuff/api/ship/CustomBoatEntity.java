@@ -67,7 +67,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final int   ANCHOR_MIN_TICKS = 20;
 
     // --- deck carry ---
-    private static final double DECK_HALF_LEN  = 8.0;   // bow<->stern reach
+    private static final double DECK_HALF_LEN  = 4.0;   // bow<->stern reach
     private static final double DECK_HALF_WID  = 2.2;   // port<->starboard — match the actual hull width
     private static final double DECK_MIN_Y     = 0.1;   // must be above deck surface, not beside it
     private static final double DECK_MAX_Y     = 2.2;
@@ -90,6 +90,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final double TURN_SPEED_REF = 0.45;  // forward speed needed for full rudder authority
     private static final float  TURN_RESPONSE  = 0.10f; // how quickly she answers the helm
     private static final float  TURN_DAMP      = 0.93f; // how long she keeps swinging after you release
+
+    // --- debug ---
+    /** Toggle to show deck boundary particles. Flip in-game or set via /entstupidstuff debug. */
+    public static boolean DEBUG_DECK = true;
 
 
     // ════════════════════════════════════════════════════════════════
@@ -286,6 +290,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
         super.tick();
         computeDeckTransform();
         tickWake();
+        tickDebugDeck();
 
         // --- spawn multi-hitbox parts on first server tick ---
         if (!this.level().isClientSide() && !partsSpawned) {
@@ -529,6 +534,61 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
 
     // ════════════════════════════════════════════════════════════════
+    //  DEBUG  (toggle with CustomBoatEntity.DEBUG_DECK = true)
+    // ════════════════════════════════════════════════════════════════
+    private void tickDebugDeck() {
+        if (!DEBUG_DECK || !this.level().isClientSide() || this.tickCount % 2 != 0) return;
+
+        double yaw = Math.toRadians(getYRot());
+        double cos = Math.cos(yaw), sin = Math.sin(yaw);
+        double cx = getX(), cy = getY(), cz = getZ();
+
+        // The 4 corners of the deck floor in local space:
+        //   (±DECK_HALF_WID, DECK_MIN_Y, ±DECK_HALF_LEN)
+        //   lx = port/starboard, lz = fore/aft
+        double[][] corners = {
+            { -DECK_HALF_WID, -DECK_HALF_LEN },  // port stern
+            {  DECK_HALF_WID, -DECK_HALF_LEN },  // starboard stern
+            {  DECK_HALF_WID,  DECK_HALF_LEN },  // starboard bow
+            { -DECK_HALF_WID,  DECK_HALF_LEN },  // port bow
+        };
+
+        // Draw edges between corners (particles along each edge)
+        int pointsPerEdge = 8;
+        for (int i = 0; i < 4; i++) {
+            double[] a = corners[i];
+            double[] b = corners[(i + 1) % 4];
+            for (int j = 0; j <= pointsPerEdge; j++) {
+                double t = j / (double) pointsPerEdge;
+                double lx = a[0] + (b[0] - a[0]) * t;
+                double lz = a[1] + (b[1] - a[1]) * t;
+
+                // local → world: R = (cos, sin), F = (-sin, cos)
+                double wx = cx + lx * cos - lz * sin;
+                double wz = cz + lx * sin + lz * cos;
+
+                // Floor outline (DECK_MIN_Y)
+                this.level().addParticle(ParticleTypes.FLAME,
+                    wx, cy + DECK_MIN_Y, wz, 0, 0, 0);
+
+                // Ceiling outline (DECK_MAX_Y)
+                this.level().addParticle(ParticleTypes.END_ROD,
+                    wx, cy + DECK_MAX_Y, wz, 0, 0, 0);
+            }
+        }
+
+        // Vertical pillars at corners
+        for (double[] c : corners) {
+            double wx = cx + c[0] * cos - c[1] * sin;
+            double wz = cz + c[0] * sin + c[1] * cos;
+            for (double dy = DECK_MIN_Y; dy <= DECK_MAX_Y; dy += 0.5) {
+                this.level().addParticle(ParticleTypes.ELECTRIC_SPARK,
+                    wx, cy + dy, wz, 0, 0, 0);
+            }
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════
     //  DAMAGE & SINK
     // ════════════════════════════════════════════════════════════════
     public float   getHealth()       { return this.entityData.get(DATA_HEALTH); }
@@ -687,8 +747,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         double lx = dx * cos - dz * sin;   // into ship-local
         double lz = dx * sin + dz * cos;
         double dy = e.getY() - getY();
-        return Math.abs(lx) <= DECK_HALF_LEN + margin
-            && Math.abs(lz) <= DECK_HALF_WID + margin
+        return Math.abs(lx) <= DECK_HALF_WID + margin    // port/starboard (narrow axis)
+            && Math.abs(lz) <= DECK_HALF_LEN + margin    // fore/aft (long axis)
             && dy >= DECK_MIN_Y && dy <= DECK_MAX_Y + margin;
     }
 
@@ -773,7 +833,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
         }
 
         for (Entity e : this.level().getEntities(this,
-                getBoundingBox().inflate(DECK_HALF_LEN, DECK_MAX_Y, DECK_HALF_WID),
+                getBoundingBox().inflate(DECK_HALF_LEN, DECK_MAX_Y, DECK_HALF_LEN),
                 e -> !(e instanceof Player) && !e.isInWater())) {
             boolean before = deckRiders.contains(e.getUUID());
             if (isOnDeck(e, before)) {
