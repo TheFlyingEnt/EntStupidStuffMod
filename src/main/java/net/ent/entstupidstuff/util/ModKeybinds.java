@@ -1,7 +1,9 @@
 package net.ent.entstupidstuff.util;
 
 import net.ent.entstupidstuff.api.car.BaseCarEntity;
+import net.ent.entstupidstuff.api.ship.CannonControlPayload;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
+import net.ent.entstupidstuff.api.ship.HarpoonControlPayload;
 import net.ent.entstupidstuff.api.ship.SailControlPayload;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -55,6 +57,8 @@ public final class ModKeybinds {
     "key.entstupidstuff.anchor", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, KeyMapping.Category.GAMEPLAY);
 
     private static int sailCooldown = 0;
+    private static boolean wasUseDown    = false;
+    private static boolean wasAttackDown = false;
 
     /**
      * Call every client tick. Detects key presses and sets
@@ -75,6 +79,109 @@ public final class ModKeybinds {
                 ClientPlayNetworking.send(new SwapSeatPayload(boat.getId()));
             }
         }
+
+        /*if (mc.player.getVehicle() instanceof CustomBoatEntity boat && boat.isBowGunner(mc.player)) {
+            if (boat.getAttachment() == CustomBoatEntity.ATTACHMENT_HARPOON) {
+                if (mc.options.keyUse.isDown() && !boat.hasActiveHarpoon()) {
+                    // Fire harpoon in player's look direction
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.FIRE,
+                        mc.player.getYRot(), mc.player.getXRot()));
+                } else if (SHIFT_UP.isDown() && boat.hasActiveHarpoon()) {
+                    // Hold right-click to reel
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.REEL, 0, 0));
+                } else if (SHIFT_DOWN.isDown() && boat.hasActiveHarpoon()) {
+                    // Left-click to release
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.RELEASE, 0, 0));
+                }
+            }
+        }*/
+
+        /*if (mc.player.getVehicle() instanceof CustomBoatEntity boat && boat.isBowGunner(mc.player)) {
+            if (boat.getAttachment() == CustomBoatEntity.ATTACHMENT_HARPOON) {
+                boolean useDown    = mc.options.keyUse.isDown();
+                boolean attackDown = mc.options.keyAttack.isDown();
+                boolean usePressed    = useDown && !wasUseDown;      // rising edge = just clicked
+                boolean attackPressed = attackDown && !wasAttackDown;
+
+                if (usePressed && !boat.hasActiveHarpoon()) {
+                    // Fire harpoon in player's look direction
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.FIRE,
+                        mc.player.getYRot(), mc.player.getXRot()));
+                } else if (useDown && boat.hasActiveHarpoon()) {
+                    // Hold right-click to reel
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.REEL, 0, 0));
+                }
+
+                if (attackPressed && boat.hasActiveHarpoon()) {
+                    // Left-click to release
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.RELEASE, 0, 0));
+                }
+
+                wasUseDown    = useDown;
+                wasAttackDown = attackDown;
+                return;  // don't process other keybinds while operating harpoon
+            }
+        }*/
+
+        if (mc.player.getVehicle() instanceof CustomBoatEntity boat && boat.isBowGunner(mc.player)) {
+            int attachment = boat.getAttachment();
+
+            if (attachment == CustomBoatEntity.ATTACHMENT_HARPOON) {
+                // ── Harpoon controls (existing) ──
+                boolean useDown    = mc.options.keyUse.isDown();
+                boolean attackDown = mc.options.keyAttack.isDown();
+                boolean usePressed    = useDown && !wasUseDown;
+                boolean attackPressed = attackDown && !wasAttackDown;
+
+                if (usePressed && !boat.hasActiveHarpoon()) {
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.FIRE,
+                        mc.player.getYRot(), mc.player.getXRot()));
+                } else if (useDown && boat.hasActiveHarpoon()) {
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.REEL, 0, 0));
+                }
+                if (attackPressed && boat.hasActiveHarpoon()) {
+                    ClientPlayNetworking.send(new HarpoonControlPayload(
+                        boat.getId(), HarpoonControlPayload.RELEASE, 0, 0));
+                }
+
+                wasUseDown    = useDown;
+                wasAttackDown = attackDown;
+                return;
+
+            } else if (attachment == CustomBoatEntity.ATTACHMENT_CANNON) {
+                // ── Cannon controls ──
+                boolean useDown    = mc.options.keyUse.isDown();
+                boolean attackDown = mc.options.keyAttack.isDown();
+                boolean usePressed    = useDown && !wasUseDown;
+                boolean attackPressed = attackDown && !wasAttackDown;
+
+                // Right-click = fire cannonball
+                if (usePressed) {
+                    ClientPlayNetworking.send(new CannonControlPayload(
+                        boat.getId(), CannonControlPayload.FIRE,
+                        mc.player.getYRot(), mc.player.getXRot()));
+                }
+                // Left-click = launch yourself out of the cannon!
+                if (attackPressed) {
+                    ClientPlayNetworking.send(new CannonControlPayload(
+                        boat.getId(), CannonControlPayload.LAUNCH_PLAYER,
+                        mc.player.getYRot(), mc.player.getXRot()));
+                }
+
+                wasUseDown    = useDown;
+                wasAttackDown = attackDown;
+                return;
+            }
+        }
+
 
         if (mc.player.getVehicle() instanceof CustomBoatEntity boat) {
             if (sailCooldown > 0) sailCooldown--;

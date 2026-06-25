@@ -13,6 +13,8 @@ import net.ent.entstupidstuff.api.car.PorsheGT3Entity;
 import net.ent.entstupidstuff.api.car.ShelbyGT500Entity;
 import net.ent.entstupidstuff.api.ship.AnchorEntity;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
+import net.ent.entstupidstuff.api.ship.HarpoonProjectileEntity;
+import net.ent.entstupidstuff.api.ship.ShipCannonballEntity;
 import net.ent.entstupidstuff.api.ship.ShipPartEntity;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
@@ -259,7 +261,8 @@ public class EntityFactory {
         ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"),
         EntityType.Builder.of(getBigBoatFactory(() -> Items.ACACIA_CHEST_BOAT), MobCategory.MISC)
         //.dimensions(0.98F, 0.7F)
-        .sized(3.5F, 0.7F)
+        //.sized(3.5F, 0.7F)
+        .sized(3.5F, 0.80F)
 		.passengerAttachments(0.1875F)
 		.clientTrackingRange(8)
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"customboat")))
@@ -271,7 +274,8 @@ public class EntityFactory {
         ResourceLocation.fromNamespaceAndPath("entstupidstuff", "ship_part"),
         EntityType.Builder.<ShipPartEntity>of(ShipPartEntity::new, MobCategory.MISC)
             //.sized(3.0f, 1.5f)
-            .sized(3.5F, 0.7F)
+            //.sized(3.5F, 0.7F)
+            .sized(3.5F, 0.78F)
             .noSummon()
             .noSave()
             //.updateInterval(1)
@@ -285,6 +289,21 @@ public class EntityFactory {
     ResourceLocation.fromNamespaceAndPath("entstupidstuff", "anchor"),
     EntityType.Builder.<AnchorEntity>of(AnchorEntity::new, MobCategory.MISC)
         .sized(0.6f, 0.8f).clientTrackingRange(12).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"anchor"))));
+
+    public static final EntityType<HarpoonProjectileEntity> HARPOON =
+    Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath("entstupidstuff", "harpoon"),
+        EntityType.Builder.<HarpoonProjectileEntity>of(HarpoonProjectileEntity::new, MobCategory.MISC)
+            .sized(0.3f, 0.3f).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"harpoon"))));
+
+    public static final EntityType<ShipCannonballEntity> SHIPCANNONBALL =
+    Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath("entstupidstuff", "shipcannonball"),
+        EntityType.Builder.<ShipCannonballEntity>of(ShipCannonballEntity::new, MobCategory.MISC)
+            .sized(0.5F, 0.5F)     // small hitbox — it's a ball
+            .clientTrackingRange(8)
+            .updateInterval(1)       // update every tick for smooth flight
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"shipcannonball"))));
 
 
     public static final EntityType<AlligatorGarEntity> ALLIGATOR_GAR = Registry.register(BuiltInRegistries.ENTITY_TYPE,

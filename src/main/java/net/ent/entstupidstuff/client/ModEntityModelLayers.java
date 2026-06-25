@@ -18,6 +18,10 @@ import net.ent.entstupidstuff.api.ship.AnchorModel;
 import net.ent.entstupidstuff.api.ship.ChainLinkModel;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntityRenderer;
 import net.ent.entstupidstuff.api.ship.CustomBoatModel;
+import net.ent.entstupidstuff.api.ship.HarpoonEntityRenderer;
+import net.ent.entstupidstuff.api.ship.HarpoonModel;
+import net.ent.entstupidstuff.api.ship.ShipCannonBallEntityRenderer;
+import net.ent.entstupidstuff.api.ship.ShipCannonBallModel;
 import net.ent.entstupidstuff.client.render.entity.model.AncientTridentModel;
 import net.ent.entstupidstuff.client.render.entity.model.ButterflyModel;
 import net.ent.entstupidstuff.client.render.entity.model.CannonballModel;
@@ -298,6 +302,7 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation DIAMOND_SHIELD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "diamond_shield"), "main");
 
     public static final ModelLayerLocation ANCHOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "anchor"), "main");
+    public static final ModelLayerLocation HARPOON = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "harpoon"), "main");
 
     //Mob Heads
 
@@ -353,6 +358,7 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation SHIPENTITYTEST = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "shiptest"), "main");
 
     public static final ModelLayerLocation CHAIN_LINK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "chain_link"), "main");
+    public static final ModelLayerLocation SHIPCANNONBALL = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "shipcannonball"), "main");
 
 
 
@@ -670,6 +676,12 @@ public class ModEntityModelLayers {
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCHOR, AnchorModel::createLayer);
 
         EntityModelLayerRegistry.registerModelLayer(CHAIN_LINK, ChainLinkModel::createLayer);
+
+        EntityRenderers.register(EntityFactory.HARPOON, (EntityRendererProvider.Context context) -> new HarpoonEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.HARPOON, HarpoonModel::createLayer);
+
+        EntityRenderers.register(EntityFactory.SHIPCANNONBALL, (EntityRendererProvider.Context context) -> new ShipCannonBallEntityRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIPCANNONBALL, ShipCannonBallModel::getTexturedModelData);
 
 
         

@@ -201,6 +201,10 @@ public class ItemFactory {
     public static final Item DOUBLE_BARREL_CROSSBOW = registerItem("double_barrel_crossbow", settings -> new DoubleBarrelCrossbowItem(settings)); //flintlock_two
     public static final Item DUMMY_CROSSBOW = registerItem("dummy_crossbow", settings -> new DummyCrossbow(settings));
 
+    public static final Item HARPOON_ATTACHMENT = registerItem("harpoon_attachment", settings -> new Item(settings));
+    public static final Item CANNON_ATTACHMENT = registerItem("cannon_attachment", settings -> new Item(settings));
+    public static final Item HARPOON_ITEM = registerItem("harpoon", settings -> new Item(settings));
+
 
     public static final Item SUNKEN_SKELETON_SPAWN = registerItem("sunken_skeleton_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SUNKEN_SKELETON)));
     public static final Item SUNKEN_SKELETON2_SPAWN = registerItem("sunken_skeleton2_spawn_egg", settings -> new SpawnEggItem(settings.spawnEgg(EntityFactory.SUNKEN_SKELETON_CROSSBOW)));

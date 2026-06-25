@@ -16,13 +16,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 
-public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRenderState> {
-
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/bigboat_alt.png");
+public class HarpoonEntityRenderer extends EntityRenderer<HarpoonProjectileEntity, AnchorRenderState> {
 
     private static final ResourceLocation ANCHOR_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/anchor.png");
+            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/spear.png");
 
     // Use the same texture as the anchor — known to load correctly.
     // Block textures (minecraft:textures/block/chain.png) don't work for entity rendering
@@ -31,15 +28,15 @@ public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRen
     private static final ResourceLocation CHAIN_TEXTURE =
             ResourceLocation.withDefaultNamespace("textures/item/iron_chain.png");
 
-    private final AnchorModel model;
+    private final HarpoonModel model;
     private final Model.Simple chainLinkModel;
  
     /** Scale of each chain link model. */
     private static final float LINK_SCALE = 1.0f;
  
-    public AnchorEntityRenderer(EntityRendererProvider.Context ctx) {
+    public HarpoonEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx);
-        this.model = new AnchorModel(ctx.bakeLayer(ModEntityModelLayers.ANCHOR));
+        this.model = new HarpoonModel(ctx.bakeLayer(ModEntityModelLayers.HARPOON));
         this.chainLinkModel = new Model.Simple(
             ctx.bakeLayer(ModEntityModelLayers.CHAIN_LINK),
             id -> RenderType.entityCutoutNoCull(CHAIN_TEXTURE));
@@ -51,7 +48,7 @@ public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRen
     }
  
     @Override
-    public void extractRenderState(AnchorEntity e, AnchorRenderState st, float partialTick) {
+    public void extractRenderState(HarpoonProjectileEntity e, AnchorRenderState st, float partialTick) {
         super.extractRenderState(e, st, partialTick);
  
         CustomBoatEntity ship = e.getShip();
@@ -71,7 +68,7 @@ public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRen
             st.chainLinks = Mth.clamp((int)(dist * 4), 2, 60);
  
             // Droop: taut chain still sags noticeably, slack chain hangs deep
-            double slack = Math.max(0, AnchorEntity.CHAIN_LENGTH - dist);
+            double slack = Math.max(0, HarpoonProjectileEntity.MAX_RANGE - dist);
             st.chainDroop = 1.5 + slack * 0.3;
         } else {
             st.toShip = Vec3.ZERO;
@@ -149,3 +146,4 @@ public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRen
         }
     }
 }
+

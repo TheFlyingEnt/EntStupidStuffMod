@@ -13,8 +13,10 @@ import net.ent.entstupidstuff.api.hat.HatSelectPayload;
 import net.ent.entstupidstuff.api.hat.HatSyncPayload;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
 import net.ent.entstupidstuff.api.hat.UnlockSyncPayload;
+import net.ent.entstupidstuff.api.ship.CannonControlPayload;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
 import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
+import net.ent.entstupidstuff.api.ship.HarpoonControlPayload;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
@@ -128,6 +130,9 @@ public class EntStupidStuff implements ModInitializer {
 
         PayloadTypeRegistry.playC2S().register(SwapSeatPayload.TYPE,  SwapSeatPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(DeckOffsetPayload.TYPE, DeckOffsetPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(HarpoonControlPayload.TYPE, HarpoonControlPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(CannonControlPayload.TYPE, CannonControlPayload.CODEC);
+
 
         ModNetworking.registerC2SPayloads();
         ModNetworking.registerServerHandlers();

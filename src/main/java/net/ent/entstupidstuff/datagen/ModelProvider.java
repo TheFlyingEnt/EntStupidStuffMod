@@ -110,6 +110,7 @@ public class ModelProvider extends FabricModelProvider{
         //RUM is done via Manually
         itemModelGenerator.generateFlatItem(ItemFactory.CANNON_BALL_ITEM, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.CANNON_ITEM, ModelTemplates.CROSSBOW);
+        itemModelGenerator.generateFlatItem(ItemFactory.HARPOON_ITEM, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.PRISMERINE_ARROW, ModelTemplates.FLAT_ITEM);
         itemModelGenerator.generateFlatItem(ItemFactory.FLINTLOCK_CROSSBOW, ModelTemplates.CROSSBOW);
         itemModelGenerator.generateFlatItem(ItemFactory.DOUBLE_BARREL_CROSSBOW, ModelTemplates.CROSSBOW);

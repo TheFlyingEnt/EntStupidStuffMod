@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.registry.EntityFactory;
+import net.ent.entstupidstuff.sound.SoundFactory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,6 +30,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -125,6 +128,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_ATTACHMENT =    // 0 none, 1 harpoon, 2 cannon
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_ACTIVE_HARPOON = // entity ID of deployed harpoon, -1 if none
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_HAS_BANNER =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.BOOLEAN);
 
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] SEAT_OCCUPANTS =
@@ -148,6 +155,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_ANCHOR_ENTITY, -1);
         builder.define(DATA_RUDDER, 0f);
         builder.define(DATA_ATTACHMENT, ATTACHMENT_NONE);
+        builder.define(DATA_ACTIVE_HARPOON, -1);
+        builder.define(DATA_HAS_BANNER, false);
         for (int i = 0; i < SEAT_COUNT; i++) builder.define(SEAT_OCCUPANTS[i], -1);
     }
 
@@ -181,6 +190,135 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public int  getAttachment()       { return this.entityData.get(DATA_ATTACHMENT); }
     public void setAttachment(int type) { this.entityData.set(DATA_ATTACHMENT, type); }
     public boolean hasAttachment()    { return getAttachment() != ATTACHMENT_NONE; }
+
+    // banner flag (controls whether burgee_sail shows the banner pattern)
+    public boolean hasBanner()        { return entityData.get(DATA_HAS_BANNER); }
+    public void    setBanner(boolean b) { entityData.set(DATA_HAS_BANNER, b); }
+
+    // The actual item in the attachment slot (persisted separately from the chest)
+    private ItemStack attachmentStack = ItemStack.EMPTY;
+    public ItemStack getAttachmentStack() { return attachmentStack; }
+    public void setAttachmentStack(ItemStack stack) {
+        this.attachmentStack = stack.isEmpty() ? ItemStack.EMPTY : stack.copy();
+        // Sync the attachment TYPE from the item
+        setAttachment(ShipMenu.AttachmentSlot.getAttachmentType(this.attachmentStack));
+    }
+
+    // ── Active harpoon (synced so client knows when one is deployed) ──
+    public @Nullable HarpoonProjectileEntity getActiveHarpoon() {
+        int id = entityData.get(DATA_ACTIVE_HARPOON);
+        if (id < 0) return null;
+        return level().getEntity(id) instanceof HarpoonProjectileEntity h ? h : null;
+    }
+
+    public boolean hasActiveHarpoon() {
+        HarpoonProjectileEntity h = getActiveHarpoon();
+        return h != null && !h.isRemoved();
+    }
+
+    public void fireHarpoon(float yaw, float pitch) {
+        if (level().isClientSide() || hasActiveHarpoon()) return;
+        if (getAttachment() != ATTACHMENT_HARPOON) return;
+
+        HarpoonProjectileEntity h = new HarpoonProjectileEntity(
+            net.ent.entstupidstuff.registry.EntityFactory.HARPOON, level());
+        h.fire(this, yaw, pitch);
+        level().addFreshEntity(h);
+        entityData.set(DATA_ACTIVE_HARPOON, h.getId());
+    }
+
+    public void clearHarpoon() { entityData.set(DATA_ACTIVE_HARPOON, -1); }
+
+    public void releaseHarpoon() {
+        HarpoonProjectileEntity h = getActiveHarpoon();
+        if (h != null) h.release();
+        clearHarpoon();
+    }
+
+    // ── Cannon ──────────────────────────────────────────────────────
+    /** Cooldown to prevent spamming cannonballs. */
+    private int cannonCooldown = 0;
+    private static final int CANNON_COOLDOWN_TICKS = 30;  // 1.5 seconds between shots
+
+    public boolean canFireCannon() {
+        return !level().isClientSide()
+            && getAttachment() == ATTACHMENT_CANNON
+            && cannonCooldown <= 0
+            && !isSinking();
+    }
+
+    public void fireCannon(float yaw, float pitch) {
+        if (!canFireCannon()) return;
+
+        ShipCannonballEntity ball = new ShipCannonballEntity(
+            net.ent.entstupidstuff.registry.EntityFactory.SHIPCANNONBALL, level());
+        ball.fire(this, yaw, pitch);
+        level().addFreshEntity(ball);
+        cannonCooldown = CANNON_COOLDOWN_TICKS;
+
+        // Recoil: small backward push on the ship
+        double rad = Math.toRadians(getYRot());
+        double recoil = 0.04;
+        setDeltaMovement(getDeltaMovement().add(
+            Math.sin(rad) * recoil, 0, -Math.cos(rad) * recoil));
+
+        // Fire sound + smoke
+        if (level() instanceof ServerLevel sl) {
+            sl.playSound(null, blockPosition(),
+                SoundFactory.COMBAT_CANNON_FIRE, SoundSource.NEUTRAL, 1.0f, 1.3f);
+            // Muzzle flash at the bow
+            double bowX = getX() - Math.sin(rad) * 5.0;
+            double bowZ = getZ() + Math.cos(rad) * 5.0;
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, bowX, getY() + 2.0, bowZ,
+                6, 0.3, 0.2, 0.3, 0.02);
+            sl.sendParticles(ParticleTypes.FLAME, bowX, getY() + 2.0, bowZ,
+                3, 0.1, 0.1, 0.1, 0.01);
+        }
+    }
+
+    /**
+     * Launch a player out of the cannon — Sea of Thieves style!
+     * The player is dismounted and flung in the aim direction.
+     */
+    public void launchPlayer(Player player, float yaw, float pitch) {
+        if (level().isClientSide() || !isBowGunner(player) || isSinking()) return;
+        if (getAttachment() != ATTACHMENT_CANNON) return;
+        if (cannonCooldown > 0) return;
+
+        cannonCooldown = CANNON_COOLDOWN_TICKS;
+
+        // Dismount the player
+        player.stopRiding();
+
+        // Position them at the cannon muzzle
+        double rad = Math.toRadians(getYRot());
+        double bowX = getX() - Math.sin(rad) * 5.5;
+        double bowZ = getZ() + Math.cos(rad) * 5.5;
+        player.setPos(bowX, getY() + 2.5, bowZ);
+
+        // Launch velocity — same direction as a cannonball but slightly slower
+        double launchSpeed = 1.8;
+        double radYaw   = Math.toRadians(-yaw);
+        double radPitch = Math.toRadians(-pitch);
+        double cosP     = Math.cos(radPitch);
+        player.setDeltaMovement(
+            Math.sin(radYaw) * cosP * launchSpeed,
+            Math.sin(radPitch) * launchSpeed + 0.3,  // slight extra upward
+            Math.cos(radYaw) * cosP * launchSpeed
+        );
+        // Reset fall distance so they don't die on landing (optional — remove for hardcore)
+        player.fallDistance = 0f;
+        // Grant brief fall damage immunity (60 ticks = 3 seconds)
+        player.hurtMarked = true;  // force velocity sync to client
+
+        // Effects
+        if (level() instanceof ServerLevel sl) {
+            sl.playSound(null, blockPosition(),
+                SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 1.2f, 1.5f);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, bowX, getY() + 2.0, bowZ,
+                10, 0.4, 0.3, 0.4, 0.03);
+        }
+    }
 
     // deck mob tracking
     private final java.util.Set<java.util.UUID> deckRiders = new java.util.HashSet<>();
@@ -218,12 +356,37 @@ public class CustomBoatEntity extends AbstractChestBoat {
         this.inventory = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
     }
 
+    // ── Save/Load: persist attachment + banner across world reloads ──
+    @Override
+    protected void addAdditionalSaveData(ValueOutput out) {
+        super.addAdditionalSaveData(out);
+        out.putInt("ShipAttachmentType", getAttachment());
+        out.putBoolean("ShipHasBanner", hasBanner());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput in) {
+        super.readAdditionalSaveData(in);
+        this.setAttachment(in.getInt("ShipAttachmentType").orElse(0));
+        this.entityData.set(DATA_HAS_BANNER, in.getBooleanOr("ShipHasBanner", false));
+    }
+
     // NOTE: Vanilla controlBoat() is private in AbstractBoat, so we can't override it.
     // ShipControlMixin cancels it at HEAD and calls our steer()/applySailThrust()/
     // applyChainConstraint() instead. See ShipControlMixin.java.
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
+        // Sneak + right-click → open ship management GUI
+        if (player.isShiftKeyDown() && !isSinking()) {
+            if (!this.level().isClientSide()) {
+                player.openMenu(new net.minecraft.world.SimpleMenuProvider(
+                    (syncId, inv, p) -> new ShipMenu(syncId, inv, this),
+                    net.minecraft.network.chat.Component.literal("Ship")));
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         // repair: right-click hull with planks
         ItemStack held = player.getItemInHand(hand);
         if (held.is(ItemTags.PLANKS) && getHealth() < shipMaxHealth() && !isSinking()) {
@@ -333,6 +496,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
             carryDeckMobs();
             tickDamage();
             tickAnchor();
+            if (cannonCooldown > 0) cannonCooldown--;
 
             // When a helmsman is aboard, ShipControlMixin.controlBoat() handles
             // steer + applySailThrust + applyChainConstraint (via mixin on AbstractBoat).

@@ -11,6 +11,7 @@ import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
 import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.DeckSync;
 import net.ent.entstupidstuff.api.ship.ShipHud;
+import net.ent.entstupidstuff.api.ship.ShipScreen;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
@@ -77,6 +78,7 @@ public class EntStupidStuffClient implements ClientModInitializer {
 
         MenuScreens.register(ScreenHandlerFactory.DARK_ENCHANTING_TABLE_HANDLER, DarkEnchantingTableScreen::new);
         MenuScreens.register(ScreenHandlerFactory.CAR_MENU, CarScreen::new);
+        MenuScreens.register(ScreenHandlerFactory.SHIP_MENU, ShipScreen::new);
 
         BlockEntityRenderers.register(
             BlockEntityFactory.HORIZONTAL_BANNER,

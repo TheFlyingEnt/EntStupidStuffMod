@@ -1,9 +1,11 @@
 package net.ent.entstupidstuff.api.car;
 
 import net.ent.entstupidstuff.api.hat.ModAttachments;
+import net.ent.entstupidstuff.api.ship.CannonControlPayload;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
 import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.DeckSync;
+import net.ent.entstupidstuff.api.ship.HarpoonControlPayload;
 import net.ent.entstupidstuff.api.ship.SailControlPayload;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -97,6 +99,37 @@ public final class ModNetworking {
                 }
             });
         });
+
+        ServerPlayNetworking.registerGlobalReceiver(HarpoonControlPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.level().getServer().execute(() -> {
+                if (!(player.level().getEntity(payload.boatId()) instanceof CustomBoatEntity ship)) return;
+                if (!ship.isBowGunner(player)) return;  // only bow seat can fire
+                switch (payload.action()) {
+                    case HarpoonControlPayload.FIRE    -> ship.fireHarpoon(payload.yaw(), payload.pitch());
+                    case HarpoonControlPayload.REEL    -> {
+                        var h = ship.getActiveHarpoon();
+                        if (h != null) h.setReeling(true);
+                    }
+                    case HarpoonControlPayload.RELEASE -> ship.releaseHarpoon();
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(CannonControlPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.level().getServer().execute(() -> {
+                if (!(player.level().getEntity(payload.boatId()) instanceof CustomBoatEntity ship)) return;
+                if (!ship.isBowGunner(player)) return;  // only bow seat can fire
+                if (ship.getAttachment() != CustomBoatEntity.ATTACHMENT_CANNON) return;
+
+                switch (payload.action()) {
+                    case CannonControlPayload.FIRE -> ship.fireCannon(payload.yaw(), payload.pitch());
+                    case CannonControlPayload.LAUNCH_PLAYER -> ship.launchPlayer(player, payload.yaw(), payload.pitch());
+                }
+            });
+        });
+
     }
  
     private ModNetworking() {} // no instances

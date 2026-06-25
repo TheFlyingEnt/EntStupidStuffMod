@@ -54,17 +54,14 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
 	public void extractRenderState(AbstractBoat boat, BoatRenderState state, float partialTick) {
 		super.extractRenderState(boat, state, partialTick);
 		if (boat instanceof CustomBoatEntity ship) {
-			this.model.sailLevel    = ship.getSailLevel();
-			this.model.forwardSpeed = ship.getForwardSpeed();
-			this.model.sinkProgress = ship.getSinkProgress();
-			this.model.waveTime     = ship.tickCount + partialTick;
-
-			// FIX: Feed the actual rudder angle (-1..+1) instead of getDeckDYaw().
-			// getDeckDYaw() was the per-tick yaw change — a tiny, jerky value that
-			// made the rudder twitch instead of smoothly following the helm.
-			// The rudder angle builds up gradually while holding A/D and springs
-			// back when released, giving a smooth animated swing.
-			this.model.rudderTurn = ship.getRudderAngle();
+			this.model.sailLevel      = ship.getSailLevel();
+			this.model.forwardSpeed   = ship.getForwardSpeed();
+			this.model.sinkProgress   = ship.getSinkProgress();
+			this.model.waveTime       = ship.tickCount + partialTick;
+			this.model.rudderTurn     = ship.getRudderAngle();
+			this.model.anchorDeployed = ship.isAnchorDeployed();
+			this.model.boatSpeed      = (float) ship.getHorizontalSpeed();
+            this.model.hasBanner      = ship.hasBanner();
 		}
 	}
 
