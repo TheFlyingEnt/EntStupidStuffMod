@@ -207,11 +207,18 @@ public class ShipCannonballEntity extends Entity {
             living.push(vel.x, 0.3, vel.z);
         }
 
+        this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					Level.ExplosionInteraction.NONE);
+
         spawnImpactEffects();
         discard();
     }
 
     private void onHitBlock(Vec3 hitPos) {
+
+        this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
+					Level.ExplosionInteraction.NONE);
+
         setPos(hitPos);
         setDeltaMovement(Vec3.ZERO);
         spawnImpactEffects();
@@ -225,17 +232,25 @@ public class ShipCannonballEntity extends Entity {
     private void spawnImpactEffects() {
         if (level() instanceof ServerLevel sl) {
             // Smoke cloud
-            sl.sendParticles(ParticleTypes.EXPLOSION, getX(), getY(), getZ(),
+            /*sl.sendParticles(ParticleTypes.EXPLOSION, getX(), getY(), getZ(),
                 1, 0, 0, 0, 0);
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(),
                 8, 0.5, 0.5, 0.5, 0.05);
             sl.sendParticles(ParticleTypes.FLAME, getX(), getY(), getZ(),
-                4, 0.3, 0.3, 0.3, 0.05);
+                4, 0.3, 0.3, 0.3, 0.05);*/
+
+            double nes = this.random.nextGaussian() * 0.05;
+
+            sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY(), getZ(),
+                4, 0.3, this.random.nextGaussian() * 0.05, -this.getDeltaMovement().y * 0.5, this.random.nextGaussian() * 0.05);
 
             // Impact sound
-            sl.playSound(null, blockPosition(),
+            /*sl.playSound(null, blockPosition(),
                 SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL,
-                1.5f, 0.9f + sl.random.nextFloat() * 0.2f);
+                1.5f, 0.9f + sl.random.nextFloat() * 0.2f);*/
+
+            sl.playSound(null, blockPosition(),
+                SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 1.2f, 1.5f);
         }
     }
 

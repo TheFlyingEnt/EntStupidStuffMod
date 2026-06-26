@@ -41,9 +41,8 @@ public final class ShipHud {
 
     private static void renderHud(GuiGraphics g, Minecraft mc, CustomBoatEntity ship) {
         int cx = g.guiWidth() / 2;
-        int lineHeight = mc.font.lineHeight + 2;  // ~11px per line
+        int lineHeight = mc.font.lineHeight + 2;
 
-        // Build both lines
         Component line1 = buildHealthLine(ship);
         Component line2 = buildInfoLine(ship);
 
@@ -51,14 +50,20 @@ public final class ShipHud {
         int w2 = mc.font.width(line2);
         int maxW = Math.max(w1, w2);
 
-        // Position: centered, above hotbar
+        // Check if player is bow gunner — add reload line
+        Component line3 = null;
+        int w3 = 0;
+        if (ship.isBowGunner(mc.player)) {
+            line3 = buildReloadLine(ship);
+            w3 = mc.font.width(line3);
+            maxW = Math.max(maxW, w3);
+        }
+
         int panelW = maxW + PADDING * 2;
-        int panelH = lineHeight * 2 + PADDING * 2;
+        int lines = (line3 != null) ? 3 : 2;
+        int panelH = lineHeight * lines + PADDING * 2;
         int panelX = cx - panelW / 2;
         int panelY = g.guiHeight() - 60 - panelH;
-
-        // Dark background panel
-        //g.fill(panelX, panelY, panelX + panelW, panelY + panelH, BG_COLOR);
 
         // Line 1: health bar
         int textY1 = panelY + PADDING;
@@ -67,6 +72,12 @@ public final class ShipHud {
         // Line 2: speed | sail | anchor | attachment
         int textY2 = textY1 + lineHeight;
         g.drawString(mc.font, line2, cx - w2 / 2, textY2, 0xFFFFFFFF);
+
+        // Line 3: reload indicator (bow gunner only)
+        if (line3 != null) {
+            int textY3 = textY2 + lineHeight;
+            g.drawString(mc.font, line3, cx - w3 / 2, textY3, 0xFFFFFFFF);
+        }
     }
 
     private static Component buildHealthLine(CustomBoatEntity ship) {
@@ -140,6 +151,63 @@ public final class ShipHud {
         }
 
         return line;
+    }
+
+
+    /**
+     * Reload indicator for the bow gunner.
+     * Shows: [+] READY      — when loaded and ready to fire
+     *        [■■■□□] 60%    — reload progress bar
+     *        [X] NO AMMO    — no ammo in ship inventory
+     */
+    private static Component buildReloadLine(CustomBoatEntity ship) {
+        int att = ship.getAttachment();
+        if (att == CustomBoatEntity.ATTACHMENT_NONE) {
+            return Component.literal("No Attachment").withStyle(ChatFormatting.GRAY);
+        }
+
+        int cooldown = ship.getCannonCooldown();
+        int maxCooldown = ship.getCannonCooldownMax();
+        boolean hasAmmo = ship.hasAmmoLoaded();
+
+        if (!hasAmmo && cooldown <= 0) {
+            // No ammo
+            return Component.literal("[")
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .append(Component.literal("X").withStyle(ChatFormatting.RED))
+                .append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY))
+                .append(Component.literal("NO AMMO").withStyle(ChatFormatting.RED));
+        }
+
+        if (cooldown <= 0) {
+            // Ready to fire
+            return Component.literal("[")
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .append(Component.literal("+").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))
+                .append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY))
+                .append(Component.literal("READY").withStyle(ChatFormatting.GREEN));
+        }
+
+        // Reloading — progress bar
+        float progress = 1.0f - ((float) cooldown / maxCooldown);
+        int barLength = 8;
+        int filled = Math.round(progress * barLength);
+        int pct = Math.round(progress * 100);
+
+        StringBuilder bar = new StringBuilder();
+        for (int i = 0; i < barLength; i++) {
+            bar.append(i < filled ? '\u25A0' : '\u25A1');  // ■ filled, □ empty
+        }
+
+        ChatFormatting barColor = progress > 0.7f ? ChatFormatting.GREEN
+                                : progress > 0.4f ? ChatFormatting.YELLOW
+                                : ChatFormatting.RED;
+
+        return Component.literal("[")
+            .withStyle(ChatFormatting.DARK_GRAY)
+            .append(Component.literal(bar.toString()).withStyle(barColor))
+            .append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal(pct + "%").withStyle(barColor));
     }
 
     private ShipHud() {}

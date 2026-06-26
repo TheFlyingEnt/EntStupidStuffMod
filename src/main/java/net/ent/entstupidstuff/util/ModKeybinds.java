@@ -133,7 +133,7 @@ public final class ModKeybinds {
             int attachment = boat.getAttachment();
 
             if (attachment == CustomBoatEntity.ATTACHMENT_HARPOON) {
-                // ── Harpoon controls (existing) ──
+                // ── Harpoon controls ──
                 boolean useDown    = mc.options.keyUse.isDown();
                 boolean attackDown = mc.options.keyAttack.isDown();
                 boolean usePressed    = useDown && !wasUseDown;
@@ -169,7 +169,7 @@ public final class ModKeybinds {
                         boat.getId(), CannonControlPayload.FIRE,
                         mc.player.getYRot(), mc.player.getXRot()));
                 }
-                // Left-click = launch yourself out of the cannon!
+                // Left-click = launch yourself!
                 if (attackPressed) {
                     ClientPlayNetworking.send(new CannonControlPayload(
                         boat.getId(), CannonControlPayload.LAUNCH_PLAYER,

@@ -50,3 +50,6 @@ replay_*.log
 src/main/generated/.cache/
 remappedSrc
 
+run2/config/fabric/indigo-renderer.properties
+run2/logs/debug.log
+run2/logs/latest.log

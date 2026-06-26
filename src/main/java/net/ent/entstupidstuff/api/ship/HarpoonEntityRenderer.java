@@ -57,9 +57,14 @@ public class HarpoonEntityRenderer extends EntityRenderer<HarpoonProjectileEntit
             double ax = Mth.lerp(partialTick, e.xo, e.getX());
             double ay = Mth.lerp(partialTick, e.yo, e.getY());
             double az = Mth.lerp(partialTick, e.zo, e.getZ());
-            double sx = Mth.lerp(partialTick, ship.xo, ship.getX());
-            double sy = Mth.lerp(partialTick, ship.yo, ship.getY());
-            double sz = Mth.lerp(partialTick, ship.zo, ship.getZ());
+            double shipX = Mth.lerp(partialTick, ship.xo, ship.getX());
+            double shipY = Mth.lerp(partialTick, ship.yo, ship.getY());
+            double shipZ = Mth.lerp(partialTick, ship.zo, ship.getZ());
+            float shipYaw = Mth.lerp(partialTick, ship.yRotO, ship.getYRot());
+            double bowRad = Math.toRadians(shipYaw);
+            double sx = shipX - Math.sin(bowRad) * 5.0;
+            double sy = shipY;
+            double sz = shipZ + Math.cos(bowRad) * 5.0;
  
             // Vector from anchor (+ small offset up) to ship's chain attach point
             st.toShip = new Vec3(sx - ax, (sy + 0.8) - (ay + 0.3), sz - az);

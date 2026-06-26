@@ -14,59 +14,82 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoatRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractBoat;
 
 public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bigboat_alt.png");
-	private final Model.Simple waterMaskModel;
-	private final CustomBoatModel model;
+    private static final ResourceLocation TEXTURE =
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "textures/entity/bigboat_alt.png");
+    private final Model.Simple waterMaskModel;
+    private final CustomBoatModel model;
 
-	public CustomBoatEntityRenderer(EntityRendererProvider.Context ctx, boolean layer) {
-		super(ctx);
-		this.shadowRadius = 0.8F;
+    public CustomBoatEntityRenderer(EntityRendererProvider.Context ctx, boolean layer) {
+        super(ctx);
+        this.shadowRadius = 0.8F;
+        ModelLayerLocation modelLayer = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "main");
+        ModelPart modelPart = ctx.bakeLayer(modelLayer);
+        this.model = new CustomBoatModel(modelPart);
+        this.waterMaskModel = new Model.Simple(
+            ctx.bakeLayer(ModEntityModelLayers.WATER_PATCH), id -> RenderType.waterMask());
+    }
 
-		ModelLayerLocation modelLayer = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "customboat"), "main");
-		ModelPart modelPart = ctx.bakeLayer(modelLayer);
-		this.model = new CustomBoatModel(modelPart);
-		this.waterMaskModel = new Model.Simple(ctx.bakeLayer(ModEntityModelLayers.WATER_PATCH), id -> RenderType.waterMask());
-	}
+    @Override
+    protected RenderType renderType() {
+        return this.model.renderType(TEXTURE);
+    }
 
-	@Override
-	protected RenderType renderType() {
-		return this.model.renderType(TEXTURE);
-	}
+    private static final float MODEL_SCALE = 1.15f;
 
-	private static final float MODEL_SCALE = 1.15f;
+    // ── Return our CUSTOM render state so each ship carries its own data ──
+    @Override
+    public BoatRenderState createRenderState() {
+        return new CustomBoatRenderState();
+    }
 
-	@Override
-	protected void submitTypeAdditions(BoatRenderState state, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light) {
-		matrices.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+    @Override
+    protected void submitTypeAdditions(BoatRenderState state, PoseStack matrices,
+            SubmitNodeCollector orderedRenderCommandQueue, int light) {
+        matrices.scale(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+        if (!state.isUnderWater) {
+            orderedRenderCommandQueue.submitModel(
+                this.waterMaskModel, Unit.INSTANCE, matrices,
+                this.waterMaskModel.renderType(TEXTURE),
+                light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+        }
+    }
 
-		if (!state.isUnderWater) {
-			orderedRenderCommandQueue.submitModel(
-				this.waterMaskModel, Unit.INSTANCE, matrices, this.waterMaskModel.renderType(TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor, null
-			);
-		}
-	}
+    @Override
+    public void extractRenderState(AbstractBoat boat, BoatRenderState state, float partialTick) {
+        super.extractRenderState(boat, state, partialTick);
 
-	@Override
-	public void extractRenderState(AbstractBoat boat, BoatRenderState state, float partialTick) {
-		super.extractRenderState(boat, state, partialTick);
-		if (boat instanceof CustomBoatEntity ship) {
-			this.model.sailLevel      = ship.getSailLevel();
-			this.model.forwardSpeed   = ship.getForwardSpeed();
-			this.model.sinkProgress   = ship.getSinkProgress();
-			this.model.waveTime       = ship.tickCount + partialTick;
-			this.model.rudderTurn     = ship.getRudderAngle();
-			this.model.anchorDeployed = ship.isAnchorDeployed();
-			this.model.boatSpeed      = (float) ship.getHorizontalSpeed();
-            this.model.hasBanner      = ship.hasBanner();
-		}
-	}
+        // ── Populate our custom state — NOT model fields ──
+        if (boat instanceof CustomBoatEntity ship && state instanceof CustomBoatRenderState s) {
+            s.sailLevel      = ship.getSailLevel();
+            s.forwardSpeed   = ship.getForwardSpeed();
+            s.sinkProgress   = ship.getSinkProgress();
+            s.waveTime       = ship.tickCount + partialTick;
+            s.rudderTurn     = ship.getRudderAngle();
+            s.anchorDeployed = ship.isAnchorDeployed();
+            s.boatSpeed      = (float) ship.getHorizontalSpeed();
+            s.hasBanner      = ship.hasBanner();
 
-	@Override
-	protected EntityModel<BoatRenderState> model() {
-		return this.model;
-	}
+            // Attachment
+            s.attachmentType = ship.getAttachment();
+            s.hasAmmo        = ship.hasAmmoLoaded();
+            s.harpoonDeployed = ship.hasActiveHarpoon();
+
+            // Bow gunner yaw (relative to ship) for swivel
+            s.bowRelativeYaw = ship.getBowGunnerRelativeYaw(partialTick);
+            s.bowPitch = ship.getBowPitch();
+            s.bowOccupied = (ship.getBowGunner() != null);
+        }
+    }
+
+    @Override
+    protected EntityModel<BoatRenderState> model() {
+        return this.model;
+    }
 }

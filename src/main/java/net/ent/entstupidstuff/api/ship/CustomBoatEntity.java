@@ -133,6 +133,16 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final EntityDataAccessor<Boolean> DATA_HAS_BANNER =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.BOOLEAN);
 
+    private static final EntityDataAccessor<Boolean> DATA_HAS_AMMO =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> DATA_BOW_YAW =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_BOW_PITCH =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+
+    private static final EntityDataAccessor<Integer> DATA_CANNON_COOLDOWN =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] SEAT_OCCUPANTS =
         new EntityDataAccessor[SEAT_COUNT];
@@ -157,6 +167,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_ATTACHMENT, ATTACHMENT_NONE);
         builder.define(DATA_ACTIVE_HARPOON, -1);
         builder.define(DATA_HAS_BANNER, false);
+
+        builder.define(DATA_BOW_YAW, 0f);
+        builder.define(DATA_BOW_PITCH, 0f);
+        builder.define(DATA_HAS_AMMO, false);
+
+        builder.define(DATA_CANNON_COOLDOWN, 0);
+
         for (int i = 0; i < SEAT_COUNT; i++) builder.define(SEAT_OCCUPANTS[i], -1);
     }
 
@@ -195,6 +212,9 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public boolean hasBanner()        { return entityData.get(DATA_HAS_BANNER); }
     public void    setBanner(boolean b) { entityData.set(DATA_HAS_BANNER, b); }
 
+    public int getCannonCooldown() { return entityData.get(DATA_CANNON_COOLDOWN); }
+    public int getCannonCooldownMax() { return CANNON_COOLDOWN_TICKS; }
+
     // The actual item in the attachment slot (persisted separately from the chest)
     private ItemStack attachmentStack = ItemStack.EMPTY;
     public ItemStack getAttachmentStack() { return attachmentStack; }
@@ -219,6 +239,12 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public void fireHarpoon(float yaw, float pitch) {
         if (level().isClientSide() || hasActiveHarpoon()) return;
         if (getAttachment() != ATTACHMENT_HARPOON) return;
+        if (!consumeAmmo()) return;   // ← NEW: must have ammo
+
+        if (level() instanceof ServerLevel sl) {
+            sl.playSound(null, blockPosition(),
+                SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 1.0f, 1.3f);
+        }
 
         HarpoonProjectileEntity h = new HarpoonProjectileEntity(
             net.ent.entstupidstuff.registry.EntityFactory.HARPOON, level());
@@ -235,10 +261,64 @@ public class CustomBoatEntity extends AbstractChestBoat {
         clearHarpoon();
     }
 
+    // ── Bow gunner tracking ─────────────────────────────────────────
+
+    /** Bow gunner's yaw relative to ship yaw, in radians. Used for swivel. */
+    public float getBowRelativeYaw() { return entityData.get(DATA_BOW_YAW); }
+
+    /** Bow gunner's pitch (elevation), in radians. Negative = looking up. */
+    public float getBowPitch() { return entityData.get(DATA_BOW_PITCH); }
+
+    /** Interpolated bow yaw for smooth rendering. */
+    public float getBowGunnerRelativeYaw(float partialTick) {
+        return entityData.get(DATA_BOW_YAW);
+    }
+
+    /** Synced ammo state for model rendering. */
+    public boolean hasAmmoLoaded() { return entityData.get(DATA_HAS_AMMO); }
+
+    public Entity getBowGunner() {
+        int id = entityData.get(SEAT_OCCUPANTS[5]);
+        if (id == -1) return null;
+        return level().getEntity(id);
+    }
+
+    /** Check if the boat's inventory has ammo for the current attachment. */
+    public boolean hasAmmoInInventory() {
+        if (level().isClientSide()) return entityData.get(DATA_HAS_AMMO);
+        int att = getAttachment();
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack stack = this.getItem(i);
+            if (stack.isEmpty()) continue;
+            String id = stack.getItem().toString().toLowerCase();
+            if (att == ATTACHMENT_HARPOON && id.contains("harpoon")) return true;
+            if (att == ATTACHMENT_CANNON  && id.contains("cannon_ball")) return true;
+        }
+        return false;
+    }
+
+    /** Consume one ammo item. Returns true if consumed. */
+    public boolean consumeAmmo() {
+        if (level().isClientSide()) return false;
+        int att = getAttachment();
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack stack = this.getItem(i);
+            if (stack.isEmpty()) continue;
+            String id = stack.getItem().toString().toLowerCase();
+            boolean match = (att == ATTACHMENT_HARPOON && id.contains("harpoon"))
+                        || (att == ATTACHMENT_CANNON  && id.contains("cannon_ball"));
+            if (match) {
+                stack.shrink(1);
+                if (stack.isEmpty()) this.setItem(i, ItemStack.EMPTY);
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ── Cannon ──────────────────────────────────────────────────────
-    /** Cooldown to prevent spamming cannonballs. */
     private int cannonCooldown = 0;
-    private static final int CANNON_COOLDOWN_TICKS = 30;  // 1.5 seconds between shots
+    private static final int CANNON_COOLDOWN_TICKS = 30;  // 1.5s between shots
 
     public boolean canFireCannon() {
         return !level().isClientSide()
@@ -249,6 +329,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     public void fireCannon(float yaw, float pitch) {
         if (!canFireCannon()) return;
+        if (!consumeAmmo()) return;   // must have cannonball in inventory
 
         ShipCannonballEntity ball = new ShipCannonballEntity(
             net.ent.entstupidstuff.registry.EntityFactory.SHIPCANNONBALL, level());
@@ -256,17 +337,15 @@ public class CustomBoatEntity extends AbstractChestBoat {
         level().addFreshEntity(ball);
         cannonCooldown = CANNON_COOLDOWN_TICKS;
 
-        // Recoil: small backward push on the ship
+        // Recoil
         double rad = Math.toRadians(getYRot());
-        double recoil = 0.04;
         setDeltaMovement(getDeltaMovement().add(
-            Math.sin(rad) * recoil, 0, -Math.cos(rad) * recoil));
+            Math.sin(rad) * 0.04, 0, -Math.cos(rad) * 0.04));
 
-        // Fire sound + smoke
+        // Fire effects
         if (level() instanceof ServerLevel sl) {
             sl.playSound(null, blockPosition(),
                 SoundFactory.COMBAT_CANNON_FIRE, SoundSource.NEUTRAL, 1.0f, 1.3f);
-            // Muzzle flash at the bow
             double bowX = getX() - Math.sin(rad) * 5.0;
             double bowZ = getZ() + Math.cos(rad) * 5.0;
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, bowX, getY() + 2.0, bowZ,
@@ -278,7 +357,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     /**
      * Launch a player out of the cannon — Sea of Thieves style!
-     * The player is dismounted and flung in the aim direction.
      */
     public void launchPlayer(Player player, float yaw, float pitch) {
         if (level().isClientSide() || !isBowGunner(player) || isSinking()) return;
@@ -286,32 +364,24 @@ public class CustomBoatEntity extends AbstractChestBoat {
         if (cannonCooldown > 0) return;
 
         cannonCooldown = CANNON_COOLDOWN_TICKS;
-
-        // Dismount the player
         player.stopRiding();
 
-        // Position them at the cannon muzzle
         double rad = Math.toRadians(getYRot());
         double bowX = getX() - Math.sin(rad) * 5.5;
         double bowZ = getZ() + Math.cos(rad) * 5.5;
         player.setPos(bowX, getY() + 2.5, bowZ);
 
-        // Launch velocity — same direction as a cannonball but slightly slower
         double launchSpeed = 1.8;
         double radYaw   = Math.toRadians(-yaw);
         double radPitch = Math.toRadians(-pitch);
         double cosP     = Math.cos(radPitch);
         player.setDeltaMovement(
             Math.sin(radYaw) * cosP * launchSpeed,
-            Math.sin(radPitch) * launchSpeed + 0.3,  // slight extra upward
-            Math.cos(radYaw) * cosP * launchSpeed
-        );
-        // Reset fall distance so they don't die on landing (optional — remove for hardcore)
+            Math.sin(radPitch) * launchSpeed + 0.3,
+            Math.cos(radYaw) * cosP * launchSpeed);
         player.fallDistance = 0f;
-        // Grant brief fall damage immunity (60 ticks = 3 seconds)
-        player.hurtMarked = true;  // force velocity sync to client
+        player.hurtMarked = true;
 
-        // Effects
         if (level() instanceof ServerLevel sl) {
             sl.playSound(null, blockPosition(),
                 SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 1.2f, 1.5f);
@@ -362,6 +432,12 @@ public class CustomBoatEntity extends AbstractChestBoat {
         super.addAdditionalSaveData(out);
         out.putInt("ShipAttachmentType", getAttachment());
         out.putBoolean("ShipHasBanner", hasBanner());
+        // Save the attachment item so the slot isn't empty on rejoin
+        if (!attachmentStack.isEmpty()) {
+            out.putString("ShipAttachmentItemId",
+                net.minecraft.core.registries.BuiltInRegistries.ITEM
+                    .getKey(attachmentStack.getItem()).toString());
+        }
     }
 
     @Override
@@ -369,6 +445,20 @@ public class CustomBoatEntity extends AbstractChestBoat {
         super.readAdditionalSaveData(in);
         this.setAttachment(in.getInt("ShipAttachmentType").orElse(0));
         this.entityData.set(DATA_HAS_BANNER, in.getBooleanOr("ShipHasBanner", false));
+        // Restore the attachment ItemStack from the saved item ID
+        in.getString("ShipAttachmentItemId").ifPresent(idStr -> {
+            try {
+                net.minecraft.resources.ResourceLocation id =
+                    net.minecraft.resources.ResourceLocation.parse(idStr);
+                net.minecraft.world.item.Item item =
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(id);
+                if (item != null && item != net.minecraft.world.item.Items.AIR) {
+                    this.attachmentStack = new ItemStack(item);
+                }
+            } catch (Exception e) {
+                // Invalid ID — leave stack empty, type is still set from the int
+            }
+        });
     }
 
     // NOTE: Vanilla controlBoat() is private in AbstractBoat, so we can't override it.
@@ -387,18 +477,43 @@ public class CustomBoatEntity extends AbstractChestBoat {
             return InteractionResult.SUCCESS;
         }
 
-        // repair: right-click hull with planks
+        // Repair: right-click hull with planks
         ItemStack held = player.getItemInHand(hand);
         if (held.is(ItemTags.PLANKS) && getHealth() < shipMaxHealth() && !isSinking()) {
             if (!this.level().isClientSide()) {
                 setHealth(getHealth() + REPAIR_AMOUNT);
                 if (!player.getAbilities().instabuild) held.shrink(1);
-                this.level().playSound(null, blockPosition(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0f, 1.0f);
+                this.level().playSound(null, blockPosition(),
+                    SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
             return InteractionResult.SUCCESS;
         }
 
-        // boarding (seat swap is a separate keybind)
+        // ── Direct bow seat: click near the bow to sit at the attachment ──
+        if (hasAttachment() && !isSinking() && !player.isPassenger()) {
+            // Transform player pos to ship-local coordinates
+            double dx = player.getX() - getX();
+            double dz = player.getZ() - getZ();
+            double yaw = Math.toRadians(getYRot());
+            double cos = Math.cos(-yaw), sin = Math.sin(-yaw);
+            double localZ = dx * sin + dz * cos;  // forward in ship space
+
+            // If player is in the front half of the ship AND seat 5 is free
+            if (localZ > 1.5 && this.entityData.get(SEAT_OCCUPANTS[5]) == -1) {
+                if (!this.level().isClientSide() && this.canAddPassenger(player)) {
+                    player.startRiding(this);
+                    // Force into bow seat (seat 5) instead of first free
+                    int autoSeat = seatOf(player);
+                    if (autoSeat != -1 && autoSeat != 5) {
+                        this.entityData.set(SEAT_OCCUPANTS[autoSeat], -1);
+                    }
+                    this.entityData.set(SEAT_OCCUPANTS[5], player.getId());
+                }
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        // Normal boarding (seat swap is a separate keybind)
         InteractionResult result = super.interact(player, hand);
         if (result != InteractionResult.PASS) return result;
         if (this.canAddPassenger(player)) {
@@ -496,7 +611,26 @@ public class CustomBoatEntity extends AbstractChestBoat {
             carryDeckMobs();
             tickDamage();
             tickAnchor();
+
+            // ── Bow gunner swivel + pitch + ammo ──
+            entityData.set(DATA_HAS_AMMO, hasAmmoInInventory());
+
+            Entity bowGunner = getBowGunner();
+            if (bowGunner != null && hasAttachment()) {
+                // ── YAW (left/right) ──
+                // Raw relative yaw in degrees, then clamp
+                float rawYawDeg = Mth.wrapDegrees(bowGunner.getYRot() - getYRot());
+                float clampedYawDeg = Mth.clamp(rawYawDeg, -MAX_YAW_DEGREES, MAX_YAW_DEGREES);
+                entityData.set(DATA_BOW_YAW, (float) Math.toRadians(clampedYawDeg));
+
+                // ── PITCH (up/down) ──
+                float pitchDeg = bowGunner.getXRot();
+                float clampedPitchDeg = Mth.clamp(pitchDeg, MAX_PITCH_UP, MAX_PITCH_DOWN);
+                entityData.set(DATA_BOW_PITCH, (float) Math.toRadians(clampedPitchDeg));
+            }
+
             if (cannonCooldown > 0) cannonCooldown--;
+            entityData.set(DATA_CANNON_COOLDOWN, cannonCooldown);
 
             // When a helmsman is aboard, ShipControlMixin.controlBoat() handles
             // steer + applySailThrust + applyChainConstraint (via mixin on AbstractBoat).
@@ -532,6 +666,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         applySinkMotion();
         // BUG FIX: Removed ShipHud.healthBar(this) — it was called every tick,
         // built a Component, and threw it away. The HUD renders via HudRenderCallback.
+
+        debugAttachmentParticles();
     }
 
     private void computeDeckTransform() {
@@ -855,10 +991,98 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // ════════════════════════════════════════════════════════════════
     //  SEATS
     // ════════════════════════════════════════════════════════════════
+    // ── Cannon/harpoon pivot in ship-local coordinates ──
+    // Tuned to match the model's attachment position.
+    // The model attachment is at (67, -21.4, 77.3) in bottom-space,
+    // which lands ~3.2 blocks forward of the entity center.
+    /*private static final double PIVOT_X = 0.0;
+    private static final double PIVOT_Z = 3.2;
+    private static final double PIVOT_Y = 1.1;    // raised to sit ON the model seat
+
+    // Seat offset FROM the pivot (behind the cannon)
+    private static final double SEAT_BEHIND = -0.85;  // ~0.85 blocks behind pivot
+    private static final double SEAT_SIDE   = 0.0;    // centered behind cannon*/
+
+    private static final double MODEL_TO_BLOCK = 1.15 / 16.0;  // 0.071875
+
+    // These are computed from the model, not hand-tuned:
+    private static final double PIVOT_X =  0.3204 * MODEL_TO_BLOCK; // ≈ 0.023 (centered)
+    private static final double PIVOT_Z = 50.0    * MODEL_TO_BLOCK; // ≈ 3.594 (forward)
+    private static final double PIVOT_Y =  7.4085 * MODEL_TO_BLOCK; // ≈ 0.532 (height)
+
+    // Seat offset FROM the pivot (seat_loc is 14.9 model units behind
+    // the cannon center, which after yRot=-π/2 means 14.9 units in
+    // the lateral direction → maps to entity Z offset)
+    // The seat orbits around the pivot, so this is the radius.
+    //private static final double SEAT_BEHIND = -14.9207 * MODEL_TO_BLOCK; // ≈ -1.072
+    //private static final double SEAT_SIDE   =  -2.0    * MODEL_TO_BLOCK; // ≈ -0.144
+
+    private static final double SEAT_BEHIND = -13.0 * (1.15 / 16.0);  // ≈ -0.934
+    private static final double SEAT_SIDE   =  -0.0793 * (1.15 / 16.0); // ≈ -0.006
+
+    // ── Tuning constants for cannon/harpoon aim limits ──
+    // Yaw: how far left/right the cannon can rotate from center (degrees)
+    // 180 = full 360°, 150 = ±150° (can't shoot backward), 90 = forward half only
+    private static final float MAX_YAW_DEGREES = 150f;
+
+    // Pitch: elevation limits (degrees, in player xRot convention)
+    // Player xRot: negative = looking up, positive = looking down
+    private static final float MAX_PITCH_UP   = -45f;   // how far up (negative)
+    private static final float MAX_PITCH_DOWN =  20f;    // how far down (positive)
+
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction move) {
         if (!this.hasPassenger(passenger)) return;
         int seat = seatOf(passenger);
+
+        // ── Seat 5 (bow gunner): orbits the cannon pivot ──
+        /*if (seat == 5 && hasAttachment()) {
+            float cannonYaw = getBowRelativeYaw();
+            float cannonPitch = getBowPitch();   // radians, negative = up
+
+            // Rotate the seat offset by the cannon's yaw
+            double cosC = Math.cos(cannonYaw);
+            double sinC = Math.sin(cannonYaw);
+            double localX = PIVOT_X + (SEAT_SIDE * cosC - SEAT_BEHIND * sinC);
+            double localZ = PIVOT_Z + (SEAT_SIDE * sinC + SEAT_BEHIND * cosC);
+
+            // Player follows the cannon pitch:
+            // The seat is behind the pivot, so when the barrel tilts up,
+            // the back of the cannon dips down, and vice versa.
+            // sin(pitch) * distance_behind gives the Y change.
+            double localY = PIVOT_Y + Math.sin(cannonPitch) * Math.abs(SEAT_BEHIND);
+
+            // Transform ship-local → world (rotate by ship yaw)
+            double rad = Math.toRadians(this.getYRot());
+            double sin = Math.sin(rad), cos = Math.cos(rad);
+            double px = this.getX() + (localX * cos - localZ * sin);
+            double pz = this.getZ() + (localX * sin + localZ * cos);
+            double py = this.getY() + 0.15 + localY;
+
+            passenger.setPos(px, py, pz);
+            return;
+        }*/
+
+        if (seat == 5 && hasAttachment()) {
+            float cannonYaw = getBowRelativeYaw();
+
+            double cosC = Math.cos(cannonYaw);
+            double sinC = Math.sin(cannonYaw);
+            double localX = PIVOT_X + (SEAT_SIDE * cosC - SEAT_BEHIND * sinC);
+            double localZ = PIVOT_Z + (SEAT_SIDE * sinC + SEAT_BEHIND * cosC);
+            double localY = PIVOT_Y;  // no pitch adjustment — seat stays level
+
+            double rad = Math.toRadians(this.getYRot());
+            double sin = Math.sin(rad), cos = Math.cos(rad);
+            double px = this.getX() + (localX * cos - localZ * sin);
+            double pz = this.getZ() + (localX * sin + localZ * cos);
+            double py = this.getY() + 0.15 + localY;
+
+            passenger.setPos(px, py, pz);
+            return;
+        }
+
+        // ── All other seats: fixed offsets ──
         Vec3 off = (seat >= 0) ? SEAT_OFFSETS[seat] : Vec3.ZERO;
 
         double rad = Math.toRadians(this.getYRot());
@@ -870,9 +1094,46 @@ public class CustomBoatEntity extends AbstractChestBoat {
         passenger.setPos(px, py, pz);
         this.clampRotation(passenger);
 
-        // Driver stands at the helm instead of sitting
         if (seat == 0 && passenger instanceof LivingEntity) {
             passenger.setPose(Pose.STANDING);
+        }
+    }
+
+    private void debugAttachmentParticles() {
+        if (!level().isClientSide() || !DEBUG_DECK || !hasAttachment()) return;
+        if (tickCount % 2 != 0) return;  // every other tick to reduce spam
+
+        double yawRad = Math.toRadians(getYRot());
+        double sinY = Math.sin(yawRad), cosY = Math.cos(yawRad);
+
+        // ── PIVOT (orange flame) ──
+        double pivotWorldX = getX() + (PIVOT_X * cosY - PIVOT_Z * sinY);
+        double pivotWorldZ = getZ() + (PIVOT_X * sinY + PIVOT_Z * cosY);
+        double pivotWorldY = getY() + 0.15 + PIVOT_Y;
+
+        level().addParticle(ParticleTypes.FLAME,
+            pivotWorldX, pivotWorldY, pivotWorldZ, 0, 0.02, 0);
+
+        // ── SEAT (blue soul flame) ──
+        float cannonYaw = getBowRelativeYaw();
+        double cosC = Math.cos(cannonYaw), sinC = Math.sin(cannonYaw);
+        double seatLocalX = PIVOT_X + (SEAT_SIDE * cosC - SEAT_BEHIND * sinC);
+        double seatLocalZ = PIVOT_Z + (SEAT_SIDE * sinC + SEAT_BEHIND * cosC);
+        double seatLocalY = PIVOT_Y;
+
+        double seatWorldX = getX() + (seatLocalX * cosY - seatLocalZ * sinY);
+        double seatWorldZ = getZ() + (seatLocalX * sinY + seatLocalZ * cosY);
+        double seatWorldY = getY() + 0.15 + seatLocalY;
+
+        level().addParticle(ParticleTypes.SOUL_FIRE_FLAME,
+            seatWorldX, seatWorldY, seatWorldZ, 0, 0.02, 0);
+
+        // ── ACTUAL PLAYER POSITION (green sparkle) ──
+        Entity bowGunner = getBowGunner();
+        if (bowGunner != null) {
+            level().addParticle(ParticleTypes.HAPPY_VILLAGER,
+                bowGunner.getX(), bowGunner.getY() + 1.0, bowGunner.getZ(),
+                0, 0, 0);
         }
     }
 
@@ -1045,6 +1306,20 @@ public class CustomBoatEntity extends AbstractChestBoat {
         }
     }
 
+    @Override
+    protected void clampRotation(Entity passenger) {
+        // Let the bow gunner look freely in all directions (360° + full pitch)
+        // so the cannon/harpoon can aim anywhere
+        if (isBowGunner(passenger) && hasAttachment()) {
+            return;  // no clamping at all
+        }
+        // Also let the crow's nest (seat 6) look freely
+        if (seatOf(passenger) == 6) {
+            return;
+        }
+        super.clampRotation(passenger);
+    }
+
 
     // ════════════════════════════════════════════════════════════════
     //  PARTS HELPER
@@ -1056,4 +1331,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
         Entity e = this.level().getEntity(id);
         return e instanceof ShipPartEntity sp ? sp : null;
     }
+
+
 }

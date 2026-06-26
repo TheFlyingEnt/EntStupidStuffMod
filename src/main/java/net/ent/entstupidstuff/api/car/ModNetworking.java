@@ -120,12 +120,12 @@ public final class ModNetworking {
             ServerPlayer player = context.player();
             player.level().getServer().execute(() -> {
                 if (!(player.level().getEntity(payload.boatId()) instanceof CustomBoatEntity ship)) return;
-                if (!ship.isBowGunner(player)) return;  // only bow seat can fire
+                if (!ship.isBowGunner(player)) return;
                 if (ship.getAttachment() != CustomBoatEntity.ATTACHMENT_CANNON) return;
-
                 switch (payload.action()) {
                     case CannonControlPayload.FIRE -> ship.fireCannon(payload.yaw(), payload.pitch());
-                    case CannonControlPayload.LAUNCH_PLAYER -> ship.launchPlayer(player, payload.yaw(), payload.pitch());
+                    case CannonControlPayload.LAUNCH_PLAYER ->
+                        ship.launchPlayer(player, payload.yaw(), payload.pitch());
                 }
             });
         });
