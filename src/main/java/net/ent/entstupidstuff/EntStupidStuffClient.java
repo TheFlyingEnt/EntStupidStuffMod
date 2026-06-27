@@ -5,14 +5,12 @@ import net.ent.entstupidstuff.api.car.menu.CarScreen;
 import net.ent.entstupidstuff.api.casting.ArmorCastProperty;
 import net.ent.entstupidstuff.api.casting.ToolCastingProperty;
 import net.ent.entstupidstuff.api.emote.EmoteRegistry;
-import net.ent.entstupidstuff.api.hat.HatRegistry;
 import net.ent.entstupidstuff.api.hat.ModAttachments;
 import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
 import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.DeckSync;
 import net.ent.entstupidstuff.api.ship.ShipHud;
 import net.ent.entstupidstuff.api.ship.ShipScreen;
-import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
@@ -37,7 +35,6 @@ import net.minecraft.client.renderer.item.properties.select.SelectItemModelPrope
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 
 
 

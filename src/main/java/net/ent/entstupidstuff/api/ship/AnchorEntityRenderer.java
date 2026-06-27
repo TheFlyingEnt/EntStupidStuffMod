@@ -18,9 +18,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class AnchorEntityRenderer extends EntityRenderer<AnchorEntity, AnchorRenderState> {
 
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/bigboat_alt.png");
-
     private static final ResourceLocation ANCHOR_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("entstupidstuff", "textures/entity/anchor.png");
 

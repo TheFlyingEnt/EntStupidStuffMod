@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.api.car.F1CarEntity;
-import net.ent.entstupidstuff.api.car.HondaCivicTypeREntity;
 import net.ent.entstupidstuff.api.casting.ArmorCastingComponent;
 import net.ent.entstupidstuff.api.casting.ToolCastingComponent;
 import net.ent.entstupidstuff.client.entity.passive.BassEntity;

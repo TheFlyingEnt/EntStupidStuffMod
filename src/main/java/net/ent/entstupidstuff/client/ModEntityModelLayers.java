@@ -96,7 +96,6 @@ import net.ent.entstupidstuff.client.render.entity.renderer.SunkenSkeletonEntity
 import net.ent.entstupidstuff.client.render.entity.renderer.ZebraFishRenderer;
 import net.ent.entstupidstuff.registry.EntityFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.DrownedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;

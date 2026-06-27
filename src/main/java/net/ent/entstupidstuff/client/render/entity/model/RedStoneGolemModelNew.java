@@ -24,16 +24,24 @@ public class RedStoneGolemModelNew extends EntityModel<RedStoneGolemRenderState>
 	private final ModelPart head;
 	private final ModelPart right_arm;
 	private final ModelPart right_wrist;
-	private final ModelPart right_thumb;
-	private final ModelPart right_top_finger;
-	private final ModelPart right_botton_finger;
+	@SuppressWarnings("unused")
+    private final ModelPart right_thumb;
+	@SuppressWarnings("unused")
+    private final ModelPart right_top_finger;
+	@SuppressWarnings("unused")
+    private final ModelPart right_botton_finger;
 	private final ModelPart left_arm;
 	private final ModelPart left_wrist;
-	private final ModelPart left_thumb;
-	private final ModelPart left_top_finger;
-	private final ModelPart left_botton_finger;
-	private final ModelPart right_leg;
-	private final ModelPart left_leg;
+	@SuppressWarnings("unused")
+    private final ModelPart left_thumb;
+	@SuppressWarnings("unused")
+    private final ModelPart left_top_finger;
+	@SuppressWarnings("unused")
+    private final ModelPart left_botton_finger;
+	@SuppressWarnings("unused")
+    private final ModelPart right_leg;
+	@SuppressWarnings("unused")
+    private final ModelPart left_leg;
     
     // Baked animations
     private final KeyframeAnimation idleAnimation;
@@ -66,6 +74,7 @@ public class RedStoneGolemModelNew extends EntityModel<RedStoneGolemRenderState>
         this.basicAttackAnimation = RedStoneGolemAnimation.basic_attack.bake(modelPart);
     }
 
+    @SuppressWarnings("unused")
     public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();

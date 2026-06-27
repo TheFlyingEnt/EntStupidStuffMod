@@ -36,7 +36,8 @@ public class SkeletonPirateCaptainModel<S extends SkeletonRenderState> extends H
 
 		MeshDefinition modelData = SkeletonModel.createMesh(CubeDeformation.NONE, 0.0F);
 
-		PartDefinition modelPartData = modelData.getRoot();
+		@SuppressWarnings("unused")
+        PartDefinition modelPartData = modelData.getRoot();
 		//SkeletonEntityModel.addLimbs(modelPartData);
 
 		//float lower = + 22.0F;

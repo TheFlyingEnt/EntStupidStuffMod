@@ -14,9 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoatRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractBoat;
 
 public class CustomBoatEntityRenderer extends AbstractBoatRenderer {

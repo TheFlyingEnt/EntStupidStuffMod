@@ -18,6 +18,7 @@ public class AncientDrownedModel extends ZombieModel<ZombieRenderState>{
         super(modelPart);
     }
 
+    @SuppressWarnings("unused")
     public static LayerDefinition getTexturedModelData(CubeDeformation dilation) {
       MeshDefinition modelData = HumanoidModel.createMesh(dilation, 0.0F);
       PartDefinition modelPartData = modelData.getRoot();

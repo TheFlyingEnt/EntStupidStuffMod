@@ -281,7 +281,6 @@ public class F1CarEntity extends BaseCarEntity {
     @Override public String getCarTypeId() { return "car"; }
 
     //Varient
-    private Variant variant;
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(F1CarEntity.class, EntityDataSerializers.INT);
 
     @Deprecated

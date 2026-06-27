@@ -137,7 +137,6 @@ public class SilkmothEntity extends Animal implements FlyingAnimal{
 			Vec3 vec32;
 			vec32 = SilkmothEntity.this.getViewVector(0.0F);
 
-			int i = 8;
 			Vec3 vec33 = HoverRandomPos.getPos(SilkmothEntity.this, 8, 7, vec32.x, vec32.z, (float) (Math.PI / 2), 3, 1);
 			return vec33 != null ? vec33 : AirAndWaterRandomPos.getPos(SilkmothEntity.this, 8, 4, -2, vec32.x, vec32.z, (float) (Math.PI / 2));
 		}

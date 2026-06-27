@@ -1,6 +1,5 @@
 package net.ent.entstupidstuff.api.car;
 
-import net.ent.entstupidstuff.api.car.BaseCarEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 

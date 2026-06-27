@@ -42,13 +42,18 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.CrossbowItem.ChargingSounds;
 
 public class DoubleBarrelCrossbowItem extends ProjectileWeaponItem {
+    @SuppressWarnings("unused")
     private static final float MAX_CHARGE_DURATION = 0.6F;// 1.25F;
     public static final int DEFAULT_RANGE = 8;
     private boolean startSoundPlayed = false;
     private boolean midLoadSoundPlayed = false;
+    @SuppressWarnings("unused")
     private static final float START_SOUND_PERCENT = 0.2F;
+    @SuppressWarnings("unused")
     private static final float MID_SOUND_PERCENT = 0.5F;
+    @SuppressWarnings("unused")
     private static final float ARROW_POWER = 3.15F;
+    @SuppressWarnings("unused")
     private static final float FIREWORK_POWER = 1.6F;
     public static final float MOB_ARROW_POWER = 1.6F;
     private static final CrossbowItem.ChargingSounds DEFAULT_SOUNDS = new CrossbowItem.ChargingSounds(

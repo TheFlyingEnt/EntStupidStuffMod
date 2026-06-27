@@ -1,8 +1,6 @@
 package net.ent.entstupidstuff.api.ship;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-
 import net.ent.entstupidstuff.EntStupidStuff;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
 import net.minecraft.client.renderer.RenderType;
