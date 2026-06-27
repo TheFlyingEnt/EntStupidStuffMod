@@ -14,7 +14,7 @@ import net.ent.entstupidstuff.item.base.AncientTridentItem;
 import net.ent.entstupidstuff.item.base.BassBucketItem;
 import net.ent.entstupidstuff.item.base.BottleOfRumItem;
 import net.ent.entstupidstuff.item.base.ButterflyJarItem;
-import net.ent.entstupidstuff.item.base.CannonballItem;
+import net.ent.entstupidstuff.item.base.CannonBallItem;
 import net.ent.entstupidstuff.item.base.FlintlockPistolItem;
 import net.ent.entstupidstuff.item.base.DoubleBarrelCrossbowItem;
 import net.ent.entstupidstuff.item.base.DummyCrossbow;
@@ -194,7 +194,7 @@ public class ItemFactory {
     public static final Item SNAPPER_SPAWN_EGG = registerItem("snapper_spawn_egg", settings ->  new SpawnEggItem(settings.spawnEgg(EntityFactory.SNAPPER)));
 
     public static final Item RUM = registerItem("bottle_of_rum", settings -> new BottleOfRumItem(settings));
-    public static final Item CANNON_BALL_ITEM = registerItem("cannon_ball", settings -> new CannonballItem(settings.component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
+    public static final Item CANNON_BALL_ITEM = registerItem("cannon_ball", settings -> new CannonBallItem(settings.component(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY)));
     public static final Item CANNON_ITEM = registerItem("cannon", settings -> new CannonItem(settings));
     public static final Item PRISMERINE_ARROW = registerItem("prismerine_arrow", settings -> new PrismerineArrowItem(settings));
     public static final Item FLINTLOCK_CROSSBOW = registerItem("flintlock_crossbow", settings -> new FlintlockPistolItem(settings)); //flintlock
