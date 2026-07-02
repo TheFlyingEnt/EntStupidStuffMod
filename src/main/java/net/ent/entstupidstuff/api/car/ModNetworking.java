@@ -7,6 +7,7 @@ import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.DeckSync;
 import net.ent.entstupidstuff.api.ship.HarpoonControlPayload;
 import net.ent.entstupidstuff.api.ship.SailControlPayload;
+import net.ent.entstupidstuff.api.ship.SteerPayload;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -127,6 +128,15 @@ public final class ModNetworking {
                     case CannonControlPayload.LAUNCH_PLAYER ->
                         ship.launchPlayer(player, payload.yaw(), payload.pitch());
                 }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(SteerPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.level().getServer().execute(() -> {
+                if (!(player.level().getEntity(payload.boatId()) instanceof CustomBoatEntity ship)) return;
+                if (ship.getControllingPassenger() != player) return;   // only the helmsman
+                ship.applySteer(payload.left(), payload.right());
             });
         });
 

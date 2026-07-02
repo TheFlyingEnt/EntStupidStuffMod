@@ -25,11 +25,20 @@ public abstract class ShipControlMixin {
         ci.cancel();
         if (ship.isSinking()) return;
  
-        // ONLY update the rudder angle from A/D input. Physics is in tick().
+        // 1. Tell the server about our steering (updates rudder server-side +
+        //    on all other clients; keeps the empty case correct after we leave).
         ship.steer(inputLeft, inputRight);
+ 
+        // 2. Set the rudder locally too, so controlShip() below reads fresh input
+        //    with no round-trip lag, then run the physics on THIS (authoritative)
+        //    client. Vanilla's client move() integrates the velocity we set.
+        ship.applySteer(inputLeft, inputRight);
+        ship.controlShip();
+ 
         ship.setPaddleState(false, false);
     }
 }
+
 
 
 

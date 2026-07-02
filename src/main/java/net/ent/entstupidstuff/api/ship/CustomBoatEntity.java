@@ -592,25 +592,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
     }
 
     /**
-     * Ignore server velocity corrections while the driver's client owns the
-     * physics. (Same fix the cars use.)
-     *
-     * Entity tracking periodically broadcasts the server's velocity to all
-     * clients. On the driver's client — which is the authoritative instance
-     * running the physics — that correction would OVERWRITE the locally
-     * computed velocity, causing periodic speed dips and killing momentum.
-     * So on the authoritative client we drop the correction; everyone else
-     * (deck walkers, empty ships) interpolates normally.
-     */
-    @Override
-    public void lerpMotion(Vec3 vec3) {
-        if (this.level().isClientSide() && isLocalInstanceAuthoritative()) {
-            return;   // driver's client owns velocity — ignore server correction
-        }
-        super.lerpMotion(vec3);
-    }
-
-    /**
      * Prevent passengers from pushing/hurting deck walkers.
      * In vanilla, passengers can still push nearby entities.
      * We override this to make the boat "safe" for mixed crews
@@ -653,29 +634,95 @@ public class CustomBoatEntity extends AbstractChestBoat {
      *
      * The rudder angle is synced via DATA_RUDDER so the model animates on all clients.
      */
+    /**
+     * The ship's physics — turn, speed, velocity. SmallShips model.
+     *
+     * Runs on exactly ONE instance per tick:
+     *   • DRIVEN: the driver's client, via the mixin's controlBoat() hook.
+     *     Vanilla's client-side move() then integrates the velocity we set and
+     *     syncs the authoritative position to the server + other clients.
+     *   • EMPTY: the server, called from tick(). Vanilla's server move()
+     *     integrates it and syncs to all clients.
+     *
+     * Reads the SYNCED rudder + speed/rotation scalars, so behavior is
+     * identical wherever it runs and persists across mount/dismount.
+     */
+    public void controlShip() {
+        if (isSinking()) return;
+
+        float rudder   = getRudderAngle();
+        float rotSpeed = getRotSpeed();
+        float speed    = getShipSpeed();
+
+        // ── ROTATION: rudder → rotation speed (eased) ──
+        float authority = Math.max(STANDSTILL_AUTHORITY,
+            Math.min(1.0f, Math.abs(speed) / (float) TURN_SPEED_REF));
+        float targetRot = rudder * TURN_RATE_MAX * authority;
+        rotSpeed = Mth.lerp(0.35f, rotSpeed, targetRot);
+        if (Math.abs(rotSpeed) < 0.001f) rotSpeed = 0f;
+        setRotSpeed(rotSpeed);
+
+        // ── SPEED: ease toward the sail's target ──
+        float target = (getEffectiveThrust() > 0f && !isAnchorHolding())
+            ? getEffectiveThrust() * SPEED_PER_THRUST
+            : 0f;
+        if (speed < target) speed = Math.min(speed + SHIP_ACCEL, target);
+        else                speed = Math.max(speed - SHIP_DECEL, target);
+        if (Math.abs(rotSpeed) > 0.01f)
+            speed *= (1f - Math.min(0.02f, Math.abs(rotSpeed) * 0.01f));
+        setShipSpeed(speed);
+
+        // ── APPLY turn ──
+        if (Math.abs(rotSpeed) > 0.0001f) {
+            setYRot(getYRot() + rotSpeed);
+        }
+
+        // ── REBUILD deltaMovement along the heading ──
+        double rad = Math.toRadians(getYRot());
+        double vy  = getDeltaMovement().y;
+        setDeltaMovement(-Math.sin(rad) * speed, vy, Math.cos(rad) * speed);
+
+        applyChainConstraint();
+    }
+
+    /**
+     * Since all physics is server-authoritative, we can't set the rudder here
+     * (client entityData doesn't sync up to the server). Instead we SEND the
+     * raw A/D input to the server via SteerPayload; the server applies it in
+     * applySteer() and runs the turn in tick().
+     */
     public void steer(boolean left, boolean right) {
+        if (this.level().isClientSide()) {
+            net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+                new SteerPayload(this.getId(), left, right));
+        } else {
+            // Also allow direct server-side calls (e.g. AI helmsman) to work.
+            applySteer(left, right);
+        }
+    }
+
+    /**
+     * Server-side: apply A/D input to the rudder angle. Called by the
+     * SteerPayload handler (real players) or steer() directly (server-side AI).
+     * The rudder is synced (DATA_RUDDER) so all clients see the wheel animate;
+     * tick() reads it to turn the ship.
+     */
+    public void applySteer(boolean left, boolean right) {
         float angle = getRudderAngle();
 
         // Deflect rudder while holding A/D
         if (left)  angle -= RUDDER_SPEED;
         if (right) angle += RUDDER_SPEED;
 
-        // Spring return to center when released (memory foam)
+        // Spring return to center when the DRIVER releases both keys.
+        // (When unmanned there's no input at all, so this never runs → the
+        //  rudder holds and the ship keeps her turn.)
         if (!left && !right) {
-            if (Math.abs(angle) <= RUDDER_RETURN) {
-                angle = 0f;
-            } else {
-                angle -= Math.signum(angle) * RUDDER_RETURN;
-            }
+            if (Math.abs(angle) <= RUDDER_RETURN) angle = 0f;
+            else angle -= Math.signum(angle) * RUDDER_RETURN;
         }
 
-        setRudderAngle(angle);  // clamps to [-1, 1] and syncs to clients
-
-        // NOTE: The actual boat rotation + momentum re-aim now happens
-        // SERVER-SIDE in tick(), reading this synced rudder angle. We do NOT
-        // turn here — steer() runs client-side via the mixin's controlBoat(),
-        // and if it also turned, the boat would rotate twice (client + server).
-        // steer()'s only job is to set the rudder angle from A/D input.
+        setRudderAngle(angle);  // synced to all clients
     }
 
 
@@ -723,63 +770,19 @@ public class CustomBoatEntity extends AbstractChestBoat {
             entityData.set(DATA_CANNON_COOLDOWN, cannonCooldown);
         }
 
-        // ── UNIFIED SHIP PHYSICS (synced-scalar model) ──────────────────
-        // Speed and rotation live in SYNCED scalars (DATA_SPEED, DATA_ROT_SPEED).
-        // deltaMovement is REBUILT from DATA_SPEED every tick. Because the
-        // scalars are synced, they persist across mount/dismount — the ship
-        // keeps its speed AND its turn no matter who's aboard. No handoff, no
-        // client-owned velocity to lose. (SmallShips pattern, adapted to our
-        // rudder + sail system.)
-        if (!isSinking()) {
-            boolean owner = !this.level().isClientSide() || isLocalInstanceAuthoritative();
-
-            if (owner) {
-                // ── COMPUTE rotation + speed (owner writes the synced scalars) ──
-                float rudder   = getRudderAngle();
-                float rotSpeed = getRotSpeed();
-                float speed    = getShipSpeed();
-
-                float authority = Math.max(STANDSTILL_AUTHORITY,
-                    Math.min(1.0f, Math.abs(speed) / (float) TURN_SPEED_REF));
-                float targetRot = rudder * TURN_RATE_MAX * authority;
-                rotSpeed = Mth.lerp(0.35f, rotSpeed, targetRot);
-                if (Math.abs(rotSpeed) < 0.001f) rotSpeed = 0f;
-                setRotSpeed(rotSpeed);
-
-                // ── SPEED: ease toward the sail's target; decay when no sail ──
-                float target = (getEffectiveThrust() > 0f && !isAnchorHolding())
-                    ? getEffectiveThrust() * SPEED_PER_THRUST
-                    : 0f;
-                if (speed < target) speed = Math.min(speed + SHIP_ACCEL, target);
-                else                speed = Math.max(speed - SHIP_DECEL, target);
-                if (Math.abs(rotSpeed) > 0.01f)
-                    speed *= (1f - Math.min(0.02f, Math.abs(rotSpeed) * 0.01f));
-                setShipSpeed(speed);
-
-                // NOTE: No unmanned auto-centering. The rudder holds where the
-                // helmsman left it, so the ship keeps turning when abandoned.
-                // (steer() still springs it back while a driver releases A/D.)
-            }
-
-            // ── APPLY rotation on EVERY instance from the synced rotSpeed ────
-            // CRITICAL: this must run on client AND server, not just the owner.
-            // rotSpeed is synced entityData, so every instance rotates its yaw
-            // in lockstep. If we only turned on the owner, the client's yaw
-            // would go stale and — because deltaMovement is rebuilt from yaw
-            // below — the ship would fly STRAIGHT on the client even while the
-            // server turns. Turning here from the synced scalar keeps them
-            // aligned and makes the ship hold its circle when unmanned.
-            float syncedRot = getRotSpeed();
-            if (Math.abs(syncedRot) > 0.0001f) {
-                setYRot(getYRot() + syncedRot);
-            }
-
-            // ── REBUILD deltaMovement FROM THE SYNCED SPEED (all instances) ─
-            double rad = Math.toRadians(getYRot());
-            double vy  = getDeltaMovement().y;
-            setDeltaMovement(-Math.sin(rad) * getShipSpeed(), vy, Math.cos(rad) * getShipSpeed());
-
-            applyChainConstraint();
+        // ── SHIP PHYSICS — SmallShips model ─────────────────────────────
+        // Vanilla calls controlBoat() ONLY client-side, ONLY on the
+        // authoritative instance. So:
+        //   • DRIVEN → the driver's client is authoritative → the mixin's
+        //     controlBoat() hook calls controlShip() there. Vanilla's client
+        //     move() then integrates it and syncs position to the server.
+        //   • EMPTY  → controlBoat() never fires (it's client-only and the
+        //     client isn't authoritative for an empty boat). So the SERVER
+        //     must run the physics here in tick().
+        // This split means controlShip() runs on exactly ONE instance per
+        // tick — no client/server fight.
+        if (getControllingPassenger() == null && !this.level().isClientSide()) {
+            controlShip();   // empty ship: server drives it
         }
 
         // --- keep the hitbox parts glued fore/aft ---
