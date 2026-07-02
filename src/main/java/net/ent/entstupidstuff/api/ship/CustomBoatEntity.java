@@ -104,6 +104,12 @@ public class CustomBoatEntity extends AbstractChestBoat {
      *  Lower it for a heavier, more realistic feel that only bites once you're moving. */
     private static final float  STANDSTILL_AUTHORITY = 0.25f;
 
+    // Speed model (synced-scalar physics). deltaMovement is derived from
+    // DATA_SPEED each tick; speed eases toward the sail's target.
+    private static final float  SPEED_PER_THRUST = 9.0f;   // thrust → target speed (0.07 × 9 ≈ 0.63 top)
+    private static final float  SHIP_ACCEL       = 0.004f; // accel/tick toward target
+    private static final float  SHIP_DECEL       = 0.006f; // decel/tick toward target
+
     // ── Flooding visual ──
     private float floodDraft = 0f;           // how much lower the boat sits (blocks)
     private static final float MAX_FLOOD_DRAFT = 0.35f;  // max draft when fully flooding
@@ -134,6 +140,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final EntityDataAccessor<Integer> DATA_ANCHOR_ENTITY =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_RUDDER =         // -1.0 .. +1.0
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    // Persistent forward speed (blocks/tick) + rotation speed (deg/tick).
+    // SYNCED so they survive driver changes — deltaMovement is rebuilt from
+    // DATA_SPEED every tick. This is the core fix for momentum/turn loss.
+    private static final EntityDataAccessor<Float> DATA_SPEED =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_ROT_SPEED =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_ATTACHMENT =    // 0 none, 1 harpoon, 2 cannon
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
@@ -178,6 +191,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_ANCHOR_STATE, 0);
         builder.define(DATA_ANCHOR_ENTITY, -1);
         builder.define(DATA_RUDDER, 0f);
+        builder.define(DATA_SPEED, 0f);
+        builder.define(DATA_ROT_SPEED, 0f);
         builder.define(DATA_ATTACHMENT, ATTACHMENT_NONE);
         builder.define(DATA_ACTIVE_HARPOON, -1);
         builder.define(DATA_HAS_BANNER, false);
@@ -218,6 +233,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // Synced via DATA_RUDDER so all clients see the animation.
     public float  getRudderAngle() { return this.entityData.get(DATA_RUDDER); }
     private void  setRudderAngle(float a) { this.entityData.set(DATA_RUDDER, Mth.clamp(a, -1f, 1f)); }
+    public float  getShipSpeed()   { return this.entityData.get(DATA_SPEED); }
+    public void   setShipSpeed(float s) { this.entityData.set(DATA_SPEED, s); }
+    public float  getRotSpeed()    { return this.entityData.get(DATA_ROT_SPEED); }
+    public void   setRotSpeed(float s)  { this.entityData.set(DATA_ROT_SPEED, s); }
 
     // bow attachment: NONE, HARPOON, or CANNON
     public int  getAttachment()       { return this.entityData.get(DATA_ATTACHMENT); }
@@ -409,40 +428,9 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // deck mob tracking
     private final java.util.Set<java.util.UUID> deckRiders = new java.util.HashSet<>();
 
-    // ── Velocity preservation across the mount/dismount transition ──
-    // With the authoritative-instance physics pattern, momentum is normally
-    // carried automatically (the instance that owns physics already holds
-    // deltaMovement). We still snapshot it across a driver mount, because the
-    // brief authority handoff (server → client) can otherwise drop a tick of
-    // velocity. Restored immediately in addPassenger.
-    private Vec3 preservedVelocity = null;
-
     @Override
     protected void removePassenger(Entity passenger) {
-        if (isDriver(passenger)) {
-            // Save momentum so the server (now authoritative) keeps sailing
-            preservedVelocity = getDeltaMovement();
-        }
         super.removePassenger(passenger);
-        // Re-apply immediately so the handoff tick doesn't dead-stop
-        if (preservedVelocity != null && Math.hypot(preservedVelocity.x, preservedVelocity.z) > 0.01) {
-            setDeltaMovement(preservedVelocity);
-        }
-    }
-
-    @Override
-    protected void addPassenger(Entity passenger) {
-        Vec3 before = getDeltaMovement();
-        super.addPassenger(passenger);
-        // When the driver boards, hand the current momentum to their client
-        // so it doesn't start from zero.
-        if (isDriver(passenger)) {
-            Vec3 source = (preservedVelocity != null) ? preservedVelocity : before;
-            if (Math.hypot(source.x, source.z) > 0.01) {
-                setDeltaMovement(source);
-            }
-            preservedVelocity = null;
-        }
     }
 
 
@@ -735,72 +723,56 @@ public class CustomBoatEntity extends AbstractChestBoat {
             entityData.set(DATA_CANNON_COOLDOWN, cannonCooldown);
         }
 
-        // ── SHIP MOVEMENT — runs on the AUTHORITATIVE instance only ──────
-        // This mirrors the working CAR pattern:
-        //   isLocalInstanceAuthoritative() is TRUE on:
-        //     • the driver's client   (they own the physics, responsive)
-        //     • the server when empty (so a driverless ship still sails)
-        //   It is FALSE on:
-        //     • non-driver clients (deck walkers) → they just interpolate
-        //     • the server while a driver is aboard → driver's client owns it
-        //
-        // Because the SAME code runs on whichever instance is authoritative,
-        // there's no fighting: the driver computes velocity, vanilla move()
-        // integrates it, and the position syncs to everyone. When the driver
-        // leaves, authority hands to the server WITHOUT zeroing velocity
-        // (see lerpMotion override), so momentum + turn continue seamlessly.
-        // ── AUTHORITY DECISION ──────────────────────────────────────────
-        // The debug revealed the core bug: on the SERVER,
-        // isLocalInstanceAuthoritative() is ALWAYS true (even while a client
-        // drives), because our custom seat system doesn't register the player
-        // as a vanilla "controlling passenger". Result: server AND client both
-        // ran physics and fought — the server's no-input physics won and the
-        // ship barely moved / wouldn't turn.
-        //
-        // Fix: decide authority from the ACTUAL seat state, which is synced:
-        //   • Driver aboard  → the CLIENT (specifically the driver's client)
-        //     owns physics; the server does NOT run it.
-        //   • No driver      → the SERVER owns physics (drifting ship sails on).
-        boolean driverAboard = getControllingPassenger() != null;
-        boolean clientSide    = this.level().isClientSide();
+        // ── UNIFIED SHIP PHYSICS (synced-scalar model) ──────────────────
+        // Speed and rotation live in SYNCED scalars (DATA_SPEED, DATA_ROT_SPEED).
+        // deltaMovement is REBUILT from DATA_SPEED every tick. Because the
+        // scalars are synced, they persist across mount/dismount — the ship
+        // keeps its speed AND its turn no matter who's aboard. No handoff, no
+        // client-owned velocity to lose. (SmallShips pattern, adapted to our
+        // rudder + sail system.)
+        if (!isSinking()) {
+            boolean owner = !this.level().isClientSide() || isLocalInstanceAuthoritative();
 
-        boolean runPhysics;
-        if (driverAboard) {
-            // Only the driver's client runs it. On the client, that's when this
-            // client is the authoritative instance (the local driver). The
-            // server must NOT run physics while a driver is aboard.
-            runPhysics = clientSide && isLocalInstanceAuthoritative();
-        } else {
-            // Empty ship → server drives it; clients just interpolate.
-            runPhysics = !clientSide;
-        }
+            if (owner) {
+                // ── ROTATION: rudder → rotation speed, eased; decays to 0 ──
+                float rudder   = getRudderAngle();
+                float rotSpeed = getRotSpeed();
+                float speed    = getShipSpeed();
 
-        if (runPhysics && !isSinking()) {
-            float angle = getRudderAngle();
-            if (Math.abs(angle) > 0.001f) {
-                // Turn from the synced rudder angle
-                double spd = getDeltaMovement().horizontalDistance();
-                float auth = (float) Math.max(STANDSTILL_AUTHORITY,
-                    Math.min(1.0, spd / TURN_SPEED_REF));
-                setYRot(getYRot() + angle * TURN_RATE_MAX * auth);
+                float authority = Math.max(STANDSTILL_AUTHORITY,
+                    Math.min(1.0f, Math.abs(speed) / (float) TURN_SPEED_REF));
+                float targetRot = rudder * TURN_RATE_MAX * authority;
+                rotSpeed = Mth.lerp(0.35f, rotSpeed, targetRot);
+                if (Math.abs(rotSpeed) < 0.001f) rotSpeed = 0f;
+                setRotSpeed(rotSpeed);
+                setYRot(getYRot() + rotSpeed);
 
-                // Re-aim momentum along the new heading so the ship curves
-                double curSpeed = getDeltaMovement().horizontalDistance();
-                if (curSpeed > 0.001) {
-                    double r = Math.toRadians(getYRot());
-                    Vec3 v = getDeltaMovement();
-                    setDeltaMovement(-Math.sin(r) * curSpeed, v.y, Math.cos(r) * curSpeed);
-                }
+                // ── SPEED: ease toward the sail's target; decay when no sail ──
+                float target = (getEffectiveThrust() > 0f && !isAnchorHolding())
+                    ? getEffectiveThrust() * SPEED_PER_THRUST
+                    : 0f;
+                if (speed < target) speed = Math.min(speed + SHIP_ACCEL, target);
+                else                speed = Math.max(speed - SHIP_DECEL, target);
+                // A little extra bleed while turning hard
+                if (Math.abs(rotSpeed) > 0.01f)
+                    speed *= (1f - Math.min(0.02f, Math.abs(rotSpeed) * 0.01f));
+                setShipSpeed(speed);
 
-                // Spring rudder back to center when no one is actively steering
-                if (getControllingPassenger() == null) {
-                    angle -= Math.signum(angle) * RUDDER_RETURN;
-                    if (Math.abs(angle) < RUDDER_RETURN) angle = 0f;
-                    setRudderAngle(angle);
+                // Spring the rudder back to center when nobody is steering
+                if (getControllingPassenger() == null && Math.abs(rudder) > 0.001f) {
+                    rudder -= Math.signum(rudder) * RUDDER_RETURN;
+                    if (Math.abs(rudder) < RUDDER_RETURN) rudder = 0f;
+                    setRudderAngle(rudder);
                 }
             }
 
-            applySailThrust();
+            // ── REBUILD deltaMovement FROM THE SYNCED SPEED (all instances) ─
+            // Velocity is DERIVED from the scalar, never client-owned, so
+            // mount/dismount cannot reset it.
+            double rad = Math.toRadians(getYRot());
+            double vy  = getDeltaMovement().y;
+            setDeltaMovement(-Math.sin(rad) * getShipSpeed(), vy, Math.cos(rad) * getShipSpeed());
+
             applyChainConstraint();
         }
 
@@ -1357,12 +1329,21 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     @Override
     public LivingEntity getControllingPassenger() {
-        // STRICT: only the seat-0 occupant drives. Never fall back to vanilla's
-        // "first passenger" logic — otherwise standing on deck (a passenger in a
-        // non-driver seat) is mistaken for driving, and the boat's manned/unmanned
-        // state flips incorrectly when you swap seats or stand up.
+        // Prefer the seat-0 occupant (so swapping into the helm takes control).
         int id = this.entityData.get(SEAT_OCCUPANTS[0]);
-        if (id != -1 && this.level().getEntity(id) instanceof LivingEntity le && this.hasPassenger(le)) return le;
+        if (id != -1 && this.level().getEntity(id) instanceof LivingEntity le && this.hasPassenger(le)) {
+            return le;
+        }
+        // FALLBACK to the first passenger — CRITICAL for multiplayer.
+        // The debug showed the server otherwise reports driver=false even while
+        // a client drives (seat sync lag), so the server never runs/handoffs
+        // physics. Falling back to the first passenger — exactly what the
+        // working cars do — guarantees BOTH sides agree there's a driver.
+        // (This does mean a lone deck-stander could be seen as driver, but the
+        //  seat-0 check above wins whenever seat 0 is actually occupied.)
+        if (this.getFirstPassenger() instanceof LivingEntity first) {
+            return first;
+        }
         return null;
     }
 
@@ -1381,21 +1362,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
         int current = seatOf(player);
         if (current == -1 || current == target) return;
 
-        // Capture velocity before the seat change (driver about to change)
-        boolean leavingDriver  = (current == 0);
-        boolean enteringDriver = (target == 0);
-        Vec3 vel = getDeltaMovement();
-
         int occupant = this.entityData.get(SEAT_OCCUPANTS[target]);
         this.entityData.set(SEAT_OCCUPANTS[target], player.getId());
         this.entityData.set(SEAT_OCCUPANTS[current], occupant);
-
-        // Preserve momentum across the seat swap so it neither dead-stops
-        // (leaving driver → unmanned) nor resets (entering driver → manned)
-        if ((leavingDriver || enteringDriver) && Math.hypot(vel.x, vel.z) > 0.01) {
-            preservedVelocity = vel;
-            setDeltaMovement(vel);
-        }
+        // No velocity bookkeeping needed: DATA_SPEED / DATA_ROT_SPEED are
+        // synced scalars that persist across the seat change automatically.
     }
 
     public void cycleSeat(Player player) {
