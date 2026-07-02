@@ -734,7 +734,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
             boolean owner = !this.level().isClientSide() || isLocalInstanceAuthoritative();
 
             if (owner) {
-                // ── ROTATION: rudder → rotation speed, eased; decays to 0 ──
+                // ── COMPUTE rotation + speed (owner writes the synced scalars) ──
                 float rudder   = getRudderAngle();
                 float rotSpeed = getRotSpeed();
                 float speed    = getShipSpeed();
@@ -745,7 +745,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
                 rotSpeed = Mth.lerp(0.35f, rotSpeed, targetRot);
                 if (Math.abs(rotSpeed) < 0.001f) rotSpeed = 0f;
                 setRotSpeed(rotSpeed);
-                setYRot(getYRot() + rotSpeed);
 
                 // ── SPEED: ease toward the sail's target; decay when no sail ──
                 float target = (getEffectiveThrust() > 0f && !isAnchorHolding())
@@ -753,22 +752,29 @@ public class CustomBoatEntity extends AbstractChestBoat {
                     : 0f;
                 if (speed < target) speed = Math.min(speed + SHIP_ACCEL, target);
                 else                speed = Math.max(speed - SHIP_DECEL, target);
-                // A little extra bleed while turning hard
                 if (Math.abs(rotSpeed) > 0.01f)
                     speed *= (1f - Math.min(0.02f, Math.abs(rotSpeed) * 0.01f));
                 setShipSpeed(speed);
 
-                // Spring the rudder back to center when nobody is steering
-                if (getControllingPassenger() == null && Math.abs(rudder) > 0.001f) {
-                    rudder -= Math.signum(rudder) * RUDDER_RETURN;
-                    if (Math.abs(rudder) < RUDDER_RETURN) rudder = 0f;
-                    setRudderAngle(rudder);
-                }
+                // NOTE: No unmanned auto-centering. The rudder holds where the
+                // helmsman left it, so the ship keeps turning when abandoned.
+                // (steer() still springs it back while a driver releases A/D.)
+            }
+
+            // ── APPLY rotation on EVERY instance from the synced rotSpeed ────
+            // CRITICAL: this must run on client AND server, not just the owner.
+            // rotSpeed is synced entityData, so every instance rotates its yaw
+            // in lockstep. If we only turned on the owner, the client's yaw
+            // would go stale and — because deltaMovement is rebuilt from yaw
+            // below — the ship would fly STRAIGHT on the client even while the
+            // server turns. Turning here from the synced scalar keeps them
+            // aligned and makes the ship hold its circle when unmanned.
+            float syncedRot = getRotSpeed();
+            if (Math.abs(syncedRot) > 0.0001f) {
+                setYRot(getYRot() + syncedRot);
             }
 
             // ── REBUILD deltaMovement FROM THE SYNCED SPEED (all instances) ─
-            // Velocity is DERIVED from the scalar, never client-owned, so
-            // mount/dismount cannot reset it.
             double rad = Math.toRadians(getYRot());
             double vy  = getDeltaMovement().y;
             setDeltaMovement(-Math.sin(rad) * getShipSpeed(), vy, Math.cos(rad) * getShipSpeed());
