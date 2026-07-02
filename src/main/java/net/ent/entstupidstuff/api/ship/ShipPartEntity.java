@@ -81,12 +81,22 @@ public class ShipPartEntity extends Entity {
      * Parts are collidable so entities (including players) can stand on them.
      * Only the parent boat and sibling parts are excluded.
      */
+
     @Override
     public boolean canBeCollidedWith(@Nullable Entity entity) {
         if (entity == this.parentMob) return false;
         if (entity instanceof ShipPartEntity other && other.parentMob == this.parentMob) return false;
+        // Don't push passengers or deck walkers on our own ship
+        if (this.parentMob != null && this.parentMob.isCrewMember(entity)) return false;
         return true;
     }
+    
+    /*@Override
+    public boolean canBeCollidedWith(@Nullable Entity entity) {
+        if (entity == this.parentMob) return false;
+        if (entity instanceof ShipPartEntity other && other.parentMob == this.parentMob) return false;
+        return true;
+    }*/
 
     @Override
     public boolean isPushable() {

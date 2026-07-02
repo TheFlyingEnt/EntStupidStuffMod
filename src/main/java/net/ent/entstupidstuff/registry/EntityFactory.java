@@ -63,6 +63,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.animal.Cod;
 import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -499,6 +500,17 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"coral_skeleton")))
     );
 
+    public static final EntityType<LobberZombieEntity> SOULJACKOLANTERN = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "soulojacklatern"),
+        EntityType.Builder.of(LobberZombieEntity::new, MobCategory.MONSTER)
+        .sized(0.6F, 1.95F)
+		.eyeHeight(1.74F)
+		.passengerAttachments(2.0125F)
+		.ridingOffset(-0.7F)
+		.clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "soulojacklatern")))
+    );
+
     ///////////////////////
 
 
@@ -660,6 +672,8 @@ public class EntityFactory {
         FabricDefaultAttributeRegistry.register(CORAL_SKELETON, CoralSkeletonEntity.createAttributes());
 
         //FabricDefaultAttributeRegistry.register(CAR, CarEntity.createAttributes());
+
+        FabricDefaultAttributeRegistry.register(SOULJACKOLANTERN, LobberZombieEntity.createAttributes());
 
         
 

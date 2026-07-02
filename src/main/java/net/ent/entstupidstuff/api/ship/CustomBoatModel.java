@@ -669,8 +669,32 @@ public class CustomBoatModel extends AbstractBoatModel{
         float rockRoll  = Mth.sin(t * 0.04f)         * 0.012f;
         float rockPitch = Mth.sin(t * 0.031f + 1.0f) * 0.009f;
         float bank = Mth.clamp(rudderTurn * 0.07f, -0.07f, 0.07f);
-        this.root.xRot = rockRoll + bank;
-        this.root.zRot = rockPitch;
+
+        if (state instanceof CustomBoatRenderState s && s.sinkProgress > 0.01f) {
+            float sp = s.sinkProgress;  // 0 → 1
+
+            // ── SINK ANIMATION ──
+            // Tilt sideways (roll) — dramatic lean as it goes down
+            float sinkTilt = s.sinkRoll * sp;
+
+            // Bow dips slightly
+            float sinkPitch = sp * 0.15f;
+
+            // Combine with normal motion (normal motion fades out)
+            float normalFade = 1f - sp;
+            this.root.xRot = (rockRoll + bank) * normalFade + sinkTilt;
+            this.root.zRot = rockPitch * normalFade + sinkPitch;
+
+            // Slight Y offset to visually push into water
+            // (the entity position already handles the actual sinking,
+            // this just adds visual "drag into the waves")
+            this.root.y += sp * 3f;  // model units, pushes hull down
+
+        } else {
+            // Normal sailing
+            this.root.xRot = rockRoll + bank;
+            this.root.zRot = rockPitch;
+        }
     }
 
 }

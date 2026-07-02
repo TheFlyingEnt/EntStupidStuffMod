@@ -21,16 +21,17 @@ public abstract class ShipControlMixin {
  
     @Inject(method = "controlBoat", at = @At("HEAD"), cancellable = true)
     private void entstupidstuff$shipControl(CallbackInfo ci) {
-        if (!((Object) this instanceof CustomBoatEntity ship)) return;   // vanilla boats untouched
+        if (!((Object) this instanceof CustomBoatEntity ship)) return;  // vanilla boats untouched
         ci.cancel();
         if (ship.isSinking()) return;
  
-        ship.steer(inputLeft, inputRight);   // momentum-based turning
-        ship.applySailThrust();              // persistent throttle from the sails
-        ship.applyChainConstraint();         // anchor chain tug, if deployed
+        // ONLY update the rudder angle from A/D input. Physics is in tick().
+        ship.steer(inputLeft, inputRight);
         ship.setPaddleState(false, false);
     }
 }
+
+
 
 
 

@@ -51,6 +51,12 @@ public class ShipCannonballEntity extends Entity {
     private static final double MAX_RANGE    = 80.0;    // auto-despawn distance from ship
     private static final float  EXPLOSION_RADIUS = 1.5f; // visual only — no block damage
 
+    // ── Stuck state (hit a block, smoking) ──
+    private static final EntityDataAccessor<Boolean> IS_STUCK =
+        SynchedEntityData.defineId(ShipCannonballEntity.class, EntityDataSerializers.BOOLEAN);
+    private int stuckTimer = 0;
+    private static final int STUCK_SMOKE_TICKS = 60;  // 3 seconds of smoking
+
     // ── Fields ──
     private int life = 0;
 
@@ -62,6 +68,7 @@ public class ShipCannonballEntity extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder b) {
         b.define(SHIP_ID, -1);
+        b.define(IS_STUCK, false);
     }
 
     @Override protected void readAdditionalSaveData(ValueInput in)  {}
@@ -108,15 +115,52 @@ public class ShipCannonballEntity extends Entity {
     public void tick() {
         super.tick();
 
-        life++;
+        // ── STUCK: smoking on the ground ──
+        if (entityData.get(IS_STUCK)) {
+            stuckTimer--;
 
-        // Auto-despawn after timeout
+            // Smoke particles (client side)
+            if (level().isClientSide()) {
+                // Thick smoke for first second, then tapering off
+                float intensity = (float) stuckTimer / STUCK_SMOKE_TICKS;
+                if (random.nextFloat() < intensity) {
+                    level().addParticle(ParticleTypes.LARGE_SMOKE,
+                        getX() + random.nextGaussian() * 0.3,
+                        getY() + 0.2 + random.nextFloat() * 0.5,
+                        getZ() + random.nextGaussian() * 0.3,
+                        0, 0.03, 0);
+                }
+                if (random.nextFloat() < intensity * 0.3f) {
+                    level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                        getX() + random.nextGaussian() * 0.2,
+                        getY() + 0.3,
+                        getZ() + random.nextGaussian() * 0.2,
+                        0, 0.02, 0);
+                }
+                // Embers in first half
+                if (stuckTimer > STUCK_SMOKE_TICKS / 2 && random.nextFloat() < 0.2f) {
+                    level().addParticle(ParticleTypes.FLAME,
+                        getX() + random.nextGaussian() * 0.15,
+                        getY() + 0.1,
+                        getZ() + random.nextGaussian() * 0.15,
+                        0, 0.01, 0);
+                }
+            }
+
+            // Despawn after smoke timer
+            if (stuckTimer <= 0 && !level().isClientSide()) {
+                discard();
+            }
+            return;  // skip flying logic
+        }
+
+        // ── FLYING ──
+        life++;
         if (life > MAX_LIFE && !level().isClientSide()) {
             discard();
             return;
         }
 
-        // Auto-despawn if too far from firing ship
         CustomBoatEntity ship = getShip();
         if (ship != null && distanceTo(ship) > MAX_RANGE && !level().isClientSide()) {
             discard();
@@ -124,16 +168,12 @@ public class ShipCannonballEntity extends Entity {
         }
 
         Vec3 vel = getDeltaMovement();
-
-        // Gravity — cannonballs are heavy
         vel = vel.add(0, -GRAVITY, 0);
 
-        // ── Collision checks (server only) ──
         if (!level().isClientSide()) {
             Vec3 from = position();
             Vec3 to   = from.add(vel);
 
-            // Entity hit check
             List<Entity> nearby = level().getEntities(this,
                 getBoundingBox().expandTowards(vel).inflate(0.5),
                 e -> e.getId() != getShipId()
@@ -154,26 +194,20 @@ public class ShipCannonballEntity extends Entity {
                 }
             }
 
-            if (closest != null) {
-                onHitEntity(closest);
-                return;
-            }
+            if (closest != null) { onHitEntity(closest); return; }
 
-            // Block hit check
             BlockPos nextPos = BlockPos.containing(to);
-            BlockState blockState = level().getBlockState(nextPos);
-            if (blockState.isSolid()) {
+            if (level().getBlockState(nextPos).isSolid()) {
                 onHitBlock(to);
                 return;
             }
         }
 
-        // Move
         setDeltaMovement(vel);
         move(MoverType.SELF, vel);
         setDeltaMovement(getDeltaMovement().scale(DRAG));
 
-        // Trail particles (client side)
+        // Trail particles
         if (level().isClientSide() && life > 1) {
             level().addParticle(ParticleTypes.SMOKE,
                 getX(), getY(), getZ(), 0, 0, 0);
@@ -187,42 +221,41 @@ public class ShipCannonballEntity extends Entity {
     // ── Impact handlers ────────────────────────────────────────────
 
     private void onHitEntity(Entity target) {
-        // If we hit a ship's sub-part, redirect to the parent ship
         if (target instanceof ShipPartEntity part && part.parentMob != null) {
             target = part.parentMob;
         }
-
-        // Don't damage our own ship (shouldn't happen since we filter, but safety)
         if (target instanceof CustomBoatEntity boat && boat.getId() == getShipId()) return;
 
-        // Ship damage — heavy!
         if (target instanceof CustomBoatEntity targetShip) {
             targetShip.hitByCannonball();
-        }
-        // Living entity damage
-        else if (target instanceof LivingEntity living) {
+        } else if (target instanceof LivingEntity living) {
             living.hurt(level().damageSources().generic(), ENTITY_DAMAGE);
-            // Knockback
             Vec3 vel = getDeltaMovement().normalize().scale(0.8);
             living.push(vel.x, 0.3, vel.z);
         }
 
+        // Explosion on entity hit too
         this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
-					Level.ExplosionInteraction.NONE);
-
+            Level.ExplosionInteraction.NONE);
         spawnImpactEffects();
         discard();
     }
 
     private void onHitBlock(Vec3 hitPos) {
-
+        // Explosion on impact
         this.level().explode(null, this.getX(), this.getY(), this.getZ(), 2.0F,
-					Level.ExplosionInteraction.NONE);
+            Level.ExplosionInteraction.NONE);
 
         setPos(hitPos);
         setDeltaMovement(Vec3.ZERO);
+        this.noPhysics = true;  // don't fall through the block
+
+        // Don't discard — enter stuck/smoking state
+        entityData.set(IS_STUCK, true);
+        stuckTimer = STUCK_SMOKE_TICKS;
+
+        // Initial impact effects
         spawnImpactEffects();
-        discard();
     }
 
     /**

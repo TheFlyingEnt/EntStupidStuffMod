@@ -34,4 +34,5 @@ public class CustomBoatRenderState extends BoatRenderState {
     public float bowPitch = 0f;
 
     public boolean bowOccupied = false;
+    public float sinkRoll  = 0f;
 }

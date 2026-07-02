@@ -33,6 +33,7 @@ import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModelNew;
 import net.ent.entstupidstuff.client.render.entity.model.SilkmothModel;
 import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
+import net.ent.entstupidstuff.client.render.entity.model.SoulJackOLanternModel;
 import net.ent.entstupidstuff.client.render.entity.model.SporeperModel;
 import net.ent.entstupidstuff.client.render.entity.model.fish.AlligatorGarModel;
 import net.ent.entstupidstuff.client.render.entity.model.fish.BassModel;
@@ -90,6 +91,7 @@ import net.ent.entstupidstuff.client.render.entity.renderer.SilkmothRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SkeletonPirateCaptainEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SlimedZombieEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SnapperFishRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.SoulOLanternRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SoulSkeletonEntityRender;
 import net.ent.entstupidstuff.client.render.entity.renderer.SporeperRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.SunkenSkeletonEntityRenderer;
@@ -358,6 +360,9 @@ public class ModEntityModelLayers {
 
     public static final ModelLayerLocation CHAIN_LINK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "chain_link"), "main");
     public static final ModelLayerLocation SHIPCANNONBALL = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "shipcannonball"), "main");
+
+    
+    public static final ModelLayerLocation SOULJACKOLANTERN = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("entstupidstuff", "souljackolantern"), "main");
 
 
 
@@ -681,6 +686,11 @@ public class ModEntityModelLayers {
 
         EntityRenderers.register(EntityFactory.SHIPCANNONBALL, (EntityRendererProvider.Context context) -> new ShipCannonBallEntityRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SHIPCANNONBALL, ShipCannonBallModel::getTexturedModelData);
+
+        //SOULJACKOLANTERN
+        
+        EntityRenderers.register(EntityFactory.SOULJACKOLANTERN, (EntityRendererProvider.Context context) -> new SoulOLanternRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SOULJACKOLANTERN, () -> SoulJackOLanternModel.getTexturedModelData(CubeDeformation.NONE));
 
 
         

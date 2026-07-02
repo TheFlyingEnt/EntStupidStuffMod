@@ -83,6 +83,8 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
             s.bowRelativeYaw = ship.getBowGunnerRelativeYaw(partialTick);
             s.bowPitch = ship.getBowPitch();
             s.bowOccupied = (ship.getBowGunner() != null);
+
+            s.sinkRoll       = ship.getSinkRoll();
         }
     }
 

@@ -440,6 +440,7 @@ public class F1CarEntity extends BaseCarEntity {
         builder.define(VARIANT, 0);
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
 	@Override
 	public <T> T get(DataComponentType<? extends T> type) {

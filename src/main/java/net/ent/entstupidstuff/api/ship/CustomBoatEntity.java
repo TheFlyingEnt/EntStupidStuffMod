@@ -83,8 +83,14 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final float FLOOD_THRESHOLD = 0.30f;
     private static final float FLOOD_RATE      = 0.06f;
     private static final float REPAIR_AMOUNT   = 25f;
-    private static final int   SINK_DURATION   = 70;
+    private static final int   SINK_DURATION   = 200;      // 10 seconds total
+    private static final int   SINK_VISIBLE    = 160;      // visible for 8s, then underwater
     private static final double SINK_SPEED     = 0.045;
+
+    // ── Sink animation fields ──
+    private float sinkRoll       = 0f;     // current sideways tilt (radians)
+    private float sinkRollTarget = 0f;     // which side to tilt toward
+    private float sinkDepth      = 0f;     // cumulative depth sunk
 
     public float shipMaxHealth() { return 200f; }
 
@@ -97,6 +103,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
      *  Raise this to let the boat pivot faster at low speed / sails just raised.
      *  Lower it for a heavier, more realistic feel that only bites once you're moving. */
     private static final float  STANDSTILL_AUTHORITY = 0.25f;
+
+    // ── Flooding visual ──
+    private float floodDraft = 0f;           // how much lower the boat sits (blocks)
+    private static final float MAX_FLOOD_DRAFT = 0.35f;  // max draft when fully flooding
+    private static final float FLOOD_DRAFT_RATE = 0.005f; // how fast it sinks per tick
 
     // --- debug ---
     /** Toggle to show deck boundary particles. Flip in-game or set via /entstupidstuff debug. */
@@ -141,6 +152,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final EntityDataAccessor<Integer> DATA_CANNON_COOLDOWN =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Float> DATA_FLOOD_DRAFT =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_SINK_ROLL =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] SEAT_OCCUPANTS =
         new EntityDataAccessor[SEAT_COUNT];
@@ -171,6 +187,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_HAS_AMMO, false);
 
         builder.define(DATA_CANNON_COOLDOWN, 0);
+        builder.define(DATA_FLOOD_DRAFT, 0f);
+        builder.define(DATA_SINK_ROLL, 0f);
 
         for (int i = 0; i < SEAT_COUNT; i++) builder.define(SEAT_OCCUPANTS[i], -1);
     }
@@ -391,6 +409,42 @@ public class CustomBoatEntity extends AbstractChestBoat {
     // deck mob tracking
     private final java.util.Set<java.util.UUID> deckRiders = new java.util.HashSet<>();
 
+    // ── Velocity preservation across the mount/dismount transition ──
+    // With the authoritative-instance physics pattern, momentum is normally
+    // carried automatically (the instance that owns physics already holds
+    // deltaMovement). We still snapshot it across a driver mount, because the
+    // brief authority handoff (server → client) can otherwise drop a tick of
+    // velocity. Restored immediately in addPassenger.
+    private Vec3 preservedVelocity = null;
+
+    @Override
+    protected void removePassenger(Entity passenger) {
+        if (isDriver(passenger)) {
+            // Save momentum so the server (now authoritative) keeps sailing
+            preservedVelocity = getDeltaMovement();
+        }
+        super.removePassenger(passenger);
+        // Re-apply immediately so the handoff tick doesn't dead-stop
+        if (preservedVelocity != null && Math.hypot(preservedVelocity.x, preservedVelocity.z) > 0.01) {
+            setDeltaMovement(preservedVelocity);
+        }
+    }
+
+    @Override
+    protected void addPassenger(Entity passenger) {
+        Vec3 before = getDeltaMovement();
+        super.addPassenger(passenger);
+        // When the driver boards, hand the current momentum to their client
+        // so it doesn't start from zero.
+        if (isDriver(passenger)) {
+            Vec3 source = (preservedVelocity != null) ? preservedVelocity : before;
+            if (Math.hypot(source.x, source.z) > 0.01) {
+                setDeltaMovement(source);
+            }
+            preservedVelocity = null;
+        }
+    }
+
 
     // ════════════════════════════════════════════════════════════════
     //  CONSTRUCTORS
@@ -465,6 +519,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
+        // ── Block boarding from underwater ──
+        // Players swimming under the hull shouldn't be able to mount.
+        // They must be at or above deck level to board.
+        if (!player.isShiftKeyDown() && player.isUnderWater() && player.getY() < getY()) {
+            return InteractionResult.PASS;
+        }
+
         // Sneak + right-click → open ship management GUI
         if (player.isShiftKeyDown() && !isSinking()) {
             if (!this.level().isClientSide()) {
@@ -542,6 +603,50 @@ public class CustomBoatEntity extends AbstractChestBoat {
         return super.canCollideWith(entity);
     }
 
+    /**
+     * Ignore server velocity corrections while the driver's client owns the
+     * physics. (Same fix the cars use.)
+     *
+     * Entity tracking periodically broadcasts the server's velocity to all
+     * clients. On the driver's client — which is the authoritative instance
+     * running the physics — that correction would OVERWRITE the locally
+     * computed velocity, causing periodic speed dips and killing momentum.
+     * So on the authoritative client we drop the correction; everyone else
+     * (deck walkers, empty ships) interpolates normally.
+     */
+    @Override
+    public void lerpMotion(Vec3 vec3) {
+        if (this.level().isClientSide() && isLocalInstanceAuthoritative()) {
+            return;   // driver's client owns velocity — ignore server correction
+        }
+        super.lerpMotion(vec3);
+    }
+
+    /**
+     * Prevent passengers from pushing/hurting deck walkers.
+     * In vanilla, passengers can still push nearby entities.
+     * We override this to make the boat "safe" for mixed crews
+     * (some riding, some walking the deck).
+     */
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
+        // Don't allow underwater players to board
+        if (passenger instanceof Player p && p.isUnderWater() && p.getY() < getY()) {
+            return false;
+        }
+        return this.getPassengers().size() < this.getMaxPassengers();
+    }
+
+    /**
+     * Check if an entity is a passenger of this boat OR a deck walker.
+     * Used to prevent friendly-fire collisions between crew members.
+     */
+    public boolean isCrewMember(Entity e) {
+        if (this.hasPassenger(e)) return true;
+        if (deckRiders.contains(e.getUUID())) return true;
+        return false;
+    }
+
     public ShipPartEntity[] getSubEntities() { return this.parts; }
 
 
@@ -578,11 +683,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
         setRudderAngle(angle);  // clamps to [-1, 1] and syncs to clients
 
-        // Boat turn rate = rudder deflection × speed authority
-        double speed = getDeltaMovement().horizontalDistance();
-        float authority = (float) Math.max(STANDSTILL_AUTHORITY, Math.min(1.0, speed / TURN_SPEED_REF));
-        setYRot(getYRot() + getRudderAngle() * TURN_RATE_MAX * authority);
+        // NOTE: The actual boat rotation + momentum re-aim now happens
+        // SERVER-SIDE in tick(), reading this synced rudder angle. We do NOT
+        // turn here — steer() runs client-side via the mixin's controlBoat(),
+        // and if it also turned, the boat would rotate twice (client + server).
+        // steer()'s only job is to set the rudder angle from A/D input.
     }
+
 
 
     // ════════════════════════════════════════════════════════════════
@@ -603,7 +710,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
             partsSpawned = true;
         }
 
-        // --- server-side logic ---
+        // --- server-side bookkeeping (NOT movement) ---
         if (!this.level().isClientSide()) {
             updateSeats();
             carryDeckMobs();
@@ -615,13 +722,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
             Entity bowGunner = getBowGunner();
             if (bowGunner != null && hasAttachment()) {
-                // ── YAW (left/right) ──
-                // Raw relative yaw in degrees, then clamp
                 float rawYawDeg = Mth.wrapDegrees(bowGunner.getYRot() - getYRot());
                 float clampedYawDeg = Mth.clamp(rawYawDeg, -MAX_YAW_DEGREES, MAX_YAW_DEGREES);
                 entityData.set(DATA_BOW_YAW, (float) Math.toRadians(clampedYawDeg));
 
-                // ── PITCH (up/down) ──
                 float pitchDeg = bowGunner.getXRot();
                 float clampedPitchDeg = Mth.clamp(pitchDeg, MAX_PITCH_UP, MAX_PITCH_DOWN);
                 entityData.set(DATA_BOW_PITCH, (float) Math.toRadians(clampedPitchDeg));
@@ -629,25 +733,75 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
             if (cannonCooldown > 0) cannonCooldown--;
             entityData.set(DATA_CANNON_COOLDOWN, cannonCooldown);
+        }
 
-            // When a helmsman is aboard, ShipControlMixin.controlBoat() handles
-            // steer + applySailThrust + applyChainConstraint (via mixin on AbstractBoat).
-            // Here we only handle the UNMANNED case: sails still push, chain still holds,
-            // and the rudder springs back to center on its own.
-            if (getControllingPassenger() == null) {
-                // Rudder returns to center when no one is at the helm
-                float angle = getRudderAngle();
-                if (Math.abs(angle) > 0.001f) {
+        // ── SHIP MOVEMENT — runs on the AUTHORITATIVE instance only ──────
+        // This mirrors the working CAR pattern:
+        //   isLocalInstanceAuthoritative() is TRUE on:
+        //     • the driver's client   (they own the physics, responsive)
+        //     • the server when empty (so a driverless ship still sails)
+        //   It is FALSE on:
+        //     • non-driver clients (deck walkers) → they just interpolate
+        //     • the server while a driver is aboard → driver's client owns it
+        //
+        // Because the SAME code runs on whichever instance is authoritative,
+        // there's no fighting: the driver computes velocity, vanilla move()
+        // integrates it, and the position syncs to everyone. When the driver
+        // leaves, authority hands to the server WITHOUT zeroing velocity
+        // (see lerpMotion override), so momentum + turn continue seamlessly.
+        // ── AUTHORITY DECISION ──────────────────────────────────────────
+        // The debug revealed the core bug: on the SERVER,
+        // isLocalInstanceAuthoritative() is ALWAYS true (even while a client
+        // drives), because our custom seat system doesn't register the player
+        // as a vanilla "controlling passenger". Result: server AND client both
+        // ran physics and fought — the server's no-input physics won and the
+        // ship barely moved / wouldn't turn.
+        //
+        // Fix: decide authority from the ACTUAL seat state, which is synced:
+        //   • Driver aboard  → the CLIENT (specifically the driver's client)
+        //     owns physics; the server does NOT run it.
+        //   • No driver      → the SERVER owns physics (drifting ship sails on).
+        boolean driverAboard = getControllingPassenger() != null;
+        boolean clientSide    = this.level().isClientSide();
+
+        boolean runPhysics;
+        if (driverAboard) {
+            // Only the driver's client runs it. On the client, that's when this
+            // client is the authoritative instance (the local driver). The
+            // server must NOT run physics while a driver is aboard.
+            runPhysics = clientSide && isLocalInstanceAuthoritative();
+        } else {
+            // Empty ship → server drives it; clients just interpolate.
+            runPhysics = !clientSide;
+        }
+
+        if (runPhysics && !isSinking()) {
+            float angle = getRudderAngle();
+            if (Math.abs(angle) > 0.001f) {
+                // Turn from the synced rudder angle
+                double spd = getDeltaMovement().horizontalDistance();
+                float auth = (float) Math.max(STANDSTILL_AUTHORITY,
+                    Math.min(1.0, spd / TURN_SPEED_REF));
+                setYRot(getYRot() + angle * TURN_RATE_MAX * auth);
+
+                // Re-aim momentum along the new heading so the ship curves
+                double curSpeed = getDeltaMovement().horizontalDistance();
+                if (curSpeed > 0.001) {
+                    double r = Math.toRadians(getYRot());
+                    Vec3 v = getDeltaMovement();
+                    setDeltaMovement(-Math.sin(r) * curSpeed, v.y, Math.cos(r) * curSpeed);
+                }
+
+                // Spring rudder back to center when no one is actively steering
+                if (getControllingPassenger() == null) {
                     angle -= Math.signum(angle) * RUDDER_RETURN;
                     if (Math.abs(angle) < RUDDER_RETURN) angle = 0f;
                     setRudderAngle(angle);
                 }
-
-                if (!isSinking()) {
-                    applySailThrust();
-                }
-                applyChainConstraint();
             }
+
+            applySailThrust();
+            applyChainConstraint();
         }
 
         // --- keep the hitbox parts glued fore/aft ---
@@ -915,6 +1069,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public boolean isFlooding()      { return !isSinking() && getHealth() > 0 && getHealthPct() < FLOOD_THRESHOLD; }
     public boolean isSinking()       { return this.entityData.get(DATA_SINK_TICKS) >= 0; }
     public float   getSinkProgress() { return isSinking() ? Mth.clamp(this.entityData.get(DATA_SINK_TICKS) / (float) SINK_DURATION, 0f, 1f) : 0f; }
+    public float   getSinkRoll()     { return entityData.get(DATA_SINK_ROLL); }
+    public float   getFloodDraft()   { return entityData.get(DATA_FLOOD_DRAFT); }
 
     private void setHealth(float h) { this.entityData.set(DATA_HEALTH, Mth.clamp(h, 0f, shipMaxHealth())); }
 
@@ -946,22 +1102,73 @@ public class CustomBoatEntity extends AbstractChestBoat {
         if (isSinking()) return;
         setHealth(0f);
         this.entityData.set(DATA_SINK_TICKS, 0);
+
+        // Randomize which way the boat tilts as it sinks
+        sinkRollTarget = (this.random.nextBoolean() ? 1f : -1f) * 0.8f;
+        sinkRoll = 0f;
+        sinkDepth = 0f;
+
         if (this.level() instanceof ServerLevel sl)
             sl.playSound(null, blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 1.0f, 0.7f);
     }
 
     private void tickDamage() {
+        // ── Flooding: gradual damage + boat sits lower in water ──
         if (isFlooding()) {
             setHealth(getHealth() - FLOOD_RATE);
+            float prevDraft = floodDraft;
+            floodDraft = Math.min(floodDraft + FLOOD_DRAFT_RATE, MAX_FLOOD_DRAFT);
+            // Apply only the CHANGE in draft, not the total
+            // (applying the total each tick is quadratic — boat plunges through the world)
+            float delta = floodDraft - prevDraft;
+            if (delta > 0f) {
+                this.setPos(getX(), getY() - delta, getZ());
+            }
             if (this.level() instanceof ServerLevel sl && this.tickCount % 4 == 0)
                 sl.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, getX(), getY(), getZ(), 6, 1.5, 0.1, 1.5, 0.0);
             if (getHealth() <= 0f) startSinking();
+        } else if (!isSinking()) {
+            // Slowly recover draft when no longer flooding (boat rises back up)
+            float prevDraft = floodDraft;
+            floodDraft = Math.max(floodDraft - FLOOD_DRAFT_RATE * 2, 0f);
+            float delta = prevDraft - floodDraft;
+            if (delta > 0f) {
+                this.setPos(getX(), getY() + delta, getZ());
+            }
         }
+        entityData.set(DATA_FLOOD_DRAFT, floodDraft);
+
+        // ── Sinking: phased animation over 10 seconds ──
         if (isSinking()) {
             int t = this.entityData.get(DATA_SINK_TICKS) + 1;
             this.entityData.set(DATA_SINK_TICKS, t);
-            if (this.level() instanceof ServerLevel sl && t % 3 == 0)
-                sl.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(), 20, 2.0, 0.3, 2.0, 0.05);
+
+            // Phase 1 (0-60 ticks, 3s): tilt slowly, barely sink
+            // Phase 2 (60-120 ticks, 3s): tilt more, going under
+            // Phase 3 (120-160 ticks, 2s): fully tilted, plunging
+            // Phase 4 (160-200 ticks, 2s): underwater, disappearing
+            float progress = (float) t / SINK_DURATION;
+
+            // Roll: gradually tilt to one side
+            sinkRoll = Mth.lerp(Math.min(progress * 2f, 1f), 0f, sinkRollTarget);
+            entityData.set(DATA_SINK_ROLL, sinkRoll);
+
+            // Bubbles while sinking
+            if (this.level() instanceof ServerLevel sl && t % 3 == 0) {
+                sl.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(),
+                    20, 2.0, 0.3, 2.0, 0.05);
+                if (t % 5 == 0) {
+                    sl.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP,
+                        getX() + random.nextGaussian() * 2, getY() + 0.5,
+                        getZ() + random.nextGaussian() * 2, 3, 0.5, 0, 0.5, 0.01);
+                }
+            }
+
+            // Eject all passengers when mostly underwater
+            if (t == SINK_VISIBLE) {
+                this.ejectPassengers();
+            }
+
             if (t >= SINK_DURATION) sinkAndRemove();
         }
     }
@@ -969,14 +1176,27 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private void applySinkMotion() {
         if (!isSinking()) return;
 
-        // Check if the hull has hit the ocean floor — don't phase through solid blocks
-        boolean grounded = level().getBlockState(blockPosition().below()).isSolid();
-        if (!grounded) {
-            this.setPos(getX(), getY() - SINK_SPEED, getZ());
+        int t = this.entityData.get(DATA_SINK_TICKS);
+
+        // Phased sinking speed — slow at first, accelerating
+        double sinkRate;
+        if (t < 60) {
+            sinkRate = 0.005;    // Phase 1: barely sinking
+        } else if (t < 120) {
+            sinkRate = 0.020;    // Phase 2: going under
+        } else {
+            sinkRate = 0.045;    // Phase 3+: plunging
         }
 
+        // Check if the hull has hit the ocean floor
+        boolean grounded = level().getBlockState(blockPosition().below()).isSolid();
+        if (!grounded) {
+            this.setPos(getX(), getY() - sinkRate, getZ());
+        }
+
+        // Kill forward momentum — dead in the water
         Vec3 dm = this.getDeltaMovement();
-        this.setDeltaMovement(dm.x * 0.95, grounded ? 0 : -SINK_SPEED, dm.z * 0.95);
+        this.setDeltaMovement(dm.x * 0.93, grounded ? 0 : -sinkRate, dm.z * 0.93);
     }
 
     private void sinkAndRemove() {
@@ -1137,9 +1357,13 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     @Override
     public LivingEntity getControllingPassenger() {
+        // STRICT: only the seat-0 occupant drives. Never fall back to vanilla's
+        // "first passenger" logic — otherwise standing on deck (a passenger in a
+        // non-driver seat) is mistaken for driving, and the boat's manned/unmanned
+        // state flips incorrectly when you swap seats or stand up.
         int id = this.entityData.get(SEAT_OCCUPANTS[0]);
         if (id != -1 && this.level().getEntity(id) instanceof LivingEntity le && this.hasPassenger(le)) return le;
-        return super.getControllingPassenger();
+        return null;
     }
 
     /** Returns true if this entity is in the driver seat (seat 0). */
@@ -1156,9 +1380,22 @@ public class CustomBoatEntity extends AbstractChestBoat {
         if (this.level().isClientSide() || target < 0 || target >= SEAT_COUNT) return;
         int current = seatOf(player);
         if (current == -1 || current == target) return;
+
+        // Capture velocity before the seat change (driver about to change)
+        boolean leavingDriver  = (current == 0);
+        boolean enteringDriver = (target == 0);
+        Vec3 vel = getDeltaMovement();
+
         int occupant = this.entityData.get(SEAT_OCCUPANTS[target]);
         this.entityData.set(SEAT_OCCUPANTS[target], player.getId());
         this.entityData.set(SEAT_OCCUPANTS[current], occupant);
+
+        // Preserve momentum across the seat swap so it neither dead-stops
+        // (leaving driver → unmanned) nor resets (entering driver → manned)
+        if ((leavingDriver || enteringDriver) && Math.hypot(vel.x, vel.z) > 0.01) {
+            preservedVelocity = vel;
+            setDeltaMovement(vel);
+        }
     }
 
     public void cycleSeat(Player player) {
