@@ -430,7 +430,17 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     @Override
     protected void removePassenger(Entity passenger) {
+        boolean wasDriver = isDriver(passenger);
         super.removePassenger(passenger);
+        // When the DRIVER leaves, the server takes over physics next tick. The
+        // synced DATA_SPEED might be a hair behind the client's last velocity,
+        // which reads as a brief speed dip. Re-sync the speed scalar from the
+        // ship's ACTUAL current horizontal velocity so the server continues
+        // seamlessly from exactly where the driver left off.
+        if (wasDriver && !this.level().isClientSide()) {
+            float actual = (float) getDeltaMovement().horizontalDistance();
+            if (actual > getShipSpeed()) setShipSpeed(actual);
+        }
     }
 
 
@@ -649,6 +659,25 @@ public class CustomBoatEntity extends AbstractChestBoat {
      */
     public void controlShip() {
         if (isSinking()) return;
+        integrateScalars();
+        applyMotion();
+    }
+
+    /**
+     * Integrate the SPEED + ROTATION scalars from the synced sail level and
+     * rudder. This is pure scalar math — it does NOT touch position or yaw.
+     *
+     * CRITICAL: the SERVER runs this EVERY tick, even while a driver is aboard.
+     * Why: while driving, controlShip() runs on the driver's CLIENT, and
+     * setShipSpeed() writes client-side entityData that never syncs UP to the
+     * server. So the server's DATA_SPEED would stay stale (≈0) the whole time
+     * you drive, and the instant you dismount the server would read 0 and
+     * re-accelerate from a standstill — the "speed resets then climbs back"
+     * bug. Keeping the server's scalars warm here fixes that: on dismount the
+     * server already has the correct speed and continues seamlessly.
+     */
+    public void integrateScalars() {
+        if (isSinking()) return;
 
         float rudder   = getRudderAngle();
         float rotSpeed = getRotSpeed();
@@ -671,13 +700,24 @@ public class CustomBoatEntity extends AbstractChestBoat {
         if (Math.abs(rotSpeed) > 0.01f)
             speed *= (1f - Math.min(0.02f, Math.abs(rotSpeed) * 0.01f));
         setShipSpeed(speed);
+    }
 
-        // ── APPLY turn ──
+    /**
+     * Apply the (already-integrated) scalars to the ship's yaw + velocity.
+     * Runs on the AUTHORITATIVE instance only: the driver's client (via the
+     * mixin) when driven, or the server when empty. Never the server while
+     * driven (that would fight the driver-client's synced position).
+     */
+    public void applyMotion() {
+        if (isSinking()) return;
+
+        float rotSpeed = getRotSpeed();
+        float speed    = getShipSpeed();
+
         if (Math.abs(rotSpeed) > 0.0001f) {
             setYRot(getYRot() + rotSpeed);
         }
 
-        // ── REBUILD deltaMovement along the heading ──
         double rad = Math.toRadians(getYRot());
         double vy  = getDeltaMovement().y;
         setDeltaMovement(-Math.sin(rad) * speed, vy, Math.cos(rad) * speed);
@@ -733,7 +773,6 @@ public class CustomBoatEntity extends AbstractChestBoat {
     @Override
     public void tick() {
         super.tick();
-        computeDeckTransform();
         tickWake();
         tickDebugDeck();
 
@@ -770,20 +809,43 @@ public class CustomBoatEntity extends AbstractChestBoat {
             entityData.set(DATA_CANNON_COOLDOWN, cannonCooldown);
         }
 
-        // ── SHIP PHYSICS — SmallShips model ─────────────────────────────
-        // Vanilla calls controlBoat() ONLY client-side, ONLY on the
-        // authoritative instance. So:
-        //   • DRIVEN → the driver's client is authoritative → the mixin's
-        //     controlBoat() hook calls controlShip() there. Vanilla's client
-        //     move() then integrates it and syncs position to the server.
-        //   • EMPTY  → controlBoat() never fires (it's client-only and the
-        //     client isn't authoritative for an empty boat). So the SERVER
-        //     must run the physics here in tick().
-        // This split means controlShip() runs on exactly ONE instance per
-        // tick — no client/server fight.
-        if (getControllingPassenger() == null && !this.level().isClientSide()) {
-            controlShip();   // empty ship: server drives it
+        // ── SHIP PHYSICS — SmallShips model + warm server scalars ────────
+        // SPLIT: scalar integration vs motion application.
+        //  • The SERVER integrates the speed/rotation scalars EVERY tick — even
+        //    while a driver is aboard — so DATA_SPEED/DATA_ROT_SPEED are always
+        //    current for the dismount handoff. (Client-side scalar writes never
+        //    sync up to the server, which is why speed used to reset on exit.)
+        //  • Motion (yaw + velocity) is applied only by the AUTHORITATIVE
+        //    instance: the driver's client via the mixin when driven, or the
+        //    server here when empty. The server never applies motion while
+        //    driven (that would fight the driver-client's synced position).
+        if (!this.level().isClientSide()) {
+            integrateScalars();                       // keep server scalars warm
+            if (getControllingPassenger() == null) {
+                applyMotion();                        // empty: server drives motion
+            }
         }
+
+        // ── Keep deltaMovement aligned with the (warm) speed scalar ──────
+        // The server now integrates DATA_SPEED every tick, so it's always
+        // current. On the dismount tick — before the server's applyMotion()
+        // takes over — make sure the server's deltaMovement reflects the speed
+        // scalar so the hull doesn't drop a movement tick. (Harmless if it
+        // already matches; only runs server-side when a driver is still listed
+        // but about to leave.)
+        if (!this.level().isClientSide() && getControllingPassenger() != null
+                && !isSinking() && getShipSpeed() > 0.001f) {
+            double hd = Math.toRadians(getYRot());
+            double vy = getDeltaMovement().y;
+            setDeltaMovement(-Math.sin(hd) * getShipSpeed(), vy, Math.cos(hd) * getShipSpeed());
+        }
+
+        // Compute the deck transform AFTER the physics turn has been applied
+        // this tick. If we computed it before (as we used to), deckDYaw would
+        // be one tick behind the boat's actual rotation → deck-standers would
+        // rotate a beat late and JITTER while the ship turns. Computing it here
+        // means the carried yaw delta matches the boat's real turn this tick.
+        computeDeckTransform();
 
         // --- keep the hitbox parts glued fore/aft ---
         ShipPartEntity front = this.level().isClientSide() ? getWorldPart(PART_FRONT_ID) : parts[0];
