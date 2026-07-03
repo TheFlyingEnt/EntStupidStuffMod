@@ -873,7 +873,24 @@ public class CustomBoatEntity extends AbstractChestBoat {
             return;
         }
         deckDX = getX() - lastX; deckDZ = getZ() - lastZ; deckDY = getY() - lastY;
-        deckDYaw = getYRot() - lastYaw;
+
+        // ── Yaw delta for the deck carry ──
+        // On the deck-stander's CLIENT, getYRot() is driven by NETWORK LERP,
+        // which advances in uneven steps tick-to-tick. Using raw
+        // (getYRot() - lastYaw) makes the carry rotation lumpy → the player
+        // jitters while the ship turns. Instead, use the SYNCED rotSpeed scalar,
+        // which is the ship's intended per-tick yaw change and is smooth on
+        // every instance. This matches how the ship MODEL turns, so the carried
+        // player rotates in lockstep — no jitter. (Same principle as the
+        // straight-line fix: derive the carry from the smooth source, not the
+        // lumpy networked one.)
+        float rot = getRotSpeed();
+        if (Math.abs(rot) > 0.0001f) {
+            deckDYaw = rot;                       // smooth, synced turn rate
+        } else {
+            deckDYaw = getYRot() - lastYaw;       // not turning: tiny drift correction
+        }
+
         lastX = getX(); lastZ = getZ(); lastY = getY(); lastYaw = getYRot();
     }
 
@@ -1554,7 +1571,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
         if (e instanceof LivingEntity) {
             e.setYRot(e.getYRot() + deckDYaw);
-            // Don't touch yRotO — let the renderer interpolate the turn smoothly
+            // Don't touch yRotO / xo / yo / zo — the engine sets xo = currentPos
+            // at tick start and the renderer interpolates xo → currentPos over
+            // the frame, matching the boat's own interpolation. Modifying those
+            // values kills the interpolation and causes the 20Hz vibration.
         }
     }
 

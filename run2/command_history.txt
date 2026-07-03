@@ -27,3 +27,4 @@
 /time set day
 /tp Player171 Player902
 /tp @s Player695
+/weather clear
