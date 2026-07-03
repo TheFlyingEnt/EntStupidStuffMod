@@ -578,6 +578,8 @@ public class CustomBoatModel extends AbstractBoatModel{
         boolean harpoonDeployed = false;
         float bowPitch = 0f;
         boolean bowOccupied  = false;
+        float windRelativeYaw = 0f;
+        float windStrength    = 0.8f;
 
         if (state instanceof CustomBoatRenderState s) {
             sailLevel      = s.sailLevel;
@@ -592,6 +594,8 @@ public class CustomBoatModel extends AbstractBoatModel{
             harpoonDeployed = s.harpoonDeployed;
             bowPitch = s.bowPitch;
             bowOccupied  = s.bowOccupied;
+            windRelativeYaw = s.windRelativeYaw;
+            windStrength    = s.windStrength;
         }
 
         this.root.xScale = SCALE;
@@ -625,8 +629,16 @@ public class CustomBoatModel extends AbstractBoatModel{
         float flutter = 0.1f + Math.min(boatSpeed * 3f, 0.3f);
         float t = waveTime;
         this.burgee_sail.visible = !hasBanner;
-        this.burgee_sail.yRot = Mth.sin(t * 0.12f) * flutter
-                              + Mth.sin(t * 0.07f + 2.0f) * flutter * 0.4f;
+        /*this.burgee_sail.yRot = Mth.sin(t * 0.12f) * flutter
+                              + Mth.sin(t * 0.07f + 2.0f) * flutter * 0.4f;*/
+
+        this.burgee_sail.visible = !hasBanner;
+        float windFlutter = 0.06f + windStrength * 0.18f;
+        float wob = Mth.sin(waveTime * 0.18f) * windFlutter
+                  + Mth.sin(waveTime * 0.11f + 1.7f) * windFlutter * 0.4f;
+        // Base alignment to the wind + flutter. (Negate if your flag points the
+        // wrong way — model axis conventions vary.)
+        this.burgee_sail.yRot = windRelativeYaw + wob;
 
         // ── Attachment visibility + swivel + pitch ────────────────────
         boolean showCannon  = (attachmentType == CustomBoatEntity.ATTACHMENT_CANNON);

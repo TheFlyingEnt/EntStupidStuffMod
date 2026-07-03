@@ -873,24 +873,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
             return;
         }
         deckDX = getX() - lastX; deckDZ = getZ() - lastZ; deckDY = getY() - lastY;
-
-        // ── Yaw delta for the deck carry ──
-        // On the deck-stander's CLIENT, getYRot() is driven by NETWORK LERP,
-        // which advances in uneven steps tick-to-tick. Using raw
-        // (getYRot() - lastYaw) makes the carry rotation lumpy → the player
-        // jitters while the ship turns. Instead, use the SYNCED rotSpeed scalar,
-        // which is the ship's intended per-tick yaw change and is smooth on
-        // every instance. This matches how the ship MODEL turns, so the carried
-        // player rotates in lockstep — no jitter. (Same principle as the
-        // straight-line fix: derive the carry from the smooth source, not the
-        // lumpy networked one.)
-        float rot = getRotSpeed();
-        if (Math.abs(rot) > 0.0001f) {
-            deckDYaw = rot;                       // smooth, synced turn rate
-        } else {
-            deckDYaw = getYRot() - lastYaw;       // not turning: tiny drift correction
-        }
-
+        deckDYaw = getYRot() - lastYaw;
         lastX = getX(); lastZ = getZ(); lastY = getY(); lastYaw = getYRot();
     }
 
@@ -898,6 +881,54 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public double getDeckDY()   { return deckDY; }
     public double getDeckDZ()   { return deckDZ; }
     public float  getDeckDYaw() { return deckDYaw; }
+
+    /**
+     * Per-FRAME smooth position for a deck-standing entity (called from the
+     * Camera mixin every rendered frame with the frame's partialTick).
+     *
+     * WHY THIS EXISTS: the tick-rate carryEntity() moves the player 20×/sec;
+     * the renderer then interpolates their position LINEARLY between ticks.
+     * The boat, however, interpolates its yaw ANGULARLY every frame — so while
+     * the boat turns, the linear player interp and angular boat interp diverge
+     * and the camera jitters. Straight-line motion has no rotation, so no
+     * jitter. The ONLY correct fix is to place the player each frame using the
+     * boat's INTERPOLATED transform, which is what this does.
+     *
+     * It takes the player's offset in the boat's CURRENT (tick) local frame —
+     * which carryEntity() already made consistent with the boat — and re-applies
+     * it through the boat's INTERPOLATED center + yaw for this frame. Result:
+     * the player sits at a fixed spot on the deck and rotates in lockstep with
+     * the smoothly-rendered boat. No jitter, straight or turning.
+     *
+     * Returns the smooth world position as a double[]{x, y, z}, or null if the
+     * boat isn't turning/moving enough to matter (so we don't fight normal walk).
+     */
+    public double[] smoothDeckPos(Entity e, float partialTick) {
+        if (isSinking()) return null;
+
+        // Player offset in the boat's CURRENT (tick) local frame
+        double dx = e.getX() - this.getX();
+        double dz = e.getZ() - this.getZ();
+        double dy = e.getY() - this.getY();
+        double invYaw = -Math.toRadians(this.getYRot());
+        double ic = Math.cos(invYaw), is = Math.sin(invYaw);
+        double lx = dx * ic - dz * is;
+        double lz = dx * is + dz * ic;
+
+        // Boat's INTERPOLATED transform for this frame
+        double bx = Mth.lerp((double) partialTick, this.xo, this.getX());
+        double by = Mth.lerp((double) partialTick, this.yo, this.getY());
+        double bz = Mth.lerp((double) partialTick, this.zo, this.getZ());
+        float  byawDeg = Mth.rotLerp(partialTick, this.yRotO, this.getYRot());
+        double byaw = Math.toRadians(byawDeg);
+        double bc = Math.cos(byaw), bs = Math.sin(byaw);
+
+        // local → world through the interpolated transform
+        double wx = bx + (lx * bc - lz * bs);
+        double wz = bz + (lx * bs + lz * bc);
+        double wy = by + dy;
+        return new double[]{ wx, wy, wz };
+    }
 
     public double getHorizontalSpeed() { return Math.hypot(getDeckDX(), getDeckDZ()); }
 
@@ -931,8 +962,11 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public void lowerSail() { if (!level().isClientSide()) setSailLevel(getSailLevel() - 1); }
     public void furlSail()  { if (!level().isClientSide()) setSailLevel(0); }
 
-    /** WIND HOOK — 1.0 until the wind pass adds point-of-sail + trim. */
-    public float getSailEfficiency() { return 1.0f; }
+    /** WIND: point-of-sail bonus from the global wind vs. this ship's heading.
+     *  Arcade curve — downwind is a boost, upwind still keeps most thrust. */
+    public float getSailEfficiency() {
+        return WindManager.efficiencyFor(getYRot());
+    }
 
     /** Net forward thrust: sail level × wind. Chain constraint handles anchor stopping. */
     public float getEffectiveThrust() {

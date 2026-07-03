@@ -78,6 +78,9 @@ public final class ShipHud {
             int textY3 = textY2 + lineHeight;
             g.drawString(mc.font, line3, cx - w3 / 2, textY3, 0xFFFFFFFF);
         }
+
+        drawWindCompass(g, mc, g.guiWidth() - 40, 40); //checked
+
     }
 
     private static Component buildHealthLine(CustomBoatEntity ship) {
@@ -209,6 +212,44 @@ public final class ShipHud {
             .append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY))
             .append(Component.literal(pct + "%").withStyle(barColor));
     }
+
+
+    // Draw a wind arrow. cx,cy = centre of a small compass on the HUD.
+    private static void drawWindCompass(GuiGraphics g, Minecraft mc, int cx, int cy) {
+        float windToward = WindManager.getWindDir();
+        float strength   = WindManager.getWindStrength();
+
+        // Show wind relative to the player's facing so "up" = where they look.
+        float viewYaw = mc.player.getYRot();
+        float rel = (float) Math.toRadians(net.minecraft.util.Mth.wrapDegrees(windToward - viewYaw));
+
+        int len = 10 + Math.round(strength * 6);   // arrow length scales with strength
+        int ax = cx + Math.round((float) Math.sin(rel) * len);
+        int ay = cy - Math.round((float) Math.cos(rel) * len);
+
+        int col = 0xFFFFFFFF;
+        // shaft
+        g.fill(cx - 1, cy - 1, cx + 1, cy + 1, 0xFF3060FF);       // hub dot
+        drawLine(g, cx, cy, ax, ay, col);
+        // simple label
+        g.drawString(mc.font, "Wind", cx - 12, cy + 12, 0xFFFFFFFF);
+    }
+
+    // Minimal line helper (Bresenham-ish via fill dots).
+    private static void drawLine(GuiGraphics g, int x0, int y0, int x1, int y1, int color) {
+        int dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        while (true) {
+            g.fill(x0, y0, x0 + 1, y0 + 1, color);
+            if (x0 == x1 && y0 == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x0 += sx; }
+            if (e2 <  dx) { err += dx; y0 += sy; }
+        }
+    }
+
+
 
     private ShipHud() {}
 }

@@ -14,6 +14,8 @@ import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.HarpoonControlPayload;
 import net.ent.entstupidstuff.api.ship.SteerPayload;
 import net.ent.entstupidstuff.api.ship.SwapSeatPayload;
+import net.ent.entstupidstuff.api.ship.WindManager;
+import net.ent.entstupidstuff.api.ship.WindSyncPayload;
 import net.ent.entstupidstuff.block.BlockFactory;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.component.ModDataComponentTypes;
@@ -32,7 +34,9 @@ import net.ent.entstupidstuff.item.ModGroup;
 import net.ent.entstupidstuff.particle.ParticleTypesFactory;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CustomRecipe.Serializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -123,6 +127,7 @@ public class EntStupidStuff implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(HarpoonControlPayload.TYPE, HarpoonControlPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(CannonControlPayload.TYPE, CannonControlPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(SteerPayload.TYPE, SteerPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(WindSyncPayload.TYPE, WindSyncPayload.CODEC);
 
 
         ModNetworking.registerC2SPayloads();
@@ -149,6 +154,19 @@ public class EntStupidStuff implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CarConfigCommand.register(dispatcher);
+        });
+
+        // in onInitialize():
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            WindManager.tick();
+            // Broadcast every 10 ticks (~2×/sec) — wind drifts slowly, no need for more.
+            if (server.getTickCount() % 10 == 0) {
+                WindSyncPayload pkt = new WindSyncPayload(
+                    WindManager.getWindDir(), WindManager.getWindStrength());
+                for (var player : server.getPlayerList().getPlayers()) {
+                    ServerPlayNetworking.send(player, pkt);
+                }
+            }
         });
 
  

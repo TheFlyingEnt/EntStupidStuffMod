@@ -85,7 +85,17 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
             s.bowOccupied = (ship.getBowGunner() != null);
 
             s.sinkRoll       = ship.getSinkRoll();
+
+
+            float windTowardDeg = net.ent.entstupidstuff.api.ship.WindManager.getWindDir();
+            s.windRelativeYaw = (float) Math.toRadians(
+                net.minecraft.util.Mth.wrapDegrees(windTowardDeg - ship.getYRot()));
+            s.windStrength = net.ent.entstupidstuff.api.ship.WindManager.getWindStrength();
+
         }
+
+        
+
     }
 
     @Override

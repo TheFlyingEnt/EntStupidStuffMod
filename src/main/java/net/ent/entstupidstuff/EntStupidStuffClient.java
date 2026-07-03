@@ -11,6 +11,8 @@ import net.ent.entstupidstuff.api.ship.DeckOffsetPayload;
 import net.ent.entstupidstuff.api.ship.DeckSync;
 import net.ent.entstupidstuff.api.ship.ShipHud;
 import net.ent.entstupidstuff.api.ship.ShipScreen;
+import net.ent.entstupidstuff.api.ship.WindManager;
+import net.ent.entstupidstuff.api.ship.WindSyncPayload;
 import net.ent.entstupidstuff.block.ModRenderLayers;
 import net.ent.entstupidstuff.block.blockentity.BlockEntityFactory;
 import net.ent.entstupidstuff.client.ModEntityModelLayers;
@@ -93,6 +95,12 @@ public class EntStupidStuffClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> CarSoundManager.tick());
         ClientTickEvents.END_CLIENT_TICK.register(client -> ModKeybinds.tick());
+
+
+        ClientPlayNetworking.registerGlobalReceiver(WindSyncPayload.TYPE, (payload, context) -> {
+            context.client().execute(() ->
+                WindManager.applySynced(payload.dir(), payload.strength()));
+        });
 
         /*ClientTickEvents.END_CLIENT_TICK.register(mc -> {
             LocalPlayer p = mc.player;

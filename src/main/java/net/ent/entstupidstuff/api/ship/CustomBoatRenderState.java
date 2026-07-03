@@ -35,4 +35,11 @@ public class CustomBoatRenderState extends BoatRenderState {
 
     public boolean bowOccupied = false;
     public float sinkRoll  = 0f;
+
+    // ── Wind (for the burgee flag) ──
+    /** Global wind blow-toward direction relative to the ship's heading (radians). */
+    public float windRelativeYaw = 0f;
+    /** Wind strength 0..1 (drives flutter intensity). */
+    public float windStrength    = 0.8f;
+
 }
