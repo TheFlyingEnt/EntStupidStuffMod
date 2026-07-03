@@ -11685,3 +11685,4 @@ com.mojang.brigadier.exceptions.CommandSyntaxException: Unknown or incomplete co
 [22:59:08] [Render thread/DEBUG] (ClientPlayNetworkAddon for Player957) Handling inbound packet from channel with name "entstupidstuff:wind_sync"
 [22:59:08] [Render thread/INFO] (net.minecraft.client.gui.components.ChatComponent) [System] [CHAT] Player255 left the game
 [22:59:09] [Render thread/WARN] (net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl) Client disconnected with reason: Disconnected
+[23:02:32] [Render thread/INFO] (net.minecraft.client.Minecraft) Stopping!

@@ -2509,3 +2509,4 @@ com.mojang.authlib.exceptions.MinecraftClientHttpException: Status: 401
 [22:29:24] [Render thread/INFO] (Minecraft) Loaded 12 advancements
 [22:59:08] [Render thread/INFO] (Minecraft) [System] [CHAT] Player255 left the game
 [22:59:09] [Render thread/WARN] (Minecraft) Client disconnected with reason: Disconnected
+[23:02:32] [Render thread/INFO] (Minecraft) Stopping!

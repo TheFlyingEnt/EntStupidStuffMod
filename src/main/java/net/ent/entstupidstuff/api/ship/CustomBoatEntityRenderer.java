@@ -91,6 +91,7 @@ public class CustomBoatEntityRenderer extends AbstractBoatRenderer {
             s.windRelativeYaw = (float) Math.toRadians(
                 net.minecraft.util.Mth.wrapDegrees(windTowardDeg - ship.getYRot()));
             s.windStrength = net.ent.entstupidstuff.api.ship.WindManager.getWindStrength();
+            s.sailFill = net.ent.entstupidstuff.api.ship.WindManager.fillFor(ship.getYRot());
 
         }
 

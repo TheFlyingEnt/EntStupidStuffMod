@@ -93,4 +93,23 @@ public final class WindManager {
         // Wind strength scales how much the point-of-sail matters.
         return Mth.lerp(windStrength, 1.0f, base);
     }
+
+    /**
+     * How FULL the sail is for a ship heading, 0..1.
+     *   1.0 = sail bellied out and drawing well (downwind / broad reach)
+     *   0.0 = sail luffing (pointed into the wind, edge-on, flapping)
+     *
+     * This is a VISUAL cue for the fill/luff animation — separate from the
+     * arcade efficiency above (which never fully stalls). It follows the true
+     * point-of-sail so the sail LOOKS right even though upwind still MOVES you.
+     */
+    public static float fillFor(float shipYaw) {
+        float rel = Math.abs(Mth.wrapDegrees(shipYaw - windDir));  // 0..180
+        // 0° downwind → full; ~150°+ upwind → luffing. Smooth cosine falloff.
+        float t = (Mth.cos((float) Math.toRadians(rel)) + 1f) * 0.5f;  // 0..1
+        // Bias so only the near-upwind quarter really luffs; broad reaches stay full.
+        float fill = Mth.clamp((t - 0.15f) / 0.85f, 0f, 1f);
+        // Weak wind = softer, less full even at best angle.
+        return fill * Mth.lerp(windStrength, 0.6f, 1.0f);
+    }
 }

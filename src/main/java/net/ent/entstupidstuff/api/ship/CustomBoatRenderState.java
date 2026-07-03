@@ -41,5 +41,6 @@ public class CustomBoatRenderState extends BoatRenderState {
     public float windRelativeYaw = 0f;
     /** Wind strength 0..1 (drives flutter intensity). */
     public float windStrength    = 0.8f;
+    public float sailFill        = 1f;
 
 }
