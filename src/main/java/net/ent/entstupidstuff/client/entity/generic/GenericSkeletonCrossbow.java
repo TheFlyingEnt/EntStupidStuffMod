@@ -6,6 +6,7 @@ import net.ent.entstupidstuff.client.entity.ai.CannonAttackGoalNew;
 import net.ent.entstupidstuff.client.entity.ai.TrackTargetGoal;
 import net.ent.entstupidstuff.item.ItemFactory;
 import net.ent.entstupidstuff.item.base.CannonItem;
+import net.ent.entstupidstuff.item.base.DoubleBarrelCrossbowItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -262,6 +263,33 @@ public class GenericSkeletonCrossbow extends GenericSkeletonBow implements Cross
 			persistentProjectileEntity.shoot(d, e + g * 0.2F, f, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
 			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 			this.level().addFreshEntity(persistentProjectileEntity);
+		}
+
+        else if (mainHandStack.getItem() instanceof DoubleBarrelCrossbowItem) {
+
+			ItemStack itemStack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, ItemFactory.DOUBLE_BARREL_CROSSBOW));
+			ItemStack itemStack2 = this.getProjectile(itemStack);
+
+			AbstractArrow persistentProjectileEntity_1 = this.getArrow(itemStack2, pullProgress, itemStack);
+			AbstractArrow persistentProjectileEntity_2 = this.getArrow(itemStack2, pullProgress, itemStack);
+
+			double d_1 = target.getX() - this.getX();
+			double e_1 = target.getY(0.3333333333333333) - persistentProjectileEntity_1.getY();
+			double f_1 = target.getZ() - this.getZ();
+			double g_1 = Math.sqrt(d_1 * d_1 + f_1 * f_1);
+
+			double d_2 = target.getX() - this.getX();
+			double e_2 = target.getY(0.3333333333333333) - persistentProjectileEntity_2.getY();
+			double f_2 = target.getZ() - this.getZ();
+			double g_2 = Math.sqrt(d_2 * d_2 + f_2 * f_2);
+
+			persistentProjectileEntity_1.shoot(d_1, e_1 + g_1 * 0.2F, f_1, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+
+			persistentProjectileEntity_2.shoot(d_2, e_2 + g_2 * 0.2F, f_2, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
+			this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+
+			this.level().addFreshEntity(persistentProjectileEntity_1);
+			this.level().addFreshEntity(persistentProjectileEntity_2);
 		}
 	}
 

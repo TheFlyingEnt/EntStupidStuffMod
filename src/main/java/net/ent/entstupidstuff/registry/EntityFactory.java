@@ -16,6 +16,8 @@ import net.ent.entstupidstuff.api.ship.CustomBoatEntity;
 import net.ent.entstupidstuff.api.ship.HarpoonProjectileEntity;
 import net.ent.entstupidstuff.api.ship.ShipCannonballEntity;
 import net.ent.entstupidstuff.api.ship.ShipPartEntity;
+import net.ent.entstupidstuff.client.entity.PhantomSkeletonCaptainEntity;
+import net.ent.entstupidstuff.client.entity.generic.GenericSkeletonCrossbow;
 import net.ent.entstupidstuff.client.entity.mob.AncientDrownedEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredPillagerEntity;
 import net.ent.entstupidstuff.client.entity.mob.ArmoredVindicatorEntity;
@@ -511,6 +513,26 @@ public class EntityFactory {
         .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "soulojacklatern")))
     );
 
+    public static final EntityType<GenericSkeletonCrossbow> ANCIENT_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ancient_skeleton"),
+        EntityType.Builder.of(GenericSkeletonCrossbow::new, MobCategory.MONSTER)
+        .sized(0.6F, 1.99F)
+        .eyeHeight(1.74F)
+        .ridingOffset(-0.7F)
+        .clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"ancient_skeleton")))
+    );
+
+    public static final EntityType<PhantomSkeletonCaptainEntity> PHANTOM_SKELETON_CAPTAIN = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+        ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "phantom_skeleton_captain"),
+        EntityType.Builder.of(PhantomSkeletonCaptainEntity::new, MobCategory.MONSTER)
+        .sized(0.6F, 1.99F)
+        .eyeHeight(1.74F)
+        .ridingOffset(-0.7F)
+        .clientTrackingRange(8)
+        .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID,"phantom_skeleton_captain")))
+    );
+
     ///////////////////////
 
 
@@ -664,12 +686,15 @@ public class EntityFactory {
 
         FabricDefaultAttributeRegistry.register(METAL_SKELETON, Skeleton.createAttributes());
         FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON, Skeleton.createAttributes());
+        FabricDefaultAttributeRegistry.register(PHANTOM_SKELETON_CAPTAIN, Skeleton.createAttributes());
 
         FabricDefaultAttributeRegistry.register(SPOREPER, SporeperEntity.createCreeperAttributes());
 
         FabricDefaultAttributeRegistry.register(SILKMOTH, SilkmothEntity.createAttributes());
 
         FabricDefaultAttributeRegistry.register(CORAL_SKELETON, CoralSkeletonEntity.createAttributes());
+
+        FabricDefaultAttributeRegistry.register(ANCIENT_SKELETON, CoralSkeletonEntity.createAttributes());
 
         //FabricDefaultAttributeRegistry.register(CAR, CarEntity.createAttributes());
 

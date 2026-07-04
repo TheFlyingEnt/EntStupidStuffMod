@@ -32,7 +32,6 @@ import net.ent.entstupidstuff.client.render.entity.model.HoveringInfernoModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedPandaModel;
 import net.ent.entstupidstuff.client.render.entity.model.RedStoneGolemModelNew;
 import net.ent.entstupidstuff.client.render.entity.model.SilkmothModel;
-import net.ent.entstupidstuff.client.render.entity.model.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.SoulJackOLanternModel;
 import net.ent.entstupidstuff.client.render.entity.model.SporeperModel;
 import net.ent.entstupidstuff.client.render.entity.model.fish.AlligatorGarModel;
@@ -47,8 +46,11 @@ import net.ent.entstupidstuff.client.render.entity.model.fish.ZebraFishModel;
 import net.ent.entstupidstuff.client.render.entity.model.illager.MountaineerPillagerModel;
 import net.ent.entstupidstuff.client.render.entity.model.illager.MountaineerVindicatorModel;
 import net.ent.entstupidstuff.client.render.entity.model.illager.PillagerHelmetModel;
+import net.ent.entstupidstuff.client.render.entity.model.skeleton.AncientSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.model.skeleton.CoralSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.model.skeleton.MetalSkeletonModel;
+import net.ent.entstupidstuff.client.render.entity.model.skeleton.PhantomSkeletonCaptainModel;
+import net.ent.entstupidstuff.client.render.entity.model.skeleton.SkeletonPirateCaptainModel;
 import net.ent.entstupidstuff.client.render.entity.model.skull.BoggedHeadModel;
 import net.ent.entstupidstuff.client.render.entity.model.skull.CoralSkeletonSkullModel;
 import net.ent.entstupidstuff.client.render.entity.model.skull.LayeredSkullModel;
@@ -60,6 +62,7 @@ import net.ent.entstupidstuff.client.render.entity.model.zombie.SlimedZombieMode
 import net.ent.entstupidstuff.client.render.entity.model.zombie.SunkenSkeletonModel;
 import net.ent.entstupidstuff.client.render.entity.renderer.AlligatorGarRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.AncientDrownedRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.AncientSkeletonRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.AncientTridentRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.ArmoredPillagerEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.ArmoredVindicatorEntityRenderer;
@@ -81,6 +84,7 @@ import net.ent.entstupidstuff.client.render.entity.renderer.MountaineerPillagerE
 import net.ent.entstupidstuff.client.render.entity.renderer.MountaineerVindicatorEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.NoopEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PerchFishRenderer;
+import net.ent.entstupidstuff.client.render.entity.renderer.PhantomSkeletonCaptainRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PhantomSkeletonEntityRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PiglinExtraRenderer;
 import net.ent.entstupidstuff.client.render.entity.renderer.PrismerineArrowRenderer;
@@ -214,6 +218,9 @@ public class ModEntityModelLayers {
     public static final ModelLayerLocation SKELETON_PIRATE_CAPTAIN =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "skeleton_pirate_captain"), "main");
 
+    public static final ModelLayerLocation PHANTOM_SKELETON_CAPTAIN =
+    new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "phantom_skeleton_captain"), "main");
+
     public static final ModelLayerLocation SUNKEN_SKELETON_CROSSBOW =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "sunken_skeleton_crossbow"), "main");
 
@@ -275,6 +282,9 @@ public class ModEntityModelLayers {
 
     public static final ModelLayerLocation CORAL_SKELETON =
     new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "coral_skeleton"), "main");
+
+    public static final ModelLayerLocation ANCIENT_SKELETON =
+    new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(EntStupidStuff.MOD_ID, "ancient_skeleton"), "main");
 
     // Work in Progress
 
@@ -509,7 +519,7 @@ public class ModEntityModelLayers {
         
         EntityRenderers.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererProvider.Context context) -> new SkeletonPirateCaptainEntityRenderer(context));
         //EntityRendererFactories.register(EntityFactory.SKELETON_PIRATE_CAPTAIN, (EntityRendererFactory.Context context) -> new SkeletonPirateCaptainEntityRenderer(context, ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, EntityModelLayers.SKELETON_EQUIPMENT));
-        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, SkeletonPirateCaptainModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.SKELETON_PIRATE_CAPTAIN, SkeletonPirateCaptainModel::createBodyLayer);
 
         //EntityRendererFactories.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererFactory.Context context) -> new SunkenSkeletonEntityRenderer(context));
         EntityRenderers.register(EntityFactory.SUNKEN_SKELETON_CROSSBOW, (EntityRendererProvider.Context context) -> new SunkenSkeletonEntityRenderer(context, ModEntityModelLayers.SUNKEN_SKELETON_CROSSBOW /*EntityModelLayers.SKELETON*/, ModelLayers.SKELETON_ARMOR));
@@ -566,6 +576,13 @@ public class ModEntityModelLayers {
         //Coral_Skeleton
         EntityRenderers.register(EntityFactory.CORAL_SKELETON, (EntityRendererProvider.Context context) -> new CoralSkeletonRenderer(context));
         EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.CORAL_SKELETON, CoralSkeletonModel::createBodyLayer);
+
+        //Ancient_Skeleton
+        EntityRenderers.register(EntityFactory.ANCIENT_SKELETON, (EntityRendererProvider.Context context) -> new AncientSkeletonRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.ANCIENT_SKELETON, AncientSkeletonModel::createBodyLayer);
+
+        EntityRenderers.register(EntityFactory.PHANTOM_SKELETON_CAPTAIN, (EntityRendererProvider.Context context) -> new PhantomSkeletonCaptainRenderer(context));
+        EntityModelLayerRegistry.registerModelLayer(ModEntityModelLayers.PHANTOM_SKELETON_CAPTAIN, PhantomSkeletonCaptainModel::createBodyLayer);
 
 
 

@@ -1139,5 +1139,40 @@
     ],
     "steam": false,
     "volume": 2.0
+  },
+  "entity.playable_instrument.harmonica_dunken_sailor": {
+    "sounds": [
+      "entstupidstuff:drunken_sailor/Track1_Harmonica"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.playable_instrument.steel_drums_dunken_sailor": {
+    "sounds": [
+      "entstupidstuff:drunken_sailor/Track1_Steel_Drums"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.playable_instrument.banjo_dunken_sailor": {
+    "sounds": [
+      "entstupidstuff:drunken_sailor/Track3_Banjo"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.playable_instrument.accordian_dunken_sailor": {
+    "sounds": [
+      "entstupidstuff:drunken_sailor/Track5_Accordian"
+    ],
+    "steam": true,
+    "volume": 2.0
+  },
+  "entity.playable_instrument.ph_dunken_sailor": {
+    "sounds": [
+      "entstupidstuff:drunken_sailor/Track7_BH"
+    ],
+    "steam": true,
+    "volume": 2.0
   }
 }

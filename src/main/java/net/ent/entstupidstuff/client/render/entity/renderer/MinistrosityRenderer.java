@@ -1,7 +1,6 @@
 package net.ent.entstupidstuff.client.render.entity.renderer;
 
 import net.ent.entstupidstuff.EntStupidStuff;
-import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class MinistrosityRenderer {

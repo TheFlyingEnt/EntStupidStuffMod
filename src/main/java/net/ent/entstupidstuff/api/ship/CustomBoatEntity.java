@@ -938,6 +938,25 @@ public class CustomBoatEntity extends AbstractChestBoat {
         return (float) (-Math.sin(rad) * getDeckDX() + Math.cos(rad) * getDeckDZ());
     }
 
+    /**
+     * How much this ship is "catching wind" right now, 0..1 — used for the
+     * sprint-style FOV kick. Combines point-of-sail fullness with actual speed
+     * so the FOV only widens when you're genuinely powering along:
+     *   • sail must be up and the sail bellied (fillFor high), AND
+     *   • the ship must actually be moving near its potential.
+     * Returns 0 when furled, anchored, sinking, or crawling.
+     */
+    public float getWindSprintFactor() {
+        if (getSailLevel() <= 0 || isAnchorHolding() || isSinking()) return 0f;
+        float fill  = WindManager.fillFor(getYRot());           // 0..1 point-of-sail
+        float speed = Math.abs(getShipSpeed());
+        // Normalize speed against a reference "fast" speed (~top speed).
+        float speedFrac = Mth.clamp(speed / 0.6f, 0f, 1f);
+        // Only kick in once we're both filled and moving; multiply so a luffing
+        // or near-stopped ship gives ~0.
+        return Mth.clamp(fill * speedFrac, 0f, 1f);
+    }
+
 
     // ════════════════════════════════════════════════════════════════
     //  SAIL & ANCHOR  (unified system — state + entity)

@@ -27,7 +27,8 @@
         "SmithingScreenAccessor",
         "SmithingScreenFontAccessor",
         "CameraWeightMixin",
-        "CameraFovMixin"
+        "CameraFovMixin",
+        "SailFovMixin"
     ],
 	"injectors": {
 		"defaultRequire": 1
