@@ -50,11 +50,17 @@ public final class ShipHud {
         int w2 = mc.font.width(line2);
         int maxW = Math.max(w1, w2);
 
-        // Check if player is bow gunner — add reload line
+        // Line 3 is shared by two roles (they never overlap):
+        //   • bow gunner → reload indicator
+        //   • helmsman   → sail trim degree
         Component line3 = null;
         int w3 = 0;
         if (ship.isBowGunner(mc.player)) {
             line3 = buildReloadLine(ship);
+        } else if (ship.getSailLevel() > 0 && !ship.isSinking()) {
+            line3 = buildTrimLine(ship);
+        }
+        if (line3 != null) {
             w3 = mc.font.width(line3);
             maxW = Math.max(maxW, w3);
         }
@@ -211,6 +217,31 @@ public final class ShipHud {
             .append(Component.literal(bar.toString()).withStyle(barColor))
             .append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY))
             .append(Component.literal(pct + "%").withStyle(barColor));
+    }
+
+    /**
+     * Sail trim readout for the helmsman.
+     * Shows the trim degree and a quality word coloured by how well the sail
+     * is drawing for the current wind (green Trimmed / yellow Adjust / grey Luffing).
+     */
+    private static Component buildTrimLine(CustomBoatEntity ship) {
+        int trim = Math.round(ship.getTrim());   // -75..+75 degrees
+
+        String dir = trim == 0 ? "Sail Centered"
+                   : trim > 0  ? "Sail R " + trim + "\u00B0"
+                               : "Sail L " + (-trim) + "\u00B0";
+
+        float eff = ship.getSailEfficiency();
+        ChatFormatting qColor;
+        String quality;
+        // Thresholds tuned to the new trim range (perfect ~1.12, worst ~0.55×base).
+        if (eff >= 1.08f)      { qColor = ChatFormatting.GREEN;  quality = "Trimmed"; }
+        else if (eff >= 0.90f) { qColor = ChatFormatting.YELLOW; quality = "Adjust";  }
+        else                   { qColor = ChatFormatting.GRAY;   quality = "Luffing"; }
+
+        return Component.literal(dir).withStyle(ChatFormatting.WHITE)
+            .append(Component.literal("  \u2022 ").withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal(quality).withStyle(qColor));
     }
 
 

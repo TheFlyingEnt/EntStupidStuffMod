@@ -158,11 +158,14 @@ public class EntStupidStuff implements ModInitializer {
 
         // in onInitialize():
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            var overworld = server.overworld();
+            WindManager.updateWeather(overworld.isRaining(), overworld.isThundering());
             WindManager.tick();
-            // Broadcast every 10 ticks (~2×/sec) — wind drifts slowly, no need for more.
+
             if (server.getTickCount() % 10 == 0) {
+                // Broadcast the EFFECTIVE strength so HUD/burgee reflect storms.
                 WindSyncPayload pkt = new WindSyncPayload(
-                    WindManager.getWindDir(), WindManager.getWindStrength());
+                    WindManager.getWindDir(), WindManager.getEffectiveStrength());
                 for (var player : server.getPlayerList().getPlayers()) {
                     ServerPlayNetworking.send(player, pkt);
                 }

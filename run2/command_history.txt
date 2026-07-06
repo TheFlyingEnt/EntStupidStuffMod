@@ -29,3 +29,5 @@
 /tp @s Player695
 /weather clear
 /tp @s Player255
+/tp @s Player218
+/tp @s Player959

@@ -45,6 +45,12 @@ public class CustomBoatEntity extends AbstractChestBoat {
 
     // --- parts (multi-hitbox) ---
     private static final float PART_OFFSET = 2.0f;
+    // Trim hitboxes: small clickable boxes on each side of the deck near the helm.
+    private static final float TRIM_HITBOX_W = 0.25f;
+    private static final float TRIM_HITBOX_H = 0.25f;
+    private static final float TRIM_SIDE_OFFSET = 1.4f;   // how far left/right of center
+    private static final float TRIM_FWD_OFFSET  = -1.5f;  // toward the stern (near the wheel)
+    private static final float TRIM_UP_OFFSET   = 1.8f;   // above the deck (raised 1 block)
     private static final float PART_WIDTH  = 3.5f;
     private static final float PART_HEIGHT = 0.7f;
 
@@ -127,6 +133,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PART_REAR_ID =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> PART_TRIM_L_ID =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> PART_TRIM_R_ID =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
 
     private static final EntityDataAccessor<Float> DATA_HEALTH =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
@@ -147,6 +157,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
     private static final EntityDataAccessor<Float> DATA_SPEED =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_ROT_SPEED =
+        SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
+    // Sail trim angle relative to the ship's centerline, degrees (-90..+90).
+    // 0 = sail fore-aft/centered. The helmsman angles it to catch the wind.
+    private static final EntityDataAccessor<Float> DATA_TRIM =
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_ATTACHMENT =    // 0 none, 1 harpoon, 2 cannon
         SynchedEntityData.defineId(CustomBoatEntity.class, EntityDataSerializers.INT);
@@ -185,6 +199,8 @@ public class CustomBoatEntity extends AbstractChestBoat {
         super.defineSynchedData(builder);
         builder.define(PART_FRONT_ID, -1);
         builder.define(PART_REAR_ID, -1);
+        builder.define(PART_TRIM_L_ID, -1);
+        builder.define(PART_TRIM_R_ID, -1);
         builder.define(DATA_HEALTH, shipMaxHealth());
         builder.define(DATA_SINK_TICKS, -1);
         builder.define(DATA_SAIL_LEVEL, 0);
@@ -193,6 +209,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
         builder.define(DATA_RUDDER, 0f);
         builder.define(DATA_SPEED, 0f);
         builder.define(DATA_ROT_SPEED, 0f);
+        builder.define(DATA_TRIM, 0f);
         builder.define(DATA_ATTACHMENT, ATTACHMENT_NONE);
         builder.define(DATA_ACTIVE_HARPOON, -1);
         builder.define(DATA_HAS_BANNER, false);
@@ -237,6 +254,19 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public void   setShipSpeed(float s) { this.entityData.set(DATA_SPEED, s); }
     public float  getRotSpeed()    { return this.entityData.get(DATA_ROT_SPEED); }
     public void   setRotSpeed(float s)  { this.entityData.set(DATA_ROT_SPEED, s); }
+
+    // ── Sail trim ──
+    public float getTrim() { return this.entityData.get(DATA_TRIM); }
+    public void  setTrim(float deg) {
+        this.entityData.set(DATA_TRIM, Mth.clamp(deg, -TRIM_MAX, TRIM_MAX));
+    }
+    /** Nudge the trim left/right (called by the trim hitbox clicks). +right / -left. */
+    public void adjustTrim(float deltaDeg) {
+        if (level().isClientSide()) return;
+        setTrim(getTrim() + deltaDeg);
+    }
+    public static final float TRIM_MAX  = 75f;   // max sail angle each side
+    public static final float TRIM_STEP = 12f;   // degrees per click
 
     // bow attachment: NONE, HARPOON, or CANNON
     public int  getAttachment()       { return this.entityData.get(DATA_ATTACHMENT); }
@@ -450,8 +480,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public CustomBoatEntity(EntityType<? extends CustomBoatEntity> type, Level world, Supplier<Item> boatItem) {
         super(type, world, boatItem);
         this.parts = new ShipPartEntity[] {
-            new ShipPartEntity(this, PART_WIDTH, PART_HEIGHT),  // front
-            new ShipPartEntity(this, PART_WIDTH, PART_HEIGHT)   // rear
+            new ShipPartEntity(this, PART_WIDTH, PART_HEIGHT),  // 0: front
+            new ShipPartEntity(this, PART_WIDTH, PART_HEIGHT),  // 1: rear
+            new ShipPartEntity(this, TRIM_HITBOX_W, TRIM_HITBOX_H, ShipPartEntity.ROLE_TRIM_LEFT),  // 2
+            new ShipPartEntity(this, TRIM_HITBOX_W, TRIM_HITBOX_H, ShipPartEntity.ROLE_TRIM_RIGHT)  // 3
         };
     }
 
@@ -775,12 +807,15 @@ public class CustomBoatEntity extends AbstractChestBoat {
         super.tick();
         tickWake();
         tickDebugDeck();
+        tickDebugWind();
 
         // --- spawn multi-hitbox parts on first server tick ---
         if (!this.level().isClientSide() && !partsSpawned) {
             for (ShipPartEntity part : parts) this.level().addFreshEntity(part);
             this.entityData.set(PART_FRONT_ID, parts[0].getId());
             this.entityData.set(PART_REAR_ID,  parts[1].getId());
+            this.entityData.set(PART_TRIM_L_ID, parts[2].getId());
+            this.entityData.set(PART_TRIM_R_ID, parts[3].getId());
             partsSpawned = true;
         }
 
@@ -857,6 +892,25 @@ public class CustomBoatEntity extends AbstractChestBoat {
         double sinY = Math.sin(rad), cosY = Math.cos(rad);
         front.setPos(getX() - sinY * PART_OFFSET, getY(), getZ() + cosY * PART_OFFSET);
         rear.setPos (getX() + sinY * PART_OFFSET, getY(), getZ() - cosY * PART_OFFSET);
+
+        // --- keep the TRIM hitboxes on each side of the deck near the helm ---
+        ShipPartEntity trimL = this.level().isClientSide() ? getWorldPart(PART_TRIM_L_ID) : parts[2];
+        ShipPartEntity trimR = this.level().isClientSide() ? getWorldPart(PART_TRIM_R_ID) : parts[3];
+        if (trimL != null && trimR != null) {
+            if (this.level().isClientSide()) { trimL.parentMob = this; trimR.parentMob = this; }
+            // Ship-local (x = side, z = fore/aft) → world. Left = -side, Right = +side.
+            // world = center + rotate(localX, localZ) by yaw.
+            double lx = -TRIM_SIDE_OFFSET, rz = TRIM_FWD_OFFSET;   // left box
+            double rx =  TRIM_SIDE_OFFSET;                          // right box
+            trimL.setPos(
+                getX() + (lx * cosY - rz * sinY),
+                getY() + TRIM_UP_OFFSET,
+                getZ() + (lx * sinY + rz * cosY));
+            trimR.setPos(
+                getX() + (rx * cosY - rz * sinY),
+                getY() + TRIM_UP_OFFSET,
+                getZ() + (rx * sinY + rz * cosY));
+        }
 
         applySinkMotion();
         // BUG FIX: Removed ShipHud.healthBar(this) — it was called every tick,
@@ -948,7 +1002,7 @@ public class CustomBoatEntity extends AbstractChestBoat {
      */
     public float getWindSprintFactor() {
         if (getSailLevel() <= 0 || isAnchorHolding() || isSinking()) return 0f;
-        float fill  = WindManager.fillFor(getYRot());           // 0..1 point-of-sail
+        float fill  = WindManager.fillFor(getYRot(), getTrim(), true);  // trim-aware
         float speed = Math.abs(getShipSpeed());
         // Normalize speed against a reference "fast" speed (~top speed).
         float speedFrac = Mth.clamp(speed / 0.6f, 0f, 1f);
@@ -981,10 +1035,10 @@ public class CustomBoatEntity extends AbstractChestBoat {
     public void lowerSail() { if (!level().isClientSide()) setSailLevel(getSailLevel() - 1); }
     public void furlSail()  { if (!level().isClientSide()) setSailLevel(0); }
 
-    /** WIND: point-of-sail bonus from the global wind vs. this ship's heading.
-     *  Arcade curve — downwind is a boost, upwind still keeps most thrust. */
+    /** WIND: point-of-sail bonus from the global wind vs. this ship's heading,
+     *  now factoring in the helmsman's sail TRIM. Well-trimmed = full bonus. */
     public float getSailEfficiency() {
-        return WindManager.efficiencyFor(getYRot());
+        return WindManager.efficiencyFor(getYRot(), getTrim(), true);
     }
 
     /** Net forward thrust: sail level × wind. Chain constraint handles anchor stopping. */
@@ -1171,6 +1225,71 @@ public class CustomBoatEntity extends AbstractChestBoat {
                 this.level().addParticle(ParticleTypes.ELECTRIC_SPARK,
                     wx, cy + dy, wz, 0, 0, 0);
             }
+        }
+    }
+
+    /** Toggle wind-direction debug particles. */
+    public static boolean DEBUG_WIND = false;
+
+    /**
+     * Debug: visualize the wind near the ship.
+     *   • BLUE flame stream (SOUL_FIRE_FLAME) drifts in the WIND direction —
+     *     particles flow the way the wind blows, so you can see it.
+     *   • WHITE (END_ROD) line points along the SHIP'S HEADING (bow).
+     *   • GREEN (HAPPY_VILLAGER) marks the IDEAL sail angle for the current wind.
+     *   • RED (DAMAGE_INDICATOR-ish via ANGRY_VILLAGER) marks your ACTUAL sail
+     *     trim, so you can line green + red up.
+     * All heights are above the deck so they're easy to see.
+     */
+    private void tickDebugWind() {
+        if (!DEBUG_WIND || !this.level().isClientSide()) return;
+
+        double cx = getX(), cy = getY() + 2.5, cz = getZ();
+        float windDir = net.ent.entstupidstuff.api.ship.WindManager.getWindDir();
+        double windRad = Math.toRadians(windDir);
+        // Wind blows TOWARD windDir (entity-yaw convention): vx=-sin, vz=cos
+        double wvx = -Math.sin(windRad), wvz = Math.cos(windRad);
+
+        // ── Wind stream: a row of particles upwind of the ship, drifting toward it ──
+        if (this.tickCount % 2 == 0) {
+            for (int i = -2; i <= 2; i++) {
+                // start point offset to the side, a few blocks UPWIND
+                double sideX = wvz * i * 1.2, sideZ = -wvx * i * 1.2;  // perpendicular
+                double startX = cx - wvx * 6 + sideX;
+                double startZ = cz - wvz * 6 + sideZ;
+                // particle with velocity in the wind direction
+                this.level().addParticle(ParticleTypes.SOUL_FIRE_FLAME,
+                    startX, cy, startZ, wvx * 0.4, 0, wvz * 0.4);
+            }
+        }
+
+        // ── Ship heading (bow) — WHITE line forward ──
+        double yaw = Math.toRadians(getYRot());
+        double fx = -Math.sin(yaw), fz = Math.cos(yaw);
+        for (double d = 0.5; d <= 4.0; d += 0.5) {
+            this.level().addParticle(ParticleTypes.END_ROD,
+                cx + fx * d, cy, cz + fz * d, 0, 0, 0);
+        }
+
+        // ── Ideal sail angle — GREEN, and actual trim — RED ──
+        // We draw the sail's FACE NORMAL (perpendicular to the boom), because
+        // THAT is the direction that should point roughly INTO the wind to
+        // catch it. If green (ideal normal) lines up opposite the blue wind
+        // stream, the trim is right.
+        float relWind = Mth.wrapDegrees(getYRot() - windDir);
+        float idealMag = 75f * (1f - Math.abs(relWind) / 180f);
+        float ideal = idealMag * (relWind >= 0f ? 1f : -1f);
+
+        // Boom points along (yaw + trim); the sail FACE normal is +90° from that.
+        double idealNormRad  = Math.toRadians(getYRot() + ideal + 90f);
+        double actualNormRad = Math.toRadians(getYRot() + getTrim() + 90f);
+        double ignx = -Math.sin(idealNormRad),  ignz = Math.cos(idealNormRad);
+        double agnx = -Math.sin(actualNormRad), agnz = Math.cos(actualNormRad);
+        for (double d = 0.5; d <= 3.0; d += 0.5) {
+            this.level().addParticle(ParticleTypes.HAPPY_VILLAGER,
+                cx + ignx * d, cy + 0.3, cz + ignz * d, 0, 0, 0);   // ideal face → green
+            this.level().addParticle(ParticleTypes.ANGRY_VILLAGER,
+                cx + agnx * d, cy + 0.6, cz + agnz * d, 0, 0, 0);   // actual face → red
         }
     }
 

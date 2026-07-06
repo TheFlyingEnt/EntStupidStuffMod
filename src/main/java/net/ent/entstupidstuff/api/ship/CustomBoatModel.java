@@ -723,6 +723,7 @@ public class CustomBoatModel extends AbstractBoatModel{
         float windRelativeYaw = 0f;
         float windStrength    = 0.8f;
         float sailFill = 1f;
+        float sailTrim = 0f;
 
         if (state instanceof CustomBoatRenderState s) {
             sailLevel      = s.sailLevel;
@@ -740,6 +741,7 @@ public class CustomBoatModel extends AbstractBoatModel{
             windRelativeYaw = s.windRelativeYaw;
             windStrength    = s.windStrength;
             sailFill = s.sailFill;
+            sailTrim = s.sailTrim;
         }
 
         this.root.xScale = SCALE;
@@ -781,6 +783,12 @@ public class CustomBoatModel extends AbstractBoatModel{
         } else {
             this.sail_full.yRot = 0f;
         }*/
+
+        if (sailLevel > 0) {
+            this.sail_full.yRot = sailTrim;
+        } else {
+            this.sail_full.yRot = 0f;
+        }
 
         // ── Spanker sail ──
         boolean moving = sailLevel > 0 && boatSpeed > 0.02f;
